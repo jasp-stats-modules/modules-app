@@ -2,12 +2,16 @@
   "name": "modules-app",
   "private": true,
   "type": "module",
+  "engines": {
+    "node": ">=22.18.0"
+  },
   "scripts": {
     "dev": "vite --port 3000",
     "start": "vite --port 3000",
     "build": "vite build && tsc",
     "serve": "vite preview",
-    "test": "vitest run"
+    "test": "vitest run",
+    "scrape": "node src/scrape.ts"
   },
   "dependencies": {
     "@tailwindcss/vite": "^4.0.6",
@@ -19,8 +23,12 @@
     "tailwindcss": "^4.0.6"
   },
   "devDependencies": {
+    "@octokit/core": "^7.0.3",
+    "@octokit/graphql": "^9.0.1",
+    "@octokit/plugin-paginate-graphql": "^6.0.0",
     "@testing-library/dom": "^10.4.0",
     "@testing-library/react": "^16.2.0",
+    "@types/node": "^24.2.0",
     "@types/react": "^19.0.8",
     "@types/react-dom": "^19.0.3",
     "@vitejs/plugin-react": "^4.3.4",
