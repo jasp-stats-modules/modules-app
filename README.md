@@ -1,8 +1,9 @@
 Welcome to JASP stats modules app!
 
-A webapplication that allows you to search/filter all the available JASP modules and install them.
+A web application that allows you to search/filter all the available JASP modules and install them.
 
-A GitHub workflow can be triggered manually to build the app and deploy it to GitHub Pages. 
+A GitHub workflow can be triggered manually to build the app and deploy it to GitHub Pages.
+
 # Getting Started
 
 To run this application:
@@ -10,6 +11,7 @@ To run this application:
 ```bash
 pnpm install
 # Scrape a list of JASP module and their release assets from GitHub and save as src/index.json
+export GITHUB_TOKEN=<your personal fine grained access token, does not need any access to repositories and no permissions>
 pnpm scrape
 pnpm start  
 ```
