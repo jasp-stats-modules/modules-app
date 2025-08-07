@@ -194,7 +194,7 @@ async function releaseAssets(repos: Set<string>, firstAssets = 20): Promise<Repo
     })
   );
 
-  // TODO remove example once a module has a release with assets
+  // TODO remove dummy examples once a module has a release with assets
   repositories['jasp-stats-modules/jaspTTests'].latestRelease = {
     tagName: 'v0.95.0',
     publishedAt: '2025-08-05T00:00:00Z',
@@ -202,6 +202,16 @@ async function releaseAssets(repos: Set<string>, firstAssets = 20): Promise<Repo
     assets: [{
         downloadUrl: 'https://example.com/jaspTTests-0.95-Windows-x86_64.jaspModule',
         downloadCount: 100,
+        architecture: 'Windows-x86_64'
+      }]
+  }
+  repositories['jasp-stats-modules/jaspAnova'].latestRelease = {
+    tagName: 'v0.95.0',
+    publishedAt: '2025-08-06T00:00:00Z',
+    jaspVersionRange: '>=0.95.0',
+    assets: [{
+        downloadUrl: 'https://example.com/jaspAnova-0.95-Windows-x86_64.jaspModule',
+        downloadCount: 42,
         architecture: 'Windows-x86_64'
       }]
   }

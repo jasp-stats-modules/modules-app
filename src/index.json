@@ -59,7 +59,19 @@
     "jasp-stats-modules/jaspAnova": {
       "name": "jaspAnova",
       "shortDescriptionHTML": "The ANOVA Module",
-      "organization": "jasp-stats"
+      "organization": "jasp-stats",
+      "latestRelease": {
+        "tagName": "v0.95.0",
+        "publishedAt": "2025-08-06T00:00:00Z",
+        "jaspVersionRange": ">=0.95.0",
+        "assets": [
+          {
+            "downloadUrl": "https://example.com/jaspAnova-0.95-Windows-x86_64.jaspModule",
+            "downloadCount": 42,
+            "architecture": "Windows-x86_64"
+          }
+        ]
+      }
     },
     "jasp-stats-modules/jaspAudit": {
       "name": "jaspAudit",
