@@ -16,6 +16,7 @@ export default defineConfig({
     globals: true,
     environment: 'jsdom',
   },
+  base: process.env.BASE_URL || "/",
   resolve: {
     alias: {
       '@': resolve(__dirname, './src'),
