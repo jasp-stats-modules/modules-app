@@ -1,0 +1,242 @@
+{
+  "channels": {
+    "beta-modules": [
+      "jasp-stats-modules/recapJaspModule",
+      "jasp-stats-modules/jaspKinematics",
+      "jasp-stats-modules/jaspAcceptanceSampling",
+      "jasp-stats-modules/jaspAnova",
+      "jasp-stats-modules/jaspAudit",
+      "jasp-stats-modules/jaspBFF",
+      "jasp-stats-modules/jaspBain",
+      "jasp-stats-modules/jaspBfpack",
+      "jasp-stats-modules/jaspBsts",
+      "jasp-stats-modules/jaspCircular",
+      "jasp-stats-modules/jaspCochrane",
+      "jasp-stats-modules/jaspDescriptives",
+      "jasp-stats-modules/jaspDistributions",
+      "jasp-stats-modules/jaspEquivalenceTTests",
+      "jasp-stats-modules/jaspEsci",
+      "jasp-stats-modules/jaspFactor",
+      "jasp-stats-modules/jaspFrequencies",
+      "jasp-stats-modules/jaspJags",
+      "jasp-stats-modules/jaspLearnBayes",
+      "jasp-stats-modules/jaspLearnStats",
+      "jasp-stats-modules/jaspMachineLearning",
+      "jasp-stats-modules/jaspMetaAnalysis",
+      "jasp-stats-modules/jaspMixedModels",
+      "jasp-stats-modules/jaspNetwork",
+      "jasp-stats-modules/jaspPower",
+      "jasp-stats-modules/jaspPredictiveAnalytics",
+      "jasp-stats-modules/jaspProcess",
+      "jasp-stats-modules/jaspProphet",
+      "jasp-stats-modules/jaspQualityControl",
+      "jasp-stats-modules/jaspRegression",
+      "jasp-stats-modules/jaspReliability",
+      "jasp-stats-modules/jaspSem",
+      "jasp-stats-modules/jaspSummaryStatistics",
+      "jasp-stats-modules/jaspSurvival",
+      "jasp-stats-modules/jaspTTests",
+      "jasp-stats-modules/jaspTestModule",
+      "jasp-stats-modules/jaspVisualModeling"
+    ]
+  },
+  "assets": {
+    "jasp-stats-modules/recapJaspModule": {
+      "name": "recapJaspModule",
+      "shortDescriptionHTML": "This repo has the required folder structure and some configuration files for a JASP module.",
+      "organization": "recap"
+    },
+    "jasp-stats-modules/jaspKinematics": {
+      "name": "jaspKinematics",
+      "shortDescriptionHTML": "JASP implementation of the kinematics package",
+      "organization": "PabRod"
+    },
+    "jasp-stats-modules/jaspAcceptanceSampling": {
+      "name": "jaspAcceptanceSampling",
+      "shortDescriptionHTML": "",
+      "organization": "jasp-stats"
+    },
+    "jasp-stats-modules/jaspAnova": {
+      "name": "jaspAnova",
+      "shortDescriptionHTML": "The ANOVA Module",
+      "organization": "jasp-stats"
+    },
+    "jasp-stats-modules/jaspAudit": {
+      "name": "jaspAudit",
+      "shortDescriptionHTML": "The Audit module is designed to support statistical auditing using both Bayesian and classical approaches. The module is based on the R package jfa. ",
+      "organization": "jasp-stats"
+    },
+    "jasp-stats-modules/jaspBFF": {
+      "name": "jaspBFF",
+      "shortDescriptionHTML": "Bayes Factor Functions",
+      "organization": "jasp-stats"
+    },
+    "jasp-stats-modules/jaspBain": {
+      "name": "jaspBain",
+      "shortDescriptionHTML": "The BAIN Module",
+      "organization": "jasp-stats"
+    },
+    "jasp-stats-modules/jaspBfpack": {
+      "name": "jaspBfpack",
+      "shortDescriptionHTML": "",
+      "organization": "jasp-stats"
+    },
+    "jasp-stats-modules/jaspBsts": {
+      "name": "jaspBsts",
+      "shortDescriptionHTML": "",
+      "organization": "jasp-stats"
+    },
+    "jasp-stats-modules/jaspCircular": {
+      "name": "jaspCircular",
+      "shortDescriptionHTML": "A circular statistics module for JASP",
+      "organization": "jasp-stats"
+    },
+    "jasp-stats-modules/jaspCochrane": {
+      "name": "jaspCochrane",
+      "shortDescriptionHTML": "",
+      "organization": "jasp-stats"
+    },
+    "jasp-stats-modules/jaspDescriptives": {
+      "name": "jaspDescriptives",
+      "shortDescriptionHTML": "The Descriptives Module",
+      "organization": "jasp-stats"
+    },
+    "jasp-stats-modules/jaspDistributions": {
+      "name": "jaspDistributions",
+      "shortDescriptionHTML": "The Discover Distributions Module",
+      "organization": "jasp-stats"
+    },
+    "jasp-stats-modules/jaspEquivalenceTTests": {
+      "name": "jaspEquivalenceTTests",
+      "shortDescriptionHTML": "The Equivalence T-Tests Module",
+      "organization": "jasp-stats"
+    },
+    "jasp-stats-modules/jaspEsci": {
+      "name": "jaspEsci",
+      "shortDescriptionHTML": "This repo has the required folder structure and some configuration files for a JASP module.",
+      "organization": "jasp-stats"
+    },
+    "jasp-stats-modules/jaspFactor": {
+      "name": "jaspFactor",
+      "shortDescriptionHTML": "The Factor Module",
+      "organization": "jasp-stats"
+    },
+    "jasp-stats-modules/jaspFrequencies": {
+      "name": "jaspFrequencies",
+      "shortDescriptionHTML": "The Frequencies Module",
+      "organization": "jasp-stats"
+    },
+    "jasp-stats-modules/jaspJags": {
+      "name": "jaspJags",
+      "shortDescriptionHTML": "The JAGS Module",
+      "organization": "jasp-stats"
+    },
+    "jasp-stats-modules/jaspLearnBayes": {
+      "name": "jaspLearnBayes",
+      "shortDescriptionHTML": "A module to help learn bayesian statistics",
+      "organization": "jasp-stats"
+    },
+    "jasp-stats-modules/jaspLearnStats": {
+      "name": "jaspLearnStats",
+      "shortDescriptionHTML": "",
+      "organization": "jasp-stats"
+    },
+    "jasp-stats-modules/jaspMachineLearning": {
+      "name": "jaspMachineLearning",
+      "shortDescriptionHTML": "The Machine Learning Module",
+      "organization": "jasp-stats"
+    },
+    "jasp-stats-modules/jaspMetaAnalysis": {
+      "name": "jaspMetaAnalysis",
+      "shortDescriptionHTML": "The Meta Analysis Module",
+      "organization": "jasp-stats"
+    },
+    "jasp-stats-modules/jaspMixedModels": {
+      "name": "jaspMixedModels",
+      "shortDescriptionHTML": "The Mixed Models Module",
+      "organization": "jasp-stats"
+    },
+    "jasp-stats-modules/jaspNetwork": {
+      "name": "jaspNetwork",
+      "shortDescriptionHTML": "The Network Analysis Module",
+      "organization": "jasp-stats"
+    },
+    "jasp-stats-modules/jaspPower": {
+      "name": "jaspPower",
+      "shortDescriptionHTML": "",
+      "organization": "jasp-stats"
+    },
+    "jasp-stats-modules/jaspPredictiveAnalytics": {
+      "name": "jaspPredictiveAnalytics",
+      "shortDescriptionHTML": "",
+      "organization": "jasp-stats"
+    },
+    "jasp-stats-modules/jaspProcess": {
+      "name": "jaspProcess",
+      "shortDescriptionHTML": "The PROCESS module",
+      "organization": "jasp-stats"
+    },
+    "jasp-stats-modules/jaspProphet": {
+      "name": "jaspProphet",
+      "shortDescriptionHTML": "",
+      "organization": "jasp-stats"
+    },
+    "jasp-stats-modules/jaspQualityControl": {
+      "name": "jaspQualityControl",
+      "shortDescriptionHTML": "",
+      "organization": "jasp-stats"
+    },
+    "jasp-stats-modules/jaspRegression": {
+      "name": "jaspRegression",
+      "shortDescriptionHTML": "The Regression Module",
+      "organization": "jasp-stats"
+    },
+    "jasp-stats-modules/jaspReliability": {
+      "name": "jaspReliability",
+      "shortDescriptionHTML": "The Reliability Module",
+      "organization": "jasp-stats"
+    },
+    "jasp-stats-modules/jaspSem": {
+      "name": "jaspSem",
+      "shortDescriptionHTML": "The SEM Module",
+      "organization": "jasp-stats"
+    },
+    "jasp-stats-modules/jaspSummaryStatistics": {
+      "name": "jaspSummaryStatistics",
+      "shortDescriptionHTML": "The Summary Statistics Module",
+      "organization": "jasp-stats"
+    },
+    "jasp-stats-modules/jaspSurvival": {
+      "name": "jaspSurvival",
+      "shortDescriptionHTML": "",
+      "organization": "jasp-stats"
+    },
+    "jasp-stats-modules/jaspTTests": {
+      "name": "jaspTTests",
+      "shortDescriptionHTML": "The T-Tests Module",
+      "organization": "jasp-stats",
+      "latestRelease": {
+        "tagName": "v0.95.0",
+        "publishedAt": "2025-08-05T00:00:00Z",
+        "jaspVersionRange": ">=0.95.0",
+        "assets": [
+          {
+            "downloadUrl": "https://example.com/jaspTTests-0.95-Windows-x86_64.jaspModule",
+            "downloadCount": 100,
+            "architecture": "Windows-x86_64"
+          }
+        ]
+      }
+    },
+    "jasp-stats-modules/jaspTestModule": {
+      "name": "jaspTestModule",
+      "shortDescriptionHTML": "A module to test stuff with",
+      "organization": "jasp-stats"
+    },
+    "jasp-stats-modules/jaspVisualModeling": {
+      "name": "jaspVisualModeling",
+      "shortDescriptionHTML": "The Visual Modeling Module",
+      "organization": "jasp-stats"
+    }
+  }
+}

@@ -11,11 +11,11 @@ To run this application:
 ```bash
 pnpm install
 # Scrape a list of JASP module and their release assets from GitHub and save as src/index.json
-export GITHUB_TOKEN=<your personal fine grained access token, does not need any access to repositories and no permissions>
+export GITHUB_TOKEN=<your personal fine grained access token, only access to public repositories is needed and no other permissions>
 pnpm scrape
 pnpm start  
 ```
-
+volta
 # Building For Production
 
 To build this application for production:

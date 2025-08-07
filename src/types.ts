@@ -10,30 +10,25 @@ export interface ChanelledSubModule extends SubModule {
 }
 
 export type Repos = Record<string, SubModule[]>;
-interface ReleaseAsset {
+
+export interface ReleaseAsset {
   downloadUrl: string;
-  name: string;
   downloadCount: number;
+  architecture: string;
 }
 
 export interface Release {
   tagName: string;
-  name: string;
-  isLatest: boolean;
-  isPrerelease: boolean;
-  isDraft: boolean;
   publishedAt: string;
-  releaseAssets: {
-    nodes: ReleaseAsset[];
-  };
+  jaspVersionRange?: string;
+  assets: ReleaseAsset[];
 }
 
 export interface Repository {
-  nameWithOwner: string;
+  name: string;
   shortDescriptionHTML: string;
-  releases: {
-    nodes: Release[];
-  };
+  latestRelease?: Release;
+  organization: string;
 }
 
 export interface RepoReleaseAssets {

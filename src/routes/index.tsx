@@ -1,70 +1,70 @@
 import { createFileRoute } from '@tanstack/react-router'
 import { channels, assets } from '../index.json'
-import type { Releases, Repos, SubModule } from "@/types";
+import type { ReleaseAsset, RepoReleaseAssets } from "@/types";
+import { useState } from 'react';
 
-const channels2repos = channels as unknown as Repos
-const releaseAssets = assets as unknown as Releases;
+const channels2repos = channels as unknown as Record<string, string[]>
+const releaseAssets = assets as unknown as RepoReleaseAssets;
 
 export const Route = createFileRoute('/')({
   component: App,
 })
 
-function Repo({repo}: {repo: SubModule}) {
-  const shortDescriptionHTML = releaseAssets[repo.nameWithOwner]?.shortDescriptionHTML || '';
-  const latestRelease = releaseAssets[repo.nameWithOwner]?.releases?.find(r => r.isLatest);
+const arch = 'Windows-x86_64';
 
+function Assets({ assets }: { assets: ReleaseAsset[]  }) {
+  const archAsset = assets.find(asset => asset.architecture === arch);
+  if (!archAsset) {
+    return <></>;
+  }
   return (
-    <details>
-      <summary>{repo.nameWithOwner}</summary>
-      <p>{shortDescriptionHTML}</p>
-      {latestRelease && (
-        <div>
-          <h4>Latest Release: {latestRelease.name}</h4>
-          <p>Published at: {latestRelease.publishedAt}</p>
-          <ul>
-            {latestRelease.releaseAssets.nodes.map(asset => (
-              <li key={asset.downloadUrl}>
-                <a href={asset.downloadUrl} target="_blank" rel="noopener noreferrer">
-                  {asset.name} ({asset.downloadCount} downloads)
-                </a>
-              </li>
-            ))}
-          </ul>
-        </div>
-      )}
-      <hr />
-    </details>
+    <div>
+    <a href={archAsset.downloadUrl}>
+      Install
+    </a>
+    ({archAsset.downloadCount} downloads)
+    </div>
   )
-}
-
-function Channel({ channel}: { channel: string }) {
-  const repos = channels2repos[channel] || [];
-  return (
-    <details open>
-      <summary>{channel}</summary>
-      <ul>
-        {repos.map(repo => (
-          <li key={repo.nameWithOwner}>
-             <Repo repo={repo} />
-          </li>
-        ))}
-      </ul>
-    </details>
-  )
-
 }
 
 function App() {
+  const [channel, setChannel] = useState<string>('beta-modules');
+  const channels = Object.keys(channels2repos);
+  const reposOfChannel = Object.entries(releaseAssets).filter(([repo, _]) => channels2repos[channel].includes(repo)).map(([_, repo]) => repo);
+
   return (
-    <div>
-      <h1>JASP Modules</h1>
+    <main>
+      <search>
+        <form>
+          <label>
+            Select a channel:
+            <select name="channel" value={channel} onChange={(e) => setChannel(e.target.value)} >
+              {channels.map(channel => (
+                <option key={channel} value={channel}>{channel}</option>
+              ))}
+            </select>
+          </label>
+          <label>
+            Search for a module:
+            <input type="search" name="q" placeholder="TTests" />
+          </label>
+        </form>
+      </search>
       <ul>
-        {Object.keys(channels2repos).map(channel => (
-          <li key={channel}>
-            <Channel channel={channel} />
+        {reposOfChannel.map(repo => (
+          <li key={`${repo.organization}/${repo.name}`}>
+            {repo.name}
+            {repo.shortDescriptionHTML ? <span dangerouslySetInnerHTML={{ __html: repo.shortDescriptionHTML }} /> : ''}
+            {repo.latestRelease && (
+              <span>
+                {repo.latestRelease.tagName} - {new Date(repo.latestRelease.publishedAt).toLocaleDateString()}
+                <Assets assets={repo.latestRelease.assets} />
+              </span>
+            )}
           </li>
         ))}
       </ul>
-    </div>
+    </main>
+
   )
 }
