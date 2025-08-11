@@ -11,7 +11,8 @@
     "build": "vite build && tsc",
     "serve": "vite preview",
     "test": "vitest run",
-    "scrape": "node src/scrape.ts"
+    "scrape": "node src/scrape.ts",
+    "check": "biome check --write --unsafe"
   },
   "dependencies": {
     "@tailwindcss/vite": "^4.0.6",
@@ -25,6 +26,7 @@
     "valibot": "^1.1.0"
   },
   "devDependencies": {
+    "@biomejs/biome": "2.1.4",
     "@octokit/core": "^7.0.3",
     "@octokit/graphql": "^9.0.1",
     "@octokit/plugin-paginate-graphql": "^6.0.0",

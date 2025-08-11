@@ -32,6 +32,7 @@ The web application is a single page application (SPA) with the following charac
 - Uses [pnpm](https://pnpm.io/) as the package manager
 - Uses [Tailwind CSS](https://tailwindcss.com/) for styling
 - Uses [TanStack Router](https://tanstack.com/router) for routing, with an initial file-based router setup in `src/routes`
+- Uses [biome](https://biomejs.dev/) for linting and formatting
 - Fetches data from the [GitHub GraphQL API](https://docs.github.com/en/graphql) to get available JASP modules and their release assets
 
 To get a list of available JASP modules, it does the following with the help of the `src/scrape.ts` script:
