@@ -1,0 +1,14 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it as below."
+type: software
+license: "Apache-2.0"
+authors:
+- family-names: "JASP Team"
+title: "JASP stats modules web application"
+url: "https://jasp-stats-modules.github.io/modules-app/"
+repository-code: "https://github.com/jasp-stats-modules/modules-app"
+identifiers:
+  - description: Latest version of software
+    type: doi
+    # TODO once we have a DOI, add it here
+    value: "10.5281/zenodo.1234567"
