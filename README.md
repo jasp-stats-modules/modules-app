@@ -15,9 +15,9 @@ A web application hosted at https://jasp-stats-modules.github.io/modules-app/ th
 
 ## Search parameters
 
-The web application is designed to be open from within JASP desktop application, but it can also be used as a standalone web application.
+The web application is designed to be opened from inside JASP desktop application, but it can also be used as a standalone web application.
 
-The JASP desktop application can tell the web application which version it is and which modules are installed by using search parameters (`?key=val`) in the URL.
+The JASP desktop application can tell the web application which version/architecture it is and which modules are installed by using search parameters (`?key=val`) in the URL.
 
 - v: the version of the JASP desktop application for example `0.95.0`
 - a: the architecture of the JASP desktop application for example `Windows_x86-64`
