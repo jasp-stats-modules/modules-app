@@ -1,5 +1,3 @@
-
-
 export interface SubModule {
   owner: string;
   repo: string;
@@ -35,7 +33,10 @@ export interface RepoReleaseAssets {
   [key: string]: Repository;
 }
 
-export type Releases = Record<string, {
-  shortDescriptionHTML: string;
-  releases: Release[];
-}>;
+export type Releases = Record<
+  string,
+  {
+    shortDescriptionHTML: string;
+    releases: Release[];
+  }
+>;
