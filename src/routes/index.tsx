@@ -130,7 +130,6 @@ function App() {
   const reposOfChannel = Object.entries(releaseAssets)
     .filter(([repo, _]) => channels2repos[channel].includes(repo))
     .map(([_, repo]) => repo);
-  // TODO allow to see installed modules by ticking checkbox and be able to uninstall a module
   const installableRepos = reposOfChannel.filter((repo) => {
     const hasArch =
       !repo.latestRelease ||

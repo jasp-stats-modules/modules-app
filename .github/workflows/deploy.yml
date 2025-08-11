@@ -57,7 +57,6 @@ jobs:
 
     # Deploy to the github-pages environment
     environment:
-      # TODO make env in settings page
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
 
