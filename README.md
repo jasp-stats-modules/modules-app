@@ -1,5 +1,10 @@
 Welcome to JASP stats modules app!
 
+[![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
+[![Checked with Biome](https://img.shields.io/badge/Checked_with-Biome-60a5fa?style=flat&logo=biome)](https://biomejs.dev)
+[![Deploy to GitHub Pages](https://github.com/jasp-stats-modules/modules-app/actions/workflows/deploy.yml/badge.svg)](https://github.com/jasp-stats-modules/modules-app/actions/workflows/deploy.yml)
+[![Code quality](https://github.com/jasp-stats-modules/modules-app/actions/workflows/quality.yml/badge.svg)](https://github.com/jasp-stats-modules/modules-app/actions/workflows/quality.yml)
+
 A web application hosted at https://jasp-stats-modules.github.io/modules-app/ that allows you to search/filter all the available JASP modules and install them.
 
 A GitHub workflow can be triggered manually to build the app and deploy it to GitHub Pages.
@@ -15,8 +20,6 @@ The JASP desktop application can tell the web application which version it is an
 - i: installed modules. A JSON object with the module names as keys and their versions as values. The object has to be [URL encoded](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/encodeURIComponent). For example, `{"22jaspEquivalenceTTests":"0.95.0","22jaspTTests":"0.94.0"}` becomes `%7B%2222jaspEquivalenceTTests%22%3A%220.95.0%22%2C%2222jaspTTests%22%3A%220.94.0%22%7D`.
 
 A full URL could look like [https://jasp-stats-modules.github.io/modules-app/?a=Windows_x86-64&v=0.95.0&i=%7B%22jaspEquivalenceTTests%22%3A%220.95.0%22%2C%22jaspTTests%22%3A%220.94.0%22%7D](https://jasp-stats-modules.github.io/modules-app/?a=Windows_x86-64&v=0.95.0&i=%7B%22jaspEquivalenceTTests%22%3A%220.95.0%22%2C%22jaspTTests%22%3A%220.94.0%22%7D).
-
-<!-- TODO check that 37 modules does not exceed the URL length limit. Check how many modules can fit in URL -->
 
 ## Update list of modules
 
