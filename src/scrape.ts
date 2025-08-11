@@ -75,17 +75,25 @@ function uniqueReposFromSubmodules(submodules: ChanelledSubModule[]): Set<string
   return repos;
 }
 
-/**
- * Extracts architecture string (e.g., 'Windows-x86_64') from filenames like 'jaspTTests-0.95-Windows-x86_64.jaspModule'
- */
 export function archFromDownloadUrl(url: string): string {
-  // Match pattern: <name>-<version>-<arch>.jaspModule
-  // Example: jaspTTests-0.95-Windows-x86_64.jaspModule
-  const match = url.match(/^[^-]+-[^-]+-([^.]+)\.jaspModule$/);
-  if (!match) {
-    throw new Error(`URL ${url} does not match expected pattern`);
+  // From https://github.com/jasp-stats-modules/jaspRegression/releases/download/5649cad6_R-4-5-1/jaspRegression_0.95.0_Windows_x86-64_R-4-5-1.JASPModule
+  // extracts 'Windows_x86-64'
+  // Or https://github.com/jasp-stats-modules/jaspAcceptanceSampling/releases/download/014ad5af_R-4-5-1/jaspAcceptanceSampling_0.95.0_Windows_x86-64_R-4-5-1.JASPModule
+  // extracts 'Windows _x86-64'
+  // The architecture is the part between the last underscore in the filename and the next underscore (or _R-) before the .JASPModule extension
+  const filename = url.split('/').pop();
+  if (!filename) throw new Error(`URL ${url} does not contain a filename`);
+  // Match the architecture part: ..._<arch>_R-...JASPModule
+  const archMatch = filename.match(/_([A-Za-z0-9-]+_[A-Za-z0-9-]+)_R-[^_]+\.JASPModule$/);
+  if (archMatch) {
+    return archMatch[1];
   }
-  return match[1];
+  // Fallback: try to match ..._<arch>_...JASPModule (less strict)
+  const fallback = filename.match(/_([A-Za-z0-9-]+_[A-Za-z0-9-]+)_.*\.JASPModule$/);
+  if (fallback) {
+    return fallback[1];
+  }
+  throw new Error(`URL ${url} does not match expected pattern for extracting architecture`);
 }
 
 /**
@@ -103,12 +111,12 @@ export function archFromDownloadUrl(url: string): string {
  * @param description 
  * @returns 
  */
-export function jaspVersionRangeFromDescription(description: string): string {
+export function jaspVersionRangeFromDescription(description: string): string | undefined {
   const parsed = matter(description);
   if (parsed.data && typeof parsed.data.jasp === 'string') {
     return parsed.data.jasp;
   }
-  throw new Error(`Description does not contain a valid JASP version range: ${description}`);
+  return undefined
 }
 
 async function releaseAssets(repos: Set<string>, firstAssets = 20): Promise<RepoReleaseAssets> {
@@ -177,10 +185,15 @@ async function releaseAssets(repos: Set<string>, firstAssets = 20): Promise<Repo
       }
       if (latestRelease) {
         const {releaseAssets, description, ...restRelease} = latestRelease;
+        let jaspVersionRange = jaspVersionRangeFromDescription(description ?? '');
+        if (!jaspVersionRange) {
+          jaspVersionRange = '>=0.95.0';
+          console.warn(`Malformed description for ${nameWithOwner}. Falling back to default JASP version range: ${jaspVersionRange}`);
+        }
         const newRelease: Release = {
             ...restRelease,
-            jaspVersionRange: jaspVersionRangeFromDescription(description ?? ''),
-            assets: releaseAssets.nodes.filter(asset => asset.downloadUrl.endsWith('.jaspModule')).map((a) => {
+            jaspVersionRange,
+            assets: releaseAssets.nodes.filter(asset => asset.downloadUrl.endsWith('.JASPModule')).map((a) => {
               const asset: ReleaseAsset = {
                 ...a,
                 architecture: archFromDownloadUrl(a.downloadUrl)
@@ -194,27 +207,6 @@ async function releaseAssets(repos: Set<string>, firstAssets = 20): Promise<Repo
     })
   );
 
-  // TODO remove dummy examples once a module has a release with assets
-  repositories['jasp-stats-modules/jaspTTests'].latestRelease = {
-    tagName: 'v0.95.0',
-    publishedAt: '2025-08-05T00:00:00Z',
-    jaspVersionRange: '>=0.95.0',
-    assets: [{
-        downloadUrl: 'https://example.com/jaspTTests-0.95-Windows-x86_64.jaspModule',
-        downloadCount: 100,
-        architecture: 'Windows-x86_64'
-      }]
-  }
-  repositories['jasp-stats-modules/jaspAnova'].latestRelease = {
-    tagName: 'v0.95.0',
-    publishedAt: '2025-08-06T00:00:00Z',
-    jaspVersionRange: '>=0.95.0',
-    assets: [{
-        downloadUrl: 'https://example.com/jaspAnova-0.95-Windows-x86_64.jaspModule',
-        downloadCount: 42,
-        architecture: 'Windows-x86_64'
-      }]
-  }
   return repositories
 }
 

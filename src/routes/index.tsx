@@ -8,11 +8,11 @@ import { satisfies, gt } from 'semver';
 const channels2repos = channels as unknown as Record<string, string[]>
 const releaseAssets = assets as unknown as RepoReleaseAssets;
 
-const defaultArchitecture = 'Windows-x86_64';
+const defaultArchitecture = 'Windows_x86-64';
 const defaultInstalledVersion = '0.95.0';
 // const defaultInstalledModules = () => ({})
 // TODO remove example once JASP has app integrated
-const defaultInstalledModules = () => ({ 'jaspEquivalenceTTests': '0.95.0', 'jaspTTests': '0.94.0' });
+const defaultInstalledModules = () => ({ 'jaspEquivalenceTTests': '7aad95f4_R-4-5-1', 'jaspTTests': 'a8098ba98_R-4-4-0' });
 
 const SearchSchema = v.object({
   // Architecture of installed JASP
@@ -28,8 +28,6 @@ export const Route = createFileRoute('/')({
   component: App,
   validateSearch: SearchSchema
 })
-
-const arch = 'Windows-x86_64';
 
 function InstallButton({ asset }: { asset?: ReleaseAsset }) {
   if (!asset) {
@@ -60,18 +58,33 @@ function UpdateButton({ asset }: { asset?: ReleaseAsset }) {
 }
 
 function RepositoryCard({ repo }: { repo: Repository }) {
+  const { i: installedModules, a: arch } = Route.useSearch();
   const archAsset = repo.latestRelease?.assets.find(a => a.architecture === arch);
-  const { i } = Route.useSearch();
-  const installedVersion = i[repo.name];
-  const canInstall = !installedVersion;
-  const canUpdate = installedVersion && gt(repo.latestRelease?.tagName.replace('v', '') ?? defaultInstalledVersion, installedVersion);
+  const installedVersion = installedModules[repo.name];
+  const latestVersionInstalled = installedVersion === repo.latestRelease?.tagName;
+  const canInstall = !installedVersion || !latestVersionInstalled;
+  // tagName (d5d503cf_R-4-5-1) is not a semantic version, so we cannot
+  // tell if it can be updated or downgraded
+  // For now assume installed version can be updated
+  const canUpdate = installedVersion && !latestVersionInstalled;
+  if (repo.name ==='jaspTTests') {
+    console.log({
+      repoName: repo.name,
+      installedVersion,
+      latestVersionInstalled,
+      canInstall,
+      canUpdate,
+      archAsset
+    })
+  }
   return (
     <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-3 hover:shadow-md transition-shadow duration-200">
       <div className="flex justify-between items-start gap-2 mb-2">
         <h3 className="text-lg font-semibold text-gray-900">{repo.name}</h3>
         <div className="flex-shrink-0">
-          {canInstall && <InstallButton asset={archAsset} />}
           {canUpdate && <UpdateButton asset={archAsset} />}
+          {(canInstall && !canUpdate) && <InstallButton asset={archAsset} />}
+          {latestVersionInstalled && <span title="Latest version is installed" className="text-xs text-gray-500">Installed</span>}
         </div>
       </div>
       <div className="flex flex-col gap-2">
@@ -97,7 +110,7 @@ function RepositoryCard({ repo }: { repo: Repository }) {
 }
 
 function App() {
-  const { a: architecture, i: installedModules, v: installedJaspVersion } = Route.useSearch()
+  const { a: architecture, v: installedJaspVersion } = Route.useSearch()
   const [channel, setChannel] = useState<string>('beta-modules');
   const [searchTerm, setSearchTerm] = useState<string>('');
   const channels = Object.keys(channels2repos);
@@ -106,12 +119,18 @@ function App() {
   const installableRepos = reposOfChannel.filter(repo => {
     const hasArch = !repo.latestRelease || repo.latestRelease?.assets.some(a => a.architecture === architecture)
     const satisfiesJaspVersion = !repo.latestRelease?.jaspVersionRange || satisfies(installedJaspVersion, repo.latestRelease?.jaspVersionRange);
-    // TODO allow to update module when installed version is lower than latest release
-    const latestVersionInstalled = repo.name in installedModules && installedModules[repo.name] === repo.latestRelease?.tagName.replace('v', '');
-    if (repo.name === 'jaspTTests') {
-      // debugger
+    const hasAssets = repo.latestRelease?.assets && repo.latestRelease.assets.length > 0;
+    const keep = hasArch && satisfiesJaspVersion && hasAssets;
+    if (!keep) {
+      console.log({
+        repo: repo.name,
+        hasArch,
+        satisfiesJaspVersion,
+        hasAssets,
+        reason: 'Not installable'
+      });
     }
-    return hasArch && satisfiesJaspVersion && !latestVersionInstalled;
+    return keep;
   });
 
   // Filter repositories based on search term
