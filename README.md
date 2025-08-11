@@ -7,9 +7,11 @@ Welcome to JASP stats modules app!
 
 A web application hosted at https://jasp-stats-modules.github.io/modules-app/ that allows you to search/filter all the available JASP modules and install them.
 
-A GitHub workflow can be triggered manually to build the app and deploy it to GitHub Pages.
+[![Screenshot of the app](screenshot.png)](screenshot.png)
 
 # Usage
+
+## Search parameters
 
 The web application is designed to be open from within JASP desktop application, but it can also be used as a standalone web application.
 
@@ -81,11 +83,3 @@ This project uses [Vitest](https://vitest.dev/) for testing. You can run the tes
 ```bash
 pnpm test
 ```
-
-## Styling
-
-This project uses [Tailwind CSS](https://tailwindcss.com/) for styling.
-
-
-## Routing
-This project uses [TanStack Router](https://tanstack.com/router). The initial setup is a file based router. Which means that the routes are managed as files in `src/routes`.
