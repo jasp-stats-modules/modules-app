@@ -1,9 +1,11 @@
-Welcome to JASP stats modules app!
+Welcome to JASP stats modules web app!
 
 [![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 [![Checked with Biome](https://img.shields.io/badge/Checked_with-Biome-60a5fa?style=flat&logo=biome)](https://biomejs.dev)
 [![Deploy to GitHub Pages](https://github.com/jasp-stats-modules/modules-app/actions/workflows/deploy.yml/badge.svg)](https://github.com/jasp-stats-modules/modules-app/actions/workflows/deploy.yml)
 [![Code quality](https://github.com/jasp-stats-modules/modules-app/actions/workflows/quality.yml/badge.svg)](https://github.com/jasp-stats-modules/modules-app/actions/workflows/quality.yml)
+[![FAIR checklist badge](https://fairsoftwarechecklist.net/badge.svg)](https://fairsoftwarechecklist.net/v0.2?f=31&a=32113&i=22300&r=113)
+
 
 A web application hosted at https://jasp-stats-modules.github.io/modules-app/ that allows you to search/filter all the available JASP modules and install them.
 
