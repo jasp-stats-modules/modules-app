@@ -85,3 +85,7 @@ This project uses [Vitest](https://vitest.dev/) for testing. You can run the tes
 ```bash
 pnpm test
 ```
+
+## Contributing
+
+Contributions are welcome! Please read the [contributing guidelines](CONTRIBUTING.md) for more information.
