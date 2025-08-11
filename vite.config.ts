@@ -10,8 +10,8 @@ export default defineConfig({
     tanstackRouter({ autoCodeSplitting: true }),
     viteReact({
       babel: {
-        plugins: ['babel-plugin-react-compiler']
-      }
+        plugins: ['babel-plugin-react-compiler'],
+      },
     }),
     tailwindcss(),
   ],
