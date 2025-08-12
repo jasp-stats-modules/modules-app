@@ -141,11 +141,17 @@ export function archFromDownloadUrl(url: string): string {
 export function jaspVersionRangeFromDescription(
   description: string,
 ): string | undefined {
-  const parsed = matter(description);
+  const parsed = matter(addQuotesInDescription(description));
   if (parsed.data && typeof parsed.data.jasp === 'string') {
     return parsed.data.jasp;
   }
   return undefined;
+}
+
+// TODO remove once all release descriptions fetched have valid yaml in frontmatter
+function addQuotesInDescription(input: string): string {
+  const regex = /^(.*?): (>.*)$/m;
+  return input.replace(regex, (_, p1, p2) => `${p1}: "${p2}"`);
 }
 
 async function releaseAssets(
