@@ -2,7 +2,12 @@ import { createFileRoute } from '@tanstack/react-router';
 import { useState } from 'react';
 import { satisfies } from 'semver';
 import * as v from 'valibot';
-import type { ReleaseAsset, RepoReleaseAssets, Repository } from '@/types';
+import type {
+  Release,
+  ReleaseAsset,
+  RepoReleaseAssets,
+  Repository,
+} from '@/types';
 import { assets, channels } from '../index.json';
 
 const channels2repos = channels as unknown as Record<string, string[]>;
@@ -68,14 +73,28 @@ function UpdateButton({ asset }: { asset?: ReleaseAsset }) {
   );
 }
 
-function RepositoryCard({ repo }: { repo: Repository }) {
-  const { i: installedModules, a: arch } = Route.useSearch();
-  const archAsset = repo.latestRelease?.assets.find(
-    (a) => a.architecture === arch,
+function findReleaseThatSatisfiesInstalledJaspVersion(
+  releases: Release[],
+  installed_version: string,
+): Release | undefined {
+  return releases.find((release) =>
+    satisfies(installed_version, release.jaspVersionRange ?? ''),
   );
+}
+
+function RepositoryCard({ repo }: { repo: Repository }) {
+  const {
+    i: installedModules,
+    a: arch,
+    v: installedJaspVersion,
+  } = Route.useSearch();
+  const latestRelease = findReleaseThatSatisfiesInstalledJaspVersion(
+    repo.latest,
+    installedJaspVersion,
+  );
+  const archAsset = latestRelease?.assets.find((a) => a.architecture === arch);
   const installedVersion = installedModules[repo.name];
-  const latestVersionInstalled =
-    installedVersion === repo.latestRelease?.tagName;
+  const latestVersionInstalled = installedVersion === latestRelease?.tagName;
   const canInstall = !installedVersion || !latestVersionInstalled;
   // tagName (d5d503cf_R-4-5-1) is not a semantic version, so we cannot
   // tell if it can be updated or downgraded
@@ -104,14 +123,14 @@ function RepositoryCard({ repo }: { repo: Repository }) {
             {repo.shortDescriptionHTML}
           </div>
         )}
-        {repo.latestRelease && (
+        {latestRelease && (
           <div className="flex flex-row gap-1 text-xs text-gray-500">
             <span className="inline-flex items-center w-fit">
               {installedVersion
                 ? ` installed: ${installedVersion}, latest`
                 : 'latest '}{' '}
-              {repo.latestRelease.tagName.replace('v', '')} on{' '}
-              {new Date(repo.latestRelease.publishedAt).toLocaleDateString()}
+              {latestRelease.tagName.replace('v', '')} on{' '}
+              {new Date(latestRelease.publishedAt).toLocaleDateString()}
             </span>
             <span>by {repo.organization}</span>
             <span>with {archAsset?.downloadCount} downloads</span>
@@ -131,16 +150,23 @@ function App() {
     .filter(([repo, _]) => channels2repos[channel].includes(repo))
     .map(([_, repo]) => repo);
   const installableRepos = reposOfChannel.filter((repo) => {
-    const hasArch =
-      !repo.latestRelease ||
-      repo.latestRelease?.assets.some((a) => a.architecture === architecture);
-    const satisfiesJaspVersion =
-      !repo.latestRelease?.jaspVersionRange ||
-      satisfies(installedJaspVersion, repo.latestRelease?.jaspVersionRange);
-    const hasAssets =
-      repo.latestRelease?.assets && repo.latestRelease.assets.length > 0;
-    const keep = hasArch && satisfiesJaspVersion && hasAssets;
-    return keep;
+    const latestRelease = findReleaseThatSatisfiesInstalledJaspVersion(
+      repo.latest,
+      installedJaspVersion,
+    );
+    if (!latestRelease) {
+      // No compatible release found
+      return false;
+    }
+    const hasArch = latestRelease.assets.some(
+      (a) => a.architecture === architecture,
+    );
+    if (!hasArch) {
+      // No assets found with compatible architecture
+      return false;
+    }
+    const hasAssets = latestRelease?.assets && latestRelease.assets.length > 0;
+    return hasAssets;
   });
 
   // Filter repositories based on search term
@@ -182,6 +208,7 @@ function App() {
                 </select>
               </label>
             </div>
+            {/* TODO add checkbox to switch from production latest releases to pre-releases */}
             <div>
               <label className="block text-xs font-medium text-gray-700 mb-1">
                 Search for a module:

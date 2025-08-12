@@ -154,8 +154,117 @@ function addQuotesInDescription(input: string): string {
   return input.replace(regex, (_, p1, p2) => `${p1}: "${p2}"`);
 }
 
-async function releaseAssets(
+function batchedArray<T>(array: T[], size: number): T[][] {
+  const batches: T[][] = [];
+  for (let i = 0; i < array.length; i += size) {
+    batches.push(array.slice(i, i + size));
+  }
+  return batches;
+}
+
+async function releaseAssetsPaged(
   repos: Set<string>,
+  firstAssets = 20,
+  pageSize = 100,
+): Promise<RepoReleaseAssets> {
+  const batches = batchedArray(Array.from(repos), pageSize);
+  const results: RepoReleaseAssets = {};
+  for (const batch of batches) {
+    const batchResults = await releaseAssets(batch, firstAssets);
+    Object.assign(results, batchResults);
+  }
+  return results;
+}
+
+export interface GqlRelease {
+  tagName: string;
+  publishedAt: string;
+  description?: string;
+  isDraft: boolean;
+  isPrerelease: boolean;
+  releaseAssets: {
+    nodes: {
+      downloadUrl: string;
+      downloadCount: number;
+    }[];
+  };
+}
+
+interface GqlAssetsResult {
+  [key: string]: {
+    name: string;
+    nameWithOwner: string;
+    shortDescriptionHTML: string;
+    parent?: {
+      owner: {
+        login: string;
+      };
+    };
+    releases: {
+      nodes: GqlRelease[];
+    };
+  };
+}
+
+export function latestReleasePerJaspVersionRange(
+  releases: GqlRelease[],
+): GqlRelease[] {
+  const latest: GqlRelease[] = [];
+  const seen: Set<string> = new Set();
+
+  for (const release of releases) {
+    if (!release.description) {
+      console.log('Release description is missing');
+      continue;
+    }
+    // TODO do not call jaspVersionRangeFromDescription twice
+    // here and in transformRelease()
+    const jaspVersionRange = jaspVersionRangeFromDescription(
+      release.description,
+    );
+    if (!jaspVersionRange) {
+      console.log(
+        'Could not extract JASP version range from release description',
+      );
+      continue;
+    }
+    if (!seen.has(jaspVersionRange)) {
+      seen.add(jaspVersionRange);
+      latest.push(release);
+    }
+  }
+
+  return latest;
+}
+
+function transformRelease(release: GqlRelease, nameWithOwner: string): Release {
+  const { releaseAssets, description, isDraft, ...restRelease } = release;
+  let jaspVersionRange = jaspVersionRangeFromDescription(description ?? '');
+  if (!jaspVersionRange) {
+    jaspVersionRange = '>=0.95.0';
+    console.warn(
+      `Malformed description for ${nameWithOwner}. Falling back to default JASP version range: ${jaspVersionRange}`,
+    );
+  }
+  const newRelease: Release = {
+    ...restRelease,
+    jaspVersionRange,
+    assets: releaseAssets.nodes
+      .filter((asset) => asset.downloadUrl.endsWith('.JASPModule'))
+      .map((a) => {
+        const asset: ReleaseAsset = {
+          ...a,
+          architecture: archFromDownloadUrl(a.downloadUrl),
+        };
+        return asset;
+      }),
+  };
+  return newRelease;
+}
+
+async function releaseAssets(
+  repos: Iterable<string>,
+  firstReleases = 20,
   firstAssets = 20,
 ): Promise<RepoReleaseAssets> {
   const queries = Array.from(repos)
@@ -171,10 +280,13 @@ async function releaseAssets(
               login
             }
           }
-          latestRelease {
+          releases(first: ${firstReleases}) {
+            nodes {
               tagName
               publishedAt
               description
+              isDraft
+              isPrerelease
               releaseAssets(first: ${firstAssets}) {
                 nodes {
                   downloadUrl
@@ -182,6 +294,7 @@ async function releaseAssets(
                   downloadCount
                 }
               }
+            }
           }
         }
       `;
@@ -190,66 +303,31 @@ async function releaseAssets(
 
   const fullQuery = `query {\n${queries}\n}`;
 
-  interface GqlResult {
-    [key: string]: {
-      name: string;
-      nameWithOwner: string;
-      shortDescriptionHTML: string;
-      parent?: {
-        owner: {
-          login: string;
-        };
-      };
-      latestRelease?: {
-        tagName: string;
-        publishedAt: string;
-        description?: string;
-        releaseAssets: {
-          nodes: {
-            downloadUrl: string;
-            downloadCount: number;
-          }[];
-        };
-      };
-    };
-  }
-
-  const result = await octokit.graphql<GqlResult>(fullQuery);
+  const result = await octokit.graphql<GqlAssetsResult>(fullQuery);
 
   // Replace repo{i] with the actual nameWithOwner}
   const repositories = Object.fromEntries(
     Object.values(result).map((repo) => {
-      const { nameWithOwner, parent, latestRelease, ...newRepo } = repo;
-      if (parent?.owner) {
-        (newRepo as Repository).organization = parent.owner.login;
-      }
-      if (latestRelease) {
-        const { releaseAssets, description, ...restRelease } = latestRelease;
-        let jaspVersionRange = jaspVersionRangeFromDescription(
-          description ?? '',
-        );
-        if (!jaspVersionRange) {
-          jaspVersionRange = '>=0.95.0';
-          console.warn(
-            `Malformed description for ${nameWithOwner}. Falling back to default JASP version range: ${jaspVersionRange}`,
-          );
-        }
-        const newRelease: Release = {
-          ...restRelease,
-          jaspVersionRange,
-          assets: releaseAssets.nodes
-            .filter((asset) => asset.downloadUrl.endsWith('.JASPModule'))
-            .map((a) => {
-              const asset: ReleaseAsset = {
-                ...a,
-                architecture: archFromDownloadUrl(a.downloadUrl),
-              };
-              return asset;
-            }),
-        };
-        (newRepo as Repository).latestRelease = newRelease;
-      }
-      return [nameWithOwner, newRepo as Repository];
+      const { nameWithOwner, parent, releases, ...restRepo } = repo;
+      const productionReleases = releases.nodes.filter(
+        (r) => !r.isDraft && !r.isPrerelease,
+      );
+      const preReleases = releases.nodes.filter(
+        (r) => !r.isDraft && r.isPrerelease,
+      );
+      const newRepo: Repository = {
+        ...restRepo,
+        organization: repo.parent?.owner.login ?? 'unknown_org',
+        latest: latestReleasePerJaspVersionRange(productionReleases).map(
+          (r) => {
+            return transformRelease(r, nameWithOwner);
+          },
+        ),
+        preRelease: latestReleasePerJaspVersionRange(preReleases).map((r) => {
+          return transformRelease(r, nameWithOwner);
+        }),
+      };
+      return [nameWithOwner, newRepo];
     }),
   );
 
@@ -279,7 +357,7 @@ async function scrape(
   const repoWithOwners = uniqueReposFromSubmodules(submodules);
   console.info('Found', submodules.length, 'submodules');
   console.info('Fetching release assets');
-  const assets = await releaseAssets(repoWithOwners);
+  const assets = await releaseAssetsPaged(repoWithOwners);
   console.info(
     'Found',
     Object.keys(assets).length,
