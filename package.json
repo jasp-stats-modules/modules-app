@@ -39,6 +39,7 @@
     "@types/react-dom": "^19.0.3",
     "@types/semver": "^7.7.0",
     "@vitejs/plugin-react": "^4.3.4",
+    "chalk": "^5.5.0",
     "dedent": "^1.6.0",
     "gray-matter": "^4.0.3",
     "jsdom": "^26.0.0",

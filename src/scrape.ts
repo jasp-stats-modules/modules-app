@@ -4,6 +4,7 @@ import {
   type PageInfoForward,
   paginateGraphQL,
 } from '@octokit/plugin-paginate-graphql';
+import chalk from 'chalk';
 import dedent from 'dedent';
 import matter from 'gray-matter';
 import type {
@@ -277,8 +278,6 @@ export function latestReleasePerJaspVersionRange(
       console.log('Release description is missing');
       continue;
     }
-    // TODO do not call jaspVersionRangeFromDescription twice
-    // here and in transformRelease()
     const jaspVersionRange = jaspVersionRangeFromDescription(
       release.description,
     );
@@ -411,6 +410,46 @@ function compactChannels(
   return compacted;
 }
 
+function logReleaseStatistics(assets: RepoReleaseAssets) {
+  let totalReleases = 0;
+  let totalPreReleases = 0;
+  let totalAssets = 0;
+  let countedReleases = 0;
+  Object.values(assets).forEach((repo) => {
+    if (repo.releases) {
+      totalReleases += repo.releases.length;
+      repo.releases.forEach((release) => {
+        if (release.assets) {
+          totalAssets += release.assets.length;
+          countedReleases++;
+        }
+      });
+    }
+    if (repo.preReleases) {
+      totalPreReleases += repo.preReleases.length;
+    }
+  });
+  const avgAssetsPerRelease =
+    countedReleases > 0 ? totalAssets / countedReleases : 0;
+  console.info('Repositories:', Object.keys(assets).length);
+  console.info('Total releases:', totalReleases);
+  console.info('Total pre-releases:', totalPreReleases);
+  // If avgAssetsPerRelease is not an int, then there is a release with not all architectures
+  console.info(
+    'Average number of assets per release:',
+    avgAssetsPerRelease % 1 === 0
+      ? avgAssetsPerRelease
+      : chalk.red(avgAssetsPerRelease.toFixed(2)),
+  );
+}
+
+function logChannelStats(channels: Record<string, string[]>) {
+  console.info('Found', Object.keys(channels).length, 'channels');
+  for (const [channel, repos] of Object.entries(channels)) {
+    console.info(' - ', channel, ':', repos.length);
+  }
+}
+
 async function scrape(
   owner: string = 'jasp-stats-modules',
   repo: string = 'modules-registry',
@@ -419,18 +458,16 @@ async function scrape(
   console.info('Fetching submodules from', `${owner}/${repo}`);
   const submodules = await downloadSubmodules(owner, repo);
   const repoWithOwners = uniqueReposFromSubmodules(submodules);
-  console.info('Found', submodules.length, 'submodules');
+  const channels = compactChannels(submodules);
+  logChannelStats(channels);
   console.info('Fetching release assets');
   const assets = await releaseAssetsPaged(repoWithOwners);
-  console.info(
-    'Found',
-    Object.keys(assets).length,
-    'repositories with release assets',
-  );
 
-  const channels = compactChannels(submodules);
+  logReleaseStatistics(assets);
+
   const body = JSON.stringify({ channels, assets }, null, 2);
   await fs.writeFile(output, body);
+  console.log('Wrote', output);
 }
 
 // Allow running as a script
