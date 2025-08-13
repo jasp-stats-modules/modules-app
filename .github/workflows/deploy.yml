@@ -9,8 +9,8 @@ on:
 
 # Only have one deployment in progress at a time
 concurrency:
-  group: "pages"
-  cancel-in-progress: false
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   build:
