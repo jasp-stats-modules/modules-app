@@ -115,6 +115,28 @@
               "architecture": "Windows_x86-64"
             }
           ]
+        },
+        {
+          "tagName": "2cbd8a3e_R-4-4-1",
+          "publishedAt": "2025-05-07T21:56:13Z",
+          "jaspVersionRange": ">=0.94.0",
+          "assets": [
+            {
+              "downloadUrl": "https://github.com/jasp-stats-modules/jaspAnova/releases/download/2cbd8a3e_R-4-4-1/jaspAnova_0.95.0_MacOS_x86_64_R-4-5-1.JASPModule",
+              "downloadCount": 0,
+              "architecture": "x86_64"
+            },
+            {
+              "downloadUrl": "https://github.com/jasp-stats-modules/jaspAnova/releases/download/2cbd8a3e_R-4-4-1/jaspAnova_0.95.0_MacOS_arm64_R-4-5-1.JASPModule",
+              "downloadCount": 0,
+              "architecture": "MacOS_arm64"
+            },
+            {
+              "downloadUrl": "https://github.com/jasp-stats-modules/jaspAnova/releases/download/2cbd8a3e_R-4-4-1/jaspAnova_0.95.0_Windows_x86-64_R-4-5-1.JASPModule",
+              "downloadCount": 0,
+              "architecture": "Windows_x86-64"
+            }
+          ]
         }
       ],
       "preReleases": []
