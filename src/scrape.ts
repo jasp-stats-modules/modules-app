@@ -173,6 +173,32 @@ async function releaseAssetsPaged(
     const batchResults = await releaseAssets(batch, firstAssets);
     Object.assign(results, batchResults);
   }
+
+  // TODO remove once a pre release is on GitHub
+  // For now we insert a dummy pre-release
+  results['jasp-stats-modules/jaspTTests'].preReleases.push({
+    "tagName": "f5516934_R-4-5-1-beta1",
+          "publishedAt": "2025-08-09T00:58:58Z",
+          "jaspVersionRange": ">=0.95.1",
+          "assets": [
+            {
+              "downloadUrl": "https://github.com/jasp-stats-modules/jaspTTests/releases/download/f5516934_R-4-5-1-beta1/jaspTTests_0.95.0_Windows_x86-64_R-4-5-1-beta1.JASPModule",
+              "downloadCount": 0,
+              "architecture": "Windows_x86-64"
+            },
+            {
+              "downloadUrl": "https://github.com/jasp-stats-modules/jaspTTests/releases/download/f5516934_R-4-5-1-beta1/jaspTTests_0.95.0_MacOS_x86_64_R-4-5-1-beta1.JASPModule",
+              "downloadCount": 0,
+              "architecture": "x86_64"
+            },
+            {
+              "downloadUrl": "https://github.com/jasp-stats-modules/jaspTTests/releases/download/f5516934_R-4-5-1-beta1/jaspTTests_0.95.0_MacOS_arm64_R-4-5-1-beta1.JASPModule",
+              "downloadCount": 0,
+              "architecture": "MacOS_arm64"
+            }
+          ]
+  })
+
   return results;
 }
 
@@ -238,7 +264,7 @@ export function latestReleasePerJaspVersionRange(
 }
 
 function transformRelease(release: GqlRelease, nameWithOwner: string): Release {
-  const { releaseAssets, description, isDraft: _, ...restRelease } = release;
+  const { releaseAssets, description, isDraft: _, isPrerelease: __, ...restRelease } = release;
   let jaspVersionRange = jaspVersionRangeFromDescription(description ?? '');
   if (!jaspVersionRange) {
     jaspVersionRange = '>=0.95.0';
@@ -290,7 +316,6 @@ async function releaseAssets(
               releaseAssets(first: ${firstAssets}) {
                 nodes {
                   downloadUrl
-                  name
                   downloadCount
                 }
               }
@@ -305,7 +330,6 @@ async function releaseAssets(
 
   const result = await octokit.graphql<GqlAssetsResult>(fullQuery);
 
-  // Replace repo{i] with the actual nameWithOwner}
   const repositories = Object.fromEntries(
     Object.values(result).map((repo) => {
       const { nameWithOwner, parent: _, releases, ...restRepo } = repo;
