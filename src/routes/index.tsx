@@ -9,7 +9,7 @@ const channels2repos = channels as unknown as Record<string, string[]>;
 const releaseAssets = assets as unknown as RepoReleaseAssets;
 
 const defaultArchitecture = 'Windows_x86-64';
-const defaultInstalledVersion = '0.95.0';
+const defaultInstalledVersion = '0.95.1';
 // const defaultInstalledModules = () => ({})
 // TODO remove example once JASP has app integrated
 const defaultInstalledModules = () => ({
@@ -203,6 +203,12 @@ function App() {
               repo={repo}
             />
           ))}
+          {filteredRepos.length === 0 && (
+            <div className="text-gray-500">
+              No modules found. Please clear search, change channel or upgrade
+              JASP.
+            </div>
+          )}
         </div>
       </div>
     </main>
