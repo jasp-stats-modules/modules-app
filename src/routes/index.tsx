@@ -53,7 +53,7 @@ function InstallButton({ asset }: { asset?: ReleaseAsset }) {
   return (
     <a
       href={asset.downloadUrl}
-      className="inline-flex items-center px-3 py-1.5 bg-green-600 hover:bg-green-700 text-white text-xs font-medium rounded transition-colors duration-200"
+      className="inline-flex items-center rounded bg-green-600 px-3 py-1.5 font-medium text-white text-xs transition-colors duration-200 hover:bg-green-700"
     >
       Install
     </a>
@@ -67,7 +67,7 @@ function UpdateButton({ asset }: { asset?: ReleaseAsset }) {
   return (
     <a
       href={asset.downloadUrl}
-      className="inline-flex items-center px-3 py-1.5 bg-blue-600 hover:bg-blue-700 text-white text-xs font-medium rounded transition-colors duration-200"
+      className="inline-flex items-center rounded bg-blue-600 px-3 py-1.5 font-medium text-white text-xs transition-colors duration-200 hover:bg-blue-700"
     >
       Update
     </a>
@@ -116,20 +116,20 @@ function RepositoryCard({
   // For now assume installed version can be updated
   const canUpdate = installedVersion && !latestVersionInstalled;
   return (
-    <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-3 hover:shadow-md transition-shadow duration-200">
-      <div className="flex justify-between items-start gap-2 mb-2">
-        <h3 className="text-lg font-semibold text-gray-900">{repo.name}</h3>
+    <div className="rounded-lg border border-gray-200 bg-white p-3 shadow-sm transition-shadow duration-200 hover:shadow-md">
+      <div className="mb-2 flex items-start justify-between gap-2">
+        <h3 className="font-semibold text-gray-900 text-lg">{repo.name}</h3>
         <div className="flex-shrink-0">
           <div className="flex flex-col">
             {canUpdate && <UpdateButton asset={archAsset} />}
             {canInstall && !canUpdate && <InstallButton asset={archAsset} />}
             {allowPreRelease && latestPreRelease && (
-              <span className="text-xs text-gray-500">Pre release</span>
+              <span className="text-gray-500 text-xs">Pre release</span>
             )}
             {latestVersionInstalled && (
               <span
                 title="Latest version is installed"
-                className="text-xs text-gray-500"
+                className="text-gray-500 text-xs"
               >
                 Installed
               </span>
@@ -139,13 +139,13 @@ function RepositoryCard({
       </div>
       <div className="flex flex-col gap-2">
         {repo.shortDescriptionHTML && (
-          <div className="text-gray-600 text-sm mb-2 prose prose-sm">
+          <div className="prose prose-sm mb-2 text-gray-600 text-sm">
             {repo.shortDescriptionHTML}
           </div>
         )}
         {latestAnyRelease && (
-          <div className="flex flex-row gap-1 text-xs text-gray-500">
-            <span className="inline-flex items-center w-fit">
+          <div className="flex flex-row gap-1 text-gray-500 text-xs">
+            <span className="inline-flex w-fit items-center">
               {installedVersion
                 ? ` installed: ${installedVersion}, latest`
                 : 'latest '}{' '}
@@ -210,16 +210,16 @@ function App() {
   return (
     <main className="min-h-screen bg-gray-50 py-4">
       <div className="w-full px-2">
-        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-3 mb-4">
+        <div className="mb-4 rounded-lg border border-gray-200 bg-white p-3 shadow-sm">
           <form className="flex flex-col gap-3">
             <div>
-              <label className="block text-xs font-medium text-gray-700 mb-1">
+              <label className="mb-1 block font-medium text-gray-700 text-xs">
                 Select a channel:
                 <select
                   name="channel"
                   value={channel}
                   onChange={(e) => setChannel(e.target.value)}
-                  className="w-full px-2 py-1.5 text-sm border border-gray-300 rounded focus:ring-1 focus:ring-blue-500 focus:border-blue-500 bg-white"
+                  className="w-full rounded border border-gray-300 bg-white px-2 py-1.5 text-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
                 >
                   {channels.map((channel) => (
                     <option key={channel} value={channel}>
@@ -230,25 +230,25 @@ function App() {
               </label>
             </div>
             <div>
-              <label className="text-xs font-medium text-gray-700 mb-1 flex items-center">
+              <label className="mb-1 flex items-center font-medium text-gray-700 text-xs">
                 Allow pre-releases
                 <input
                   type="checkbox"
                   name="allowPreReleases"
-                  className="ml-2 h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500 focus:ring-2"
+                  className="ml-2 h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-2 focus:ring-blue-500"
                   checked={allowPreRelease}
                   onChange={(e) => setAllowPreRelease(e.target.checked)}
                 />
               </label>
             </div>
             <div>
-              <label className="block text-xs font-medium text-gray-700 mb-1">
+              <label className="mb-1 block font-medium text-gray-700 text-xs">
                 Search for a module:
                 <input
                   type="search"
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
-                  className="w-full px-2 py-1.5 text-sm border border-gray-300 rounded focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
+                  className="w-full rounded border border-gray-300 px-2 py-1.5 text-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
                 />
               </label>
             </div>
