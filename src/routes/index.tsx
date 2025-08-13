@@ -89,7 +89,7 @@ function RepositoryCard({ repo }: { repo: Repository }) {
     v: installedJaspVersion,
   } = Route.useSearch();
   const latestRelease = findReleaseThatSatisfiesInstalledJaspVersion(
-    repo.latest,
+    repo.releases,
     installedJaspVersion,
   );
   const archAsset = latestRelease?.assets.find((a) => a.architecture === arch);
@@ -151,7 +151,7 @@ function App() {
     .map(([_, repo]) => repo);
   const installableRepos = reposOfChannel.filter((repo) => {
     const latestRelease = findReleaseThatSatisfiesInstalledJaspVersion(
-      repo.latest,
+      repo.releases,
       installedJaspVersion,
     );
     if (!latestRelease) {

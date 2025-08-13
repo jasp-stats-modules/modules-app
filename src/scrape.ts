@@ -238,7 +238,7 @@ export function latestReleasePerJaspVersionRange(
 }
 
 function transformRelease(release: GqlRelease, nameWithOwner: string): Release {
-  const { releaseAssets, description, isDraft, ...restRelease } = release;
+  const { releaseAssets, description, isDraft: _, ...restRelease } = release;
   let jaspVersionRange = jaspVersionRangeFromDescription(description ?? '');
   if (!jaspVersionRange) {
     jaspVersionRange = '>=0.95.0';
@@ -308,7 +308,7 @@ async function releaseAssets(
   // Replace repo{i] with the actual nameWithOwner}
   const repositories = Object.fromEntries(
     Object.values(result).map((repo) => {
-      const { nameWithOwner, parent, releases, ...restRepo } = repo;
+      const { nameWithOwner, parent: _, releases, ...restRepo } = repo;
       const productionReleases = releases.nodes.filter(
         (r) => !r.isDraft && !r.isPrerelease,
       );
@@ -318,12 +318,12 @@ async function releaseAssets(
       const newRepo: Repository = {
         ...restRepo,
         organization: repo.parent?.owner.login ?? 'unknown_org',
-        latest: latestReleasePerJaspVersionRange(productionReleases).map(
+        releases: latestReleasePerJaspVersionRange(productionReleases).map(
           (r) => {
             return transformRelease(r, nameWithOwner);
           },
         ),
-        preRelease: latestReleasePerJaspVersionRange(preReleases).map((r) => {
+        preReleases: latestReleasePerJaspVersionRange(preReleases).map((r) => {
           return transformRelease(r, nameWithOwner);
         }),
       };
