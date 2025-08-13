@@ -21,6 +21,7 @@ const defaultInstalledModules = () => ({
   jaspEquivalenceTTests: '7aad95f4_R-4-5-1',
   jaspTTests: 'a8098ba98_R-4-4-0',
 });
+const defaultChannel = 'core-modules';
 
 const SearchSchema = v.object({
   // Architecture of installed JASP
@@ -82,7 +83,13 @@ function findReleaseThatSatisfiesInstalledJaspVersion(
   );
 }
 
-function RepositoryCard({ repo }: { repo: Repository }) {
+function RepositoryCard({
+  repo,
+  allowPreRelease,
+}: {
+  repo: Repository;
+  allowPreRelease?: boolean;
+}) {
   const {
     i: installedModules,
     a: arch,
@@ -92,9 +99,17 @@ function RepositoryCard({ repo }: { repo: Repository }) {
     repo.releases,
     installedJaspVersion,
   );
-  const archAsset = latestRelease?.assets.find((a) => a.architecture === arch);
+  const latestPreRelease = findReleaseThatSatisfiesInstalledJaspVersion(
+    repo.preReleases,
+    installedJaspVersion,
+  );
+  const latestAnyRelease =
+    allowPreRelease && latestPreRelease ? latestPreRelease : latestRelease;
+  const archAsset = latestAnyRelease?.assets.find(
+    (a) => a.architecture === arch,
+  );
   const installedVersion = installedModules[repo.name];
-  const latestVersionInstalled = installedVersion === latestRelease?.tagName;
+  const latestVersionInstalled = installedVersion === latestAnyRelease?.tagName;
   const canInstall = !installedVersion || !latestVersionInstalled;
   // tagName (d5d503cf_R-4-5-1) is not a semantic version, so we cannot
   // tell if it can be updated or downgraded
@@ -105,16 +120,21 @@ function RepositoryCard({ repo }: { repo: Repository }) {
       <div className="flex justify-between items-start gap-2 mb-2">
         <h3 className="text-lg font-semibold text-gray-900">{repo.name}</h3>
         <div className="flex-shrink-0">
-          {canUpdate && <UpdateButton asset={archAsset} />}
-          {canInstall && !canUpdate && <InstallButton asset={archAsset} />}
-          {latestVersionInstalled && (
-            <span
-              title="Latest version is installed"
-              className="text-xs text-gray-500"
-            >
-              Installed
-            </span>
-          )}
+          <div className="flex flex-col">
+            {canUpdate && <UpdateButton asset={archAsset} />}
+            {canInstall && !canUpdate && <InstallButton asset={archAsset} />}
+            {allowPreRelease && latestPreRelease && (
+              <span className="text-xs text-gray-500">Pre release</span>
+            )}
+            {latestVersionInstalled && (
+              <span
+                title="Latest version is installed"
+                className="text-xs text-gray-500"
+              >
+                Installed
+              </span>
+            )}
+          </div>
         </div>
       </div>
       <div className="flex flex-col gap-2">
@@ -123,14 +143,14 @@ function RepositoryCard({ repo }: { repo: Repository }) {
             {repo.shortDescriptionHTML}
           </div>
         )}
-        {latestRelease && (
+        {latestAnyRelease && (
           <div className="flex flex-row gap-1 text-xs text-gray-500">
             <span className="inline-flex items-center w-fit">
               {installedVersion
                 ? ` installed: ${installedVersion}, latest`
                 : 'latest '}{' '}
-              {latestRelease.tagName.replace('v', '')} on{' '}
-              {new Date(latestRelease.publishedAt).toLocaleDateString()}
+              {latestAnyRelease.tagName.replace('v', '')} on{' '}
+              {new Date(latestAnyRelease.publishedAt).toLocaleDateString()}
             </span>
             <span>by {repo.organization}</span>
             <span>with {archAsset?.downloadCount} downloads</span>
@@ -143,8 +163,9 @@ function RepositoryCard({ repo }: { repo: Repository }) {
 
 function App() {
   const { a: architecture, v: installedJaspVersion } = Route.useSearch();
-  const [channel, setChannel] = useState<string>('beta-modules');
+  const [channel, setChannel] = useState<string>(defaultChannel);
   const [searchTerm, setSearchTerm] = useState<string>('');
+  const [allowPreRelease, setAllowPreRelease] = useState<boolean>(false);
   const channels = Object.keys(channels2repos);
   const reposOfChannel = Object.entries(releaseAssets)
     .filter(([repo, _]) => channels2repos[channel].includes(repo))
@@ -208,7 +229,18 @@ function App() {
                 </select>
               </label>
             </div>
-            {/* TODO add checkbox to switch from production latest releases to pre-releases */}
+            <div>
+              <label className="text-xs font-medium text-gray-700 mb-1 flex items-center">
+                Allow pre-releases
+                <input
+                  type="checkbox"
+                  name="allowPreReleases"
+                  className="ml-2 h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500 focus:ring-2"
+                  checked={allowPreRelease}
+                  onChange={(e) => setAllowPreRelease(e.target.checked)}
+                />
+              </label>
+            </div>
             <div>
               <label className="block text-xs font-medium text-gray-700 mb-1">
                 Search for a module:
@@ -228,6 +260,7 @@ function App() {
             <RepositoryCard
               key={`${repo.organization}/${repo.name}`}
               repo={repo}
+              allowPreRelease={allowPreRelease}
             />
           ))}
           {filteredRepos.length === 0 && (
