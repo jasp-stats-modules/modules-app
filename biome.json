@@ -30,7 +30,8 @@
     "rules": {
       "recommended": true,
       "nursery": {
-        "useSortedClasses": "error"
+        "useSortedClasses": "error",
+        "noReactPropAssign": "error"
       }
     }
   },
