@@ -23,8 +23,15 @@
   },
   "linter": {
     "enabled": true,
+    "domains": {
+      "react": "recommended",
+      "project": "recommended"
+    },
     "rules": {
-      "recommended": true
+      "recommended": true,
+      "nursery": {
+        "useSortedClasses": "error"
+      }
     }
   },
   "javascript": {
