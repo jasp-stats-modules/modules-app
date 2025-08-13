@@ -69,6 +69,8 @@ pnpm scrape
 pnpm start  
 ```
 
+Application will be running at http://localhost:3000 (unless stated otherwise).
+
 # Building For Production
 
 To build run:
