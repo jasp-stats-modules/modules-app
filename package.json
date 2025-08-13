@@ -9,10 +9,11 @@
   "scripts": {
     "dev": "vite --port 3000",
     "start": "vite --port 3000",
-    "build": "vite build && tsc",
+    "build": "vite build",
     "serve": "vite preview",
     "test": "vitest run",
     "scrape": "node src/scrape.ts",
+    "typecheck": "tsc",
     "check": "biome check --write --unsafe"
   },
   "dependencies": {
@@ -39,6 +40,7 @@
     "@types/semver": "^7.7.0",
     "@vitejs/plugin-react": "^4.3.4",
     "babel-plugin-react-compiler": "19.1.0-rc.2",
+    "chalk": "^5.5.0",
     "dedent": "^1.6.0",
     "gray-matter": "^4.0.3",
     "jsdom": "^26.0.0",

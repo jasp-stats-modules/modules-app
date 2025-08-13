@@ -25,7 +25,9 @@ export interface Release {
 export interface Repository {
   name: string;
   shortDescriptionHTML: string;
-  latestRelease?: Release;
+  // each jaspVersionRange can have own latest release
+  releases: Release[];
+  preReleases: Release[];
   organization: string;
 }
 

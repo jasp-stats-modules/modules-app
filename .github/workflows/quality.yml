@@ -2,10 +2,19 @@ name: Code quality
 
 on:
   push:
+    branches:
+      - main
   pull_request:
+    branches:
+      - main
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
-  quality:
+  lint_and_format:
+    name: Lint and Format
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -16,3 +25,26 @@ jobs:
           version: latest
       - name: Run Biome
         run: biome ci .
+  typecheck:
+    name: Type Check
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10
+
+      - name: Use Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22.18.0'
+          cache: "pnpm"
+
+      - name: Install dependencies
+        run: pnpm install
+
+      - name: Run Type Check
+        run: pnpm typecheck
