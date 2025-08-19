@@ -153,8 +153,8 @@ function RepositoryCard({
                 : 'latest '}{' '}
               {latestAnyRelease.tagName.replace('v', '')} on{' '}
               {new Date(latestAnyRelease.publishedAt).toLocaleDateString()}
-            </span>
-            <span>by {repo.organization}</span>
+            </span>{' '}
+            <span>by {repo.organization}</span>{' '}
             <span>with {archAsset?.downloadCount} downloads</span>
           </div>
         )}
