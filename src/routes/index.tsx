@@ -39,6 +39,8 @@ const SearchSchema = v.object({
     v.fallback(v.record(v.string(), v.string()), defaultInstalledModules),
     defaultInstalledModules,
   ),
+  // Initial value for allow pre-release
+  p: v.optional(v.picklist([0, 1]), 0),
 });
 
 export const Route = createFileRoute('/')({
@@ -166,10 +168,16 @@ function RepositoryCard({
 }
 
 function App() {
-  const { a: architecture, v: installedJaspVersion } = Route.useSearch();
+  const {
+    a: architecture,
+    v: installedJaspVersion,
+    p: initialAllowPreRelease,
+  } = Route.useSearch();
   const [channel, setChannel] = useState<string>(defaultChannel);
   const [searchTerm, setSearchTerm] = useState<string>('');
-  const [allowPreRelease, setAllowPreRelease] = useState<boolean>(false);
+  const [allowPreRelease, setAllowPreRelease] = useState<boolean>(
+    initialAllowPreRelease === 1,
+  );
   const channels = Object.keys(channels2repos);
   const reposOfChannel = Object.entries(releaseAssets)
     .filter(([repo, _]) => channels2repos[channel].includes(repo))
