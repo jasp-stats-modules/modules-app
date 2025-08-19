@@ -45,20 +45,6 @@
     ]
   },
   "assets": {
-    "jasp-stats-modules/recapJaspModule": {
-      "name": "recapJaspModule",
-      "shortDescriptionHTML": "This repo has the required folder structure and some configuration files for a JASP module.",
-      "organization": "recap",
-      "releases": [],
-      "preReleases": []
-    },
-    "jasp-stats-modules/jaspKinematics": {
-      "name": "jaspKinematics",
-      "shortDescriptionHTML": "JASP implementation of the kinematics package",
-      "organization": "PabRod",
-      "releases": [],
-      "preReleases": []
-    },
     "jasp-stats-modules/jaspAcceptanceSampling": {
       "name": "jaspAcceptanceSampling",
       "shortDescriptionHTML": "",

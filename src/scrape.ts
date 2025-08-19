@@ -367,28 +367,38 @@ async function releaseAssets(
   const result = await octokit.graphql<GqlAssetsResult>(fullQuery);
 
   const repositories = Object.fromEntries(
-    Object.values(result).map((repo) => {
-      const { nameWithOwner, parent: _, releases, ...restRepo } = repo;
-      const productionReleases = releases.nodes.filter(
-        (r) => !r.isDraft && !r.isPrerelease,
-      );
-      const preReleases = releases.nodes.filter(
-        (r) => !r.isDraft && r.isPrerelease,
-      );
-      const newRepo: Repository = {
-        ...restRepo,
-        organization: repo.parent?.owner.login ?? 'unknown_org',
-        releases: latestReleasePerJaspVersionRange(productionReleases).map(
-          (r) => {
-            return transformRelease(r, nameWithOwner);
-          },
-        ),
-        preReleases: latestReleasePerJaspVersionRange(preReleases).map((r) => {
-          return transformRelease(r, nameWithOwner);
-        }),
-      };
-      return [nameWithOwner, newRepo];
-    }),
+    Object.values(result)
+      .filter((repo) => {
+        if (repo.releases.nodes.length === 0) {
+          console.log(`No releases found for ${repo.nameWithOwner}. Skipping.`);
+          return false;
+        }
+        return true;
+      })
+      .map((repo) => {
+        const { nameWithOwner, parent: _, releases, ...restRepo } = repo;
+        const productionReleases = releases.nodes.filter(
+          (r) => !r.isDraft && !r.isPrerelease,
+        );
+        const preReleases = releases.nodes.filter(
+          (r) => !r.isDraft && r.isPrerelease,
+        );
+        const newRepo: Repository = {
+          ...restRepo,
+          organization: repo.parent?.owner.login ?? 'unknown_org',
+          releases: latestReleasePerJaspVersionRange(productionReleases).map(
+            (r) => {
+              return transformRelease(r, nameWithOwner);
+            },
+          ),
+          preReleases: latestReleasePerJaspVersionRange(preReleases).map(
+            (r) => {
+              return transformRelease(r, nameWithOwner);
+            },
+          ),
+        };
+        return [nameWithOwner, newRepo];
+      }),
   );
 
   return repositories;
