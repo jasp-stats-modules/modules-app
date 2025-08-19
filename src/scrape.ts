@@ -97,31 +97,28 @@ function uniqueReposFromSubmodules(
   return repos;
 }
 
-export function archFromDownloadUrl(url: string): string {
-  // From https://github.com/jasp-stats-modules/jaspRegression/releases/download/5649cad6_R-4-5-1/jaspRegression_0.95.0_Windows_x86-64_R-4-5-1.JASPModule
-  // extracts 'Windows_x86-64'
-  // Or https://github.com/jasp-stats-modules/jaspAcceptanceSampling/releases/download/014ad5af_R-4-5-1/jaspAcceptanceSampling_0.95.0_Windows_x86-64_R-4-5-1.JASPModule
-  // extracts 'Windows _x86-64'
-  // The architecture is the part between the last underscore in the filename and the next underscore (or _R-) before the .JASPModule extension
+export function extractArchitectureFromUrl(url: string): string {
   const filename = url.split('/').pop();
   if (!filename) throw new Error(`URL ${url} does not contain a filename`);
-  // Match the architecture part: ..._<arch>_R-...JASPModule
-  const archMatch = filename.match(
-    /_([A-Za-z0-9-]+_[A-Za-z0-9-]+)_R-[^_]+\.JASPModule$/,
-  );
-  if (archMatch) {
-    return archMatch[1];
+  if (filename.includes('Windows_x86-64')) {
+    return 'Windows_x86-64';
   }
-  // Fallback: try to match ..._<arch>_...JASPModule (less strict)
-  const fallback = filename.match(
-    /_([A-Za-z0-9-]+_[A-Za-z0-9-]+)_.*\.JASPModule$/,
-  );
-  if (fallback) {
-    return fallback[1];
+  if (filename.includes('MacOS_arm64')) {
+    return 'MacOS_arm64';
   }
-  throw new Error(
-    `URL ${url} does not match expected pattern for extracting architecture`,
-  );
+  if (filename.includes('MacOS_x86_64') || filename.includes('MacOS_x86-64')) {
+    return 'MacOS_x86_64';
+  }
+  if (filename.includes('Windows_arm64')) {
+    return 'Windows_arm64';
+  }
+  if (filename.includes('Linux_x86_64') || filename.includes('Linux_x86-64')) {
+    return 'Linux_x86_64';
+  }
+  if (filename.includes('Linux_arm64')) {
+    return 'Linux_arm64';
+  }
+  throw new Error(`Unknown architecture in filename: ${filename}`);
 }
 
 /**
@@ -193,7 +190,7 @@ async function releaseAssetsPaged(
         downloadUrl:
           'https://github.com/jasp-stats-modules/jaspTTests/releases/download/f5516934_R-4-5-1-beta1/jaspTTests_0.95.0_MacOS_x86_64_R-4-5-1-beta1.JASPModule',
         downloadCount: 0,
-        architecture: 'x86_64',
+        architecture: 'MacOS_x86_64',
       },
       {
         downloadUrl:
@@ -217,7 +214,7 @@ async function releaseAssetsPaged(
         downloadUrl:
           'https://github.com/jasp-stats-modules/jaspAnova/releases/download/2cbd8a3e_R-4-4-1/jaspAnova_0.95.0_MacOS_x86_64_R-4-5-1.JASPModule',
         downloadCount: 0,
-        architecture: 'x86_64',
+        architecture: 'MacOS_x86_64',
       },
       {
         downloadUrl:
@@ -319,7 +316,7 @@ function transformRelease(release: GqlRelease, nameWithOwner: string): Release {
       .map((a) => {
         const asset: ReleaseAsset = {
           ...a,
-          architecture: archFromDownloadUrl(a.downloadUrl),
+          architecture: extractArchitectureFromUrl(a.downloadUrl),
         };
         return asset;
       }),
