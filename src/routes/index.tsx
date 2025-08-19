@@ -240,8 +240,8 @@ function App() {
                     className="ml-2 h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-2 focus:ring-blue-500"
                     checked={allowPreRelease}
                     onChange={(e) => setAllowPreRelease(e.target.checked)}
-                    />
-                    <span className="ml-2">Show pre-releases</span>
+                  />
+                  <span className="ml-2">Show pre-releases</span>
                 </label>
               </div>
             </div>
