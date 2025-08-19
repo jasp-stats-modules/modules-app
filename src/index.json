@@ -486,7 +486,8 @@
       "name": "jaspFrequencies",
       "shortDescriptionHTML": "The Frequencies Module",
       "organization": "jasp-stats",
-      "releases": [
+      "releases": [],
+      "preReleases": [
         {
           "tagName": "3afc6d37_R-4-5-1",
           "publishedAt": "2025-08-07T22:59:15Z",
@@ -509,8 +510,7 @@
             }
           ]
         }
-      ],
-      "preReleases": []
+      ]
     },
     "jasp-stats-modules/jaspJags": {
       "name": "jaspJags",

@@ -109,7 +109,9 @@ function RepositoryCard({
     (a) => a.architecture === arch,
   );
   const installedVersion = installedModules[repo.name];
-  const latestVersionInstalled = installedVersion === latestAnyRelease?.tagName;
+  const latestVersionInstalled =
+    installedVersion !== undefined &&
+    installedVersion === latestAnyRelease?.tagName;
   const canInstall = !installedVersion || !latestVersionInstalled;
   // tagName (d5d503cf_R-4-5-1) is not a semantic version, so we cannot
   // tell if it can be updated or downgraded
@@ -173,13 +175,19 @@ function App() {
     .filter(([repo, _]) => channels2repos[channel].includes(repo))
     .map(([_, repo]) => repo);
   const installableRepos = reposOfChannel.filter((repo) => {
-    const latestRelease = findReleaseThatSatisfiesInstalledJaspVersion(
+    let latestRelease = findReleaseThatSatisfiesInstalledJaspVersion(
       repo.releases,
       installedJaspVersion,
     );
     if (!latestRelease) {
-      // No compatible release found
-      return false;
+      // No compatible release found, trying pre-release
+      latestRelease = findReleaseThatSatisfiesInstalledJaspVersion(
+        repo.preReleases,
+        installedJaspVersion,
+      );
+      if (!allowPreRelease || !latestRelease) {
+        return false;
+      }
     }
     const hasArch = latestRelease.assets.some(
       (a) => a.architecture === architecture,

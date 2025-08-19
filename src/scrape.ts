@@ -172,35 +172,6 @@ async function releaseAssetsPaged(
     Object.assign(results, batchResults);
   }
 
-  // TODO remove once a pre release is on GitHub
-  console.log('Inserting dummy pre-release for jaspTTests');
-  // For now we insert a dummy pre-release
-  results['jasp-stats-modules/jaspTTests'].preReleases.push({
-    tagName: 'f5516934_R-4-5-1-beta1',
-    publishedAt: '2025-08-09T00:58:58Z',
-    jaspVersionRange: '>=0.95.1',
-    assets: [
-      {
-        downloadUrl:
-          'https://github.com/jasp-stats-modules/jaspTTests/releases/download/f5516934_R-4-5-1-beta1/jaspTTests_0.95.0_Windows_x86-64_R-4-5-1-beta1.JASPModule',
-        downloadCount: 0,
-        architecture: 'Windows_x86-64',
-      },
-      {
-        downloadUrl:
-          'https://github.com/jasp-stats-modules/jaspTTests/releases/download/f5516934_R-4-5-1-beta1/jaspTTests_0.95.0_MacOS_x86_64_R-4-5-1-beta1.JASPModule',
-        downloadCount: 0,
-        architecture: 'MacOS_x86_64',
-      },
-      {
-        downloadUrl:
-          'https://github.com/jasp-stats-modules/jaspTTests/releases/download/f5516934_R-4-5-1-beta1/jaspTTests_0.95.0_MacOS_arm64_R-4-5-1-beta1.JASPModule',
-        downloadCount: 0,
-        architecture: 'MacOS_arm64',
-      },
-    ],
-  });
-
   // TODO remove once a release is on GitHub that does not work on installed JASP version
   console.log('Inserting dummy old release for jaspAnova');
   // For now we insert a dummy release,
