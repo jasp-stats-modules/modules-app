@@ -69,9 +69,11 @@ pnpm scrape
 pnpm start  
 ```
 
+Application will be running at http://localhost:3000 (unless stated otherwise).
+
 # Building For Production
 
-To build this application for production:
+To build run:
 
 ```bash
 pnpm scrape
@@ -80,10 +82,24 @@ pnpm build
 
 ## Testing
 
-This project uses [Vitest](https://vitest.dev/) for testing. You can run the tests with:
+We use [Vitest](https://vitest.dev/) for testing. You can run the tests with:
 
 ```bash
 pnpm test
+```
+
+## Linting and Formatting
+
+Can be typechecked with:
+
+```bash
+pnpm typecheck
+```
+
+Can be formatted and linted with:
+
+```bash
+pnpm check
 ```
 
 ## Contributing

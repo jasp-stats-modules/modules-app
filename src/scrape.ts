@@ -4,6 +4,7 @@ import {
   type PageInfoForward,
   paginateGraphQL,
 } from '@octokit/plugin-paginate-graphql';
+import chalk from 'chalk';
 import dedent from 'dedent';
 import matter from 'gray-matter';
 import type {
@@ -96,31 +97,28 @@ function uniqueReposFromSubmodules(
   return repos;
 }
 
-export function archFromDownloadUrl(url: string): string {
-  // From https://github.com/jasp-stats-modules/jaspRegression/releases/download/5649cad6_R-4-5-1/jaspRegression_0.95.0_Windows_x86-64_R-4-5-1.JASPModule
-  // extracts 'Windows_x86-64'
-  // Or https://github.com/jasp-stats-modules/jaspAcceptanceSampling/releases/download/014ad5af_R-4-5-1/jaspAcceptanceSampling_0.95.0_Windows_x86-64_R-4-5-1.JASPModule
-  // extracts 'Windows _x86-64'
-  // The architecture is the part between the last underscore in the filename and the next underscore (or _R-) before the .JASPModule extension
+export function extractArchitectureFromUrl(url: string): string {
   const filename = url.split('/').pop();
   if (!filename) throw new Error(`URL ${url} does not contain a filename`);
-  // Match the architecture part: ..._<arch>_R-...JASPModule
-  const archMatch = filename.match(
-    /_([A-Za-z0-9-]+_[A-Za-z0-9-]+)_R-[^_]+\.JASPModule$/,
-  );
-  if (archMatch) {
-    return archMatch[1];
+  if (filename.includes('Windows_x86-64')) {
+    return 'Windows_x86-64';
   }
-  // Fallback: try to match ..._<arch>_...JASPModule (less strict)
-  const fallback = filename.match(
-    /_([A-Za-z0-9-]+_[A-Za-z0-9-]+)_.*\.JASPModule$/,
-  );
-  if (fallback) {
-    return fallback[1];
+  if (filename.includes('MacOS_arm64')) {
+    return 'MacOS_arm64';
   }
-  throw new Error(
-    `URL ${url} does not match expected pattern for extracting architecture`,
-  );
+  if (filename.includes('MacOS_x86_64') || filename.includes('MacOS_x86-64')) {
+    return 'MacOS_x86_64';
+  }
+  if (filename.includes('Windows_arm64')) {
+    return 'Windows_arm64';
+  }
+  if (filename.includes('Linux_x86_64') || filename.includes('Linux_x86-64')) {
+    return 'Linux_x86_64';
+  }
+  if (filename.includes('Linux_arm64')) {
+    return 'Linux_arm64';
+  }
+  throw new Error(`Unknown architecture in filename: ${filename}`);
 }
 
 /**
@@ -154,8 +152,152 @@ function addQuotesInDescription(input: string): string {
   return input.replace(regex, (_, p1, p2) => `${p1}: "${p2}"`);
 }
 
-async function releaseAssets(
+function batchedArray<T>(array: T[], size: number): T[][] {
+  const batches: T[][] = [];
+  for (let i = 0; i < array.length; i += size) {
+    batches.push(array.slice(i, i + size));
+  }
+  return batches;
+}
+
+async function releaseAssetsPaged(
   repos: Set<string>,
+  firstAssets = 20,
+  pageSize = 100,
+): Promise<RepoReleaseAssets> {
+  const batches = batchedArray(Array.from(repos), pageSize);
+  const results: RepoReleaseAssets = {};
+  for (const batch of batches) {
+    const batchResults = await releaseAssets(batch, firstAssets);
+    Object.assign(results, batchResults);
+  }
+
+  // TODO remove once a release is on GitHub that does not work on installed JASP version
+  console.log('Inserting dummy old release for jaspAnova');
+  // For now we insert a dummy release,
+  // try out with ?v=0.95.0 should show release below and not one with R-4-5-1
+  results['jasp-stats-modules/jaspAnova'].releases.push({
+    tagName: '2cbd8a3e_R-4-4-1',
+    publishedAt: '2025-05-07T21:56:13Z',
+    jaspVersionRange: '>=0.94.0',
+    assets: [
+      {
+        downloadUrl:
+          'https://github.com/jasp-stats-modules/jaspAnova/releases/download/2cbd8a3e_R-4-4-1/jaspAnova_0.95.0_MacOS_x86_64_R-4-5-1.JASPModule',
+        downloadCount: 0,
+        architecture: 'MacOS_x86_64',
+      },
+      {
+        downloadUrl:
+          'https://github.com/jasp-stats-modules/jaspAnova/releases/download/2cbd8a3e_R-4-4-1/jaspAnova_0.95.0_MacOS_arm64_R-4-5-1.JASPModule',
+        downloadCount: 0,
+        architecture: 'MacOS_arm64',
+      },
+      {
+        downloadUrl:
+          'https://github.com/jasp-stats-modules/jaspAnova/releases/download/2cbd8a3e_R-4-4-1/jaspAnova_0.95.0_Windows_x86-64_R-4-5-1.JASPModule',
+        downloadCount: 0,
+        architecture: 'Windows_x86-64',
+      },
+    ],
+  });
+
+  return results;
+}
+
+export interface GqlRelease {
+  tagName: string;
+  publishedAt: string;
+  description?: string;
+  isDraft: boolean;
+  isPrerelease: boolean;
+  releaseAssets: {
+    nodes: {
+      downloadUrl: string;
+      downloadCount: number;
+    }[];
+  };
+}
+
+interface GqlAssetsResult {
+  [key: string]: {
+    name: string;
+    nameWithOwner: string;
+    shortDescriptionHTML: string;
+    parent?: {
+      owner: {
+        login: string;
+      };
+    };
+    releases: {
+      nodes: GqlRelease[];
+    };
+  };
+}
+
+export function latestReleasePerJaspVersionRange(
+  releases: GqlRelease[],
+): GqlRelease[] {
+  const latest: GqlRelease[] = [];
+  const seen: Set<string> = new Set();
+
+  for (const release of releases) {
+    if (!release.description) {
+      console.log('Release description is missing');
+      continue;
+    }
+    const jaspVersionRange = jaspVersionRangeFromDescription(
+      release.description,
+    );
+    if (!jaspVersionRange) {
+      console.log(
+        'Could not extract JASP version range from release description',
+      );
+      continue;
+    }
+    if (!seen.has(jaspVersionRange)) {
+      seen.add(jaspVersionRange);
+      latest.push(release);
+    }
+  }
+
+  return latest;
+}
+
+function transformRelease(release: GqlRelease, nameWithOwner: string): Release {
+  const {
+    releaseAssets,
+    description,
+    isDraft: _,
+    isPrerelease: __,
+    ...restRelease
+  } = release;
+  let jaspVersionRange = jaspVersionRangeFromDescription(description ?? '');
+  if (!jaspVersionRange) {
+    jaspVersionRange = '>=0.95.0';
+    console.warn(
+      `Malformed description for ${nameWithOwner}. Falling back to default JASP version range: ${jaspVersionRange}`,
+    );
+  }
+  const newRelease: Release = {
+    ...restRelease,
+    jaspVersionRange,
+    assets: releaseAssets.nodes
+      .filter((asset) => asset.downloadUrl.endsWith('.JASPModule'))
+      .map((a) => {
+        const asset: ReleaseAsset = {
+          ...a,
+          architecture: extractArchitectureFromUrl(a.downloadUrl),
+        };
+        return asset;
+      }),
+  };
+  return newRelease;
+}
+
+async function releaseAssets(
+  repos: Iterable<string>,
+  firstReleases = 20,
   firstAssets = 20,
 ): Promise<RepoReleaseAssets> {
   const queries = Array.from(repos)
@@ -171,17 +313,20 @@ async function releaseAssets(
               login
             }
           }
-          latestRelease {
+          releases(first: ${firstReleases}) {
+            nodes {
               tagName
               publishedAt
               description
+              isDraft
+              isPrerelease
               releaseAssets(first: ${firstAssets}) {
                 nodes {
                   downloadUrl
-                  name
                   downloadCount
                 }
               }
+            }
           }
         }
       `;
@@ -190,67 +335,41 @@ async function releaseAssets(
 
   const fullQuery = `query {\n${queries}\n}`;
 
-  interface GqlResult {
-    [key: string]: {
-      name: string;
-      nameWithOwner: string;
-      shortDescriptionHTML: string;
-      parent?: {
-        owner: {
-          login: string;
-        };
-      };
-      latestRelease?: {
-        tagName: string;
-        publishedAt: string;
-        description?: string;
-        releaseAssets: {
-          nodes: {
-            downloadUrl: string;
-            downloadCount: number;
-          }[];
-        };
-      };
-    };
-  }
+  const result = await octokit.graphql<GqlAssetsResult>(fullQuery);
 
-  const result = await octokit.graphql<GqlResult>(fullQuery);
-
-  // Replace repo{i] with the actual nameWithOwner}
   const repositories = Object.fromEntries(
-    Object.values(result).map((repo) => {
-      const { nameWithOwner, parent, latestRelease, ...newRepo } = repo;
-      if (parent?.owner) {
-        (newRepo as Repository).organization = parent.owner.login;
-      }
-      if (latestRelease) {
-        const { releaseAssets, description, ...restRelease } = latestRelease;
-        let jaspVersionRange = jaspVersionRangeFromDescription(
-          description ?? '',
-        );
-        if (!jaspVersionRange) {
-          jaspVersionRange = '>=0.95.0';
-          console.warn(
-            `Malformed description for ${nameWithOwner}. Falling back to default JASP version range: ${jaspVersionRange}`,
-          );
+    Object.values(result)
+      .filter((repo) => {
+        if (repo.releases.nodes.length === 0) {
+          console.log(`No releases found for ${repo.nameWithOwner}. Skipping.`);
+          return false;
         }
-        const newRelease: Release = {
-          ...restRelease,
-          jaspVersionRange,
-          assets: releaseAssets.nodes
-            .filter((asset) => asset.downloadUrl.endsWith('.JASPModule'))
-            .map((a) => {
-              const asset: ReleaseAsset = {
-                ...a,
-                architecture: archFromDownloadUrl(a.downloadUrl),
-              };
-              return asset;
-            }),
+        return true;
+      })
+      .map((repo) => {
+        const { nameWithOwner, parent: _, releases, ...restRepo } = repo;
+        const productionReleases = releases.nodes.filter(
+          (r) => !r.isDraft && !r.isPrerelease,
+        );
+        const preReleases = releases.nodes.filter(
+          (r) => !r.isDraft && r.isPrerelease,
+        );
+        const newRepo: Repository = {
+          ...restRepo,
+          organization: repo.parent?.owner.login ?? 'unknown_org',
+          releases: latestReleasePerJaspVersionRange(productionReleases).map(
+            (r) => {
+              return transformRelease(r, nameWithOwner);
+            },
+          ),
+          preReleases: latestReleasePerJaspVersionRange(preReleases).map(
+            (r) => {
+              return transformRelease(r, nameWithOwner);
+            },
+          ),
         };
-        (newRepo as Repository).latestRelease = newRelease;
-      }
-      return [nameWithOwner, newRepo as Repository];
-    }),
+        return [nameWithOwner, newRepo];
+      }),
   );
 
   return repositories;
@@ -269,6 +388,46 @@ function compactChannels(
   return compacted;
 }
 
+function logReleaseStatistics(assets: RepoReleaseAssets) {
+  let totalReleases = 0;
+  let totalPreReleases = 0;
+  let totalAssets = 0;
+  let countedReleases = 0;
+  Object.values(assets).forEach((repo) => {
+    if (repo.releases) {
+      totalReleases += repo.releases.length;
+      repo.releases.forEach((release) => {
+        if (release.assets) {
+          totalAssets += release.assets.length;
+          countedReleases++;
+        }
+      });
+    }
+    if (repo.preReleases) {
+      totalPreReleases += repo.preReleases.length;
+    }
+  });
+  const avgAssetsPerRelease =
+    countedReleases > 0 ? totalAssets / countedReleases : 0;
+  console.info('Repositories:', Object.keys(assets).length);
+  console.info('Total releases:', totalReleases);
+  console.info('Total pre-releases:', totalPreReleases);
+  // If avgAssetsPerRelease is not an int, then there is a release with not all architectures
+  console.info(
+    'Average number of assets per release:',
+    avgAssetsPerRelease % 1 === 0
+      ? avgAssetsPerRelease
+      : chalk.red(avgAssetsPerRelease.toFixed(2)),
+  );
+}
+
+function logChannelStats(channels: Record<string, string[]>) {
+  console.info('Found', Object.keys(channels).length, 'channels');
+  for (const [channel, repos] of Object.entries(channels)) {
+    console.info(' - ', channel, ':', repos.length);
+  }
+}
+
 async function scrape(
   owner: string = 'jasp-stats-modules',
   repo: string = 'modules-registry',
@@ -277,18 +436,16 @@ async function scrape(
   console.info('Fetching submodules from', `${owner}/${repo}`);
   const submodules = await downloadSubmodules(owner, repo);
   const repoWithOwners = uniqueReposFromSubmodules(submodules);
-  console.info('Found', submodules.length, 'submodules');
-  console.info('Fetching release assets');
-  const assets = await releaseAssets(repoWithOwners);
-  console.info(
-    'Found',
-    Object.keys(assets).length,
-    'repositories with release assets',
-  );
-
   const channels = compactChannels(submodules);
+  logChannelStats(channels);
+  console.info('Fetching release assets');
+  const assets = await releaseAssetsPaged(repoWithOwners);
+
+  logReleaseStatistics(assets);
+
   const body = JSON.stringify({ channels, assets }, null, 2);
   await fs.writeFile(output, body);
+  console.log('Wrote', output);
 }
 
 // Allow running as a script

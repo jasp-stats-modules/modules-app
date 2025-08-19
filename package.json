@@ -9,10 +9,11 @@
   "scripts": {
     "dev": "vite --port 3000",
     "start": "vite --port 3000",
-    "build": "vite build && tsc",
+    "build": "vite build",
     "serve": "vite preview",
     "test": "vitest run",
     "scrape": "node src/scrape.ts",
+    "typecheck": "tsc",
     "check": "biome check --write --unsafe"
   },
   "dependencies": {
@@ -27,7 +28,7 @@
     "valibot": "^1.1.0"
   },
   "devDependencies": {
-    "@biomejs/biome": "2.1.4",
+    "@biomejs/biome": "2.2.0",
     "@octokit/core": "^7.0.3",
     "@octokit/graphql": "^9.0.1",
     "@octokit/plugin-paginate-graphql": "^6.0.0",
@@ -38,6 +39,7 @@
     "@types/react-dom": "^19.0.3",
     "@types/semver": "^7.7.0",
     "@vitejs/plugin-react": "^4.3.4",
+    "chalk": "^5.5.0",
     "dedent": "^1.6.0",
     "gray-matter": "^4.0.3",
     "jsdom": "^26.0.0",
