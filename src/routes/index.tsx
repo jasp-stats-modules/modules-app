@@ -460,7 +460,7 @@ function App() {
                 onChange={setAllowPreRelease}
                 label="Show pre-releases"
                 name="allowPreReleases"
-                description='Switch between showing production releases and pre-releases'
+                description="Switch between showing production releases and pre-releases"
               />
             </div>
             <div>
