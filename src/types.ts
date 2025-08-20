@@ -1,3 +1,5 @@
+// Types shared between scrape script and web app
+
 export interface SubModule {
   owner: string;
   repo: string;
