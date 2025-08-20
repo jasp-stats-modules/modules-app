@@ -177,7 +177,7 @@ async function releaseAssetsPaged(
   // For now we insert a dummy release,
   // try out with ?v=0.95.0 should show release below and not one with R-4-5-1
   results['jasp-stats-modules/jaspAnova'].releases.push({
-    tagName: '2cbd8a3e_R-4-4-1',
+    tagName: 'dummy_R-4-4-1',
     publishedAt: '2025-05-07T21:56:13Z',
     jaspVersionRange: '>=0.94.0',
     assets: [

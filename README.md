@@ -47,15 +47,16 @@ To get a list of available JASP modules, it does the following with the help of 
 
 1. Fetches the git submodules of the https://github.com/jasp-stats-modules/modules-registry repository.
    - the directory in which a submodule is located is the channel
-2. For each submodule in the latest release
-   1. Fetches the release data
-   2. Fetches the release assets ending with `.JASPModule` extension
+2. For each submodule fetches its releases
+   1. Fetches the release data, paged per 100 repositories using GitHub GraphQL API
+   2. Filter the release assets ending with `.JASPModule` extension
    3. Looks in release description for the JASP version range the module is compatible with. The [version range](https://semver.npmjs.com/) is specified in front matter header as for example:
       ```markdown
       ---
-      jasp: >=0.95.0
+      jasp: '>=0.95.0'
       ---
       ```
+   4. Split releases into latest release for each JASP version range and latest pre release.
 3. Saves data in `src/index.json` for the web application to use
 
 # Getting Started
