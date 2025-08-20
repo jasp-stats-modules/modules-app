@@ -460,7 +460,7 @@ function App() {
                 onChange={setAllowPreRelease}
                 label="Show pre-releases"
                 name="allowPreReleases"
-                description="Switch between showing production releases and pre-releases"
+                description="When checked shows pre-releases. Pre-releases are releases that a module developer has not yet marked as stable."
               />
             </div>
             <div>
