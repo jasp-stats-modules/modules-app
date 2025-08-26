@@ -24,6 +24,9 @@ The JASP desktop application can tell the web application which version/architec
 - a: the architecture of the JASP desktop application for example `Windows_x86-64`
 - i: installed modules. A JSON object with the module names as keys and their versions as values. The object has to be [URL encoded](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/encodeURIComponent). For example, `{"22jaspEquivalenceTTests":"0.95.0","22jaspTTests":"0.94.0"}` becomes `%7B%2222jaspEquivalenceTTests%22%3A%220.95.0%22%2C%2222jaspTTests%22%3A%220.94.0%22%7D`.
 - p: show pre-releases initially. Use `1` to show pre-releases and use `0` to hide them initially.
+- c: URL for the catalog aka index.json. 
+   When not set uses `index.json` (`public/index.json` in local development or on deployed site uses `https://jasp-stats-modules.github.io/modules-app/index.json`).
+   If URL is not a relative path then make sure correct CORS headers are returned on server that hosts index.json.
 
 A full URL could look like [https://jasp-stats-modules.github.io/modules-app/?a=Windows_x86-64&v=0.95.0&i=%7B%22jaspEquivalenceTTests%22%3A%220.95.0%22%2C%22jaspTTests%22%3A%220.94.0%22%7D&p=0](https://jasp-stats-modules.github.io/modules-app/?a=Windows_x86-64&v=0.95.0&i=%7B%22jaspEquivalenceTTests%22%3A%220.95.0%22%2C%22jaspTTests%22%3A%220.94.0%22%7D&p=0).
 

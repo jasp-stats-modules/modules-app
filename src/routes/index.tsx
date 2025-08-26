@@ -2,7 +2,6 @@ import { createFileRoute } from '@tanstack/react-router';
 import { useState } from 'react';
 import { satisfies } from 'semver';
 import * as v from 'valibot';
-import { assets, channels } from '@/index.json';
 import { cn } from '@/lib/utils';
 import type {
   Release,
@@ -10,9 +9,6 @@ import type {
   RepoReleaseAssets,
   Repository,
 } from '@/types';
-
-const channels2repos = channels as unknown as Record<string, string[]>;
-const releaseAssets = assets as unknown as RepoReleaseAssets;
 
 const defaultArchitecture = 'Windows_x86-64';
 const defaultInstalledVersion = '0.95.1';
@@ -23,6 +19,7 @@ const defaultInstalledModules = () => ({
   jaspTTests: 'a8098ba98',
 });
 const defaultChannel = 'core-modules';
+const defaultCatalog = 'index.json';
 
 const SearchSchema = v.object({
   // Architecture of installed JASP
@@ -42,11 +39,29 @@ const SearchSchema = v.object({
   ),
   // Initial value for allow pre-release
   p: v.optional(v.picklist([0, 1]), 0),
+  // The catalog of modules
+  c: v.optional(v.fallback(v.string(), defaultCatalog), defaultCatalog),
 });
+
+interface Catalog {
+  channels: Record<string, string[]>;
+  assets: RepoReleaseAssets;
+}
+
+async function getCatalog(catalogUrl: string): Promise<Catalog> {
+  return fetch(catalogUrl).then((res) => res.json());
+}
 
 export const Route = createFileRoute('/')({
   component: App,
   validateSearch: SearchSchema,
+  loaderDeps: ({ search: { c } }) => ({
+    catalogUrl: c,
+  }),
+  loader: async ({ deps: { catalogUrl } }) => {
+    return getCatalog(catalogUrl);
+  },
+  pendingComponent: () => <div>Loading catalog...</div>,
 });
 
 function ChannelSelector({
@@ -363,10 +378,10 @@ function RepositoryCard({
 
 function getReposForChannel(
   releaseAssets: Record<string, Repository>,
-  channel: string,
+  channelMembers: string[],
 ): Repository[] {
   return Object.entries(releaseAssets)
-    .filter(([repo, _]) => channels2repos[channel].includes(repo))
+    .filter(([repo, _]) => channelMembers.includes(repo))
     .map(([_, repo]) => repo);
 }
 
@@ -430,13 +445,16 @@ function App() {
     v: installedJaspVersion,
     p: initialAllowPreRelease,
   } = Route.useSearch();
+  const { assets: releaseAssets, channels: channels2repos } =
+    Route.useLoaderData();
   const [channel, setChannel] = useState<string>(defaultChannel);
   const [searchTerm, setSearchTerm] = useState<string>('');
   const [allowPreRelease, setAllowPreRelease] = useState<boolean>(
     initialAllowPreRelease === 1,
   );
   const channels = Object.keys(channels2repos);
-  const reposOfChannel = getReposForChannel(releaseAssets, channel);
+  const channelMembers = channels2repos[channel] || [];
+  const reposOfChannel = getReposForChannel(releaseAssets, channelMembers);
   const installableRepos = filterOnInstallableRepositories(
     reposOfChannel,
     installedJaspVersion,
