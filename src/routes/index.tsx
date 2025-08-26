@@ -1,3 +1,4 @@
+import { queryOptions } from '@tanstack/react-query';
 import { createFileRoute } from '@tanstack/react-router';
 import { useState } from 'react';
 import { satisfies } from 'semver';
@@ -39,7 +40,7 @@ const SearchSchema = v.object({
   ),
   // Initial value for allow pre-release
   p: v.optional(v.picklist([0, 1]), 0),
-  // The catalog of modules
+  // The URL for the catalog of modules
   c: v.optional(v.fallback(v.string(), defaultCatalog), defaultCatalog),
 });
 
@@ -49,8 +50,15 @@ interface Catalog {
 }
 
 async function getCatalog(catalogUrl: string): Promise<Catalog> {
+  // trusting that url returns type Catalog
   return fetch(catalogUrl).then((res) => res.json());
 }
+
+const catalogQueryOptions = (catalogUrl: string) =>
+  queryOptions({
+    queryKey: ['catalog', { catalogUrl }],
+    queryFn: () => getCatalog(catalogUrl),
+  });
 
 export const Route = createFileRoute('/')({
   component: App,
@@ -58,10 +66,9 @@ export const Route = createFileRoute('/')({
   loaderDeps: ({ search: { c } }) => ({
     catalogUrl: c,
   }),
-  loader: async ({ deps: { catalogUrl } }) => {
-    return getCatalog(catalogUrl);
-  },
-  pendingComponent: () => <div>Loading catalog...</div>,
+  // @ts-expect-error TS2339 - unclear how to get typed context from docs
+  loader: async ({ deps: { catalogUrl }, context: { queryClient } }) =>
+    queryClient.ensureQueryData(catalogQueryOptions(catalogUrl)),
 });
 
 function ChannelSelector({
