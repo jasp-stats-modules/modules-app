@@ -223,11 +223,13 @@ function getReleaseInfo(
   const installedVersion = installedModules[repo.name];
   const latestVersionInstalled =
     installedVersion !== undefined &&
-    installedVersion === latestAnyRelease?.tagName;
+    installedVersion === latestAnyRelease?.version;
   const canInstall = !installedVersion || !latestVersionInstalled;
   // tagName (d5d503cf_R-4-5-1) is not a semantic version, so we cannot
   // tell if it can be updated or downgraded
   // For now assume installed version can be updated
+  // TODO once tag name contains semantic version use semver to
+  // detect whether installed module can be upgraded/downgraded or is already latest
   const canUpdate = !!installedVersion && !latestVersionInstalled;
 
   return {
@@ -349,7 +351,7 @@ function RepositoryCard({
       {latestAnyRelease && asset && (
         <ReleaseStats
           installedVersion={installedVersion}
-          latestVersion={latestAnyRelease.tagName}
+          latestVersion={latestAnyRelease.version}
           latestPublishedAt={latestAnyRelease.publishedAt}
           maintainer={repo.organization}
           downloads={asset.downloadCount}
