@@ -19,8 +19,8 @@ const defaultInstalledVersion = '0.95.1';
 // const defaultInstalledModules = () => ({})
 // TODO remove example once JASP has app integrated
 const defaultInstalledModules = () => ({
-  jaspEquivalenceTTests: '7aad95f4_R-4-5-1',
-  jaspTTests: 'a8098ba98_R-4-4-0',
+  jaspEquivalenceTTests: '7aad95f4',
+  jaspTTests: 'a8098ba98',
 });
 const defaultChannel = 'core-modules';
 
