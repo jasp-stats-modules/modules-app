@@ -21,14 +21,16 @@
     "@tanstack/react-router": "^1.130.2",
     "@tanstack/react-router-devtools": "^1.130.2",
     "@tanstack/router-plugin": "^1.121.2",
+    "clsx": "^2.1.1",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "semver": "^7.7.2",
+    "tailwind-merge": "^3.3.1",
     "tailwindcss": "^4.0.6",
     "valibot": "^1.1.0"
   },
   "devDependencies": {
-    "@biomejs/biome": "2.1.4",
+    "@biomejs/biome": "2.2.0",
     "@octokit/core": "^7.0.3",
     "@octokit/graphql": "^9.0.1",
     "@octokit/plugin-paginate-graphql": "^6.0.0",

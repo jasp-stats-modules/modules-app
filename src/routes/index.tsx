@@ -2,13 +2,14 @@ import { createFileRoute } from '@tanstack/react-router';
 import { useState } from 'react';
 import { satisfies } from 'semver';
 import * as v from 'valibot';
+import { assets, channels } from '@/index.json';
+import { cn } from '@/lib/utils';
 import type {
   Release,
   ReleaseAsset,
   RepoReleaseAssets,
   Repository,
 } from '@/types';
-import { assets, channels } from '../index.json';
 
 const channels2repos = channels as unknown as Record<string, string[]>;
 const releaseAssets = assets as unknown as RepoReleaseAssets;
@@ -39,12 +40,103 @@ const SearchSchema = v.object({
     v.fallback(v.record(v.string(), v.string()), defaultInstalledModules),
     defaultInstalledModules,
   ),
+  // Initial value for allow pre-release
+  p: v.optional(v.picklist([0, 1]), 0),
 });
 
 export const Route = createFileRoute('/')({
   component: App,
   validateSearch: SearchSchema,
 });
+
+function ChannelSelector({
+  channel,
+  setChannel,
+  channels,
+  className = '',
+}: {
+  channel: string;
+  setChannel: (channel: string) => void;
+  channels: string[];
+  className?: string;
+}) {
+  return (
+    <label
+      className={cn(
+        'mb-1 block font-medium text-gray-700 text-xs dark:text-gray-300',
+        className,
+      )}
+    >
+      Select a channel:
+      <select
+        name="channel"
+        value={channel}
+        onChange={(e) => setChannel(e.target.value)}
+        className="w-full rounded border border-gray-300 bg-white px-2 py-1.5 text-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 dark:focus:border-blue-400"
+      >
+        {channels.map((channel) => (
+          <option key={channel} value={channel}>
+            {channel}
+          </option>
+        ))}
+      </select>
+    </label>
+  );
+}
+
+function Checkbox({
+  checked,
+  onChange,
+  label,
+  name,
+  description,
+  className = '',
+  inputClassName = '',
+}: {
+  checked: boolean;
+  onChange: (checked: boolean) => void;
+  label: string;
+  name?: string;
+  description?: string;
+  className?: string;
+  inputClassName?: string;
+}) {
+  return (
+    <label
+      className={cn(
+        'mb-1 flex items-center font-medium text-gray-700 text-xs dark:text-gray-300',
+        className,
+      )}
+      title={description}
+    >
+      <div className="relative ml-2">
+        <input
+          type="checkbox"
+          name={name}
+          className={cn(
+            'peer h-4 w-4 appearance-none rounded border-2 border-gray-300 bg-white checked:border-blue-600 checked:bg-blue-600 focus:ring-2 focus:ring-blue-500 focus:ring-offset-0 dark:border-gray-600 dark:bg-gray-700 dark:focus:ring-blue-400 dark:checked:border-blue-500 dark:checked:bg-blue-500',
+            inputClassName,
+          )}
+          checked={checked}
+          onChange={(e) => onChange(e.target.checked)}
+        />
+        <svg
+          className="pointer-events-none absolute top-0 left-0 hidden h-4 w-4 text-white peer-checked:block"
+          fill="currentColor"
+          viewBox="0 0 20 20"
+        >
+          <title>Checkmark</title>
+          <path
+            fillRule="evenodd"
+            d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+            clipRule="evenodd"
+          />
+        </svg>
+      </div>
+      <span className="ml-2">{label}</span>
+    </label>
+  );
+}
 
 function InstallButton({ asset }: { asset?: ReleaseAsset }) {
   if (!asset) {
@@ -53,7 +145,7 @@ function InstallButton({ asset }: { asset?: ReleaseAsset }) {
   return (
     <a
       href={asset.downloadUrl}
-      className="inline-flex items-center rounded bg-green-600 px-3 py-1.5 font-medium text-white text-xs transition-colors duration-200 hover:bg-green-700"
+      className="inline-flex items-center rounded bg-green-600 px-3 py-1.5 font-medium text-white text-xs transition-colors duration-200 hover:bg-green-700 dark:bg-green-700 dark:hover:bg-green-800"
     >
       Install
     </a>
@@ -67,7 +159,7 @@ function UpdateButton({ asset }: { asset?: ReleaseAsset }) {
   return (
     <a
       href={asset.downloadUrl}
-      className="inline-flex items-center rounded bg-blue-600 px-3 py-1.5 font-medium text-white text-xs transition-colors duration-200 hover:bg-blue-700"
+      className="inline-flex items-center rounded bg-blue-600 px-3 py-1.5 font-medium text-white text-xs transition-colors duration-200 hover:bg-blue-700 dark:bg-blue-700 dark:hover:bg-blue-800"
     >
       Update
     </a>
@@ -83,18 +175,40 @@ function findReleaseThatSatisfiesInstalledJaspVersion(
   );
 }
 
-function RepositoryCard({
-  repo,
-  allowPreRelease,
-}: {
-  repo: Repository;
-  allowPreRelease?: boolean;
-}) {
+interface ReleaseStats {
+  latestRelease?: Release;
+  latestPreRelease?: Release;
+  latestAnyRelease?: Release;
+  asset?: ReleaseAsset;
+  installedVersion?: string;
+  latestVersionInstalled: boolean;
+  canInstall: boolean;
+  canUpdate: boolean;
+}
+
+function useRelease(repo: Repository, allowPreRelease: boolean): ReleaseStats {
   const {
     i: installedModules,
     a: arch,
     v: installedJaspVersion,
   } = Route.useSearch();
+
+  return getReleaseInfo(
+    repo,
+    installedJaspVersion,
+    allowPreRelease,
+    arch,
+    installedModules,
+  );
+}
+
+function getReleaseInfo(
+  repo: Repository,
+  installedJaspVersion: string,
+  allowPreRelease: boolean,
+  arch: string,
+  installedModules: { [x: string]: string },
+): ReleaseStats {
   const latestRelease = findReleaseThatSatisfiesInstalledJaspVersion(
     repo.releases,
     installedJaspVersion,
@@ -105,79 +219,175 @@ function RepositoryCard({
   );
   const latestAnyRelease =
     allowPreRelease && latestPreRelease ? latestPreRelease : latestRelease;
-  const archAsset = latestAnyRelease?.assets.find(
-    (a) => a.architecture === arch,
-  );
+  const asset = latestAnyRelease?.assets.find((a) => a.architecture === arch);
   const installedVersion = installedModules[repo.name];
-  const latestVersionInstalled = installedVersion === latestAnyRelease?.tagName;
+  const latestVersionInstalled =
+    installedVersion !== undefined &&
+    installedVersion === latestAnyRelease?.tagName;
   const canInstall = !installedVersion || !latestVersionInstalled;
   // tagName (d5d503cf_R-4-5-1) is not a semantic version, so we cannot
   // tell if it can be updated or downgraded
   // For now assume installed version can be updated
-  const canUpdate = installedVersion && !latestVersionInstalled;
+  const canUpdate = !!installedVersion && !latestVersionInstalled;
+
+  return {
+    latestRelease,
+    latestPreRelease,
+    latestAnyRelease,
+    asset,
+    installedVersion,
+    latestVersionInstalled,
+    canInstall,
+    canUpdate,
+  };
+}
+
+function ReleaseAction({
+  asset,
+  canUpdate,
+  canInstall,
+  allowPreRelease,
+  latestPreRelease,
+  latestVersionInstalled,
+}: {
+  asset: ReleaseAsset;
+  canUpdate: boolean;
+  canInstall: boolean;
+  allowPreRelease: boolean;
+  latestPreRelease?: Release;
+  latestVersionInstalled: boolean;
+}) {
   return (
-    <div className="rounded-lg border border-gray-200 bg-white p-3 shadow-sm transition-shadow duration-200 hover:shadow-md">
-      <div className="mb-2 flex items-start justify-between gap-2">
-        <h3 className="font-semibold text-gray-900 text-lg">{repo.name}</h3>
-        <div className="flex-shrink-0">
-          <div className="flex flex-col">
-            {canUpdate && <UpdateButton asset={archAsset} />}
-            {canInstall && !canUpdate && <InstallButton asset={archAsset} />}
-            {allowPreRelease && latestPreRelease && (
-              <span className="text-gray-500 text-xs">Pre release</span>
-            )}
-            {latestVersionInstalled && (
-              <span
-                title="Latest version is installed"
-                className="text-gray-500 text-xs"
-              >
-                Installed
-              </span>
-            )}
-          </div>
-        </div>
-      </div>
-      <div className="flex flex-col gap-2">
-        {repo.shortDescriptionHTML && (
-          <div className="prose prose-sm mb-2 text-gray-600 text-sm">
-            {repo.shortDescriptionHTML}
-          </div>
-        )}
-        {latestAnyRelease && (
-          <div className="flex flex-row gap-1 text-gray-500 text-xs">
-            <span className="inline-flex w-fit items-center">
-              {installedVersion
-                ? ` installed: ${installedVersion}, latest`
-                : 'latest '}{' '}
-              {latestAnyRelease.tagName.replace('v', '')} on{' '}
-              {new Date(latestAnyRelease.publishedAt).toLocaleDateString()}
-            </span>
-            <span>by {repo.organization}</span>
-            <span>with {archAsset?.downloadCount} downloads</span>
-          </div>
-        )}
-      </div>
+    <div className="flex flex-col">
+      {canUpdate && <UpdateButton asset={asset} />}
+      {canInstall && !canUpdate && <InstallButton asset={asset} />}
+      {allowPreRelease && latestPreRelease && (
+        <span className="text-gray-500 text-xs dark:text-gray-400">
+          Pre release
+        </span>
+      )}
+      {latestVersionInstalled && (
+        <span
+          title="Latest version is installed"
+          className="px-2 py-1.5 text-gray-500 text-xs dark:text-gray-400"
+        >
+          Installed
+        </span>
+      )}
     </div>
   );
 }
 
-function App() {
-  const { a: architecture, v: installedJaspVersion } = Route.useSearch();
-  const [channel, setChannel] = useState<string>(defaultChannel);
-  const [searchTerm, setSearchTerm] = useState<string>('');
-  const [allowPreRelease, setAllowPreRelease] = useState<boolean>(false);
-  const channels = Object.keys(channels2repos);
-  const reposOfChannel = Object.entries(releaseAssets)
+function ReleaseStats({
+  installedVersion,
+  latestVersion,
+  latestPublishedAt,
+  maintainer,
+  downloads,
+}: {
+  installedVersion?: string;
+  latestVersion: string;
+  latestPublishedAt: string;
+  maintainer: string;
+  downloads: number;
+}) {
+  const publishedAt = new Date(latestPublishedAt).toLocaleDateString();
+  return (
+    <div className="text-gray-500 text-xs dark:text-gray-400">
+      <span>
+        {installedVersion
+          ? ` installed: ${installedVersion}, latest`
+          : 'latest '}{' '}
+        {latestVersion} on {publishedAt}
+      </span>{' '}
+      <span>by {maintainer}</span> <span>with {downloads} downloads</span>
+    </div>
+  );
+}
+
+function RepositoryCard({
+  repo,
+  allowPreRelease,
+}: {
+  repo: Repository;
+  allowPreRelease: boolean;
+}) {
+  const {
+    latestPreRelease,
+    latestAnyRelease,
+    asset,
+    installedVersion,
+    latestVersionInstalled,
+    canInstall,
+    canUpdate,
+  } = useRelease(repo, allowPreRelease);
+
+  return (
+    <div className="rounded-lg border border-gray-200 bg-white p-3 shadow-sm transition-shadow duration-200 hover:shadow-md dark:border-gray-700 dark:bg-gray-800 dark:hover:shadow-lg">
+      <div className="mb-2 flex items-start justify-between gap-2">
+        <div>
+          <h3 className="font-semibold text-gray-900 text-lg dark:text-gray-100">
+            {repo.name}
+          </h3>
+          {repo.shortDescriptionHTML && (
+            <div className="prose prose-sm mb-2 text-gray-600 text-sm dark:text-gray-300">
+              {repo.shortDescriptionHTML}
+            </div>
+          )}
+        </div>
+        {asset && (
+          <ReleaseAction
+            asset={asset}
+            canUpdate={canUpdate}
+            canInstall={canInstall}
+            allowPreRelease={allowPreRelease}
+            latestPreRelease={latestPreRelease}
+            latestVersionInstalled={latestVersionInstalled}
+          />
+        )}
+      </div>
+      {latestAnyRelease && asset && (
+        <ReleaseStats
+          installedVersion={installedVersion}
+          latestVersion={latestAnyRelease.tagName}
+          latestPublishedAt={latestAnyRelease.publishedAt}
+          maintainer={repo.organization}
+          downloads={asset.downloadCount}
+        />
+      )}
+    </div>
+  );
+}
+
+function getReposForChannel(
+  releaseAssets: Record<string, Repository>,
+  channel: string,
+): Repository[] {
+  return Object.entries(releaseAssets)
     .filter(([repo, _]) => channels2repos[channel].includes(repo))
     .map(([_, repo]) => repo);
-  const installableRepos = reposOfChannel.filter((repo) => {
-    const latestRelease = findReleaseThatSatisfiesInstalledJaspVersion(
+}
+
+function filterOnInstallableRepositories(
+  reposOfChannel: Repository[],
+  installedJaspVersion: string,
+  allowPreRelease: boolean,
+  architecture: string,
+): Repository[] {
+  return reposOfChannel.filter((repo) => {
+    let latestRelease = findReleaseThatSatisfiesInstalledJaspVersion(
       repo.releases,
       installedJaspVersion,
     );
     if (!latestRelease) {
-      // No compatible release found
-      return false;
+      // No compatible release found, trying pre-release
+      latestRelease = findReleaseThatSatisfiesInstalledJaspVersion(
+        repo.preReleases,
+        installedJaspVersion,
+      );
+      if (!allowPreRelease || !latestRelease) {
+        return false;
+      }
     }
     const hasArch = latestRelease.assets.some(
       (a) => a.architecture === architecture,
@@ -189,9 +399,13 @@ function App() {
     const hasAssets = latestRelease?.assets && latestRelease.assets.length > 0;
     return hasAssets;
   });
+}
 
-  // Filter repositories based on search term
-  const filteredRepos = installableRepos.filter((repo) => {
+function filterReposBySearchTerm(
+  installableRepos: Repository[],
+  searchTerm: string,
+): Repository[] {
+  return installableRepos.filter((repo) => {
     if (!searchTerm.trim()) return true;
 
     const searchLower = searchTerm.toLowerCase();
@@ -206,53 +420,61 @@ function App() {
 
     return nameMatches || descriptionMatches;
   });
+}
+
+function App() {
+  const {
+    a: architecture,
+    v: installedJaspVersion,
+    p: initialAllowPreRelease,
+  } = Route.useSearch();
+  const [channel, setChannel] = useState<string>(defaultChannel);
+  const [searchTerm, setSearchTerm] = useState<string>('');
+  const [allowPreRelease, setAllowPreRelease] = useState<boolean>(
+    initialAllowPreRelease === 1,
+  );
+  const channels = Object.keys(channels2repos);
+  const reposOfChannel = getReposForChannel(releaseAssets, channel);
+  const installableRepos = filterOnInstallableRepositories(
+    reposOfChannel,
+    installedJaspVersion,
+    allowPreRelease,
+    architecture,
+  );
+
+  const filteredRepos = filterReposBySearchTerm(installableRepos, searchTerm);
 
   return (
-    <main className="min-h-screen bg-gray-50 py-4">
+    <main className="min-h-screen bg-gray-50 py-4 text-gray-900 dark:bg-gray-900 dark:text-gray-100">
       <div className="w-full px-2">
-        <div className="mb-4 rounded-lg border border-gray-200 bg-white p-3 shadow-sm">
-          <form className="flex flex-col gap-3">
-            <div>
-              <label className="mb-1 block font-medium text-gray-700 text-xs">
-                Select a channel:
-                <select
-                  name="channel"
-                  value={channel}
-                  onChange={(e) => setChannel(e.target.value)}
-                  className="w-full rounded border border-gray-300 bg-white px-2 py-1.5 text-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
-                >
-                  {channels.map((channel) => (
-                    <option key={channel} value={channel}>
-                      {channel}
-                    </option>
-                  ))}
-                </select>
-              </label>
+        <div className="mb-4 rounded-lg border border-gray-200 bg-white p-3 shadow-sm dark:border-gray-700 dark:bg-gray-800">
+          <div className="flex flex-col gap-3">
+            <div className="flex flex-row gap-3">
+              <ChannelSelector
+                channel={channel}
+                setChannel={setChannel}
+                channels={channels}
+              />
+              <Checkbox
+                checked={allowPreRelease}
+                onChange={setAllowPreRelease}
+                label="Show pre-releases"
+                name="allowPreReleases"
+                description="When checked shows pre-releases. Pre-releases are releases that a module developer has not yet marked as stable."
+              />
             </div>
             <div>
-              <label className="mb-1 flex items-center font-medium text-gray-700 text-xs">
-                Allow pre-releases
-                <input
-                  type="checkbox"
-                  name="allowPreReleases"
-                  className="ml-2 h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-2 focus:ring-blue-500"
-                  checked={allowPreRelease}
-                  onChange={(e) => setAllowPreRelease(e.target.checked)}
-                />
-              </label>
-            </div>
-            <div>
-              <label className="mb-1 block font-medium text-gray-700 text-xs">
+              <label className="mb-1 block font-medium text-gray-700 text-xs dark:text-gray-300">
                 Search for a module:
                 <input
                   type="search"
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
-                  className="w-full rounded border border-gray-300 px-2 py-1.5 text-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+                  className="w-full rounded border border-gray-300 px-2 py-1.5 text-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 dark:placeholder-gray-400 dark:focus:border-blue-400"
                 />
               </label>
             </div>
-          </form>
+          </div>
         </div>
 
         <div className="space-y-3">
@@ -264,7 +486,7 @@ function App() {
             />
           ))}
           {filteredRepos.length === 0 && (
-            <div className="text-gray-500">
+            <div className="text-gray-500 dark:text-gray-400">
               No modules found. Please clear search, change channel or upgrade
               JASP.
             </div>

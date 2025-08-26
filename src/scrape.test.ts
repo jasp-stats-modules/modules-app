@@ -1,5 +1,6 @@
 import { describe, expect, test } from 'vitest';
 import {
+  extractArchitectureFromUrl,
   type GqlRelease,
   jaspVersionRangeFromDescription,
   latestReleasePerJaspVersionRange,
@@ -75,5 +76,16 @@ describe('latestReleasePerJaspVersionRange', () => {
     const expected = [input[0], input[2]];
 
     expect(result).toEqual(expected);
+  });
+});
+
+describe('extractArchitectureFromUrl', () => {
+  test.each([
+    ['jaspAnova_0.95.0_MacOS_x86_64_R-4-5-1.JASPModule', 'MacOS_x86_64'],
+    ['jaspAnova_0.95.0_MacOS_arm64_R-4-5-1.JASPModule', 'MacOS_arm64'],
+    ['jaspAnova_0.95.0_Windows_x86-64_R-4-5-1.JASPModule', 'Windows_x86-64'],
+  ])('extracts architecture from %s', (url, expected) => {
+    const result = extractArchitectureFromUrl(url);
+    expect(result).toBe(expected);
   });
 });
