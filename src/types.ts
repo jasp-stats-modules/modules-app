@@ -18,7 +18,7 @@ export interface ReleaseAsset {
 }
 
 export interface Release {
-  tagName: string;
+  version: string;
   publishedAt: string;
   jaspVersionRange?: string;
   assets: ReleaseAsset[];

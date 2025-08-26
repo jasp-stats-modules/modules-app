@@ -51,9 +51,9 @@
       "organization": "jasp-stats",
       "releases": [
         {
-          "tagName": "014ad5af_R-4-5-1",
           "publishedAt": "2025-08-07T21:37:19Z",
           "jaspVersionRange": ">=0.95.1",
+          "version": "014ad5af",
           "assets": [
             {
               "downloadUrl": "https://github.com/jasp-stats-modules/jaspAcceptanceSampling/releases/download/014ad5af_R-4-5-1/jaspAcceptanceSampling_0.95.0_Windows_x86-64_R-4-5-1.JASPModule",
@@ -81,9 +81,9 @@
       "organization": "jasp-stats",
       "releases": [
         {
-          "tagName": "2cbd8a6d_R-4-5-1",
           "publishedAt": "2025-08-07T21:56:13Z",
           "jaspVersionRange": ">=0.95.1",
+          "version": "2cbd8a6d",
           "assets": [
             {
               "downloadUrl": "https://github.com/jasp-stats-modules/jaspAnova/releases/download/2cbd8a6d_R-4-5-1/jaspAnova_0.95.0_MacOS_x86_64_R-4-5-1.JASPModule",
@@ -97,13 +97,13 @@
             },
             {
               "downloadUrl": "https://github.com/jasp-stats-modules/jaspAnova/releases/download/2cbd8a6d_R-4-5-1/jaspAnova_0.95.0_Windows_x86-64_R-4-5-1.JASPModule",
-              "downloadCount": 4,
+              "downloadCount": 6,
               "architecture": "Windows_x86-64"
             }
           ]
         },
         {
-          "tagName": "dummy_R-4-4-1",
+          "version": "0.94.0",
           "publishedAt": "2025-05-07T21:56:13Z",
           "jaspVersionRange": ">=0.94.0",
           "assets": [
@@ -133,9 +133,9 @@
       "organization": "jasp-stats",
       "releases": [
         {
-          "tagName": "0c61b76d_R-4-5-1",
           "publishedAt": "2025-08-07T22:03:28Z",
           "jaspVersionRange": ">=0.95.1",
+          "version": "0c61b76d",
           "assets": [
             {
               "downloadUrl": "https://github.com/jasp-stats-modules/jaspAudit/releases/download/0c61b76d_R-4-5-1/jaspAudit_0.95.0_Windows_x86-64_R-4-5-1.JASPModule",
@@ -163,9 +163,9 @@
       "organization": "jasp-stats",
       "releases": [
         {
-          "tagName": "9ac0b730_R-4-5-1",
           "publishedAt": "2025-08-07T22:05:07Z",
           "jaspVersionRange": ">=0.95.1",
+          "version": "9ac0b730",
           "assets": [
             {
               "downloadUrl": "https://github.com/jasp-stats-modules/jaspBFF/releases/download/9ac0b730_R-4-5-1/jaspBFF_0.95.0_Windows_x86-64_R-4-5-1.JASPModule",
@@ -193,9 +193,9 @@
       "organization": "jasp-stats",
       "releases": [
         {
-          "tagName": "f29ac0ad_R-4-5-1",
           "publishedAt": "2025-08-07T22:12:40Z",
           "jaspVersionRange": ">=0.95.1",
+          "version": "f29ac0ad",
           "assets": [
             {
               "downloadUrl": "https://github.com/jasp-stats-modules/jaspBain/releases/download/f29ac0ad_R-4-5-1/jaspBain_0.95.0_Windows_x86-64_R-4-5-1.JASPModule",
@@ -223,9 +223,9 @@
       "organization": "jasp-stats",
       "releases": [
         {
-          "tagName": "8ce350ea_R-4-5-1",
           "publishedAt": "2025-08-07T22:20:04Z",
           "jaspVersionRange": ">=0.95.1",
+          "version": "8ce350ea",
           "assets": [
             {
               "downloadUrl": "https://github.com/jasp-stats-modules/jaspBfpack/releases/download/8ce350ea_R-4-5-1/jaspBfpack_0.95.0_Windows_x86-64_R-4-5-1.JASPModule",
@@ -253,9 +253,9 @@
       "organization": "jasp-stats",
       "releases": [
         {
-          "tagName": "c4cda11e_R-4-5-1",
           "publishedAt": "2025-08-07T22:22:22Z",
           "jaspVersionRange": ">=0.95.1",
+          "version": "c4cda11e",
           "assets": [
             {
               "downloadUrl": "https://github.com/jasp-stats-modules/jaspBsts/releases/download/c4cda11e_R-4-5-1/jaspBsts_0.95.0_Windows_x86-64_R-4-5-1.JASPModule",
@@ -283,9 +283,9 @@
       "organization": "jasp-stats",
       "releases": [
         {
-          "tagName": "cf6367bb_R-4-5-1",
           "publishedAt": "2025-08-07T22:23:53Z",
           "jaspVersionRange": ">=0.95.1",
+          "version": "cf6367bb",
           "assets": [
             {
               "downloadUrl": "https://github.com/jasp-stats-modules/jaspCircular/releases/download/cf6367bb_R-4-5-1/jaspCircular_0.95.0_Windows_x86-64_R-4-5-1.JASPModule",
@@ -308,9 +308,9 @@
       "organization": "jasp-stats",
       "releases": [
         {
-          "tagName": "1cf9c6cb_R-4-5-1",
           "publishedAt": "2025-08-07T22:31:43Z",
           "jaspVersionRange": ">=0.95.1",
+          "version": "1cf9c6cb",
           "assets": [
             {
               "downloadUrl": "https://github.com/jasp-stats-modules/jaspCochrane/releases/download/1cf9c6cb_R-4-5-1/jaspCochrane_0.95.0_Windows_x86-64_R-4-5-1.JASPModule",
@@ -338,9 +338,9 @@
       "organization": "jasp-stats",
       "releases": [
         {
-          "tagName": "6ed8cedb_R-4-5-1",
           "publishedAt": "2025-08-07T22:36:14Z",
           "jaspVersionRange": ">=0.95.1",
+          "version": "6ed8cedb",
           "assets": [
             {
               "downloadUrl": "https://github.com/jasp-stats-modules/jaspDescriptives/releases/download/6ed8cedb_R-4-5-1/jaspDescriptives_0.95.0_MacOS_x86_64_R-4-5-1.JASPModule",
@@ -354,7 +354,7 @@
             },
             {
               "downloadUrl": "https://github.com/jasp-stats-modules/jaspDescriptives/releases/download/6ed8cedb_R-4-5-1/jaspDescriptives_0.95.0_Windows_x86-64_R-4-5-1.JASPModule",
-              "downloadCount": 0,
+              "downloadCount": 1,
               "architecture": "Windows_x86-64"
             }
           ]
@@ -368,9 +368,9 @@
       "organization": "jasp-stats",
       "releases": [
         {
-          "tagName": "52277953_R-4-5-1",
           "publishedAt": "2025-08-07T22:38:53Z",
           "jaspVersionRange": ">=0.95.1",
+          "version": "52277953",
           "assets": [
             {
               "downloadUrl": "https://github.com/jasp-stats-modules/jaspDistributions/releases/download/52277953_R-4-5-1/jaspDistributions_0.95.0_Windows_x86-64_R-4-5-1.JASPModule",
@@ -398,9 +398,9 @@
       "organization": "jasp-stats",
       "releases": [
         {
-          "tagName": "7aad95f4_R-4-5-1",
           "publishedAt": "2025-08-07T22:45:03Z",
           "jaspVersionRange": ">=0.95.1",
+          "version": "7aad95f4",
           "assets": [
             {
               "downloadUrl": "https://github.com/jasp-stats-modules/jaspEquivalenceTTests/releases/download/7aad95f4_R-4-5-1/jaspEquivalenceTTests_0.95.0_Windows_x86-64_R-4-5-1.JASPModule",
@@ -428,9 +428,9 @@
       "organization": "jasp-stats",
       "releases": [
         {
-          "tagName": "3051fc5b_R-4-5-1",
           "publishedAt": "2025-08-07T22:47:39Z",
           "jaspVersionRange": ">=0.95.1",
+          "version": "3051fc5b",
           "assets": [
             {
               "downloadUrl": "https://github.com/jasp-stats-modules/jaspEsci/releases/download/3051fc5b_R-4-5-1/jaspEsci_0.95.0_Windows_x86-64_R-4-5-1.JASPModule",
@@ -458,9 +458,9 @@
       "organization": "jasp-stats",
       "releases": [
         {
-          "tagName": "57729b0c_R-4-5-1",
           "publishedAt": "2025-08-07T22:55:45Z",
           "jaspVersionRange": ">=0.95.1",
+          "version": "57729b0c",
           "assets": [
             {
               "downloadUrl": "https://github.com/jasp-stats-modules/jaspFactor/releases/download/57729b0c_R-4-5-1/jaspFactor_0.95.0_MacOS_x86_64_R-4-5-1.JASPModule",
@@ -489,9 +489,9 @@
       "releases": [],
       "preReleases": [
         {
-          "tagName": "3afc6d37_R-4-5-1",
           "publishedAt": "2025-08-07T22:59:15Z",
           "jaspVersionRange": ">=0.95.1",
+          "version": "3afc6d37",
           "assets": [
             {
               "downloadUrl": "https://github.com/jasp-stats-modules/jaspFrequencies/releases/download/3afc6d37_R-4-5-1/jaspFrequencies_0.95.0_Windows_x86-64_R-4-5-1.JASPModule",
@@ -518,9 +518,9 @@
       "organization": "jasp-stats",
       "releases": [
         {
-          "tagName": "7c2b5e98_R-4-5-1",
           "publishedAt": "2025-08-07T23:01:05Z",
           "jaspVersionRange": ">=0.95.1",
+          "version": "7c2b5e98",
           "assets": [
             {
               "downloadUrl": "https://github.com/jasp-stats-modules/jaspJags/releases/download/7c2b5e98_R-4-5-1/jaspJags_0.95.0_Windows_x86-64_R-4-5-1.JASPModule",
@@ -548,9 +548,9 @@
       "organization": "jasp-stats",
       "releases": [
         {
-          "tagName": "002bc1f0_R-4-5-1",
           "publishedAt": "2025-08-07T23:24:42Z",
           "jaspVersionRange": ">=0.95.1",
+          "version": "002bc1f0",
           "assets": [
             {
               "downloadUrl": "https://github.com/jasp-stats-modules/jaspLearnBayes/releases/download/002bc1f0_R-4-5-1/jaspLearnBayes_0.95.0_Windows_x86-64_R-4-5-1.JASPModule",
@@ -578,9 +578,9 @@
       "organization": "jasp-stats",
       "releases": [
         {
-          "tagName": "49c54a16_R-4-5-1",
           "publishedAt": "2025-08-07T23:29:38Z",
           "jaspVersionRange": ">=0.95.1",
+          "version": "49c54a16",
           "assets": [
             {
               "downloadUrl": "https://github.com/jasp-stats-modules/jaspLearnStats/releases/download/49c54a16_R-4-5-1/jaspLearnStats_0.95.0_Windows_x86-64_R-4-5-1.JASPModule",
@@ -608,9 +608,9 @@
       "organization": "jasp-stats",
       "releases": [
         {
-          "tagName": "74241a1e_R-4-5-1",
           "publishedAt": "2025-08-07T23:33:37Z",
           "jaspVersionRange": ">=0.95.1",
+          "version": "74241a1e",
           "assets": [
             {
               "downloadUrl": "https://github.com/jasp-stats-modules/jaspMachineLearning/releases/download/74241a1e_R-4-5-1/jaspMachineLearning_0.95.0_Windows_x86-64_R-4-5-1.JASPModule",
@@ -638,9 +638,9 @@
       "organization": "jasp-stats",
       "releases": [
         {
-          "tagName": "f9c16518_R-4-5-1",
           "publishedAt": "2025-08-07T23:42:31Z",
           "jaspVersionRange": ">=0.95.1",
+          "version": "f9c16518",
           "assets": [
             {
               "downloadUrl": "https://github.com/jasp-stats-modules/jaspMetaAnalysis/releases/download/f9c16518_R-4-5-1/jaspMetaAnalysis_0.95.0_Windows_x86-64_R-4-5-1.JASPModule",
@@ -668,9 +668,9 @@
       "organization": "jasp-stats",
       "releases": [
         {
-          "tagName": "401d9203_R-4-5-1",
           "publishedAt": "2025-08-07T23:49:58Z",
           "jaspVersionRange": ">=0.95.1",
+          "version": "401d9203",
           "assets": [
             {
               "downloadUrl": "https://github.com/jasp-stats-modules/jaspMixedModels/releases/download/401d9203_R-4-5-1/jaspMixedModels_0.95.0_Windows_x86-64_R-4-5-1.JASPModule",
@@ -698,9 +698,9 @@
       "organization": "jasp-stats",
       "releases": [
         {
-          "tagName": "d8f265ec_R-4-5-1",
           "publishedAt": "2025-08-07T23:58:29Z",
           "jaspVersionRange": ">=0.95.1",
+          "version": "d8f265ec",
           "assets": [
             {
               "downloadUrl": "https://github.com/jasp-stats-modules/jaspNetwork/releases/download/d8f265ec_R-4-5-1/jaspNetwork_0.95.0_Windows_x86-64_R-4-5-1.JASPModule",
@@ -728,9 +728,9 @@
       "organization": "jasp-stats",
       "releases": [
         {
-          "tagName": "401069f6_R-4-5-1",
           "publishedAt": "2025-08-08T00:00:19Z",
           "jaspVersionRange": ">=0.95.1",
+          "version": "401069f6",
           "assets": [
             {
               "downloadUrl": "https://github.com/jasp-stats-modules/jaspPower/releases/download/401069f6_R-4-5-1/jaspPower_0.95.0_Windows_x86-64_R-4-5-1.JASPModule",
@@ -758,9 +758,9 @@
       "organization": "jasp-stats",
       "releases": [
         {
-          "tagName": "017b5cea_R-4-5-1",
           "publishedAt": "2025-08-08T00:08:18Z",
           "jaspVersionRange": ">=0.95.1",
+          "version": "017b5cea",
           "assets": [
             {
               "downloadUrl": "https://github.com/jasp-stats-modules/jaspPredictiveAnalytics/releases/download/017b5cea_R-4-5-1/jaspPredictiveAnalytics_0.95.0_Windows_x86-64_R-4-5-1.JASPModule",
@@ -788,9 +788,9 @@
       "organization": "jasp-stats",
       "releases": [
         {
-          "tagName": "23091130_R-4-5-1",
           "publishedAt": "2025-08-08T00:15:14Z",
           "jaspVersionRange": ">=0.95.1",
+          "version": "23091130",
           "assets": [
             {
               "downloadUrl": "https://github.com/jasp-stats-modules/jaspProcess/releases/download/23091130_R-4-5-1/jaspProcess_0.95.0_Windows_x86-64_R-4-5-1.JASPModule",
@@ -818,9 +818,9 @@
       "organization": "jasp-stats",
       "releases": [
         {
-          "tagName": "beb9fbae_R-4-5-1",
           "publishedAt": "2025-08-08T00:22:17Z",
           "jaspVersionRange": ">=0.95.1",
+          "version": "beb9fbae",
           "assets": [
             {
               "downloadUrl": "https://github.com/jasp-stats-modules/jaspProphet/releases/download/beb9fbae_R-4-5-1/jaspProphet_0.95.0_Windows_x86-64_R-4-5-1.JASPModule",
@@ -848,9 +848,9 @@
       "organization": "jasp-stats",
       "releases": [
         {
-          "tagName": "cb9c6df6_R-4-5-1",
           "publishedAt": "2025-08-08T00:28:08Z",
           "jaspVersionRange": ">=0.95.1",
+          "version": "cb9c6df6",
           "assets": [
             {
               "downloadUrl": "https://github.com/jasp-stats-modules/jaspQualityControl/releases/download/cb9c6df6_R-4-5-1/jaspQualityControl_0.95.0_Windows_x86-64_R-4-5-1.JASPModule",
@@ -878,9 +878,9 @@
       "organization": "jasp-stats",
       "releases": [
         {
-          "tagName": "5649cad6_R-4-5-1",
           "publishedAt": "2025-08-08T00:34:37Z",
           "jaspVersionRange": ">=0.95.1",
+          "version": "5649cad6",
           "assets": [
             {
               "downloadUrl": "https://github.com/jasp-stats-modules/jaspRegression/releases/download/5649cad6_R-4-5-1/jaspRegression_0.95.0_Windows_x86-64_R-4-5-1.JASPModule",
@@ -908,9 +908,9 @@
       "organization": "jasp-stats",
       "releases": [
         {
-          "tagName": "fb0cc6f5_R-4-5-1",
           "publishedAt": "2025-08-08T00:37:56Z",
           "jaspVersionRange": ">=0.95.1",
+          "version": "fb0cc6f5",
           "assets": [
             {
               "downloadUrl": "https://github.com/jasp-stats-modules/jaspReliability/releases/download/fb0cc6f5_R-4-5-1/jaspReliability_0.95.0_Windows_x86-64_R-4-5-1.JASPModule",
@@ -938,9 +938,9 @@
       "organization": "jasp-stats",
       "releases": [
         {
-          "tagName": "b16747cb_R-4-5-1",
           "publishedAt": "2025-08-08T00:46:58Z",
           "jaspVersionRange": ">=0.95.1",
+          "version": "b16747cb",
           "assets": [
             {
               "downloadUrl": "https://github.com/jasp-stats-modules/jaspSem/releases/download/b16747cb_R-4-5-1/jaspSem_0.95.0_Windows_x86-64_R-4-5-1.JASPModule",
@@ -968,9 +968,9 @@
       "organization": "jasp-stats",
       "releases": [
         {
-          "tagName": "d5391a19_R-4-5-1",
           "publishedAt": "2025-08-08T00:53:53Z",
           "jaspVersionRange": ">=0.95.1",
+          "version": "d5391a19",
           "assets": [
             {
               "downloadUrl": "https://github.com/jasp-stats-modules/jaspSummaryStatistics/releases/download/d5391a19_R-4-5-1/jaspSummaryStatistics_0.95.0_Windows_x86-64_R-4-5-1.JASPModule",
@@ -998,9 +998,9 @@
       "organization": "jasp-stats",
       "releases": [
         {
-          "tagName": "d5d503cf_R-4-5-1",
           "publishedAt": "2025-08-08T00:56:27Z",
           "jaspVersionRange": ">=0.95.1",
+          "version": "d5d503cf",
           "assets": [
             {
               "downloadUrl": "https://github.com/jasp-stats-modules/jaspSurvival/releases/download/d5d503cf_R-4-5-1/jaspSurvival_0.95.0_Windows_x86-64_R-4-5-1.JASPModule",
@@ -1028,9 +1028,9 @@
       "organization": "jasp-stats",
       "releases": [
         {
-          "tagName": "f5516934_R-4-5-1",
           "publishedAt": "2025-08-08T00:58:58Z",
           "jaspVersionRange": ">=0.95.1",
+          "version": "f5516934",
           "assets": [
             {
               "downloadUrl": "https://github.com/jasp-stats-modules/jaspTTests/releases/download/f5516934_R-4-5-1/jaspTTests_0.95.0_Windows_x86-64_R-4-5-1.JASPModule",
@@ -1058,9 +1058,9 @@
       "organization": "jasp-stats",
       "releases": [
         {
-          "tagName": "f21139e4_R-4-5-1",
           "publishedAt": "2025-08-08T01:00:33Z",
           "jaspVersionRange": ">=0.95.1",
+          "version": "f21139e4",
           "assets": [
             {
               "downloadUrl": "https://github.com/jasp-stats-modules/jaspTestModule/releases/download/f21139e4_R-4-5-1/jaspTestModule_0.95.0_MacOS_x86_64_R-4-5-1.JASPModule",
@@ -1088,9 +1088,9 @@
       "organization": "jasp-stats",
       "releases": [
         {
-          "tagName": "55d0f2d9_R-4-5-1",
           "publishedAt": "2025-08-08T01:04:55Z",
           "jaspVersionRange": ">=0.95.1",
+          "version": "55d0f2d9",
           "assets": [
             {
               "downloadUrl": "https://github.com/jasp-stats-modules/jaspVisualModeling/releases/download/55d0f2d9_R-4-5-1/jaspVisualModeling_0.95.0_Windows_x86-64_R-4-5-1.JASPModule",

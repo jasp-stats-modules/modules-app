@@ -175,9 +175,9 @@ async function releaseAssetsPaged(
   // TODO remove once a release is on GitHub that does not work on installed JASP version
   console.log('Inserting dummy old release for jaspAnova');
   // For now we insert a dummy release,
-  // try out with ?v=0.95.0 should show release below and not one with R-4-5-1
+  // try out with ?v=0.95.0 should show release below and not one with 2cbd8a6d as version
   results['jasp-stats-modules/jaspAnova'].releases.push({
-    tagName: 'dummy_R-4-4-1',
+    version: '0.94.0',
     publishedAt: '2025-05-07T21:56:13Z',
     jaspVersionRange: '>=0.94.0',
     assets: [
@@ -264,8 +264,15 @@ export function latestReleasePerJaspVersionRange(
   return latest;
 }
 
+function versionFromTagName(tagName: string): string {
+  // Expects the tagName to be in following format `<version>_<last-commit-of-tag>_R-<r-version-seperated-by-minus>`
+  // For example for `0.95.0_2cbd8a6d_R-4-5-1` the version is `0.95.0`
+  return tagName.slice(0, tagName.indexOf('_'));
+}
+
 function transformRelease(release: GqlRelease, nameWithOwner: string): Release {
   const {
+    tagName,
     releaseAssets,
     description,
     isDraft: _,
@@ -279,9 +286,11 @@ function transformRelease(release: GqlRelease, nameWithOwner: string): Release {
       `Malformed description for ${nameWithOwner}. Falling back to default JASP version range: ${jaspVersionRange}`,
     );
   }
+  const version = versionFromTagName(tagName);
   const newRelease: Release = {
     ...restRelease,
     jaspVersionRange,
+    version,
     assets: releaseAssets.nodes
       .filter((asset) => asset.downloadUrl.endsWith('.JASPModule'))
       .map((a) => {
