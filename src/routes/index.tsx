@@ -1,6 +1,13 @@
-import { queryOptions } from '@tanstack/react-query';
-import { createFileRoute } from '@tanstack/react-router';
-import { useState } from 'react';
+import {
+  queryOptions,
+  useQueryErrorResetBoundary,
+} from '@tanstack/react-query';
+import {
+  createFileRoute,
+  type ErrorComponentProps,
+  notFound,
+} from '@tanstack/react-router';
+import { useEffect, useState } from 'react';
 import { satisfies } from 'semver';
 import * as v from 'valibot';
 import { cn } from '@/lib/utils';
@@ -49,19 +56,74 @@ interface Catalog {
   assets: RepoReleaseAssets;
 }
 
-async function getCatalog(catalogUrl: string): Promise<Catalog> {
-  // trusting that url returns type Catalog
-  return fetch(catalogUrl).then((res) => res.json());
+async function getCatalog(
+  catalogUrl: string,
+  signal: AbortSignal,
+): Promise<Catalog> {
+  // trusting that url returns type Catalog,
+  // could validate schema with valibot, but why waste the users cpu cycles on that
+  return fetch(catalogUrl, {
+    signal,
+  })
+    .then((res) => {
+      if (!res.ok) {
+        if (res.status === 404) {
+          notFound();
+        }
+        throw res;
+      }
+      return res;
+    })
+    .then((res) => res.json());
+}
+
+function Loading() {
+  return (
+    <div className="flex h-screen items-center justify-center bg-gray-50 dark:bg-gray-900">
+      <div className="flex flex-col items-center rounded-lg border border-gray-200 bg-white p-6 shadow-sm transition-shadow duration-200 hover:shadow-md dark:border-gray-700 dark:bg-gray-800 dark:hover:shadow-lg">
+        <div className="text-gray-700 dark:text-gray-200">
+          Loading list of available modules
+        </div>
+        <div className="mt-3">
+          <span className="block h-10 w-10 animate-spin rounded-full border-4 border-blue-500 border-t-transparent"></span>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function CatalogError({ error }: ErrorComponentProps) {
+  const queryErrorResetBoundary = useQueryErrorResetBoundary();
+
+  useEffect(() => {
+    queryErrorResetBoundary.reset();
+  }, [queryErrorResetBoundary]);
+
+  return (
+    <div className="flex h-screen items-center justify-center bg-gray-50 dark:bg-gray-900">
+      <div className="flex flex-col items-center rounded-lg border-4 border-red-200 bg-white p-6 shadow-sm transition-shadow duration-200 hover:shadow-md dark:border-gray-700 dark:bg-gray-800 dark:hover:shadow-lg">
+        <details>
+          <summary className="mt-2 cursor-pointer font-medium text-gray-700 text-sm dark:text-gray-200">
+            Error loading list of available modules
+          </summary>
+          <pre className="mt-2 rounded-md bg-gray-100 p-2 dark:bg-gray-800">
+            {error.name}: {error.message}
+          </pre>
+        </details>
+      </div>
+    </div>
+  );
 }
 
 const catalogQueryOptions = (catalogUrl: string) =>
   queryOptions({
     queryKey: ['catalog', { catalogUrl }],
-    queryFn: () => getCatalog(catalogUrl),
+    queryFn: ({ signal }) => getCatalog(catalogUrl, signal),
   });
 
 export const Route = createFileRoute('/')({
   component: App,
+  // component: Loading,
   validateSearch: SearchSchema,
   loaderDeps: ({ search: { c } }) => ({
     catalogUrl: c,
@@ -69,6 +131,8 @@ export const Route = createFileRoute('/')({
   // @ts-expect-error TS2339 - unclear how to get typed context from docs
   loader: async ({ deps: { catalogUrl }, context: { queryClient } }) =>
     queryClient.ensureQueryData(catalogQueryOptions(catalogUrl)),
+  pendingComponent: Loading,
+  errorComponent: CatalogError,
 });
 
 function ChannelSelector({
