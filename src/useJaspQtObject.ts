@@ -4,6 +4,7 @@ import { QWebChannel } from './qwebchannel';
 interface JaspQtObject {
   uninstall: (module: string) => void;
 }
+
 interface JaspQWebChannel {
   objects: {
     jasp: JaspQtObject;
@@ -20,7 +21,7 @@ async function jaspQtObject(): Promise<JaspQtObject | null> {
 }
 
 async function createQtWebChannel(
-  transport: WebSocket
+  transport: WebSocket,
 ): Promise<JaspQWebChannel> {
   return new Promise<JaspQWebChannel>((resolve, reject) => {
     try {
@@ -32,6 +33,7 @@ async function createQtWebChannel(
     }
   });
 }
+
 export function useJaspQtObject(): JaspQtObject | null {
   const [jasp, setJasp] = useState<JaspQtObject | null>(null);
 
