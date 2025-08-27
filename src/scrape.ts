@@ -440,7 +440,7 @@ function logChannelStats(channels: Record<string, string[]>) {
 async function scrape(
   owner: string = 'jasp-stats-modules',
   repo: string = 'modules-registry',
-  output: string = 'src/index.json',
+  output: string = 'public/index.json',
 ) {
   console.info('Fetching submodules from', `${owner}/${repo}`);
   const submodules = await downloadSubmodules(owner, repo);

@@ -1,8 +1,15 @@
-import { createFileRoute } from '@tanstack/react-router';
-import { useState } from 'react';
+import {
+  queryOptions,
+  useQueryErrorResetBoundary,
+} from '@tanstack/react-query';
+import {
+  createFileRoute,
+  type ErrorComponentProps,
+  notFound,
+} from '@tanstack/react-router';
+import { useEffect, useState } from 'react';
 import { satisfies } from 'semver';
 import * as v from 'valibot';
-import { assets, channels } from '@/index.json';
 import { cn } from '@/lib/utils';
 import type {
   Release,
@@ -10,9 +17,6 @@ import type {
   RepoReleaseAssets,
   Repository,
 } from '@/types';
-
-const channels2repos = channels as unknown as Record<string, string[]>;
-const releaseAssets = assets as unknown as RepoReleaseAssets;
 
 const defaultArchitecture = 'Windows_x86-64';
 const defaultInstalledVersion = '0.95.1';
@@ -23,6 +27,7 @@ const defaultInstalledModules = () => ({
   jaspTTests: 'a8098ba98',
 });
 const defaultChannel = 'core-modules';
+const defaultCatalog = 'index.json';
 
 const SearchSchema = v.object({
   // Architecture of installed JASP
@@ -42,11 +47,92 @@ const SearchSchema = v.object({
   ),
   // Initial value for allow pre-release
   p: v.optional(v.picklist([0, 1]), 0),
+  // The URL for the catalog of modules
+  c: v.optional(v.fallback(v.string(), defaultCatalog), defaultCatalog),
 });
+
+interface Catalog {
+  channels: Record<string, string[]>;
+  assets: RepoReleaseAssets;
+}
+
+async function getCatalog(
+  catalogUrl: string,
+  signal: AbortSignal,
+): Promise<Catalog> {
+  // trusting that url returns type Catalog,
+  // could validate schema with valibot, but why waste the users cpu cycles on that
+  return fetch(catalogUrl, {
+    signal,
+  })
+    .then((res) => {
+      if (!res.ok) {
+        if (res.status === 404) {
+          notFound();
+        }
+        throw res;
+      }
+      return res;
+    })
+    .then((res) => res.json());
+}
+
+function Loading() {
+  return (
+    <div className="flex h-screen items-center justify-center bg-gray-50 dark:bg-gray-900">
+      <div className="flex flex-col items-center rounded-lg border border-gray-200 bg-white p-6 shadow-sm transition-shadow duration-200 hover:shadow-md dark:border-gray-700 dark:bg-gray-800 dark:hover:shadow-lg">
+        <div className="text-gray-700 dark:text-gray-200">
+          Loading list of available modules
+        </div>
+        <div className="mt-3">
+          <span className="block h-10 w-10 animate-spin rounded-full border-4 border-blue-500 border-t-transparent"></span>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function CatalogError({ error }: ErrorComponentProps) {
+  const queryErrorResetBoundary = useQueryErrorResetBoundary();
+
+  useEffect(() => {
+    queryErrorResetBoundary.reset();
+  }, [queryErrorResetBoundary]);
+
+  return (
+    <div className="flex h-screen items-center justify-center bg-gray-50 dark:bg-gray-900">
+      <div className="flex flex-col items-center rounded-lg border-4 border-red-200 bg-white p-6 shadow-sm transition-shadow duration-200 hover:shadow-md dark:border-gray-700 dark:bg-gray-800 dark:hover:shadow-lg">
+        <details>
+          <summary className="mt-2 cursor-pointer font-medium text-gray-700 text-sm dark:text-gray-200">
+            Error loading list of available modules
+          </summary>
+          <pre className="mt-2 rounded-md bg-gray-100 p-2 dark:bg-gray-800">
+            {error.name}: {error.message}
+          </pre>
+        </details>
+      </div>
+    </div>
+  );
+}
+
+const catalogQueryOptions = (catalogUrl: string) =>
+  queryOptions({
+    queryKey: ['catalog', { catalogUrl }],
+    queryFn: ({ signal }) => getCatalog(catalogUrl, signal),
+  });
 
 export const Route = createFileRoute('/')({
   component: App,
+  // component: Loading,
   validateSearch: SearchSchema,
+  loaderDeps: ({ search: { c } }) => ({
+    catalogUrl: c,
+  }),
+  // @ts-expect-error TS2339 - unclear how to get typed context from docs
+  loader: async ({ deps: { catalogUrl }, context: { queryClient } }) =>
+    queryClient.ensureQueryData(catalogQueryOptions(catalogUrl)),
+  pendingComponent: Loading,
+  errorComponent: CatalogError,
 });
 
 function ChannelSelector({
@@ -363,10 +449,10 @@ function RepositoryCard({
 
 function getReposForChannel(
   releaseAssets: Record<string, Repository>,
-  channel: string,
+  channelMembers: string[],
 ): Repository[] {
   return Object.entries(releaseAssets)
-    .filter(([repo, _]) => channels2repos[channel].includes(repo))
+    .filter(([repo, _]) => channelMembers.includes(repo))
     .map(([_, repo]) => repo);
 }
 
@@ -430,13 +516,16 @@ function App() {
     v: installedJaspVersion,
     p: initialAllowPreRelease,
   } = Route.useSearch();
+  const { assets: releaseAssets, channels: channels2repos } =
+    Route.useLoaderData();
   const [channel, setChannel] = useState<string>(defaultChannel);
   const [searchTerm, setSearchTerm] = useState<string>('');
   const [allowPreRelease, setAllowPreRelease] = useState<boolean>(
     initialAllowPreRelease === 1,
   );
   const channels = Object.keys(channels2repos);
-  const reposOfChannel = getReposForChannel(releaseAssets, channel);
+  const channelMembers = channels2repos[channel] || [];
+  const reposOfChannel = getReposForChannel(releaseAssets, channelMembers);
   const installableRepos = filterOnInstallableRepositories(
     reposOfChannel,
     installedJaspVersion,

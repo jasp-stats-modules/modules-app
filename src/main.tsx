@@ -10,14 +10,19 @@ import ReactDOM from 'react-dom/client';
 import { routeTree } from './routeTree.gen';
 
 import './styles.css';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import reportWebVitals from './reportWebVitals.ts';
 
 const hashHistory = createHashHistory();
 
+export const queryClient = new QueryClient();
+
 // Create a new router instance
 const router = createRouter({
   routeTree,
-  context: {},
+  context: {
+    queryClient,
+  },
   history: hashHistory,
   defaultPreload: 'intent',
   scrollRestoration: true,
@@ -30,6 +35,9 @@ declare module '@tanstack/react-router' {
   interface Register {
     router: typeof router;
   }
+  interface RouteContext {
+    queryClient: QueryClient;
+  }
 }
 
 // Render the app
@@ -38,7 +46,9 @@ if (rootElement && !rootElement.innerHTML) {
   const root = ReactDOM.createRoot(rootElement);
   root.render(
     <StrictMode>
-      <RouterProvider router={router} />
+      <QueryClientProvider client={queryClient}>
+        <RouterProvider router={router} />
+      </QueryClientProvider>
     </StrictMode>,
   );
 }
