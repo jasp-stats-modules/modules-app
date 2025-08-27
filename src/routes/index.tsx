@@ -381,14 +381,14 @@ function ReleaseStats({
 }) {
   const publishedAt = new Date(latestPublishedAt).toLocaleDateString();
   return (
-    <div className="text-gray-500 text-xs dark:text-gray-400">
-      <span>
+    <div className="flex flex-row justify-between text-gray-500 text-xs dark:text-gray-400">
+      <div>
         {installedVersion
           ? ` installed: ${installedVersion}, latest`
           : 'latest '}{' '}
-        {latestVersion} on {publishedAt}
-      </span>{' '}
-      <span>by {maintainer}</span> <span>with {downloads} downloads</span>
+        {latestVersion} on {publishedAt} with {downloads} downloads
+      </div>
+      <div>by {maintainer}</div>
     </div>
   );
 }
