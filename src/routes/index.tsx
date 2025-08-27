@@ -6,6 +6,7 @@ import {
   createFileRoute,
   type ErrorComponentProps,
   notFound,
+  useNavigate,
 } from '@tanstack/react-router';
 import { useEffect, useState } from 'react';
 import { satisfies } from 'semver';
@@ -17,6 +18,7 @@ import type {
   RepoReleaseAssets,
   Repository,
 } from '@/types';
+import { useJaspQtObject } from '@/useJaspQtObject';
 
 const defaultArchitecture = 'Windows_x86-64';
 const defaultInstalledVersion = '0.95.1';
@@ -252,6 +254,36 @@ function UpdateButton({ asset }: { asset?: ReleaseAsset }) {
   );
 }
 
+function UninstallButton({ moduleName }: { moduleName: string }) {
+  const jasp = useJaspQtObject();
+  const { i: installedModules } = Route.useSearch();
+  const navigate = useNavigate({ from: Route.fullPath });
+
+  // Only able to uninstall when running within qt webengine
+  if (!jasp) {
+    return null;
+  }
+
+  function uninstall() {
+    jasp?.uninstall(moduleName);
+    // remove from installedModules list
+    const newInstalledModules = { ...installedModules };
+    delete newInstalledModules[moduleName];
+    navigate({ search: { i: newInstalledModules } });
+  }
+
+  return (
+    <button
+      type="button"
+      onClick={uninstall}
+      title="Uninstall this module"
+      className="mt-3 inline-flex items-center rounded bg-red-500 px-3 py-1.5 font-medium text-white text-xs transition-colors duration-200 hover:bg-red-700 dark:bg-red-700 dark:hover:bg-red-800"
+    >
+      Uninstall
+    </button>
+  );
+}
+
 function findReleaseThatSatisfiesInstalledJaspVersion(
   releases: Release[],
   installed_version: string,
@@ -331,6 +363,7 @@ function getReleaseInfo(
 }
 
 function ReleaseAction({
+  moduleName,
   asset,
   canUpdate,
   canInstall,
@@ -338,6 +371,7 @@ function ReleaseAction({
   latestPreRelease,
   latestVersionInstalled,
 }: {
+  moduleName: string;
   asset: ReleaseAsset;
   canUpdate: boolean;
   canInstall: boolean;
@@ -353,6 +387,9 @@ function ReleaseAction({
         <span className="text-gray-500 text-xs dark:text-gray-400">
           Pre release
         </span>
+      )}
+      {(canUpdate || latestVersionInstalled) && (
+        <UninstallButton moduleName={moduleName} />
       )}
       {latestVersionInstalled && (
         <span
@@ -425,6 +462,7 @@ function RepositoryCard({
         </div>
         {asset && (
           <ReleaseAction
+            moduleName={repo.name}
             asset={asset}
             canUpdate={canUpdate}
             canInstall={canInstall}
