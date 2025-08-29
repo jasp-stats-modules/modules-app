@@ -8,7 +8,11 @@ import { defineConfig } from 'vitest/config';
 export default defineConfig({
   plugins: [
     tanstackRouter({ autoCodeSplitting: true }),
-    viteReact(),
+    viteReact({
+      babel: {
+        plugins: ['babel-plugin-react-compiler'],
+      },
+    }),
     tailwindcss(),
   ],
   test: {
