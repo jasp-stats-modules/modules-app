@@ -26,7 +26,7 @@ const defaultInstalledModules = () => ({
   jaspEquivalenceTTests: '7aad95f4',
   jaspTTests: 'a8098ba98',
 });
-const defaultChannel = 'core-modules';
+const defaultChannel = 'jasp-modules';
 const defaultCatalog = 'index.json';
 
 const SearchSchema = v.object({
