@@ -438,9 +438,9 @@ function logChannelStats(channels: Record<string, string[]>) {
 }
 
 async function scrape(
+  output: string = 'public/index.json',
   owner: string = 'jasp-stats-modules',
   repo: string = 'modules-registry',
-  output: string = 'public/index.json',
 ) {
   console.info('Fetching submodules from', `${owner}/${repo}`);
   const submodules = await downloadSubmodules(owner, repo);
@@ -459,5 +459,6 @@ async function scrape(
 
 // Allow running as a script
 if (import.meta.url === `file://${process.argv[1]}`) {
-  scrape();
+  const output = process.argv[-1] || 'public/index.json';
+  scrape(output);
 }

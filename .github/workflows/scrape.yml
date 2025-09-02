@@ -1,18 +1,20 @@
-
-name: Deploy to GitHub Pages
+name: Scrape Data
 
 on:
+  workflow_dispatch:
   push:
     branches:
       - main
+    paths:
+      - 'src/types.ts'
+      - 'src/scrape.ts'
 
-# Only have one deployment in progress at a time
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
-  build:
+  scrape:
     permissions:
       contents: write
     runs-on: ubuntu-latest
@@ -32,20 +34,20 @@ jobs:
           cache: "pnpm"
 
       - name: Install dependencies
-        run: pnpm install
+        run: pnpm install --dev
+
+      - name: Make result dir
+        run: mkdir scraped
 
       - name: Run scrape
-        run: pnpm run scrape
+        run: pnpm run scrape scraped/index.json
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Build project
-        run: pnpm build
-        env:
-          BASE_URL: '/modules-app/'
-
-      - name: Deploy
+      - name: Deploy index.json to gh-pages
         uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./dist
+          publish_dir: ./scraped
+          keep_files: true
+
