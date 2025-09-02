@@ -7,6 +7,7 @@ import {
   type ErrorComponentProps,
   notFound,
 } from '@tanstack/react-router';
+import { House } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { satisfies } from 'semver';
 import * as v from 'valibot';
@@ -421,6 +422,15 @@ function RepositoryCard({
             <div className="prose prose-sm mb-2 text-gray-600 text-sm dark:text-gray-300">
               {repo.shortDescriptionHTML}
             </div>
+          )}
+          {repo.homepageUrl && (
+            <a
+              title="Goto home page of module"
+              target="_blank"
+              href={repo.homepageUrl}
+            >
+              <House size={12} />
+            </a>
           )}
         </div>
         {asset && (
