@@ -224,6 +224,7 @@ interface GqlAssetsResult {
     name: string;
     nameWithOwner: string;
     shortDescriptionHTML: string;
+    homepageUrl?: string;
     parent?: {
       owner: {
         login: string;
@@ -317,6 +318,7 @@ async function releaseAssets(
           name
           nameWithOwner
           shortDescriptionHTML
+          homepageUrl
           parent {
             owner {
               login
@@ -356,7 +358,13 @@ async function releaseAssets(
         return true;
       })
       .map((repo) => {
-        const { nameWithOwner, parent: _, releases, ...restRepo } = repo;
+        const {
+          nameWithOwner,
+          parent: _,
+          releases,
+          homepageUrl,
+          ...restRepo
+        } = repo;
         const productionReleases = releases.nodes.filter(
           (r) => !r.isDraft && !r.isPrerelease,
         );
@@ -377,6 +385,9 @@ async function releaseAssets(
             },
           ),
         };
+        if (homepageUrl) {
+          newRepo.homepageUrl = homepageUrl;
+        }
         return [nameWithOwner, newRepo];
       }),
   );
