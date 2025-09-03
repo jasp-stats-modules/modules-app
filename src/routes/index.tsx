@@ -425,7 +425,7 @@ function RepositoryCard({
           )}
           {repo.homepageUrl && (
             <a
-              title="Goto home page of module"
+              title="Go to home page of module"
               target="_blank"
               rel="noopener noreferrer"
               href={repo.homepageUrl}
