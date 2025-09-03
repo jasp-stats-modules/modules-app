@@ -427,6 +427,7 @@ function RepositoryCard({
             <a
               title="Goto home page of module"
               target="_blank"
+              rel="noopener noreferrer"
               href={repo.homepageUrl}
             >
               <House size={12} />
