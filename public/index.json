@@ -57,7 +57,7 @@
           "assets": [
             {
               "downloadUrl": "https://github.com/jasp-stats-modules/jaspAcceptanceSampling/releases/download/014ad5af_R-4-5-1/jaspAcceptanceSampling_0.95.0_Windows_x86-64_R-4-5-1.JASPModule",
-              "downloadCount": 3,
+              "downloadCount": 6,
               "architecture": "Windows_x86-64"
             },
             {
@@ -97,7 +97,7 @@
             },
             {
               "downloadUrl": "https://github.com/jasp-stats-modules/jaspAnova/releases/download/2cbd8a6d_R-4-5-1/jaspAnova_0.95.0_Windows_x86-64_R-4-5-1.JASPModule",
-              "downloadCount": 6,
+              "downloadCount": 20,
               "architecture": "Windows_x86-64"
             }
           ]
@@ -139,7 +139,7 @@
           "assets": [
             {
               "downloadUrl": "https://github.com/jasp-stats-modules/jaspAudit/releases/download/0c61b76d_R-4-5-1/jaspAudit_0.95.0_Windows_x86-64_R-4-5-1.JASPModule",
-              "downloadCount": 2,
+              "downloadCount": 3,
               "architecture": "Windows_x86-64"
             },
             {
@@ -155,7 +155,8 @@
           ]
         }
       ],
-      "preReleases": []
+      "preReleases": [],
+      "homepageUrl": "https://koenderks.github.io/jaum/"
     },
     "jasp-stats-modules/jaspBFF": {
       "name": "jaspBFF",
@@ -169,7 +170,7 @@
           "assets": [
             {
               "downloadUrl": "https://github.com/jasp-stats-modules/jaspBFF/releases/download/9ac0b730_R-4-5-1/jaspBFF_0.95.0_Windows_x86-64_R-4-5-1.JASPModule",
-              "downloadCount": 1,
+              "downloadCount": 2,
               "architecture": "Windows_x86-64"
             },
             {
@@ -259,7 +260,7 @@
           "assets": [
             {
               "downloadUrl": "https://github.com/jasp-stats-modules/jaspBsts/releases/download/c4cda11e_R-4-5-1/jaspBsts_0.95.0_Windows_x86-64_R-4-5-1.JASPModule",
-              "downloadCount": 1,
+              "downloadCount": 2,
               "architecture": "Windows_x86-64"
             },
             {
@@ -289,7 +290,7 @@
           "assets": [
             {
               "downloadUrl": "https://github.com/jasp-stats-modules/jaspCircular/releases/download/cf6367bb_R-4-5-1/jaspCircular_0.95.0_Windows_x86-64_R-4-5-1.JASPModule",
-              "downloadCount": 2,
+              "downloadCount": 3,
               "architecture": "Windows_x86-64"
             },
             {
@@ -314,7 +315,7 @@
           "assets": [
             {
               "downloadUrl": "https://github.com/jasp-stats-modules/jaspCochrane/releases/download/1cf9c6cb_R-4-5-1/jaspCochrane_0.95.0_Windows_x86-64_R-4-5-1.JASPModule",
-              "downloadCount": 1,
+              "downloadCount": 2,
               "architecture": "Windows_x86-64"
             },
             {
@@ -354,7 +355,7 @@
             },
             {
               "downloadUrl": "https://github.com/jasp-stats-modules/jaspDescriptives/releases/download/6ed8cedb_R-4-5-1/jaspDescriptives_0.95.0_Windows_x86-64_R-4-5-1.JASPModule",
-              "downloadCount": 1,
+              "downloadCount": 12,
               "architecture": "Windows_x86-64"
             }
           ]
@@ -474,7 +475,7 @@
             },
             {
               "downloadUrl": "https://github.com/jasp-stats-modules/jaspFactor/releases/download/57729b0c_R-4-5-1/jaspFactor_0.95.0_Windows_x86-64_R-4-5-1.JASPModule",
-              "downloadCount": 0,
+              "downloadCount": 6,
               "architecture": "Windows_x86-64"
             }
           ]
@@ -524,7 +525,7 @@
           "assets": [
             {
               "downloadUrl": "https://github.com/jasp-stats-modules/jaspJags/releases/download/7c2b5e98_R-4-5-1/jaspJags_0.95.0_Windows_x86-64_R-4-5-1.JASPModule",
-              "downloadCount": 0,
+              "downloadCount": 1,
               "architecture": "Windows_x86-64"
             },
             {
@@ -674,7 +675,7 @@
           "assets": [
             {
               "downloadUrl": "https://github.com/jasp-stats-modules/jaspMixedModels/releases/download/401d9203_R-4-5-1/jaspMixedModels_0.95.0_Windows_x86-64_R-4-5-1.JASPModule",
-              "downloadCount": 1,
+              "downloadCount": 9,
               "architecture": "Windows_x86-64"
             },
             {
@@ -884,7 +885,7 @@
           "assets": [
             {
               "downloadUrl": "https://github.com/jasp-stats-modules/jaspRegression/releases/download/5649cad6_R-4-5-1/jaspRegression_0.95.0_Windows_x86-64_R-4-5-1.JASPModule",
-              "downloadCount": 1,
+              "downloadCount": 4,
               "architecture": "Windows_x86-64"
             },
             {
@@ -914,7 +915,7 @@
           "assets": [
             {
               "downloadUrl": "https://github.com/jasp-stats-modules/jaspReliability/releases/download/fb0cc6f5_R-4-5-1/jaspReliability_0.95.0_Windows_x86-64_R-4-5-1.JASPModule",
-              "downloadCount": 0,
+              "downloadCount": 1,
               "architecture": "Windows_x86-64"
             },
             {
@@ -1034,7 +1035,7 @@
           "assets": [
             {
               "downloadUrl": "https://github.com/jasp-stats-modules/jaspTTests/releases/download/f5516934_R-4-5-1/jaspTTests_0.95.0_Windows_x86-64_R-4-5-1.JASPModule",
-              "downloadCount": 0,
+              "downloadCount": 1,
               "architecture": "Windows_x86-64"
             },
             {
@@ -1074,7 +1075,7 @@
             },
             {
               "downloadUrl": "https://github.com/jasp-stats-modules/jaspTestModule/releases/download/f21139e4_R-4-5-1/jaspTestModule_0.95.0_Windows_x86-64_R-4-5-1.JASPModule",
-              "downloadCount": 14,
+              "downloadCount": 15,
               "architecture": "Windows_x86-64"
             }
           ]
@@ -1094,7 +1095,7 @@
           "assets": [
             {
               "downloadUrl": "https://github.com/jasp-stats-modules/jaspVisualModeling/releases/download/55d0f2d9_R-4-5-1/jaspVisualModeling_0.95.0_Windows_x86-64_R-4-5-1.JASPModule",
-              "downloadCount": 0,
+              "downloadCount": 2,
               "architecture": "Windows_x86-64"
             },
             {
