@@ -406,10 +406,17 @@ function ReleaseStats({
 function RepositoryCard({
   repo,
   allowPreRelease,
+  channel,
 }: {
   repo: Repository;
   allowPreRelease: boolean;
+  channel?: string;
 }) {
+  console.log({
+    o: repo.organization,
+    n: repo.name,
+    c: channel,
+  });
   const {
     latestPreRelease,
     latestAnyRelease,
@@ -424,9 +431,16 @@ function RepositoryCard({
     <div className="rounded-lg border border-gray-200 bg-white p-3 shadow-sm transition-shadow duration-200 hover:shadow-md dark:border-gray-700 dark:bg-gray-800 dark:hover:shadow-lg">
       <div className="mb-2 flex items-start justify-between gap-2">
         <div>
-          <h3 className="font-semibold text-gray-900 text-lg dark:text-gray-100">
-            {repo.name}
-          </h3>
+          <div className="flex items-center gap-2">
+            <h3 className="font-semibold text-gray-900 text-lg dark:text-gray-100">
+              {repo.name}
+            </h3>
+            {channel && (
+              <span className="rounded bg-gray-100 px-2 py-0.5 text-gray-700 text-xs dark:bg-gray-700 dark:text-gray-200">
+                {channel}
+              </span>
+            )}
+          </div>
           {repo.shortDescriptionHTML && (
             <div className="prose prose-sm mb-2 text-gray-600 text-sm dark:text-gray-300">
               {repo.shortDescriptionHTML}
@@ -530,6 +544,19 @@ function filterReposBySearchTerm(
   });
 }
 
+function invertChannels(
+  channels2repos: Record<string, string[]>,
+): Map<string, string> {
+  const map: Map<string, string> = new Map();
+  for (const [ch, repos] of Object.entries(channels2repos) as [
+    string,
+    string[],
+  ][]) {
+    for (const r of repos) map.set(r, ch);
+  }
+  return map;
+}
+
 function App() {
   const {
     a: architecture,
@@ -546,6 +573,7 @@ function App() {
     initialAllowPreRelease === 1,
   );
   const availableChannels = Object.keys(channels2repos);
+  const repos2channel = invertChannels(channels2repos);
   const repoNamesOfSelectedChannels = new Set(
     selectedChannels.flatMap((ch) => channels2repos[ch] || []),
   );
@@ -601,6 +629,7 @@ function App() {
               key={`${repo.organization}/${repo.name}`}
               repo={repo}
               allowPreRelease={allowPreRelease}
+              channel={repos2channel.get(`${repo.organization}/${repo.name}`)}
             />
           ))}
           {filteredRepos.length === 0 && (
