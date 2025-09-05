@@ -8,6 +8,7 @@ import {
   notFound,
 } from '@tanstack/react-router';
 import { House } from 'lucide-react';
+import type { Dispatch, SetStateAction } from 'react';
 import { useEffect, useState } from 'react';
 import { satisfies } from 'semver';
 import * as v from 'valibot';
@@ -137,37 +138,45 @@ export const Route = createFileRoute('/')({
 });
 
 function ChannelSelector({
-  channel,
-  setChannel,
+  selectedChannels,
+  setSelectedChannels,
   channels,
   className = '',
 }: {
-  channel: string;
-  setChannel: (channel: string) => void;
+  selectedChannels: string[];
+  setSelectedChannels: Dispatch<SetStateAction<string[]>>;
   channels: string[];
   className?: string;
 }) {
   return (
-    <label
+    <fieldset
       className={cn(
-        'mb-1 block font-medium text-gray-700 text-xs dark:text-gray-300',
+        'mb-1 block rounded border border-gray-300 p-2 dark:border-gray-600',
         className,
       )}
     >
-      Select a channel:
-      <select
-        name="channel"
-        value={channel}
-        onChange={(e) => setChannel(e.target.value)}
-        className="w-full rounded border border-gray-300 bg-white px-2 py-1.5 text-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 dark:focus:border-blue-400"
-      >
-        {channels.map((channel) => (
-          <option key={channel} value={channel}>
-            {channel}
-          </option>
+      <legend className="mb-1 block font-medium text-gray-700 text-xs dark:text-gray-300">
+        Select channel:
+      </legend>
+      <div className="flex flex-wrap gap-3">
+        {channels.map((c) => (
+          <Checkbox
+            key={c}
+            checked={selectedChannels.includes(c)}
+            onChange={(checked) =>
+              setSelectedChannels((prev) => {
+                const setPrev = new Set(prev);
+                if (checked) setPrev.add(c);
+                else setPrev.delete(c);
+                return Array.from(setPrev);
+              })
+            }
+            label={c}
+            name={`channel-${c}`}
+          />
         ))}
-      </select>
-    </label>
+      </div>
+    </fieldset>
   );
 }
 
@@ -191,7 +200,7 @@ function Checkbox({
   return (
     <label
       className={cn(
-        'mb-1 flex items-center font-medium text-gray-700 text-xs dark:text-gray-300',
+        'flex items-center font-medium text-gray-700 text-xs dark:text-gray-300',
         className,
       )}
       title={description}
@@ -458,12 +467,12 @@ function RepositoryCard({
   );
 }
 
-function getReposForChannel(
+function getReposByName(
   releaseAssets: Record<string, Repository>,
-  channelMembers: string[],
+  repoNames: Set<string>,
 ): Repository[] {
   return Object.entries(releaseAssets)
-    .filter(([repo, _]) => channelMembers.includes(repo))
+    .filter(([repo, _]) => repoNames.has(repo))
     .map(([_, repo]) => repo);
 }
 
@@ -529,16 +538,23 @@ function App() {
   } = Route.useSearch();
   const { assets: releaseAssets, channels: channels2repos } =
     Route.useLoaderData();
-  const [channel, setChannel] = useState<string>(defaultChannel);
+  const [selectedChannels, setSelectedChannels] = useState<string[]>([
+    defaultChannel,
+  ]);
   const [searchTerm, setSearchTerm] = useState<string>('');
   const [allowPreRelease, setAllowPreRelease] = useState<boolean>(
     initialAllowPreRelease === 1,
   );
-  const channels = Object.keys(channels2repos);
-  const channelMembers = channels2repos[channel] || [];
-  const reposOfChannel = getReposForChannel(releaseAssets, channelMembers);
+  const availableChannels = Object.keys(channels2repos);
+  const repoNamesOfSelectedChannels = new Set(
+    selectedChannels.flatMap((ch) => channels2repos[ch] || []),
+  );
+  const reposOfSelectedChannels = getReposByName(
+    releaseAssets,
+    repoNamesOfSelectedChannels,
+  );
   const installableRepos = filterOnInstallableRepositories(
-    reposOfChannel,
+    reposOfSelectedChannels,
     installedJaspVersion,
     allowPreRelease,
     architecture,
@@ -553,9 +569,9 @@ function App() {
           <div className="flex flex-col gap-3">
             <div className="flex flex-row gap-3">
               <ChannelSelector
-                channel={channel}
-                setChannel={setChannel}
-                channels={channels}
+                selectedChannels={selectedChannels}
+                setSelectedChannels={setSelectedChannels}
+                channels={availableChannels}
               />
               <Checkbox
                 checked={allowPreRelease}
