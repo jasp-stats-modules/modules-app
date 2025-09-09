@@ -154,9 +154,9 @@ async function releaseAssetsPaged(
   const batches = batchedArray(repositoriesWithOwners, pageSize);
   const results: Repository[] = [];
   for (const batch of batches) {
-    const rawNatchResults = await releaseAssets(batch, firstAssets);
+    const rawBatchResults = await releaseAssets(batch, firstAssets);
     const batchResults = associateChannelsWithRepositories(
-      rawNatchResults,
+      rawBatchResults,
       repo2channels,
     );
     results.push(...batchResults);
