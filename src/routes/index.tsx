@@ -13,12 +13,7 @@ import { useEffect, useState } from 'react';
 import { satisfies } from 'semver';
 import * as v from 'valibot';
 import { cn } from '@/lib/utils';
-import type {
-  Release,
-  ReleaseAsset,
-  RepoReleaseAssets,
-  Repository,
-} from '@/types';
+import type { Asset, Release, Repository } from '@/types';
 
 const defaultArchitecture = 'Windows_x86-64';
 const defaultInstalledVersion = '0.95.1';
@@ -53,10 +48,7 @@ const SearchSchema = v.object({
   c: v.optional(v.fallback(v.string(), defaultCatalog), defaultCatalog),
 });
 
-interface Catalog {
-  channels: Record<string, string[]>;
-  assets: RepoReleaseAssets;
-}
+type Catalog = Repository[];
 
 async function getCatalog(
   catalogUrl: string,
@@ -234,7 +226,7 @@ function Checkbox({
   );
 }
 
-function InstallButton({ asset }: { asset?: ReleaseAsset }) {
+function InstallButton({ asset }: { asset?: Asset }) {
   if (!asset) {
     return null;
   }
@@ -248,7 +240,7 @@ function InstallButton({ asset }: { asset?: ReleaseAsset }) {
   );
 }
 
-function UpdateButton({ asset }: { asset?: ReleaseAsset }) {
+function UpdateButton({ asset }: { asset?: Asset }) {
   if (!asset) {
     return null;
   }
@@ -275,7 +267,7 @@ interface ReleaseStats {
   latestRelease?: Release;
   latestPreRelease?: Release;
   latestAnyRelease?: Release;
-  asset?: ReleaseAsset;
+  asset?: Asset;
   installedVersion?: string;
   latestVersionInstalled: boolean;
   canInstall: boolean;
@@ -348,7 +340,7 @@ function ReleaseAction({
   latestPreRelease,
   latestVersionInstalled,
 }: {
-  asset: ReleaseAsset;
+  asset: Asset;
   canUpdate: boolean;
   canInstall: boolean;
   allowPreRelease: boolean;
@@ -403,20 +395,47 @@ function ReleaseStats({
   );
 }
 
+function RepositoryLinks({ homepageUrl }: { homepageUrl?: string }) {
+  if (!homepageUrl) {
+    return null;
+  }
+  return (
+    <a
+      title="Go to home page of module"
+      target="_blank"
+      rel="noopener noreferrer"
+      href={homepageUrl}
+    >
+      <House size={12} />
+    </a>
+  );
+}
+
+function RepositoryChannels({ channels }: { channels: string[] }) {
+  if (!channels || channels.length === 0) {
+    return null;
+  }
+  return (
+    <div className="flex items-center gap-1">
+      {channels.map((channel) => (
+        <span
+          key={channel}
+          className="rounded-md bg-gray-50 px-2 py-0.5 text-gray-700 text-xs dark:bg-gray-900 dark:text-gray-400"
+          title="Channel"
+        >
+          {channel}
+        </span>
+      ))}
+    </div>
+  );
+}
 function RepositoryCard({
   repo,
   allowPreRelease,
-  channel,
 }: {
   repo: Repository;
   allowPreRelease: boolean;
-  channel?: string;
 }) {
-  console.log({
-    o: repo.organization,
-    n: repo.name,
-    c: channel,
-  });
   const {
     latestPreRelease,
     latestAnyRelease,
@@ -428,34 +447,21 @@ function RepositoryCard({
   } = useRelease(repo, allowPreRelease);
 
   return (
-    <div className="rounded-lg border border-gray-200 bg-white p-3 shadow-sm transition-shadow duration-200 hover:shadow-md dark:border-gray-700 dark:bg-gray-800 dark:hover:shadow-lg">
-      <div className="mb-2 flex items-start justify-between gap-2">
-        <div>
-          <div className="flex items-center gap-2">
-            <h3 className="font-semibold text-gray-900 text-lg dark:text-gray-100">
-              {repo.name}
-            </h3>
-            {channel && (
-              <span className="rounded bg-gray-100 px-2 py-0.5 text-gray-700 text-xs dark:bg-gray-700 dark:text-gray-200">
-                {channel}
-              </span>
-            )}
-          </div>
+    <div className="flex flex-col gap-2 rounded-lg border border-gray-200 bg-white p-3 shadow-sm transition-shadow duration-200 hover:shadow-md dark:border-gray-700 dark:bg-gray-800 dark:hover:shadow-lg">
+      <div className="flex items-start justify-between gap-2">
+        <div className="flex flex-col gap-2">
+          <h3 className="font-semibold text-gray-900 text-lg dark:text-gray-100">
+            {repo.name}
+          </h3>
           {repo.shortDescriptionHTML && (
-            <div className="prose prose-sm mb-2 text-gray-600 text-sm dark:text-gray-300">
+            <div className="prose prose-sm text-gray-600 text-sm dark:text-gray-300">
               {repo.shortDescriptionHTML}
             </div>
           )}
-          {repo.homepageUrl && (
-            <a
-              title="Go to home page of module"
-              target="_blank"
-              rel="noopener noreferrer"
-              href={repo.homepageUrl}
-            >
-              <House size={12} />
-            </a>
-          )}
+          <div className="flex items-center gap-2">
+            <RepositoryLinks homepageUrl={repo.homepageUrl} />
+            <RepositoryChannels channels={repo.channels} />
+          </div>
         </div>
         {asset && (
           <ReleaseAction
@@ -479,15 +485,6 @@ function RepositoryCard({
       )}
     </div>
   );
-}
-
-function getReposByName(
-  releaseAssets: Record<string, Repository>,
-  repoNames: Set<string>,
-): Repository[] {
-  return Object.entries(releaseAssets)
-    .filter(([repo, _]) => repoNames.has(repo))
-    .map(([_, repo]) => repo);
 }
 
 function filterOnInstallableRepositories(
@@ -544,17 +541,25 @@ function filterReposBySearchTerm(
   });
 }
 
-function invertChannels(
-  channels2repos: Record<string, string[]>,
-): Map<string, string> {
-  const map: Map<string, string> = new Map();
-  for (const [ch, repos] of Object.entries(channels2repos) as [
-    string,
-    string[],
-  ][]) {
-    for (const r of repos) map.set(r, ch);
+function uniqueChannels(repositories: Repository[]): string[] {
+  const channels = new Set<string>();
+  for (const repo of repositories) {
+    for (const ch of repo.channels) {
+      channels.add(ch);
+    }
   }
-  return map;
+  return Array.from(channels).sort();
+}
+
+function filterOnChannels(
+  repositories: Repository[],
+  selectedChannels: string[],
+): Repository[] {
+  if (selectedChannels.length === 0) return [];
+  const selectedChannelsSet = new Set(selectedChannels);
+  return repositories.filter((repo) =>
+    repo.channels.some((ch) => selectedChannelsSet.has(ch)),
+  );
 }
 
 function App() {
@@ -563,8 +568,7 @@ function App() {
     v: installedJaspVersion,
     p: initialAllowPreRelease,
   } = Route.useSearch();
-  const { assets: releaseAssets, channels: channels2repos } =
-    Route.useLoaderData();
+  const repositories: Repository[] = Route.useLoaderData();
   const [selectedChannels, setSelectedChannels] = useState<string[]>([
     defaultChannel,
   ]);
@@ -572,14 +576,10 @@ function App() {
   const [allowPreRelease, setAllowPreRelease] = useState<boolean>(
     initialAllowPreRelease === 1,
   );
-  const availableChannels = Object.keys(channels2repos);
-  const repos2channel = invertChannels(channels2repos);
-  const repoNamesOfSelectedChannels = new Set(
-    selectedChannels.flatMap((ch) => channels2repos[ch] || []),
-  );
-  const reposOfSelectedChannels = getReposByName(
-    releaseAssets,
-    repoNamesOfSelectedChannels,
+  const availableChannels = uniqueChannels(repositories);
+  const reposOfSelectedChannels = filterOnChannels(
+    repositories,
+    selectedChannels,
   );
   const installableRepos = filterOnInstallableRepositories(
     reposOfSelectedChannels,
@@ -587,7 +587,6 @@ function App() {
     allowPreRelease,
     architecture,
   );
-
   const filteredRepos = filterReposBySearchTerm(installableRepos, searchTerm);
 
   return (
@@ -629,7 +628,6 @@ function App() {
               key={`${repo.organization}/${repo.name}`}
               repo={repo}
               allowPreRelease={allowPreRelease}
-              channel={repos2channel.get(`${repo.organization}/${repo.name}`)}
             />
           ))}
           {filteredRepos.length === 0 && (

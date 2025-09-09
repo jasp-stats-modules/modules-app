@@ -7,21 +7,30 @@ import {
 import chalk from 'chalk';
 import dedent from 'dedent';
 import matter from 'gray-matter';
-import type {
-  ChanelledSubModule,
-  Release,
-  ReleaseAsset,
-  RepoReleaseAssets,
-  Repository,
-} from './types';
+import type { Asset, Release, Repository } from './types';
 
 const MyOctokit = Octokit.plugin(paginateGraphQL);
 const octokit = new MyOctokit({ auth: process.env.GITHUB_TOKEN });
 
+function url2nameWithOwner(url: string): string {
+  const match = url.match(/github\.com\/([^/]+\/[^/]+)\.git/);
+  if (!match) throw new Error(`Invalid GitHub URL: ${url}`);
+  return match[1];
+}
+
+function path2channel(path: string): string {
+  return path.split('/')[0];
+}
+
+/**
+ * Key is repository name with owner, value is array of channels (subdirectory names in modules-registry)
+ */
+type Repo2Channels = Record<string, string[]>;
+
 async function downloadSubmodules(
   owner: string = 'jasp-stats-modules',
   repo: string = 'modules-registry',
-): Promise<ChanelledSubModule[]> {
+): Promise<Repo2Channels> {
   interface GqlSubModule {
     name: string;
     gitUrl: string;
@@ -58,43 +67,17 @@ query paginate($owner: String!, $repo: String!, $cursor: String) {
       repo,
     },
   );
-  //  {
-  //         "name": "beta-modules/recapJaspModule",
-  //         "gitUrl": "https://github.com/jasp-stats-modules/recapJaspModule.git",
-  //         "path": "beta-modules/recapJaspModule"
-  //       },
-  // To:
-  // {
-  //     channel: 'beta-modules',
-  //     name: 'recapJaspModule',
-  //     owner: 'jasp-stats-modules',
-  //     repo: 'recapJaspModule'
-  // }
-  const gitUrlMustStartWith = `https://github.com/${owner}/`;
-  const filteredResult = result.repository.submodules.nodes.filter((sm) =>
-    sm.gitUrl.startsWith(gitUrlMustStartWith),
-  );
-  if (filteredResult.length !== result.repository.submodules.nodes.length) {
-    console.warn(
-      `Not all submodules in ${owner}/${repo} start with ${gitUrlMustStartWith}. This is unexpected and may lead to issues.`,
-    );
+  const submodules = result.repository.submodules.nodes;
+  const repo2channels: Repo2Channels = {};
+  for (const submodule of submodules) {
+    const channel = path2channel(submodule.path);
+    const nameWithOwner = url2nameWithOwner(submodule.gitUrl);
+    if (!repo2channels[nameWithOwner]) {
+      repo2channels[nameWithOwner] = [];
+    }
+    repo2channels[nameWithOwner].push(channel);
   }
-  return filteredResult.map((sm) => ({
-    channel: sm.path.split('/')[0],
-    owner: sm.gitUrl.split('/')[3],
-    repo: sm.gitUrl.split('/')[4].replace('.git', ''),
-    nameWithOwner: `${sm.gitUrl.split('/')[3]}/${sm.gitUrl.split('/')[4].replace('.git', '')}`,
-  }));
-}
-
-function uniqueReposFromSubmodules(
-  submodules: ChanelledSubModule[],
-): Set<string> {
-  const repos = new Set<string>();
-  for (const channel of submodules) {
-    repos.add(channel.nameWithOwner);
-  }
-  return repos;
+  return repo2channels;
 }
 
 export function extractArchitectureFromUrl(url: string): string {
@@ -161,48 +144,55 @@ function batchedArray<T>(array: T[], size: number): T[][] {
 }
 
 async function releaseAssetsPaged(
-  repos: Set<string>,
+  repo2channels: Repo2Channels,
   firstAssets = 20,
   pageSize = 100,
-): Promise<RepoReleaseAssets> {
-  const batches = batchedArray(Array.from(repos), pageSize);
-  const results: RepoReleaseAssets = {};
+): Promise<Repository[]> {
+  const repositoriesWithOwners = Object.keys(repo2channels);
+  const batches = batchedArray(repositoriesWithOwners, pageSize);
+  const results: Repository[] = [];
   for (const batch of batches) {
     const batchResults = await releaseAssets(batch, firstAssets);
-    Object.assign(results, batchResults);
+    const channeledBatchResults = associateChannelsWithRepositories(
+      batchResults,
+      repo2channels,
+    );
+    results.push(...channeledBatchResults);
   }
 
   // TODO remove once a release is on GitHub that does not work on installed JASP version
   console.log('Inserting dummy old release for jaspAnova');
   // For now we insert a dummy release,
   // try out with ?v=0.95.0 should show release below and not one with 2cbd8a6d as version
-  results['jasp-stats-modules/jaspAnova'].releases.push({
-    version: '0.94.0',
-    publishedAt: '2025-05-07T21:56:13Z',
-    jaspVersionRange: '>=0.94.0',
-    assets: [
-      {
-        downloadUrl:
-          'https://github.com/jasp-stats-modules/jaspAnova/releases/download/2cbd8a3e_R-4-4-1/jaspAnova_0.95.0_MacOS_x86_64_R-4-5-1.JASPModule',
-        downloadCount: 0,
-        architecture: 'MacOS_x86_64',
-      },
-      {
-        downloadUrl:
-          'https://github.com/jasp-stats-modules/jaspAnova/releases/download/2cbd8a3e_R-4-4-1/jaspAnova_0.95.0_MacOS_arm64_R-4-5-1.JASPModule',
-        downloadCount: 0,
-        architecture: 'MacOS_arm64',
-      },
-      {
-        downloadUrl:
-          'https://github.com/jasp-stats-modules/jaspAnova/releases/download/2cbd8a3e_R-4-4-1/jaspAnova_0.95.0_Windows_x86-64_R-4-5-1.JASPModule',
-        downloadCount: 0,
-        architecture: 'Windows_x86-64',
-      },
-    ],
-  });
+  results
+    .find((repo) => repo.releaseSource === 'jasp-stats-modules/jaspAnova')
+    ?.releases.push({
+      version: '0.94.0',
+      publishedAt: '2025-05-07T21:56:13Z',
+      jaspVersionRange: '>=0.94.0',
+      assets: [
+        {
+          downloadUrl:
+            'https://github.com/jasp-stats-modules/jaspAnova/releases/download/2cbd8a3e_R-4-4-1/jaspAnova_0.95.0_MacOS_x86_64_R-4-5-1.JASPModule',
+          downloadCount: 0,
+          architecture: 'MacOS_x86_64',
+        },
+        {
+          downloadUrl:
+            'https://github.com/jasp-stats-modules/jaspAnova/releases/download/2cbd8a3e_R-4-4-1/jaspAnova_0.95.0_MacOS_arm64_R-4-5-1.JASPModule',
+          downloadCount: 0,
+          architecture: 'MacOS_arm64',
+        },
+        {
+          downloadUrl:
+            'https://github.com/jasp-stats-modules/jaspAnova/releases/download/2cbd8a3e_R-4-4-1/jaspAnova_0.95.0_Windows_x86-64_R-4-5-1.JASPModule',
+          downloadCount: 0,
+          architecture: 'Windows_x86-64',
+        },
+      ],
+    });
 
-  return results;
+  return Object.values(results);
 }
 
 export interface GqlRelease {
@@ -234,6 +224,15 @@ interface GqlAssetsResult {
       nodes: GqlRelease[];
     };
   };
+}
+
+function associateChannelsWithRepositories(
+  batchResults: Omit<Repository, 'channels'>[],
+  repo2channels: Repo2Channels,
+): Repository[] {
+  return batchResults.map((repo) => {
+    return { ...repo, channels: repo2channels[repo.releaseSource] };
+  });
 }
 
 export function latestReleasePerJaspVersionRange(
@@ -295,7 +294,7 @@ function transformRelease(release: GqlRelease, nameWithOwner: string): Release {
     assets: releaseAssets.nodes
       .filter((asset) => asset.downloadUrl.endsWith('.JASPModule'))
       .map((a) => {
-        const asset: ReleaseAsset = {
+        const asset: Asset = {
           ...a,
           architecture: extractArchitectureFromUrl(a.downloadUrl),
         };
@@ -309,10 +308,11 @@ async function releaseAssets(
   repos: Iterable<string>,
   firstReleases = 20,
   firstAssets = 20,
-): Promise<RepoReleaseAssets> {
+): Promise<Omit<Repository, 'channels'>[]> {
   const queries = Array.from(repos)
     .map((nameWithOwner, i) => {
       const [owner, repo] = nameWithOwner.split('/');
+      // Any change to query also needs to be reflected in GqlAssetsResult interface
       return dedent`
         repo${i}: repository(owner: "${owner}", name: "${repo}") {
           name
@@ -348,72 +348,54 @@ async function releaseAssets(
 
   const result = await octokit.graphql<GqlAssetsResult>(fullQuery);
 
-  const repositories = Object.fromEntries(
-    Object.values(result)
-      .filter((repo) => {
-        if (repo.releases.nodes.length === 0) {
-          console.log(`No releases found for ${repo.nameWithOwner}. Skipping.`);
-          return false;
-        }
-        return true;
-      })
-      .map((repo) => {
-        const {
-          nameWithOwner,
-          parent: _,
-          releases,
-          homepageUrl,
-          ...restRepo
-        } = repo;
-        const productionReleases = releases.nodes.filter(
-          (r) => !r.isDraft && !r.isPrerelease,
-        );
-        const preReleases = releases.nodes.filter(
-          (r) => !r.isDraft && r.isPrerelease,
-        );
-        const newRepo: Repository = {
-          ...restRepo,
-          organization: repo.parent?.owner.login ?? 'unknown_org',
-          releases: latestReleasePerJaspVersionRange(productionReleases).map(
-            (r) => {
-              return transformRelease(r, nameWithOwner);
-            },
-          ),
-          preReleases: latestReleasePerJaspVersionRange(preReleases).map(
-            (r) => {
-              return transformRelease(r, nameWithOwner);
-            },
-          ),
-        };
-        if (homepageUrl) {
-          newRepo.homepageUrl = homepageUrl;
-        }
-        return [nameWithOwner, newRepo];
-      }),
-  );
-
-  return repositories;
+  return Object.values(result)
+    .filter((repo) => {
+      if (repo.releases.nodes.length === 0) {
+        console.log(`No releases found for ${repo.nameWithOwner}. Skipping.`);
+        return false;
+      }
+      return true;
+    })
+    .map((repo) => {
+      const {
+        nameWithOwner,
+        parent: _,
+        releases,
+        homepageUrl,
+        ...restRepo
+      } = repo;
+      const productionReleases = releases.nodes.filter(
+        (r) => !r.isDraft && !r.isPrerelease,
+      );
+      const preReleases = releases.nodes.filter(
+        (r) => !r.isDraft && r.isPrerelease,
+      );
+      const newRepo: Omit<Repository, 'channels'> = {
+        ...restRepo,
+        releaseSource: nameWithOwner,
+        organization: repo.parent?.owner.login ?? 'unknown_org',
+        releases: latestReleasePerJaspVersionRange(productionReleases).map(
+          (r) => {
+            return transformRelease(r, nameWithOwner);
+          },
+        ),
+        preReleases: latestReleasePerJaspVersionRange(preReleases).map((r) => {
+          return transformRelease(r, nameWithOwner);
+        }),
+      };
+      if (homepageUrl) {
+        newRepo.homepageUrl = homepageUrl;
+      }
+      return newRepo;
+    });
 }
 
-function compactChannels(
-  channels: ChanelledSubModule[],
-): Record<string, string[]> {
-  const compacted: Record<string, string[]> = {};
-  for (const channel of channels) {
-    if (!compacted[channel.channel]) {
-      compacted[channel.channel] = [];
-    }
-    compacted[channel.channel].push(channel.nameWithOwner);
-  }
-  return compacted;
-}
-
-function logReleaseStatistics(assets: RepoReleaseAssets) {
+function logReleaseStatistics(repositories: Repository[]) {
   let totalReleases = 0;
   let totalPreReleases = 0;
   let totalAssets = 0;
   let countedReleases = 0;
-  Object.values(assets).forEach((repo) => {
+  repositories.forEach((repo) => {
     if (repo.releases) {
       totalReleases += repo.releases.length;
       repo.releases.forEach((release) => {
@@ -429,7 +411,7 @@ function logReleaseStatistics(assets: RepoReleaseAssets) {
   });
   const avgAssetsPerRelease =
     countedReleases > 0 ? totalAssets / countedReleases : 0;
-  console.info('Repositories:', Object.keys(assets).length);
+  console.info('Repositories:', Object.keys(repositories).length);
   console.info('Total releases:', totalReleases);
   console.info('Total pre-releases:', totalPreReleases);
   // If avgAssetsPerRelease is not an int, then there is a release with not all architectures
@@ -441,9 +423,29 @@ function logReleaseStatistics(assets: RepoReleaseAssets) {
   );
 }
 
-function logChannelStats(channels: Record<string, string[]>) {
-  console.info('Found', Object.keys(channels).length, 'channels');
-  for (const [channel, repos] of Object.entries(channels)) {
+function invertRepoToChannels(repo2channels: Repo2Channels) {
+  const channel2repos: Record<string, string[]> = {};
+  for (const [repo, channels] of Object.entries(repo2channels)) {
+    if (channels.length > 1) {
+      console.info(
+        `Repository ${repo} is in multiple channels: ${channels.join(', ')}`,
+      );
+    }
+    for (const channel of channels) {
+      if (!channel2repos[channel]) {
+        channel2repos[channel] = [];
+      }
+      channel2repos[channel].push(repo);
+    }
+  }
+  return channel2repos;
+}
+
+function logChannelStats(repo2channels: Repo2Channels) {
+  const channel2repos: Record<string, string[]> =
+    invertRepoToChannels(repo2channels);
+  console.info('Found', Object.keys(channel2repos).length, 'channels');
+  for (const [channel, repos] of Object.entries(channel2repos)) {
     console.info(' - ', channel, ':', repos.length);
   }
 }
@@ -454,16 +456,14 @@ async function scrape(
   output: string = 'public/index.json',
 ) {
   console.info('Fetching submodules from', `${owner}/${repo}`);
-  const submodules = await downloadSubmodules(owner, repo);
-  const repoWithOwners = uniqueReposFromSubmodules(submodules);
-  const channels = compactChannels(submodules);
-  logChannelStats(channels);
+  const repo2channels = await downloadSubmodules(owner, repo);
+  logChannelStats(repo2channels);
   console.info('Fetching release assets');
-  const assets = await releaseAssetsPaged(repoWithOwners);
+  const repositories = await releaseAssetsPaged(repo2channels);
 
-  logReleaseStatistics(assets);
+  logReleaseStatistics(repositories);
 
-  const body = JSON.stringify({ channels, assets }, null, 2);
+  const body = JSON.stringify(repositories, null, 2);
   await fs.writeFile(output, body);
   console.log('Wrote', output);
 }
