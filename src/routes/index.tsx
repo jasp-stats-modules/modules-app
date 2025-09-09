@@ -525,7 +525,7 @@ function filterReposBySearchTerm(
 
 /**
  * Hook that determines if dark theme should be used.
- * 
+ *
  * @returns true if dark theme should be used
  */
 function useTheme(): boolean {
