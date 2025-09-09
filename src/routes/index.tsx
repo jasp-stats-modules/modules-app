@@ -48,13 +48,11 @@ const SearchSchema = v.object({
   c: v.optional(v.fallback(v.string(), defaultCatalog), defaultCatalog),
 });
 
-type Catalog = Repository[];
-
 async function getCatalog(
   catalogUrl: string,
   signal: AbortSignal,
-): Promise<Catalog> {
-  // trusting that url returns type Catalog,
+): Promise<Repository[]> {
+  // trusting that url returns type Repository[],
   // could validate schema with valibot, but why waste the users cpu cycles on that
   return fetch(catalogUrl, {
     signal,
@@ -124,7 +122,7 @@ export const Route = createFileRoute('/')({
   }),
   // @ts-expect-error TS2339 - unclear how to get typed context from docs
   loader: async ({ deps: { catalogUrl }, context: { queryClient } }) =>
-    queryClient.ensureQueryData(catalogQueryOptions(catalogUrl)),
+    await queryClient.ensureQueryData(catalogQueryOptions(catalogUrl)),
   pendingComponent: Loading,
   errorComponent: CatalogError,
 });
@@ -158,8 +156,11 @@ function ChannelSelector({
             onChange={(checked) =>
               setSelectedChannels((prev) => {
                 const setPrev = new Set(prev);
-                if (checked) setPrev.add(c);
-                else setPrev.delete(c);
+                if (checked) {
+                  setPrev.add(c);
+                } else {
+                  setPrev.delete(c);
+                }
                 return Array.from(setPrev);
               })
             }

@@ -13,17 +13,21 @@ const MyOctokit = Octokit.plugin(paginateGraphQL);
 const octokit = new MyOctokit({ auth: process.env.GITHUB_TOKEN });
 
 function url2nameWithOwner(url: string): string {
+  // For example
+  // "https://github.com/jasp-stats-modules/jaspBain.git" -> "jasp-stats-modules/jaspBain"
   const match = url.match(/github\.com\/([^/]+\/[^/]+)\.git/);
   if (!match) throw new Error(`Invalid GitHub URL: ${url}`);
   return match[1];
 }
 
 function path2channel(path: string): string {
+  // For example
+  // "jasp-modules/jaspAnova" -> "jasp-modules"
   return path.split('/')[0];
 }
 
 /**
- * Key is repository name with owner, value is array of channels (subdirectory names in modules-registry)
+ * Key is repository name with owner, value is array of channels
  */
 type Repo2Channels = Record<string, string[]>;
 
@@ -45,28 +49,26 @@ async function downloadSubmodules(
       };
     };
   }
-  const result = await octokit.graphql.paginate<Gql>(
-    `
-query paginate($owner: String!, $repo: String!, $cursor: String) {
-  repository(owner: $owner, name: $repo) {
-    submodules(first: 100, after: $cursor) {
-      nodes {
-        gitUrl
-        path
-      }
-      pageInfo {
-        hasNextPage
-        endCursor
+  const query = dedent`
+    query paginate($owner: String!, $repo: String!, $cursor: String) {
+      repository(owner: $owner, name: $repo) {
+        submodules(first: 100, after: $cursor) {
+          nodes {
+            gitUrl
+            path
+          }
+          pageInfo {
+            hasNextPage
+            endCursor
+          }
+        }
       }
     }
-  }
-}
-    `,
-    {
-      owner,
-      repo,
-    },
-  );
+  `;
+  const result = await octokit.graphql.paginate<Gql>(query, {
+    owner,
+    repo,
+  });
   const submodules = result.repository.submodules.nodes;
   const repo2channels: Repo2Channels = {};
   for (const submodule of submodules) {
@@ -152,12 +154,12 @@ async function releaseAssetsPaged(
   const batches = batchedArray(repositoriesWithOwners, pageSize);
   const results: Repository[] = [];
   for (const batch of batches) {
-    const batchResults = await releaseAssets(batch, firstAssets);
-    const channeledBatchResults = associateChannelsWithRepositories(
-      batchResults,
+    const rawNatchResults = await releaseAssets(batch, firstAssets);
+    const batchResults = associateChannelsWithRepositories(
+      rawNatchResults,
       repo2channels,
     );
-    results.push(...channeledBatchResults);
+    results.push(...batchResults);
   }
 
   // TODO remove once a release is on GitHub that does not work on installed JASP version
@@ -192,7 +194,7 @@ async function releaseAssetsPaged(
       ],
     });
 
-  return Object.values(results);
+  return results;
 }
 
 export interface GqlRelease {
@@ -231,7 +233,8 @@ function associateChannelsWithRepositories(
   repo2channels: Repo2Channels,
 ): Repository[] {
   return batchResults.map((repo) => {
-    return { ...repo, channels: repo2channels[repo.releaseSource] };
+    const channels = repo2channels[repo.releaseSource];
+    return { ...repo, channels };
   });
 }
 
@@ -411,7 +414,7 @@ function logReleaseStatistics(repositories: Repository[]) {
   });
   const avgAssetsPerRelease =
     countedReleases > 0 ? totalAssets / countedReleases : 0;
-  console.info('Repositories:', Object.keys(repositories).length);
+  console.info('Repositories:', repositories.length);
   console.info('Total releases:', totalReleases);
   console.info('Total pre-releases:', totalPreReleases);
   // If avgAssetsPerRelease is not an int, then there is a release with not all architectures
@@ -423,7 +426,9 @@ function logReleaseStatistics(repositories: Repository[]) {
   );
 }
 
-function invertRepoToChannels(repo2channels: Repo2Channels) {
+function invertRepoToChannels(
+  repo2channels: Repo2Channels,
+): Record<string, string[]> {
   const channel2repos: Record<string, string[]> = {};
   for (const [repo, channels] of Object.entries(repo2channels)) {
     if (channels.length > 1) {
@@ -442,8 +447,7 @@ function invertRepoToChannels(repo2channels: Repo2Channels) {
 }
 
 function logChannelStats(repo2channels: Repo2Channels) {
-  const channel2repos: Record<string, string[]> =
-    invertRepoToChannels(repo2channels);
+  const channel2repos = invertRepoToChannels(repo2channels);
   console.info('Found', Object.keys(channel2repos).length, 'channels');
   for (const [channel, repos] of Object.entries(channel2repos)) {
     console.info(' - ', channel, ':', repos.length);

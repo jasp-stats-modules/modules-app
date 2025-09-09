@@ -29,7 +29,9 @@
       }
     ],
     "preReleases": [],
-    "channels": ["jasp-modules"]
+    "channels": [
+      "jasp-modules"
+    ]
   },
   {
     "name": "jaspAnova",
@@ -83,7 +85,9 @@
       }
     ],
     "preReleases": [],
-    "channels": ["core-modules"]
+    "channels": [
+      "core-modules"
+    ]
   },
   {
     "name": "jaspAudit",
@@ -116,7 +120,9 @@
     ],
     "preReleases": [],
     "homepageUrl": "https://koenderks.github.io/jaum/",
-    "channels": ["jasp-modules"]
+    "channels": [
+      "jasp-modules"
+    ]
   },
   {
     "name": "jaspBFF",
@@ -148,7 +154,9 @@
       }
     ],
     "preReleases": [],
-    "channels": ["jasp-modules"]
+    "channels": [
+      "jasp-modules"
+    ]
   },
   {
     "name": "jaspBain",
@@ -180,7 +188,9 @@
       }
     ],
     "preReleases": [],
-    "channels": ["jasp-modules"]
+    "channels": [
+      "jasp-modules"
+    ]
   },
   {
     "name": "jaspBfpack",
@@ -212,7 +222,9 @@
       }
     ],
     "preReleases": [],
-    "channels": ["jasp-modules"]
+    "channels": [
+      "jasp-modules"
+    ]
   },
   {
     "name": "jaspBsts",
@@ -244,7 +256,9 @@
       }
     ],
     "preReleases": [],
-    "channels": ["jasp-modules"]
+    "channels": [
+      "jasp-modules"
+    ]
   },
   {
     "name": "jaspCircular",
@@ -271,7 +285,9 @@
       }
     ],
     "preReleases": [],
-    "channels": ["jasp-modules"]
+    "channels": [
+      "jasp-modules"
+    ]
   },
   {
     "name": "jaspCochrane",
@@ -303,7 +319,9 @@
       }
     ],
     "preReleases": [],
-    "channels": ["jasp-modules"]
+    "channels": [
+      "jasp-modules"
+    ]
   },
   {
     "name": "jaspDescriptives",
@@ -335,7 +353,9 @@
       }
     ],
     "preReleases": [],
-    "channels": ["core-modules"]
+    "channels": [
+      "core-modules"
+    ]
   },
   {
     "name": "jaspDistributions",
@@ -367,7 +387,9 @@
       }
     ],
     "preReleases": [],
-    "channels": ["jasp-modules"]
+    "channels": [
+      "jasp-modules"
+    ]
   },
   {
     "name": "jaspEquivalenceTTests",
@@ -399,7 +421,9 @@
       }
     ],
     "preReleases": [],
-    "channels": ["jasp-modules"]
+    "channels": [
+      "jasp-modules"
+    ]
   },
   {
     "name": "jaspEsci",
@@ -431,7 +455,9 @@
       }
     ],
     "preReleases": [],
-    "channels": ["jasp-modules"]
+    "channels": [
+      "jasp-modules"
+    ]
   },
   {
     "name": "jaspFactor",
@@ -463,7 +489,9 @@
       }
     ],
     "preReleases": [],
-    "channels": ["core-modules"]
+    "channels": [
+      "core-modules"
+    ]
   },
   {
     "name": "jaspFrequencies",
@@ -495,7 +523,9 @@
         ]
       }
     ],
-    "channels": ["core-modules"]
+    "channels": [
+      "core-modules"
+    ]
   },
   {
     "name": "jaspJags",
@@ -527,7 +557,9 @@
       }
     ],
     "preReleases": [],
-    "channels": ["jasp-modules"]
+    "channels": [
+      "jasp-modules"
+    ]
   },
   {
     "name": "jaspLearnBayes",
@@ -559,7 +591,9 @@
       }
     ],
     "preReleases": [],
-    "channels": ["jasp-modules"]
+    "channels": [
+      "jasp-modules"
+    ]
   },
   {
     "name": "jaspLearnStats",
@@ -591,7 +625,9 @@
       }
     ],
     "preReleases": [],
-    "channels": ["jasp-modules"]
+    "channels": [
+      "jasp-modules"
+    ]
   },
   {
     "name": "jaspMachineLearning",
@@ -623,7 +659,9 @@
       }
     ],
     "preReleases": [],
-    "channels": ["jasp-modules"]
+    "channels": [
+      "jasp-modules"
+    ]
   },
   {
     "name": "jaspMetaAnalysis",
@@ -655,7 +693,9 @@
       }
     ],
     "preReleases": [],
-    "channels": ["jasp-modules"]
+    "channels": [
+      "jasp-modules"
+    ]
   },
   {
     "name": "jaspMixedModels",
@@ -687,7 +727,9 @@
       }
     ],
     "preReleases": [],
-    "channels": ["core-modules"]
+    "channels": [
+      "core-modules"
+    ]
   },
   {
     "name": "jaspNetwork",
@@ -719,7 +761,9 @@
       }
     ],
     "preReleases": [],
-    "channels": ["jasp-modules"]
+    "channels": [
+      "jasp-modules"
+    ]
   },
   {
     "name": "jaspPower",
@@ -751,7 +795,9 @@
       }
     ],
     "preReleases": [],
-    "channels": ["jasp-modules"]
+    "channels": [
+      "jasp-modules"
+    ]
   },
   {
     "name": "jaspPredictiveAnalytics",
@@ -783,7 +829,9 @@
       }
     ],
     "preReleases": [],
-    "channels": ["jasp-modules"]
+    "channels": [
+      "jasp-modules"
+    ]
   },
   {
     "name": "jaspProcess",
@@ -815,7 +863,9 @@
       }
     ],
     "preReleases": [],
-    "channels": ["jasp-modules"]
+    "channels": [
+      "jasp-modules"
+    ]
   },
   {
     "name": "jaspProphet",
@@ -847,7 +897,9 @@
       }
     ],
     "preReleases": [],
-    "channels": ["jasp-modules"]
+    "channels": [
+      "jasp-modules"
+    ]
   },
   {
     "name": "jaspQualityControl",
@@ -879,7 +931,9 @@
       }
     ],
     "preReleases": [],
-    "channels": ["jasp-modules"]
+    "channels": [
+      "jasp-modules"
+    ]
   },
   {
     "name": "jaspRegression",
@@ -911,7 +965,9 @@
       }
     ],
     "preReleases": [],
-    "channels": ["core-modules"]
+    "channels": [
+      "core-modules"
+    ]
   },
   {
     "name": "jaspReliability",
@@ -943,7 +999,9 @@
       }
     ],
     "preReleases": [],
-    "channels": ["jasp-modules"]
+    "channels": [
+      "jasp-modules"
+    ]
   },
   {
     "name": "jaspSem",
@@ -975,7 +1033,9 @@
       }
     ],
     "preReleases": [],
-    "channels": ["jasp-modules"]
+    "channels": [
+      "jasp-modules"
+    ]
   },
   {
     "name": "jaspSummaryStatistics",
@@ -1007,7 +1067,9 @@
       }
     ],
     "preReleases": [],
-    "channels": ["jasp-modules"]
+    "channels": [
+      "jasp-modules"
+    ]
   },
   {
     "name": "jaspSurvival",
@@ -1039,7 +1101,9 @@
       }
     ],
     "preReleases": [],
-    "channels": ["jasp-modules"]
+    "channels": [
+      "jasp-modules"
+    ]
   },
   {
     "name": "jaspTTests",
@@ -1071,7 +1135,9 @@
       }
     ],
     "preReleases": [],
-    "channels": ["core-modules"]
+    "channels": [
+      "core-modules"
+    ]
   },
   {
     "name": "jaspTestModule",
@@ -1103,7 +1169,9 @@
       }
     ],
     "preReleases": [],
-    "channels": ["beta-modules"]
+    "channels": [
+      "beta-modules"
+    ]
   },
   {
     "name": "jaspVisualModeling",
@@ -1135,6 +1203,8 @@
       }
     ],
     "preReleases": [],
-    "channels": ["jasp-modules"]
+    "channels": [
+      "jasp-modules"
+    ]
   }
 ]
