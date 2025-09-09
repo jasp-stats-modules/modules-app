@@ -46,6 +46,8 @@ const SearchSchema = v.object({
   p: v.optional(v.picklist([0, 1]), 0),
   // The URL for the catalog of modules
   c: v.optional(v.fallback(v.string(), defaultCatalog), defaultCatalog),
+  // Theme: dark or light or system
+  t: v.optional(v.picklist(['dark', 'light', 'system']), 'system'),
 });
 
 async function getCatalog(
@@ -542,6 +544,19 @@ function filterReposBySearchTerm(
   });
 }
 
+/**
+ * Hook that determines if dark theme should be used.
+ *
+ * @returns true if dark theme should be used
+ */
+function useTheme(): boolean {
+  const { t: theme } = Route.useSearch();
+  const systemThemeIsDark = window.matchMedia(
+    '(prefers-color-scheme: dark)',
+  ).matches;
+  return theme === 'dark' || (theme === 'system' && systemThemeIsDark);
+}
+
 function uniqueChannels(repositories: Repository[]): string[] {
   const channels = new Set<string>();
   for (const repo of repositories) {
@@ -569,6 +584,7 @@ function App() {
     v: installedJaspVersion,
     p: initialAllowPreRelease,
   } = Route.useSearch();
+  const isDarkTheme = useTheme();
   const repositories: Repository[] = Route.useLoaderData();
   const [selectedChannels, setSelectedChannels] = useState<string[]>([
     defaultChannel,
@@ -591,7 +607,12 @@ function App() {
   const filteredRepos = filterReposBySearchTerm(installableRepos, searchTerm);
 
   return (
-    <main className="min-h-screen bg-gray-50 py-4 text-gray-900 dark:bg-gray-900 dark:text-gray-100">
+    <main
+      className={cn(
+        'min-h-screen bg-gray-50 py-4 text-gray-900 dark:bg-gray-900 dark:text-gray-100',
+        isDarkTheme && 'dark',
+      )}
+    >
       <div className="w-full px-2">
         <div className="mb-4 rounded-lg border border-gray-200 bg-white p-3 shadow-sm dark:border-gray-700 dark:bg-gray-800">
           <div className="flex flex-col gap-3">
