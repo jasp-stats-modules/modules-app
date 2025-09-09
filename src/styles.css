@@ -1,5 +1,8 @@
 @import "tailwindcss";
 
+/* biome-ignore lint/suspicious/noUnknownAtRules: tailwind-ism */
+@custom-variant dark (&:where(.dark, .dark *));
+
 body {
   /* biome-ignore lint/suspicious/noUnknownAtRules: tailwind plugin */
   @apply m-0;
