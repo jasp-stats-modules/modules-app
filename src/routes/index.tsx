@@ -8,16 +8,12 @@ import {
   notFound,
 } from '@tanstack/react-router';
 import { House } from 'lucide-react';
+import type { Dispatch, SetStateAction } from 'react';
 import { useEffect, useState } from 'react';
 import { satisfies } from 'semver';
 import * as v from 'valibot';
 import { cn } from '@/lib/utils';
-import type {
-  Release,
-  ReleaseAsset,
-  RepoReleaseAssets,
-  Repository,
-} from '@/types';
+import type { Asset, Release, Repository } from '@/types';
 
 const defaultArchitecture = 'Windows_x86-64';
 const defaultInstalledVersion = '0.95.1';
@@ -27,7 +23,7 @@ const defaultInstalledModules = () => ({
   jaspEquivalenceTTests: '7aad95f4',
   jaspTTests: 'a8098ba98',
 });
-const defaultChannel = 'core-modules';
+const defaultChannel = 'jasp-modules';
 const defaultCatalog = 'index.json';
 
 const SearchSchema = v.object({
@@ -52,16 +48,11 @@ const SearchSchema = v.object({
   c: v.optional(v.fallback(v.string(), defaultCatalog), defaultCatalog),
 });
 
-interface Catalog {
-  channels: Record<string, string[]>;
-  assets: RepoReleaseAssets;
-}
-
 async function getCatalog(
   catalogUrl: string,
   signal: AbortSignal,
-): Promise<Catalog> {
-  // trusting that url returns type Catalog,
+): Promise<Repository[]> {
+  // trusting that url returns type Repository[],
   // could validate schema with valibot, but why waste the users cpu cycles on that
   return fetch(catalogUrl, {
     signal,
@@ -131,43 +122,54 @@ export const Route = createFileRoute('/')({
   }),
   // @ts-expect-error TS2339 - unclear how to get typed context from docs
   loader: async ({ deps: { catalogUrl }, context: { queryClient } }) =>
-    queryClient.ensureQueryData(catalogQueryOptions(catalogUrl)),
+    await queryClient.ensureQueryData(catalogQueryOptions(catalogUrl)),
   pendingComponent: Loading,
   errorComponent: CatalogError,
 });
 
 function ChannelSelector({
-  channel,
-  setChannel,
+  selectedChannels,
+  setSelectedChannels,
   channels,
   className = '',
 }: {
-  channel: string;
-  setChannel: (channel: string) => void;
+  selectedChannels: string[];
+  setSelectedChannels: Dispatch<SetStateAction<string[]>>;
   channels: string[];
   className?: string;
 }) {
   return (
-    <label
+    <fieldset
       className={cn(
-        'mb-1 block font-medium text-gray-700 text-xs dark:text-gray-300',
+        'mb-1 block rounded border border-gray-300 p-2 dark:border-gray-600',
         className,
       )}
     >
-      Select a channel:
-      <select
-        name="channel"
-        value={channel}
-        onChange={(e) => setChannel(e.target.value)}
-        className="w-full rounded border border-gray-300 bg-white px-2 py-1.5 text-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 dark:focus:border-blue-400"
-      >
-        {channels.map((channel) => (
-          <option key={channel} value={channel}>
-            {channel}
-          </option>
+      <legend className="mb-1 block font-medium text-gray-700 text-xs dark:text-gray-300">
+        Select channel:
+      </legend>
+      <div className="flex flex-wrap gap-3">
+        {channels.map((c) => (
+          <Checkbox
+            key={c}
+            checked={selectedChannels.includes(c)}
+            onChange={(checked) =>
+              setSelectedChannels((prev) => {
+                const setPrev = new Set(prev);
+                if (checked) {
+                  setPrev.add(c);
+                } else {
+                  setPrev.delete(c);
+                }
+                return Array.from(setPrev);
+              })
+            }
+            label={c}
+            name={`channel-${c}`}
+          />
         ))}
-      </select>
-    </label>
+      </div>
+    </fieldset>
   );
 }
 
@@ -191,7 +193,7 @@ function Checkbox({
   return (
     <label
       className={cn(
-        'mb-1 flex items-center font-medium text-gray-700 text-xs dark:text-gray-300',
+        'flex items-center font-medium text-gray-700 text-xs dark:text-gray-300',
         className,
       )}
       title={description}
@@ -225,7 +227,7 @@ function Checkbox({
   );
 }
 
-function InstallButton({ asset }: { asset?: ReleaseAsset }) {
+function InstallButton({ asset }: { asset?: Asset }) {
   if (!asset) {
     return null;
   }
@@ -239,7 +241,7 @@ function InstallButton({ asset }: { asset?: ReleaseAsset }) {
   );
 }
 
-function UpdateButton({ asset }: { asset?: ReleaseAsset }) {
+function UpdateButton({ asset }: { asset?: Asset }) {
   if (!asset) {
     return null;
   }
@@ -266,7 +268,7 @@ interface ReleaseStats {
   latestRelease?: Release;
   latestPreRelease?: Release;
   latestAnyRelease?: Release;
-  asset?: ReleaseAsset;
+  asset?: Asset;
   installedVersion?: string;
   latestVersionInstalled: boolean;
   canInstall: boolean;
@@ -339,7 +341,7 @@ function ReleaseAction({
   latestPreRelease,
   latestVersionInstalled,
 }: {
-  asset: ReleaseAsset;
+  asset: Asset;
   canUpdate: boolean;
   canInstall: boolean;
   allowPreRelease: boolean;
@@ -394,6 +396,40 @@ function ReleaseStats({
   );
 }
 
+function RepositoryLinks({ homepageUrl }: { homepageUrl?: string }) {
+  if (!homepageUrl) {
+    return null;
+  }
+  return (
+    <a
+      title="Go to home page of module"
+      target="_blank"
+      rel="noopener noreferrer"
+      href={homepageUrl}
+    >
+      <House size={12} />
+    </a>
+  );
+}
+
+function RepositoryChannels({ channels }: { channels: string[] }) {
+  if (!channels || channels.length === 0) {
+    return null;
+  }
+  return (
+    <div className="flex items-center gap-1">
+      {channels.map((channel) => (
+        <span
+          key={channel}
+          className="rounded-md bg-gray-50 px-2 py-0.5 text-gray-700 text-xs dark:bg-gray-900 dark:text-gray-400"
+          title="Channel"
+        >
+          {channel}
+        </span>
+      ))}
+    </div>
+  );
+}
 function RepositoryCard({
   repo,
   allowPreRelease,
@@ -412,27 +448,21 @@ function RepositoryCard({
   } = useRelease(repo, allowPreRelease);
 
   return (
-    <div className="rounded-lg border border-gray-200 bg-white p-3 shadow-sm transition-shadow duration-200 hover:shadow-md dark:border-gray-700 dark:bg-gray-800 dark:hover:shadow-lg">
-      <div className="mb-2 flex items-start justify-between gap-2">
-        <div>
+    <div className="flex flex-col gap-2 rounded-lg border border-gray-200 bg-white p-3 shadow-sm transition-shadow duration-200 hover:shadow-md dark:border-gray-700 dark:bg-gray-800 dark:hover:shadow-lg">
+      <div className="flex items-start justify-between gap-2">
+        <div className="flex flex-col gap-2">
           <h3 className="font-semibold text-gray-900 text-lg dark:text-gray-100">
             {repo.name}
           </h3>
           {repo.shortDescriptionHTML && (
-            <div className="prose prose-sm mb-2 text-gray-600 text-sm dark:text-gray-300">
+            <div className="prose prose-sm text-gray-600 text-sm dark:text-gray-300">
               {repo.shortDescriptionHTML}
             </div>
           )}
-          {repo.homepageUrl && (
-            <a
-              title="Go to home page of module"
-              target="_blank"
-              rel="noopener noreferrer"
-              href={repo.homepageUrl}
-            >
-              <House size={12} />
-            </a>
-          )}
+          <div className="flex items-center gap-2">
+            <RepositoryLinks homepageUrl={repo.homepageUrl} />
+            <RepositoryChannels channels={repo.channels} />
+          </div>
         </div>
         {asset && (
           <ReleaseAction
@@ -456,15 +486,6 @@ function RepositoryCard({
       )}
     </div>
   );
-}
-
-function getReposForChannel(
-  releaseAssets: Record<string, Repository>,
-  channelMembers: string[],
-): Repository[] {
-  return Object.entries(releaseAssets)
-    .filter(([repo, _]) => channelMembers.includes(repo))
-    .map(([_, repo]) => repo);
 }
 
 function filterOnInstallableRepositories(
@@ -521,29 +542,52 @@ function filterReposBySearchTerm(
   });
 }
 
+function uniqueChannels(repositories: Repository[]): string[] {
+  const channels = new Set<string>();
+  for (const repo of repositories) {
+    for (const ch of repo.channels) {
+      channels.add(ch);
+    }
+  }
+  return Array.from(channels).sort();
+}
+
+function filterOnChannels(
+  repositories: Repository[],
+  selectedChannels: string[],
+): Repository[] {
+  if (selectedChannels.length === 0) return [];
+  const selectedChannelsSet = new Set(selectedChannels);
+  return repositories.filter((repo) =>
+    repo.channels.some((ch) => selectedChannelsSet.has(ch)),
+  );
+}
+
 function App() {
   const {
     a: architecture,
     v: installedJaspVersion,
     p: initialAllowPreRelease,
   } = Route.useSearch();
-  const { assets: releaseAssets, channels: channels2repos } =
-    Route.useLoaderData();
-  const [channel, setChannel] = useState<string>(defaultChannel);
+  const repositories: Repository[] = Route.useLoaderData();
+  const [selectedChannels, setSelectedChannels] = useState<string[]>([
+    defaultChannel,
+  ]);
   const [searchTerm, setSearchTerm] = useState<string>('');
   const [allowPreRelease, setAllowPreRelease] = useState<boolean>(
     initialAllowPreRelease === 1,
   );
-  const channels = Object.keys(channels2repos);
-  const channelMembers = channels2repos[channel] || [];
-  const reposOfChannel = getReposForChannel(releaseAssets, channelMembers);
+  const availableChannels = uniqueChannels(repositories);
+  const reposOfSelectedChannels = filterOnChannels(
+    repositories,
+    selectedChannels,
+  );
   const installableRepos = filterOnInstallableRepositories(
-    reposOfChannel,
+    reposOfSelectedChannels,
     installedJaspVersion,
     allowPreRelease,
     architecture,
   );
-
   const filteredRepos = filterReposBySearchTerm(installableRepos, searchTerm);
 
   return (
@@ -553,9 +597,9 @@ function App() {
           <div className="flex flex-col gap-3">
             <div className="flex flex-row gap-3">
               <ChannelSelector
-                channel={channel}
-                setChannel={setChannel}
-                channels={channels}
+                selectedChannels={selectedChannels}
+                setSelectedChannels={setSelectedChannels}
+                channels={availableChannels}
               />
               <Checkbox
                 checked={allowPreRelease}
