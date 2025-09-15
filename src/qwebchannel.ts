@@ -159,6 +159,13 @@ export var QWebChannel = function (transport, initCallback) {
       );
       return;
     }
+    if (!channel.execCallbacks.hasOwnProperty(message.id)) {
+      console.error(
+        'No callback for response message with id ' + message.id,
+        ', possibly timed out or already called?',
+      );
+      return;
+    }
     channel.execCallbacks[message.id](message.data);
     delete channel.execCallbacks[message.id];
   };

@@ -1,5 +1,6 @@
 import {
   queryOptions,
+  useQuery,
   useQueryErrorResetBoundary,
 } from '@tanstack/react-query';
 import {
@@ -18,7 +19,7 @@ import type {
   RepoReleaseAssets,
   Repository,
 } from '@/types';
-import { useJaspQtObject } from '@/useJaspQtObject';
+import { jaspQtObject } from '@/useJaspQtObject';
 
 const defaultArchitecture = 'Windows_x86-64';
 const defaultInstalledVersion = '0.95.1';
@@ -27,9 +28,12 @@ const defaultInstalledVersion = '0.95.1';
 const defaultInstalledModules = () => ({
   jaspEquivalenceTTests: '7aad95f4',
   jaspTTests: 'a8098ba98',
+  jaspAnova: '2cbd8a6d',
 });
 const defaultChannel = 'core-modules';
 const defaultCatalog = 'index.json';
+// Cannot fetch catalog from qrc: scheme
+// const defaultCatalog = 'https://jasp-stats-modules.github.io/modules-app/index.json'
 
 const SearchSchema = v.object({
   // Architecture of installed JASP
@@ -255,21 +259,38 @@ function UpdateButton({ asset }: { asset?: ReleaseAsset }) {
 }
 
 function UninstallButton({ moduleName }: { moduleName: string }) {
-  const jasp = useJaspQtObject();
+  // const jasp = useJaspQtObject();
+  const { data: jasp, isPending, isFetched  } = useQuery({
+    queryKey: ['jaspQtObject'],
+    queryFn: jaspQtObject,
+  })
   const { i: installedModules } = Route.useSearch();
   const navigate = useNavigate({ from: Route.fullPath });
 
+  if (moduleName === 'jaspAnova') {
+    console.log({
+      moduleName,
+      jasp,
+      isFetched,
+      isPending
+    })
+  }
+
+  if (isPending) return 'Connecting...'
+
   // Only able to uninstall when running within qt webengine
-  if (!jasp) {
+  if (isFetched && !jasp) {
     return null;
   }
 
+
   function uninstall() {
+    console.log('Uninstalling', moduleName, jasp);
     jasp?.uninstall(moduleName);
     // remove from installedModules list
-    const newInstalledModules = { ...installedModules };
-    delete newInstalledModules[moduleName];
-    navigate({ search: { i: newInstalledModules } });
+    // const newInstalledModules = { ...installedModules };
+    // delete newInstalledModules[moduleName];
+    // navigate({ search: { i: newInstalledModules } });
   }
 
   return (

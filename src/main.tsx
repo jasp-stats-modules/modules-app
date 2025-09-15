@@ -23,6 +23,7 @@ const router = createRouter({
   context: {
     queryClient,
   },
+  // Hash does not work in qrc: scheme
   history: hashHistory,
   defaultPreload: 'intent',
   scrollRestoration: true,
