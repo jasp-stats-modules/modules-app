@@ -41,7 +41,7 @@ jobs:
       - name: Build project
         run: pnpm build
         env:
-          BASE_URL: '/modules-app/'
+          BASE_URL: 'module-library.jasp-stats.org/modules-app/'
 
       - name: Upload dist/ as artifact
         uses: actions/upload-pages-artifact@v3
