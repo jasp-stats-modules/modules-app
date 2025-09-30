@@ -8,7 +8,7 @@ Welcome to JASP stats modules web app!
 [![Research Software Directory Badge](https://img.shields.io/badge/rsd-jasp_modules_app-00a3e3.svg)](https://research-software-directory.org/software/jasp-modules-app)
 
 
-A web application hosted at https://jasp-stats-modules.github.io/modules-app/ that allows you to search/filter all the available JASP modules and install them.
+A web application hosted at https://module-library.jasp-stats.org/ that allows you to search/filter all the available JASP modules and install them.
 
 [![Screenshot of the app](screenshot.png)](screenshot.png)
 
