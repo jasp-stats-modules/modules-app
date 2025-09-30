@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { QWebChannel } from './qwebchannel';
+import { useQuery } from '@tanstack/react-query';
 
 /*
 
@@ -13,15 +14,26 @@ cmake --build jasp-build --target all -j6
 QTWEBENGINE_REMOTE_DEBUGGING=8123 ./jasp-build/Desktop/JASP --safeGraphics 
 */
 
-interface ModuleInfo {
-  name: string;
+interface Info {
   version: string;
+  arch: string;
+  theme: string;
+  developerMode: boolean;
+  font: string;
+  language: string;
+  installedModules: Record<string, string>;
+}
+
+interface JaspObject {
+  uninstall: (module: string) => void;
+  info: () => Promise<Info>;
 }
 
 interface JaspQtObject {
   uninstall: (module: string) => void;
-  listOfModules: () => Promise<ModuleInfo[]>;
+  info: (callback: (info: Info) => void) => void;
 }
+
 
 interface JaspQWebChannel {
   objects: {
@@ -31,14 +43,30 @@ interface JaspQWebChannel {
   };
 }
 
-export async function jaspQtObject(): Promise<JaspQtObject | null> {
+export async function jaspQtObject(): Promise<JaspObject | null> {
   const insideQt = typeof qt !== 'undefined';
+  console.log(qt)
   if (!insideQt) {
     return null;
   }
   const channel = await createQtWebChannel(qt.webChannelTransport);
   console.log('Created Qt WebChannel', channel.objects);
-  return channel.objects.undefined;
+  const jasp = channel.objects.undefined;
+  const ainfo = () => {
+    return new Promise<Info>((resolve, reject) => {
+      try {
+        jasp.info((info: Info) => {
+          resolve(info);
+        });
+      } catch (error) {
+        reject(error);
+      }
+    });
+  };
+  return {
+    info: ainfo,
+    uninstall: jasp.uninstall,
+  };
 }
 
 async function createQtWebChannel(
@@ -55,15 +83,9 @@ async function createQtWebChannel(
   });
 }
 
-export function useJaspQtObject(): JaspQtObject | null {
-  const [jasp, setJasp] = useState<JaspQtObject | null>(null);
-
-  useEffect(() => {
-    jaspQtObject().then((d) => {
-      console.log('Got jaspQtObject', d);
-      setJasp(d);
-    });
-  }, []);
-
-  return jasp;
+export function useJaspQtObject() {
+  return useQuery({
+    queryKey: ['jaspQtObject'],
+    queryFn: jaspQtObject,
+  });
 }

@@ -10,7 +10,7 @@ import type {
   RepoReleaseAssets,
   Repository,
 } from '@/types';
-import { jaspQtObject } from '@/useJaspQtObject';
+import { jaspQtObject, useJaspQtObject } from '@/useJaspQtObject';
 
 const defaultArchitecture = 'Windows_x86-64';
 const defaultInstalledVersion = '0.95.1';
@@ -171,10 +171,7 @@ function UninstallButton({ moduleName }: { moduleName: string }) {
     data: jasp,
     isPending,
     isFetched,
-  } = useQuery({
-    queryKey: ['jaspQtObject'],
-    queryFn: jaspQtObject,
-  });
+  } = useJaspQtObject();
 
   if (moduleName === 'jaspAnova') {
     console.log({
@@ -503,6 +500,32 @@ export function App() {
   );
 
   const filteredRepos = filterReposBySearchTerm(installableRepos, searchTerm);
+
+  const { data: jasp, isFetched } = useJaspQtObject();
+  const {data: info, isFetched: isInfoFetched} = useQuery({
+    queryKey: ['jaspInfo'],
+    queryFn: async () => {
+      console.log('Fetching jasp info', jasp);
+      const result = await jasp!.info()
+      console.log('Fetched jasp info', result);
+      return result
+    },
+    enabled: !!jasp && isFetched,
+  })
+
+  console.log(jasp, isFetched, info, isInfoFetched);
+  if (jasp) {
+    return (
+      <div>
+        <pre>
+          {JSON.stringify(info, null, 2)}
+        </pre>
+        <button type="button" onClick={() => jasp.uninstall('jaspAnova')}>
+          Uninstall jaspAnova
+        </button>
+      </div>
+    )
+  }
 
   return (
     <main className="min-h-screen bg-gray-50 py-4 text-gray-900 dark:bg-gray-900 dark:text-gray-100">
