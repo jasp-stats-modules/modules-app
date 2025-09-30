@@ -1,15 +1,6 @@
-import {
-  queryOptions,
-  useQuery,
-  useQueryErrorResetBoundary,
-} from '@tanstack/react-query';
-import {
-  createFileRoute,
-  type ErrorComponentProps,
-  notFound,
-  useNavigate,
-} from '@tanstack/react-router';
-import { useEffect, useState } from 'react';
+import { useQuery } from '@tanstack/react-query';
+
+import { useState } from 'react';
 import { satisfies } from 'semver';
 import * as v from 'valibot';
 import { cn } from '@/lib/utils';
@@ -35,7 +26,7 @@ const defaultCatalog = 'index.json';
 // Cannot fetch catalog from qrc: scheme
 // const defaultCatalog = 'https://jasp-stats-modules.github.io/modules-app/index.json'
 
-const SearchSchema = v.object({
+const _SearchSchema = v.object({
   // Architecture of installed JASP
   a: v.optional(
     v.fallback(v.string(), defaultArchitecture),
@@ -55,90 +46,6 @@ const SearchSchema = v.object({
   p: v.optional(v.picklist([0, 1]), 0),
   // The URL for the catalog of modules
   c: v.optional(v.fallback(v.string(), defaultCatalog), defaultCatalog),
-});
-
-interface Catalog {
-  channels: Record<string, string[]>;
-  assets: RepoReleaseAssets;
-}
-
-async function getCatalog(
-  catalogUrl: string,
-  signal: AbortSignal,
-): Promise<Catalog> {
-  // trusting that url returns type Catalog,
-  // could validate schema with valibot, but why waste the users cpu cycles on that
-  return fetch(catalogUrl, {
-    signal,
-  })
-    .then((res) => {
-      if (!res.ok) {
-        if (res.status === 404) {
-          notFound();
-        }
-        throw res;
-      }
-      return res;
-    })
-    .then((res) => res.json());
-}
-
-function Loading() {
-  return (
-    <div className="flex h-screen items-center justify-center bg-gray-50 dark:bg-gray-900">
-      <div className="flex flex-col items-center rounded-lg border border-gray-200 bg-white p-6 shadow-sm transition-shadow duration-200 hover:shadow-md dark:border-gray-700 dark:bg-gray-800 dark:hover:shadow-lg">
-        <div className="text-gray-700 dark:text-gray-200">
-          Loading list of available modules
-        </div>
-        <div className="mt-3">
-          <span className="block h-10 w-10 animate-spin rounded-full border-4 border-blue-500 border-t-transparent"></span>
-        </div>
-      </div>
-    </div>
-  );
-}
-
-function CatalogError({ error }: ErrorComponentProps) {
-  const queryErrorResetBoundary = useQueryErrorResetBoundary();
-
-  useEffect(() => {
-    queryErrorResetBoundary.reset();
-  }, [queryErrorResetBoundary]);
-
-  return (
-    <div className="flex h-screen items-center justify-center bg-gray-50 dark:bg-gray-900">
-      <div className="flex flex-col items-center rounded-lg border-4 border-red-200 bg-white p-6 shadow-sm transition-shadow duration-200 hover:shadow-md dark:border-gray-700 dark:bg-gray-800 dark:hover:shadow-lg">
-        <details>
-          <summary className="mt-2 cursor-pointer font-medium text-gray-700 text-sm dark:text-gray-200">
-            Error loading list of available modules
-          </summary>
-          <pre className="mt-2 rounded-md bg-gray-100 p-2 dark:bg-gray-800">
-            {error.name}: {error.message}
-          </pre>
-        </details>
-      </div>
-    </div>
-  );
-}
-
-const catalogQueryOptions = (catalogUrl: string) =>
-  queryOptions({
-    queryKey: ['catalog', { catalogUrl }],
-    queryFn: ({ signal }) => getCatalog(catalogUrl, signal),
-  });
-
-export const Route = createFileRoute('/')({
-  component: App,
-  // component: Loading,
-  validateSearch: SearchSchema,
-  loaderDeps: ({ search: { c } }) => ({
-    catalogUrl: c,
-  }),
-  // @ts-expect-error TS2339 - unclear how to get typed context from docs
-  loader: async ({ deps: { catalogUrl }, context: { queryClient } }) =>
-    queryClient.ensureQueryData(catalogQueryOptions(catalogUrl)),
-  pendingComponent: Loading,
-  errorComponent: CatalogError,
 });
 
 function ChannelSelector({
@@ -260,37 +167,34 @@ function UpdateButton({ asset }: { asset?: ReleaseAsset }) {
 
 function UninstallButton({ moduleName }: { moduleName: string }) {
   // const jasp = useJaspQtObject();
-  const { data: jasp, isPending, isFetched  } = useQuery({
+  const {
+    data: jasp,
+    isPending,
+    isFetched,
+  } = useQuery({
     queryKey: ['jaspQtObject'],
     queryFn: jaspQtObject,
-  })
-  const { i: installedModules } = Route.useSearch();
-  const navigate = useNavigate({ from: Route.fullPath });
+  });
 
   if (moduleName === 'jaspAnova') {
     console.log({
       moduleName,
       jasp,
       isFetched,
-      isPending
-    })
+      isPending,
+    });
   }
 
-  if (isPending) return 'Connecting...'
+  if (isPending) return 'Connecting...';
 
   // Only able to uninstall when running within qt webengine
   if (isFetched && !jasp) {
     return null;
   }
 
-
   function uninstall() {
     console.log('Uninstalling', moduleName, jasp);
     jasp?.uninstall(moduleName);
-    // remove from installedModules list
-    // const newInstalledModules = { ...installedModules };
-    // delete newInstalledModules[moduleName];
-    // navigate({ search: { i: newInstalledModules } });
   }
 
   return (
@@ -569,14 +473,20 @@ function filterReposBySearchTerm(
   });
 }
 
-function App() {
+export function App() {
+  // TODO get params from qt webchannel
   const {
     a: architecture,
     v: installedJaspVersion,
     p: initialAllowPreRelease,
-  } = Route.useSearch();
-  const { assets: releaseAssets, channels: channels2repos } =
-    Route.useLoaderData();
+  } = {
+    a: defaultArchitecture,
+    v: defaultInstalledVersion,
+    p: 0,
+  };
+  // TODO get assets and channels using react query
+  const releaseAssets: RepoReleaseAssets = {};
+  const channels2repos: Record<string, string[]> = {};
   const [channel, setChannel] = useState<string>(defaultChannel);
   const [searchTerm, setSearchTerm] = useState<string>('');
   const [allowPreRelease, setAllowPreRelease] = useState<boolean>(

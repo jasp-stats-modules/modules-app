@@ -61,7 +61,7 @@ export function useJaspQtObject(): JaspQtObject | null {
   useEffect(() => {
     jaspQtObject().then((d) => {
       console.log('Got jaspQtObject', d);
-      setJasp(d)
+      setJasp(d);
     });
   }, []);
 
