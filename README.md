@@ -6,7 +6,7 @@ Welcome to JASP stats modules web app!
 [![Code quality](https://github.com/jasp-stats-modules/modules-app/actions/workflows/quality.yml/badge.svg)](https://github.com/jasp-stats-modules/modules-app/actions/workflows/quality.yml)
 [![FAIR checklist badge](https://fairsoftwarechecklist.net/badge.svg)](https://fairsoftwarechecklist.net/v0.2?f=31&a=32113&i=22300&r=113)
 [![Research Software Directory Badge](https://img.shields.io/badge/rsd-jasp_modules_app-00a3e3.svg)](https://research-software-directory.org/software/jasp-modules-app)
-
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.17305936.svg)](https://doi.org/10.5281/zenodo.17305936)
 
 A web application hosted at https://module-library.jasp-stats.org/ that allows you to search/filter all the available JASP modules and install them.
 
