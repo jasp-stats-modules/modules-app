@@ -1,6 +1,5 @@
-import { useEffect, useState } from 'react';
-import { QWebChannel } from './qwebchannel';
 import { useQuery } from '@tanstack/react-query';
+import { QWebChannel } from './qwebchannel';
 
 /*
 
@@ -25,33 +24,29 @@ interface Info {
 }
 
 interface JaspObject {
-  uninstall: (module: string) => void;
+  uninstall: (module: string) => Promise<void>;
   info: () => Promise<Info>;
 }
 
 interface JaspQtObject {
-  uninstall: (module: string) => void;
+  __id__: string;
+  uninstall: (module: string, callback: () => void) => void;
   info: (callback: (info: Info) => void) => void;
 }
 
-
 interface JaspQWebChannel {
   objects: {
-    // When in ModuleMenu.qml the url is http://<ipaddress>:3000
-    // then WebChannel.id is 'undefined'
-    undefined: JaspQtObject;
+    moduleStore: JaspQtObject;
   };
 }
 
 export async function jaspQtObject(): Promise<JaspObject | null> {
   const insideQt = typeof qt !== 'undefined';
-  console.log(qt)
   if (!insideQt) {
     return null;
   }
   const channel = await createQtWebChannel(qt.webChannelTransport);
-  console.log('Created Qt WebChannel', channel.objects);
-  const jasp = channel.objects.undefined;
+  const jasp = channel.objects.moduleStore;
   const ainfo = () => {
     return new Promise<Info>((resolve, reject) => {
       try {
@@ -65,7 +60,17 @@ export async function jaspQtObject(): Promise<JaspObject | null> {
   };
   return {
     info: ainfo,
-    uninstall: jasp.uninstall,
+    uninstall: (module: string) => {
+      return new Promise<void>((resolve, reject) => {
+        try {
+          jasp.uninstall(module, () => {
+            resolve();
+          });
+        } catch (error) {
+          reject(error);
+        }
+      });
+    },
   };
 }
 

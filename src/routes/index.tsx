@@ -10,7 +10,7 @@ import type {
   RepoReleaseAssets,
   Repository,
 } from '@/types';
-import { jaspQtObject, useJaspQtObject } from '@/useJaspQtObject';
+import { useJaspQtObject } from '@/useJaspQtObject';
 
 const defaultArchitecture = 'Windows_x86-64';
 const defaultInstalledVersion = '0.95.1';
@@ -167,11 +167,7 @@ function UpdateButton({ asset }: { asset?: ReleaseAsset }) {
 
 function UninstallButton({ moduleName }: { moduleName: string }) {
   // const jasp = useJaspQtObject();
-  const {
-    data: jasp,
-    isPending,
-    isFetched,
-  } = useJaspQtObject();
+  const { data: jasp, isPending, isFetched } = useJaspQtObject();
 
   if (moduleName === 'jaspAnova') {
     console.log({
@@ -471,23 +467,32 @@ function filterReposBySearchTerm(
 }
 
 export function App() {
-  // TODO get params from qt webchannel
+  const { data: jasp, isFetched, error } = useJaspQtObject();
   const {
-    a: architecture,
-    v: installedJaspVersion,
-    p: initialAllowPreRelease,
-  } = {
-    a: defaultArchitecture,
-    v: defaultInstalledVersion,
-    p: 0,
-  };
+    data: info,
+    isFetched: isInfoFetched,
+    error: infoError,
+  } = useQuery({
+    queryKey: ['jaspInfo'],
+    queryFn: async () => {
+      console.log('Fetching jasp info', jasp);
+      const result = await jasp?.info();
+      console.log('Fetched jasp info', result);
+      return result;
+    },
+    enabled: !!jasp && isFetched,
+  });
+  const architecture = info?.arch || defaultArchitecture;
+  const installedJaspVersion = info?.version || defaultInstalledVersion;
+  const initialAllowPreRelease = info?.developerMode || false;
+
   // TODO get assets and channels using react query
   const releaseAssets: RepoReleaseAssets = {};
   const channels2repos: Record<string, string[]> = {};
   const [channel, setChannel] = useState<string>(defaultChannel);
   const [searchTerm, setSearchTerm] = useState<string>('');
   const [allowPreRelease, setAllowPreRelease] = useState<boolean>(
-    initialAllowPreRelease === 1,
+    initialAllowPreRelease,
   );
   const channels = Object.keys(channels2repos);
   const channelMembers = channels2repos[channel] || [];
@@ -501,30 +506,14 @@ export function App() {
 
   const filteredRepos = filterReposBySearchTerm(installableRepos, searchTerm);
 
-  const { data: jasp, isFetched } = useJaspQtObject();
-  const {data: info, isFetched: isInfoFetched} = useQuery({
-    queryKey: ['jaspInfo'],
-    queryFn: async () => {
-      console.log('Fetching jasp info', jasp);
-      const result = await jasp!.info()
-      console.log('Fetched jasp info', result);
-      return result
-    },
-    enabled: !!jasp && isFetched,
-  })
-
-  console.log(jasp, isFetched, info, isInfoFetched);
-  if (jasp) {
-    return (
-      <div>
-        <pre>
-          {JSON.stringify(info, null, 2)}
-        </pre>
-        <button type="button" onClick={() => jasp.uninstall('jaspAnova')}>
-          Uninstall jaspAnova
-        </button>
-      </div>
-    )
+  if (error) {
+    return <div>Error: {`${error}`}</div>;
+  }
+  if (infoError) {
+    return <div>Error: {`${infoError}`}</div>;
+  }
+  if (!isInfoFetched) {
+    return <div>Loading...</div>;
   }
 
   return (

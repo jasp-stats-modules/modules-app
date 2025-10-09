@@ -204,7 +204,7 @@ export var QWebChannel = function (transport, initCallback) {
   });
 };
 
-function QObject(_name, data, webChannel) {
+function QObject(name, data, webChannel) {
   this.__id__ = name;
   webChannel.objects[name] = this;
 

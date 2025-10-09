@@ -20,12 +20,12 @@ export default defineConfig({
   build: {
     sourcemap: true,
     minify: false,
-     rollupOptions: {
+    rollupOptions: {
       output: {
         entryFileNames: 'assets/[name].js',
         chunkFileNames: 'assets/[name].js',
-        assetFileNames: 'assets/[name].[ext]'
-      }
-    }
+        assetFileNames: 'assets/[name].[ext]',
+      },
+    },
   },
 });
