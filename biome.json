@@ -14,7 +14,7 @@
       "index.html",
       "vite.config.ts",
       "!src/routeTree.gen.ts",
-      "!src/index.json"
+      "!public/index.json"
     ]
   },
   "formatter": {

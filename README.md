@@ -8,7 +8,7 @@ Welcome to JASP stats modules web app!
 [![Research Software Directory Badge](https://img.shields.io/badge/rsd-jasp_modules_app-00a3e3.svg)](https://research-software-directory.org/software/jasp-modules-app)
 
 
-A web application hosted at https://jasp-stats-modules.github.io/modules-app/ that allows you to search/filter all the available JASP modules and install them.
+A web application hosted at https://module-library.jasp-stats.org/ that allows you to search/filter all the available JASP modules and install them.
 
 [![Screenshot of the app](screenshot.png)](screenshot.png)
 
@@ -27,6 +27,7 @@ The JASP desktop application can tell the web application which version/architec
 - c: URL for the catalog aka index.json. 
    When not set uses `index.json` (`public/index.json` in local development or on deployed site uses `https://jasp-stats-modules.github.io/modules-app/index.json`).
    If URL is not a relative path aka other server then make sure correct [CORS headers](https://developer.mozilla.org/en-US/docs/Web/HTTP/Guides/CORS) are returned on server that hosts index.json.
+- t: Theme. Use `dark` for dark theme, `light` for light theme, and `system` to match system theme (default).
 
 A full URL could look like [https://jasp-stats-modules.github.io/modules-app/?a=Windows_x86-64&v=0.95.0&i=%7B%22jaspEquivalenceTTests%22%3A%220.95.0%22%2C%22jaspTTests%22%3A%220.94.0%22%7D&p=0](https://jasp-stats-modules.github.io/modules-app/?a=Windows_x86-64&v=0.95.0&i=%7B%22jaspEquivalenceTTests%22%3A%220.95.0%22%2C%22jaspTTests%22%3A%220.94.0%22%7D&p=0).
 

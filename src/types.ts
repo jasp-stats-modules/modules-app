@@ -1,17 +1,6 @@
 // Types shared between scrape script and web app
 
-export interface SubModule {
-  owner: string;
-  repo: string;
-  nameWithOwner: string;
-}
-export interface ChanelledSubModule extends SubModule {
-  channel: string;
-}
-
-export type Repos = Record<string, SubModule[]>;
-
-export interface ReleaseAsset {
+export interface Asset {
   downloadUrl: string;
   downloadCount: number;
   architecture: string;
@@ -20,27 +9,22 @@ export interface ReleaseAsset {
 export interface Release {
   version: string;
   publishedAt: string;
+  // each jaspVersionRange can have own latest release
   jaspVersionRange?: string;
-  assets: ReleaseAsset[];
+  assets: Asset[];
 }
 
 export interface Repository {
   name: string;
   shortDescriptionHTML: string;
-  // each jaspVersionRange can have own latest release
+  homepageUrl?: string;
   releases: Release[];
   preReleases: Release[];
+  // Parent organization from which repo was forked to https://github.com/jasp-stats-modules/
   organization: string;
+  // repo (nameWithOwner format) in https://github.com/jasp-stats-modules/modules-registry
+  // where submodule is pointing to
+  releaseSource: string;
+  // directories in which the submodule are located
+  channels: string[];
 }
-
-export interface RepoReleaseAssets {
-  [key: string]: Repository;
-}
-
-export type Releases = Record<
-  string,
-  {
-    shortDescriptionHTML: string;
-    releases: Release[];
-  }
->;
