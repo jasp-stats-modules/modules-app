@@ -97,7 +97,7 @@ export function extractArchitectureFromUrl(url: string): string {
   if (filename.includes('Windows_arm64')) {
     return 'Windows_arm64';
   }
-  if (filename.includes('Linux_x86_64') || filename.includes('Linux_x86-64')) {
+  if (filename.includes('Flatpak_x86_64')) {
     return 'Linux_x86_64';
   }
   if (filename.includes('Linux_arm64')) {
