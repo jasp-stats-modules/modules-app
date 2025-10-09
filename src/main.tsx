@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom/client';
 
 import './styles.css';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { NuqsAdapter } from 'nuqs/adapters/react';
 import reportWebVitals from './reportWebVitals.ts';
 import { App } from './routes/index.tsx';
 
@@ -14,9 +15,11 @@ if (rootElement && !rootElement.innerHTML) {
   const root = ReactDOM.createRoot(rootElement);
   root.render(
     <StrictMode>
-      <QueryClientProvider client={queryClient}>
-        <App />
-      </QueryClientProvider>
+      <NuqsAdapter>
+        <QueryClientProvider client={queryClient}>
+          <App />
+        </QueryClientProvider>
+      </NuqsAdapter>
     </StrictMode>,
   );
 }

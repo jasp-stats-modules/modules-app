@@ -1,19 +1,18 @@
-import {
-  queryOptions,
-  useQuery,
-} from '@tanstack/react-query';
+import { queryOptions, useQuery } from '@tanstack/react-query';
 import { House } from 'lucide-react';
+import {
+  parseAsInteger,
+  parseAsJson,
+  parseAsStringLiteral,
+  useQueryState,
+} from 'nuqs';
 import type { Dispatch, SetStateAction } from 'react';
 import { useState } from 'react';
 import { satisfies } from 'semver';
 import * as v from 'valibot';
 import { cn } from '@/lib/utils';
-import type {
-  Asset,
-  Release,
-  Repository,
-} from '@/types';
-import { useJaspQtObject } from '@/useJaspQtObject';
+import type { Asset, Release, Repository } from '@/types';
+import { type Info, useJaspQtObject } from '@/useJaspQtObject';
 
 const defaultArchitecture = 'Windows_x86-64';
 const defaultInstalledVersion = '0.95.1';
@@ -88,7 +87,6 @@ function Loading() {
     </div>
   );
 }
-
 
 const catalogQueryOptions = (catalogUrl: string) =>
   queryOptions({
@@ -225,10 +223,13 @@ function UpdateButton({ asset }: { asset?: Asset }) {
 }
 
 function UninstallButton({ moduleName }: { moduleName: string }) {
+  const { data: jasp } = useJaspQtObject();
 
-
-  function uninstall() {
+  async function uninstall() {
     console.log('Uninstalling', moduleName);
+    await jasp?.uninstall(moduleName);
+    console.log('Uninstalled', moduleName);
+    // TODO force refresh of installed modules using react-query
   }
 
   return (
@@ -336,6 +337,7 @@ function ReleaseAction({
   latestPreRelease?: Release;
   latestVersionInstalled: boolean;
 }) {
+  const insideQt = typeof qt !== 'undefined';
   return (
     <div className="flex flex-col">
       {canUpdate && <UpdateButton asset={asset} />}
@@ -345,7 +347,7 @@ function ReleaseAction({
           Pre release
         </span>
       )}
-      {(canUpdate || latestVersionInstalled) && (
+      {insideQt && (canUpdate || latestVersionInstalled) && (
         <UninstallButton moduleName={moduleName} />
       )}
       {latestVersionInstalled && (
@@ -567,7 +569,43 @@ function filterOnChannels(
   );
 }
 
+const installedModulesSchema = v.record(v.string(), v.string());
+const themeSchema = ['dark', 'light', 'system'] as const;
+
+function useInfoFromSearchParams() {
+  const [version] = useQueryState('v', {
+    defaultValue: defaultInstalledVersion,
+  });
+  const [arch] = useQueryState('a', { defaultValue: defaultArchitecture });
+  const [installedModules] = useQueryState(
+    'i',
+    parseAsJson(installedModulesSchema).withDefault(defaultInstalledModules()),
+  );
+  const [allowPreRelease] = useQueryState('p', parseAsInteger.withDefault(0));
+  const [theme] = useQueryState(
+    't',
+    parseAsStringLiteral(themeSchema).withDefault('system'),
+  );
+
+  const info: Info = {
+    version: version || defaultInstalledVersion,
+    arch: arch || defaultArchitecture,
+    theme: theme || 'system',
+    developerMode: allowPreRelease === 1,
+    installedModules: installedModules || defaultInstalledModules(),
+    // TODO also expose below via search params
+    font: 'SansSerif',
+    language: 'en',
+  };
+  return info;
+}
+
 function useInfo() {
+  // if app is running inside JASP, then
+  // info from Qt webchannel is used otherwise
+  // info from search params is used.
+  const insideQt = typeof qt !== 'undefined';
+  const infoFromSearchParams = useInfoFromSearchParams();
   const { data: jasp, isFetched, error } = useJaspQtObject();
   const {
     data: info,
@@ -581,17 +619,24 @@ function useInfo() {
       console.log('Fetched jasp info', result);
       return result;
     },
-    enabled: !!jasp && isFetched,
+    enabled: insideQt && !!jasp && isFetched,
   });
+  if (!insideQt) {
+    return { info: infoFromSearchParams, isInfoFetched: true, error: null };
+  }
   return { info, isInfoFetched, error: error || infoError };
 }
 
 export function App() {
-  const { info,error , isInfoFetched} = useInfo();
+  const { info, error, isInfoFetched } = useInfo();
   const architecture = info?.arch || defaultArchitecture;
   const installedJaspVersion = info?.version || defaultInstalledVersion;
   const initialAllowPreRelease = info?.developerMode || false;
-  const {data: repositories, isFetched: isRepositoriesFetched, error: repositoriesError} = useQuery(
+  const {
+    data: repositories,
+    isFetched: isRepositoriesFetched,
+    error: repositoriesError,
+  } = useQuery(
     catalogQueryOptions('https://module-library.jasp-stats.org/index.json'),
   );
   const isDarkTheme = useTheme();
@@ -662,6 +707,10 @@ export function App() {
             </div>
           </div>
         </div>
+        <details>
+          <summary>Debug info</summary>
+          <pre>{JSON.stringify(info, null, 2)}</pre>
+        </details>
 
         <div className="space-y-3">
           {filteredRepos.map((repo) => (

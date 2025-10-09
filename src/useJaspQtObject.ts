@@ -3,9 +3,9 @@ import { QWebChannel } from './qwebchannel';
 
 /*
 
-rm -r ../jasp-desktop/Desktop/html/store/
-BASE_URL=/html/store/ pnpm build
-cp -r dist ../jasp-desktop/Desktop/html/store/
+rm -r ../jasp-desktop/Desktop/html/catalog/
+BASE_URL=/html/catalog/ pnpm build
+cp -r dist ../jasp-desktop/Desktop/html/catalog/
 
 
 rm -r jasp-build/Desktop/.qt/rcc/html.qrc 
@@ -13,7 +13,7 @@ cmake --build jasp-build --target all -j6
 QTWEBENGINE_REMOTE_DEBUGGING=8123 ./jasp-build/Desktop/JASP --safeGraphics 
 */
 
-interface Info {
+export interface Info {
   version: string;
   arch: string;
   theme: string;
