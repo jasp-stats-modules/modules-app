@@ -5,10 +5,9 @@ license: "Apache-2.0"
 authors:
 - family-names: "JASP Team"
 title: "JASP stats modules web application"
-url: "https://jasp-stats-modules.github.io/modules-app/"
+url: "https://module-library.jasp-stats.org/"
 repository-code: "https://github.com/jasp-stats-modules/modules-app"
 identifiers:
   - description: Latest version of software
     type: doi
-    # TODO once we have a DOI, add it here
-    value: "10.5281/zenodo.1234567"
+    value: "10.5281/zenodo.17305935"
