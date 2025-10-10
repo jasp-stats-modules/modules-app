@@ -25,8 +25,6 @@ const defaultInstalledModules = () => ({
 });
 const defaultChannel = 'jasp-modules';
 const defaultCatalog = 'index.json';
-// Cannot fetch catalog from qrc: scheme
-// const defaultCatalog = 'https://jasp-stats-modules.github.io/modules-app/index.json'
 
 const _SearchSchema = v.object({
   // Architecture of installed JASP
@@ -56,8 +54,6 @@ async function getCatalog(
   catalogUrl: string,
   signal: AbortSignal,
 ): Promise<Repository[]> {
-  // trusting that url returns type Repository[],
-  // could validate schema with valibot, but why waste the users cpu cycles on that
   return fetch(catalogUrl, {
     signal,
   })
@@ -632,13 +628,12 @@ export function App() {
   const architecture = info?.arch || defaultArchitecture;
   const installedJaspVersion = info?.version || defaultInstalledVersion;
   const initialAllowPreRelease = info?.developerMode || false;
+  const [catalogUrl] = useQueryState('c', { defaultValue: defaultCatalog });
   const {
     data: repositories,
     isFetched: isRepositoriesFetched,
     error: repositoriesError,
-  } = useQuery(
-    catalogQueryOptions('https://module-library.jasp-stats.org/index.json'),
-  );
+  } = useQuery(catalogQueryOptions(catalogUrl));
   const isDarkTheme = useTheme();
   const [selectedChannels, setSelectedChannels] = useState<string[]>([
     defaultChannel,
@@ -664,7 +659,7 @@ export function App() {
     return <div>Error: {`${error}`}</div>;
   }
   if (repositoriesError) {
-    return <div>Error: {`${repositoriesError}`}</div>;
+    return <div>Error!: {`${repositoriesError}`}</div>;
   }
   if (!isInfoFetched && !isRepositoriesFetched) {
     return <Loading />;

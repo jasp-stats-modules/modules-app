@@ -33,7 +33,7 @@ To develop/test the qt webchannel integration, you must run the web app inside J
 1. Start development server with `pnpm dev`.
 2. Make server accessible to JASP by using a tunneling service like [ngrok](https://ngrok.com/). Start ngrok proxy with `ngrok http 3000 --url https://<your_ngrok_subdomain>.ngrok-free.dev --basic-auth "<user>:<password>"`.
 3. In ./vite.config.ts, add your ngrok subdomain to the `allowedHosts` array in the `server` section.
-4. In ../jasp-desktop/Desktop/components/JASP/Widgets/ModulesMenu.qml file in WebEngineView section, set **url** to ngrok URL including the basic auth and comment out the production url. For example "https://<user>:<password>@<your_ngrok_subdomain>.ngrok-free.dev".
+4. In ../jasp-desktop/Desktop/components/JASP/Widgets/ModulesMenu.qml file in WebEngineView section, set **url** to ngrok URL including the basic auth and comment out the production url. For example "https://<user>:<password>@<your_ngrok_subdomain>.ngrok-free.dev?c=https://module-library.jasp-stats.org/index.json". Qt webengine does not support calling js fetch on a basic auth protected url, so we need to specify a remote catalog url.
 5. Follow JASP compile and run instructions at https://github.com/jasp-escience/jasp-desktop/blob/webchannel-test/Docs/development/jasp-build-guide-linux.md#build--run-inside-the-container .
 6. Open the module menu. You should see your web app loading inside JASP with [HMR](https://vite.dev/guide/features.html#hot-module-replacement).
 
