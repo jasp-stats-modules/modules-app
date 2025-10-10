@@ -1,19 +1,18 @@
-import {
-  queryOptions,
-  useQueryErrorResetBoundary,
-} from '@tanstack/react-query';
-import {
-  createFileRoute,
-  type ErrorComponentProps,
-  notFound,
-} from '@tanstack/react-router';
+import { queryOptions, useQuery } from '@tanstack/react-query';
 import { House } from 'lucide-react';
+import {
+  parseAsInteger,
+  parseAsJson,
+  parseAsStringLiteral,
+  useQueryState,
+} from 'nuqs';
 import type { Dispatch, SetStateAction } from 'react';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { satisfies } from 'semver';
 import * as v from 'valibot';
 import { cn } from '@/lib/utils';
 import type { Asset, Release, Repository } from '@/types';
+import { type Info, useJaspQtObject } from '@/useJaspQtObject';
 
 const defaultArchitecture = 'Windows_x86-64';
 const defaultInstalledVersion = '0.95.1';
@@ -22,11 +21,12 @@ const defaultInstalledVersion = '0.95.1';
 const defaultInstalledModules = () => ({
   jaspEquivalenceTTests: '7aad95f4',
   jaspTTests: 'a8098ba98',
+  jaspAnova: '2cbd8a6d',
 });
 const defaultChannel = 'jasp-modules';
 const defaultCatalog = 'index.json';
 
-const SearchSchema = v.object({
+const _SearchSchema = v.object({
   // Architecture of installed JASP
   a: v.optional(
     v.fallback(v.string(), defaultArchitecture),
@@ -54,15 +54,13 @@ async function getCatalog(
   catalogUrl: string,
   signal: AbortSignal,
 ): Promise<Repository[]> {
-  // trusting that url returns type Repository[],
-  // could validate schema with valibot, but why waste the users cpu cycles on that
   return fetch(catalogUrl, {
     signal,
   })
     .then((res) => {
       if (!res.ok) {
         if (res.status === 404) {
-          notFound();
+          throw new Error(`Catalog not found at ${catalogUrl}`);
         }
         throw res;
       }
@@ -86,48 +84,11 @@ function Loading() {
   );
 }
 
-function CatalogError({ error }: ErrorComponentProps) {
-  const queryErrorResetBoundary = useQueryErrorResetBoundary();
-
-  useEffect(() => {
-    queryErrorResetBoundary.reset();
-  }, [queryErrorResetBoundary]);
-
-  return (
-    <div className="flex h-screen items-center justify-center bg-gray-50 dark:bg-gray-900">
-      <div className="flex flex-col items-center rounded-lg border-4 border-red-200 bg-white p-6 shadow-sm transition-shadow duration-200 hover:shadow-md dark:border-gray-700 dark:bg-gray-800 dark:hover:shadow-lg">
-        <details>
-          <summary className="mt-2 cursor-pointer font-medium text-gray-700 text-sm dark:text-gray-200">
-            Error loading list of available modules
-          </summary>
-          <pre className="mt-2 rounded-md bg-gray-100 p-2 dark:bg-gray-800">
-            {error.name}: {error.message}
-          </pre>
-        </details>
-      </div>
-    </div>
-  );
-}
-
 const catalogQueryOptions = (catalogUrl: string) =>
   queryOptions({
     queryKey: ['catalog', { catalogUrl }],
     queryFn: ({ signal }) => getCatalog(catalogUrl, signal),
   });
-
-export const Route = createFileRoute('/')({
-  component: App,
-  // component: Loading,
-  validateSearch: SearchSchema,
-  loaderDeps: ({ search: { c } }) => ({
-    catalogUrl: c,
-  }),
-  // @ts-expect-error TS2339 - unclear how to get typed context from docs
-  loader: async ({ deps: { catalogUrl }, context: { queryClient } }) =>
-    await queryClient.ensureQueryData(catalogQueryOptions(catalogUrl)),
-  pendingComponent: Loading,
-  errorComponent: CatalogError,
-});
 
 function ChannelSelector({
   selectedChannels,
@@ -257,6 +218,28 @@ function UpdateButton({ asset }: { asset?: Asset }) {
   );
 }
 
+function UninstallButton({ moduleName }: { moduleName: string }) {
+  const { data: jasp } = useJaspQtObject();
+
+  async function uninstall() {
+    console.log('Uninstalling', moduleName);
+    await jasp?.uninstall(moduleName);
+    console.log('Uninstalled', moduleName);
+    // TODO force refresh of installed modules using react-query
+  }
+
+  return (
+    <button
+      type="button"
+      onClick={uninstall}
+      title="Uninstall this module"
+      className="mt-3 inline-flex items-center rounded bg-red-500 px-3 py-1.5 font-medium text-white text-xs transition-colors duration-200 hover:bg-red-700 dark:bg-red-700 dark:hover:bg-red-800"
+    >
+      Uninstall
+    </button>
+  );
+}
+
 function findReleaseThatSatisfiesInstalledJaspVersion(
   releases: Release[],
   installed_version: string,
@@ -278,12 +261,10 @@ interface ReleaseStats {
 }
 
 function useRelease(repo: Repository, allowPreRelease: boolean): ReleaseStats {
-  const {
-    i: installedModules,
-    a: arch,
-    v: installedJaspVersion,
-  } = Route.useSearch();
-
+  const { info } = useInfo();
+  const arch = info?.arch || defaultArchitecture;
+  const installedJaspVersion = info?.version || defaultInstalledVersion;
+  const installedModules = info?.installedModules || defaultInstalledModules();
   return getReleaseInfo(
     repo,
     installedJaspVersion,
@@ -336,6 +317,7 @@ function getReleaseInfo(
 }
 
 function ReleaseAction({
+  moduleName,
   asset,
   canUpdate,
   canInstall,
@@ -343,6 +325,7 @@ function ReleaseAction({
   latestPreRelease,
   latestVersionInstalled,
 }: {
+  moduleName: string;
   asset: Asset;
   canUpdate: boolean;
   canInstall: boolean;
@@ -350,6 +333,7 @@ function ReleaseAction({
   latestPreRelease?: Release;
   latestVersionInstalled: boolean;
 }) {
+  const insideQt = typeof qt !== 'undefined';
   return (
     <div className="flex flex-col">
       {canUpdate && <UpdateButton asset={asset} />}
@@ -358,6 +342,9 @@ function ReleaseAction({
         <span className="text-gray-500 text-xs dark:text-gray-400">
           Pre release
         </span>
+      )}
+      {insideQt && (canUpdate || latestVersionInstalled) && (
+        <UninstallButton moduleName={moduleName} />
       )}
       {latestVersionInstalled && (
         <span
@@ -468,6 +455,7 @@ function RepositoryCard({
         </div>
         {asset && (
           <ReleaseAction
+            moduleName={repo.name}
             asset={asset}
             canUpdate={canUpdate}
             canInstall={canInstall}
@@ -550,11 +538,10 @@ function filterReposBySearchTerm(
  * @returns true if dark theme should be used
  */
 function useTheme(): boolean {
-  const { t: theme } = Route.useSearch();
-  const systemThemeIsDark = window.matchMedia(
-    '(prefers-color-scheme: dark)',
-  ).matches;
-  return theme === 'dark' || (theme === 'system' && systemThemeIsDark);
+  const { info } = useInfo();
+  if (info?.theme === 'dark') return true;
+  if (info?.theme === 'light') return false;
+  return false;
 }
 
 function uniqueChannels(repositories: Repository[]): string[] {
@@ -578,24 +565,86 @@ function filterOnChannels(
   );
 }
 
-function App() {
+const installedModulesSchema = v.record(v.string(), v.string());
+const themeSchema = ['dark', 'light', 'system'] as const;
+
+function useInfoFromSearchParams() {
+  const [version] = useQueryState('v', {
+    defaultValue: defaultInstalledVersion,
+  });
+  const [arch] = useQueryState('a', { defaultValue: defaultArchitecture });
+  const [installedModules] = useQueryState(
+    'i',
+    parseAsJson(installedModulesSchema).withDefault(defaultInstalledModules()),
+  );
+  const [allowPreRelease] = useQueryState('p', parseAsInteger.withDefault(0));
+  const [theme] = useQueryState(
+    't',
+    parseAsStringLiteral(themeSchema).withDefault('system'),
+  );
+
+  const info: Info = {
+    version: version || defaultInstalledVersion,
+    arch: arch || defaultArchitecture,
+    theme: theme || 'system',
+    developerMode: allowPreRelease === 1,
+    installedModules: installedModules || defaultInstalledModules(),
+    // TODO also expose below via search params
+    font: 'SansSerif',
+    language: 'en',
+  };
+  return info;
+}
+
+function useInfo() {
+  // if app is running inside JASP, then
+  // info from Qt webchannel is used otherwise
+  // info from search params is used.
+  const insideQt = typeof qt !== 'undefined';
+  const infoFromSearchParams = useInfoFromSearchParams();
+  const { data: jasp, isFetched, error } = useJaspQtObject();
   const {
-    a: architecture,
-    v: installedJaspVersion,
-    p: initialAllowPreRelease,
-  } = Route.useSearch();
+    data: info,
+    isFetched: isInfoFetched,
+    error: infoError,
+  } = useQuery({
+    queryKey: ['jaspInfo'],
+    queryFn: async () => {
+      console.log('Fetching jasp info', jasp);
+      const result = await jasp?.info();
+      console.log('Fetched jasp info', result);
+      return result;
+    },
+    enabled: insideQt && !!jasp && isFetched,
+  });
+  if (!insideQt) {
+    return { info: infoFromSearchParams, isInfoFetched: true, error: null };
+  }
+  return { info, isInfoFetched, error: error || infoError };
+}
+
+export function App() {
+  const { info, error, isInfoFetched } = useInfo();
+  const architecture = info?.arch || defaultArchitecture;
+  const installedJaspVersion = info?.version || defaultInstalledVersion;
+  const initialAllowPreRelease = info?.developerMode || false;
+  const [catalogUrl] = useQueryState('c', { defaultValue: defaultCatalog });
+  const {
+    data: repositories,
+    isFetched: isRepositoriesFetched,
+    error: repositoriesError,
+  } = useQuery(catalogQueryOptions(catalogUrl));
   const isDarkTheme = useTheme();
-  const repositories: Repository[] = Route.useLoaderData();
   const [selectedChannels, setSelectedChannels] = useState<string[]>([
     defaultChannel,
   ]);
   const [searchTerm, setSearchTerm] = useState<string>('');
   const [allowPreRelease, setAllowPreRelease] = useState<boolean>(
-    initialAllowPreRelease === 1,
+    initialAllowPreRelease,
   );
-  const availableChannels = uniqueChannels(repositories);
+  const availableChannels = uniqueChannels(repositories || []);
   const reposOfSelectedChannels = filterOnChannels(
-    repositories,
+    repositories || [],
     selectedChannels,
   );
   const installableRepos = filterOnInstallableRepositories(
@@ -605,6 +654,16 @@ function App() {
     architecture,
   );
   const filteredRepos = filterReposBySearchTerm(installableRepos, searchTerm);
+
+  if (error) {
+    return <div>Error: {`${error}`}</div>;
+  }
+  if (repositoriesError) {
+    return <div>Error!: {`${repositoriesError}`}</div>;
+  }
+  if (!isInfoFetched && !isRepositoriesFetched) {
+    return <Loading />;
+  }
 
   return (
     <main
@@ -643,6 +702,10 @@ function App() {
             </div>
           </div>
         </div>
+        <details>
+          <summary>Debug info</summary>
+          <pre>{JSON.stringify(info, null, 2)}</pre>
+        </details>
 
         <div className="space-y-3">
           {filteredRepos.map((repo) => (
