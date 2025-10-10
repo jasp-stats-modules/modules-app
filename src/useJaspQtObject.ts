@@ -1,18 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 import { QWebChannel } from './qwebchannel';
 
-/*
-
-rm -r ../jasp-desktop/Desktop/html/catalog/
-BASE_URL=/html/catalog/ pnpm build
-cp -r dist ../jasp-desktop/Desktop/html/catalog/
-
-
-rm -r jasp-build/Desktop/.qt/rcc/html.qrc 
-cmake --build jasp-build --target all -j6
-QTWEBENGINE_REMOTE_DEBUGGING=8123 ./jasp-build/Desktop/JASP --safeGraphics 
-*/
-
 export interface Info {
   version: string;
   arch: string;
@@ -79,6 +67,7 @@ async function createQtWebChannel(
 ): Promise<JaspQWebChannel> {
   return new Promise<JaspQWebChannel>((resolve, reject) => {
     try {
+      // @ts-expect-error
       new QWebChannel(transport, (channel: JaspQWebChannel) => {
         resolve(channel);
       });
