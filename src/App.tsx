@@ -24,6 +24,18 @@ const defaultInstalledVersion = '0.95.1';
 const defaultInstalledModules = () => ({});
 const installedModulesSchema = v.record(v.string(), v.string());
 const themeSchema = ['dark', 'light', 'system'] as const;
+const fontStacks = {
+  'DejaVu Sans': '"DejaVu Sans", sans-serif',
+  'DejaVu Sans Mono': '"DejaVu Sans Mono", monospace',
+  'DejaVu Serif': '"DejaVu Serif", serif',
+  'Fira Code': '"Fira Code", monospace',
+  'Fira Code Retina': '"Fira Code Retina", monospace',
+  FreeSans: '"FreeSans", sans-serif',
+  Monospace: 'monospace',
+  'Sans Serif': 'sans-serif',
+  Serif: 'serif',
+} as const;
+const fontSchema = Object.keys(fontStacks) as (keyof typeof fontStacks)[];
 const infoSearchParamKeys = {
   version: parseAsString.withDefault(defaultInstalledVersion),
   arch: parseAsString.withDefault(defaultArchitecture),
@@ -32,6 +44,7 @@ const infoSearchParamKeys = {
   ),
   developerMode: parseAsBoolean.withDefault(false),
   theme: parseAsStringLiteral(themeSchema).withDefault('system'),
+  font: parseAsStringLiteral(fontSchema).withDefault('DejaVu Sans'),
 };
 
 function useInfoFromSearchParams(): Info {
@@ -42,6 +55,7 @@ function useInfoFromSearchParams(): Info {
       theme: 't',
       developerMode: 'p',
       installedModules: 'i',
+      font: 'f',
     },
   });
   // biome-ignore lint/correctness/useExhaustiveDependencies: On mount show defaults in address bar
@@ -52,7 +66,6 @@ function useInfoFromSearchParams(): Info {
     () => ({
       ...queryStates,
       // TODO also expose below via search params
-      font: 'SansSerif',
       language: 'en',
     }),
     [queryStates],
@@ -646,6 +659,18 @@ export function App() {
   );
   const filteredRepos = filterReposBySearchTerm(installableRepos, searchTerm);
 
+  useEffect(() => {
+    if (typeof document === 'undefined') return;
+    const root = document.documentElement;
+    const fontValue =
+      fontStacks[info.font as (typeof fontSchema)[number]] ??
+      fontStacks['DejaVu Sans'];
+    root.style.setProperty('--app-font-family', fontValue);
+    return () => {
+      root.style.removeProperty('--app-font-family');
+    };
+  }, [info.font]);
+
   if (error) {
     return <div>Error fetching environment info: {`${error}`}</div>;
   }
@@ -708,6 +733,10 @@ export function App() {
             </div>
           )}
         </div>
+      </div>
+      {/* TODO remove debuging before merge */}
+      <div>
+        Font: {info.font}, Language: {info.language}
       </div>
     </main>
   );
