@@ -656,6 +656,9 @@ export function App() {
   const [allowPreRelease, setAllowPreRelease] = useState<boolean>(
     initialAllowPreRelease,
   );
+  useEffect(() => {
+    setAllowPreRelease(info?.developerMode || false);
+  }, [info?.developerMode]);
   const availableChannels = uniqueChannels(repositories || []);
   const reposOfSelectedChannels = filterOnChannels(
     repositories || [],
