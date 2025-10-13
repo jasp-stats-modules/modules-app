@@ -44,7 +44,7 @@ function useInfoFromSearchParams(): Info {
       installedModules: 'i',
     },
   });
-  // biome-ignore lint/correctness/useExhaustiveDependencies: On mount show defaults in adress bar
+  // biome-ignore lint/correctness/useExhaustiveDependencies: On mount show defaults in address bar
   useEffect(() => {
     setQueryStates(queryStates);
   }, []);
