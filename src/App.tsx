@@ -10,6 +10,7 @@ import {
 } from 'nuqs';
 import type { Dispatch, SetStateAction } from 'react';
 import { useEffect, useMemo, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { satisfies } from 'semver';
 import * as v from 'valibot';
 import { cn } from '@/lib/utils';
@@ -24,6 +25,31 @@ const defaultInstalledVersion = '0.95.1';
 const defaultInstalledModules = () => ({});
 const installedModulesSchema = v.record(v.string(), v.string());
 const themeSchema = ['dark', 'light', 'system'] as const;
+const languageSchema = [
+  'en',
+  'ar',
+  'cs',
+  'de',
+  'es',
+  'et',
+  'eu',
+  'fr',
+  'gl',
+  'hu',
+  'id',
+  'it',
+  'ja',
+  'lt',
+  'nl',
+  'pl',
+  'pt',
+  'ru',
+  'sq',
+  'sr',
+  'tr',
+  'zh_Hans',
+  'zh_Hant',
+] as const;
 const infoSearchParamKeys = {
   version: parseAsString.withDefault(defaultInstalledVersion),
   arch: parseAsString.withDefault(defaultArchitecture),
@@ -32,6 +58,7 @@ const infoSearchParamKeys = {
   ),
   developerMode: parseAsBoolean.withDefault(false),
   theme: parseAsStringLiteral(themeSchema).withDefault('system'),
+  language: parseAsStringLiteral(languageSchema).withDefault('en'),
 };
 
 function useInfoFromSearchParams(): Info {
@@ -42,6 +69,7 @@ function useInfoFromSearchParams(): Info {
       theme: 't',
       developerMode: 'p',
       installedModules: 'i',
+      language: 'l',
     },
   });
   // biome-ignore lint/correctness/useExhaustiveDependencies: On mount show defaults in address bar
@@ -53,7 +81,6 @@ function useInfoFromSearchParams(): Info {
       ...queryStates,
       // TODO also expose below via search params
       font: 'SansSerif',
-      language: 'en',
     }),
     [queryStates],
   );
@@ -605,6 +632,11 @@ function useInfo() {
     enabled: insideQt && !!jasp && isFetched,
   });
 
+  const { i18n } = useTranslation();
+  useEffect(() => {
+    i18n.changeLanguage(info?.language || infoFromSearchParams.language);
+  }, [i18n, info?.language, infoFromSearchParams.language]);
+
   if (!insideQt) {
     return { info: infoFromSearchParams, isInfoFetched: true, error: null };
   }
@@ -615,6 +647,7 @@ function useInfo() {
 }
 
 export function App() {
+  const { t } = useTranslation();
   const { info, error, isInfoFetched } = useInfo();
   const [catalogUrl] = useQueryState('c', { defaultValue: defaultCatalog });
   const {
@@ -682,7 +715,7 @@ export function App() {
             </div>
             <div>
               <label className="mb-1 block font-medium text-gray-700 text-xs dark:text-gray-300">
-                Search for a module:
+                {t('Search for a module')}:
                 <input
                   type="search"
                   value={searchTerm}

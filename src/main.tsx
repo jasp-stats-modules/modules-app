@@ -5,6 +5,7 @@ import './styles.css';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { NuqsAdapter } from 'nuqs/adapters/react';
 import { App } from './App.tsx';
+import './i18n.ts';
 import reportWebVitals from './reportWebVitals.ts';
 
 export const queryClient = new QueryClient();
