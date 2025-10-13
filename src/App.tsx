@@ -704,11 +704,6 @@ export function App() {
             </div>
           </div>
         </div>
-        <details>
-          <summary>Debug info</summary>
-          <pre>{JSON.stringify(info, null, 2)}</pre>
-        </details>
-
         <div className="space-y-3">
           {filteredRepos.map((repo) => (
             <RepositoryCard
