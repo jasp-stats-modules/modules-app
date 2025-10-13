@@ -4,8 +4,8 @@ import ReactDOM from 'react-dom/client';
 import './styles.css';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { NuqsAdapter } from 'nuqs/adapters/react';
+import { App } from './App.tsx';
 import reportWebVitals from './reportWebVitals.ts';
-import { App } from './routes/index.tsx';
 
 export const queryClient = new QueryClient();
 
