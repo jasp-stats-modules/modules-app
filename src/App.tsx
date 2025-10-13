@@ -16,6 +16,9 @@ import { cn } from '@/lib/utils';
 import type { Asset, Release, Repository } from '@/types';
 import { type Info, insideQt, useJaspQtObject } from '@/useJaspQtObject';
 
+const defaultChannel = 'jasp-modules';
+const defaultCatalog = 'index.json';
+
 const defaultArchitecture = 'Windows_x86-64';
 const defaultInstalledVersion = '0.95.1';
 // const defaultInstalledModules = () => ({})
@@ -25,8 +28,42 @@ const defaultInstalledModules = () => ({
   jaspTTests: 'a8098ba98',
   jaspAnova: '2cbd8a6d',
 });
-const defaultChannel = 'jasp-modules';
-const defaultCatalog = 'index.json';
+const installedModulesSchema = v.record(v.string(), v.string());
+const themeSchema = ['dark', 'light', 'system'] as const;
+const infoSearchParamKeys = {
+  version: parseAsString.withDefault(defaultInstalledVersion),
+  arch: parseAsString.withDefault(defaultArchitecture),
+  installedModules: parseAsJson(installedModulesSchema).withDefault(
+    defaultInstalledModules(),
+  ),
+  developerMode: parseAsBoolean.withDefault(false),
+  theme: parseAsStringLiteral(themeSchema).withDefault('system'),
+};
+
+function useInfoFromSearchParams(): Info {
+  const [queryStates, setQueryStates] = useQueryStates(infoSearchParamKeys, {
+    urlKeys: {
+      version: 'v',
+      arch: 'a',
+      theme: 't',
+      developerMode: 'p',
+      installedModules: 'i',
+    },
+  });
+  // biome-ignore lint/correctness/useExhaustiveDependencies: On mount show defaults in adress bar
+  useEffect(() => {
+    setQueryStates(queryStates);
+  }, []);
+  return useMemo<Info>(
+    () => ({
+      ...queryStates,
+      // TODO also expose below via search params
+      font: 'SansSerif',
+      language: 'en',
+    }),
+    [queryStates],
+  );
+}
 
 async function getCatalog(
   catalogUrl: string,
@@ -543,43 +580,6 @@ function filterOnChannels(
   const selectedChannelsSet = new Set(selectedChannels);
   return repositories.filter((repo) =>
     repo.channels.some((ch) => selectedChannelsSet.has(ch)),
-  );
-}
-
-const installedModulesSchema = v.record(v.string(), v.string());
-const themeSchema = ['dark', 'light', 'system'] as const;
-const infoSearchParamKeys = {
-  version: parseAsString.withDefault(defaultInstalledVersion),
-  arch: parseAsString.withDefault(defaultArchitecture),
-  installedModules: parseAsJson(installedModulesSchema).withDefault(
-    defaultInstalledModules(),
-  ),
-  developerMode: parseAsBoolean.withDefault(false),
-  theme: parseAsStringLiteral(themeSchema).withDefault('system'),
-};
-
-function useInfoFromSearchParams(): Info {
-  const [queryStates, setQueryStates] = useQueryStates(infoSearchParamKeys, {
-    urlKeys: {
-      version: 'v',
-      arch: 'a',
-      theme: 't',
-      developerMode: 'p',
-      installedModules: 'i',
-    },
-  });
-  // biome-ignore lint/correctness/useExhaustiveDependencies: On mount show defaults in adress bar
-  useEffect(() => {
-    setQueryStates(queryStates);
-  }, []);
-  return useMemo<Info>(
-    () => ({
-      ...queryStates,
-      // TODO also expose below via search params
-      font: 'SansSerif',
-      language: 'en',
-    }),
-    [queryStates],
   );
 }
 
