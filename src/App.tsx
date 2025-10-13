@@ -21,13 +21,7 @@ const defaultCatalog = 'index.json';
 
 const defaultArchitecture = 'Windows_x86-64';
 const defaultInstalledVersion = '0.95.1';
-// const defaultInstalledModules = () => ({})
-// TODO remove example once JASP has app integrated
-const defaultInstalledModules = () => ({
-  jaspEquivalenceTTests: '7aad95f4',
-  jaspTTests: 'a8098ba98',
-  jaspAnova: '2cbd8a6d',
-});
+const defaultInstalledModules = () => ({});
 const installedModulesSchema = v.record(v.string(), v.string());
 const themeSchema = ['dark', 'light', 'system'] as const;
 const infoSearchParamKeys = {
@@ -237,10 +231,7 @@ function UninstallButton({ moduleName }: { moduleName: string }) {
   const { data: jasp } = useJaspQtObject();
 
   async function uninstall() {
-    console.log('Uninstalling', moduleName);
     await jasp?.uninstall(moduleName);
-    console.log('Uninstalled', moduleName);
-    // TODO force refresh of installed modules using react-query
   }
 
   return (
