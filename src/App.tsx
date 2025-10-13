@@ -596,8 +596,8 @@ function useInfo() {
   const queryClient = useQueryClient();
   useEffect(() => {
     if (!jasp?.environmentInfoChanged) return;
-    const callback = (envInfo: Info) => {
-      queryClient.setQueryData(['jaspInfo'], envInfo);
+    const callback = (data: Info) => {
+      queryClient.setQueryData(['jaspInfo'], data);
     };
     jasp.environmentInfoChanged.connect(callback);
     return () => {

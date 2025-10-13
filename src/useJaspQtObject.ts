@@ -11,17 +11,21 @@ export interface Info {
   installedModules: Record<string, string>;
 }
 
-interface EnvironmentInfoChanged {
-  connect: (callback: (envInfo: Info) => void) => void;
-  disconnect: (callback: (envInfo: Info) => void) => void;
+interface QtSignal<T> {
+  connect: (callback: (data: T) => void) => void;
+  disconnect: (callback: (data: T) => void) => void;
 }
 
+type EnvironmentInfoChanged = QtSignal<Info>;
+
+// Interface as used in react
 interface JaspObject {
   uninstall: (module: string) => Promise<void>;
   info: () => Promise<Info>;
   environmentInfoChanged: EnvironmentInfoChanged;
 }
 
+// Interface as provided by Qt
 interface JaspQtObject {
   __id__: string;
   uninstall: (module: string, callback: () => void) => void;
@@ -42,24 +46,23 @@ export async function jaspQtObject(): Promise<JaspObject | null> {
     return null;
   }
   const channel = await createQtWebChannel(qt.webChannelTransport);
-  const jasp = channel.objects.moduleStore;
-  const ainfo = () => {
-    return new Promise<Info>((resolve, reject) => {
-      try {
-        jasp.info((info: Info) => {
-          resolve(info);
-        });
-      } catch (error) {
-        reject(error);
-      }
-    });
-  };
+  const moduleStoreApi = channel.objects.moduleStore;
   return {
-    info: ainfo,
+    info: () => {
+      return new Promise<Info>((resolve, reject) => {
+        try {
+          moduleStoreApi.info((info: Info) => {
+            resolve(info);
+          });
+        } catch (error) {
+          reject(error);
+        }
+      });
+    },
     uninstall: (module: string) => {
       return new Promise<void>((resolve, reject) => {
         try {
-          jasp.uninstall(module, () => {
+          moduleStoreApi.uninstall(module, () => {
             resolve();
           });
         } catch (error) {
@@ -67,7 +70,7 @@ export async function jaspQtObject(): Promise<JaspObject | null> {
         }
       });
     },
-    environmentInfoChanged: jasp.environmentInfoChanged,
+    environmentInfoChanged: moduleStoreApi.environmentInfoChanged,
   };
 }
 
