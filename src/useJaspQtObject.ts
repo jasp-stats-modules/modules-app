@@ -11,15 +11,26 @@ export interface Info {
   installedModules: Record<string, string>;
 }
 
+interface InstalledModulesChanged {
+  connect: (
+    callback: (installedModules: Record<string, string>) => void,
+  ) => void;
+  disconnect: (
+    callback: (installedModules: Record<string, string>) => void,
+  ) => void;
+}
+
 interface JaspObject {
   uninstall: (module: string) => Promise<void>;
   info: () => Promise<Info>;
+  installedModulesChanged: InstalledModulesChanged;
 }
 
 interface JaspQtObject {
   __id__: string;
   uninstall: (module: string, callback: () => void) => void;
   info: (callback: (info: Info) => void) => void;
+  installedModulesChanged: InstalledModulesChanged;
 }
 
 interface JaspQWebChannel {
@@ -59,6 +70,7 @@ export async function jaspQtObject(): Promise<JaspObject | null> {
         }
       });
     },
+    installedModulesChanged: jasp.installedModulesChanged,
   };
 }
 

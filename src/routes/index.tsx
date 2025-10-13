@@ -1,4 +1,4 @@
-import { queryOptions, useQuery } from '@tanstack/react-query';
+import { queryOptions, useQuery, useQueryClient } from '@tanstack/react-query';
 import { House } from 'lucide-react';
 import {
   parseAsInteger,
@@ -7,7 +7,7 @@ import {
   useQueryState,
 } from 'nuqs';
 import type { Dispatch, SetStateAction } from 'react';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { satisfies } from 'semver';
 import * as v from 'valibot';
 import { cn } from '@/lib/utils';
@@ -603,6 +603,19 @@ function useInfo() {
   const insideQt = typeof qt !== 'undefined';
   const infoFromSearchParams = useInfoFromSearchParams();
   const { data: jasp, isFetched, error } = useJaspQtObject();
+  const queryClient = useQueryClient();
+  useEffect(() => {
+    if (!jasp?.installedModulesChanged) return;
+    const callback = (installedModules: Record<string, string>) => {
+      console.log('Installed modules changed:', installedModules);
+      // TODO use installedModules arg from event to update info var?
+      queryClient.invalidateQueries({ queryKey: ['jaspInfo'] });
+    };
+    jasp.installedModulesChanged.connect(callback);
+    return () => {
+      jasp.installedModulesChanged.disconnect(callback);
+    };
+  }, [jasp, queryClient]);
   const {
     data: info,
     isFetched: isInfoFetched,
@@ -617,6 +630,7 @@ function useInfo() {
     },
     enabled: insideQt && !!jasp && isFetched,
   });
+
   if (!insideQt) {
     return { info: infoFromSearchParams, isInfoFetched: true, error: null };
   }
