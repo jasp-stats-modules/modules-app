@@ -514,10 +514,16 @@ function filterReposBySearchTerm(
  *
  * @returns true if dark theme should be used
  */
-function useTheme(): boolean {
+function useDarkTheme(): boolean {
   const { info } = useInfo();
   if (info?.theme === 'dark') return true;
   if (info?.theme === 'light') return false;
+  if (info?.theme === 'system') {
+    if (typeof window !== 'undefined') {
+      return window.matchMedia('(prefers-color-scheme: dark)').matches;
+    }
+    return false;
+  }
   return false;
 }
 
@@ -585,6 +591,8 @@ function useInfo() {
   // info from search params is used.
   const infoFromSearchParams = useInfoFromSearchParams();
   const { data: jasp, isFetched, error } = useJaspQtObject();
+
+  // Subscribe to environmentInfoChanged signal to update info
   const queryClient = useQueryClient();
   useEffect(() => {
     if (!jasp?.environmentInfoChanged) return;
@@ -596,18 +604,15 @@ function useInfo() {
       jasp.environmentInfoChanged.disconnect(callback);
     };
   }, [jasp, queryClient]);
+
+  // Fetch info
   const {
     data: info,
     isFetched: isInfoFetched,
     error: infoError,
   } = useQuery({
     queryKey: ['jaspInfo'],
-    queryFn: async () => {
-      console.log('Fetching jasp info', jasp);
-      const result = await jasp?.info();
-      console.log('Fetched jasp info', result);
-      return result;
-    },
+    queryFn: () => jasp?.info(),
     enabled: insideQt && !!jasp && isFetched,
   });
 
@@ -628,7 +633,7 @@ export function App() {
     isFetched: isRepositoriesFetched,
     error: repositoriesError,
   } = useQuery(catalogQueryOptions(catalogUrl));
-  const isDarkTheme = useTheme();
+  const isDarkTheme = useDarkTheme();
   const [selectedChannels, setSelectedChannels] = useState<string[]>([
     defaultChannel,
   ]);
