@@ -605,15 +605,15 @@ function useInfo() {
   const { data: jasp, isFetched, error } = useJaspQtObject();
   const queryClient = useQueryClient();
   useEffect(() => {
-    if (!jasp?.installedModulesChanged) return;
-    const callback = (installedModules: Record<string, string>) => {
-      console.log('Installed modules changed:', installedModules);
-      // TODO use installedModules arg from event to update info var?
+    if (!jasp?.environmentInfoChanged) return;
+    const callback = (envInfo: Info) => {
+      console.log('Environment info changed:', envInfo);
+      // TODO use envInfo arg from event to update info var?
       queryClient.invalidateQueries({ queryKey: ['jaspInfo'] });
     };
-    jasp.installedModulesChanged.connect(callback);
+    jasp.environmentInfoChanged.connect(callback);
     return () => {
-      jasp.installedModulesChanged.disconnect(callback);
+      jasp.environmentInfoChanged.disconnect(callback);
     };
   }, [jasp, queryClient]);
   const {
