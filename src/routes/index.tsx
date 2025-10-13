@@ -1,13 +1,15 @@
 import { queryOptions, useQuery, useQueryClient } from '@tanstack/react-query';
 import { House } from 'lucide-react';
 import {
-  parseAsInteger,
+  parseAsBoolean,
   parseAsJson,
+  parseAsString,
   parseAsStringLiteral,
   useQueryState,
+  useQueryStates,
 } from 'nuqs';
 import type { Dispatch, SetStateAction } from 'react';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { satisfies } from 'semver';
 import * as v from 'valibot';
 import { cn } from '@/lib/utils';
@@ -25,30 +27,6 @@ const defaultInstalledModules = () => ({
 });
 const defaultChannel = 'jasp-modules';
 const defaultCatalog = 'index.json';
-
-const _SearchSchema = v.object({
-  // Architecture of installed JASP
-  a: v.optional(
-    v.fallback(v.string(), defaultArchitecture),
-    defaultArchitecture,
-  ),
-  // Version of installed JASP
-  v: v.optional(
-    v.fallback(v.string(), defaultInstalledVersion),
-    defaultInstalledVersion,
-  ),
-  // Installed modules where key is the module name and value is the version
-  i: v.optional(
-    v.fallback(v.record(v.string(), v.string()), defaultInstalledModules),
-    defaultInstalledModules,
-  ),
-  // Initial value for allow pre-release
-  p: v.optional(v.picklist([0, 1]), 0),
-  // The URL for the catalog of modules
-  c: v.optional(v.fallback(v.string(), defaultCatalog), defaultCatalog),
-  // Theme: dark or light or system
-  t: v.optional(v.picklist(['dark', 'light', 'system']), 'system'),
-});
 
 async function getCatalog(
   catalogUrl: string,
@@ -567,33 +545,39 @@ function filterOnChannels(
 
 const installedModulesSchema = v.record(v.string(), v.string());
 const themeSchema = ['dark', 'light', 'system'] as const;
+const infoSearchParamKeys = {
+  version: parseAsString.withDefault(defaultInstalledVersion),
+  arch: parseAsString.withDefault(defaultArchitecture),
+  installedModules: parseAsJson(installedModulesSchema).withDefault(
+    defaultInstalledModules(),
+  ),
+  developerMode: parseAsBoolean.withDefault(false),
+  theme: parseAsStringLiteral(themeSchema).withDefault('system'),
+};
 
-function useInfoFromSearchParams() {
-  const [version] = useQueryState('v', {
-    defaultValue: defaultInstalledVersion,
+function useInfoFromSearchParams(): Info {
+  const [queryStates, setQueryStates] = useQueryStates(infoSearchParamKeys, {
+    urlKeys: {
+      version: 'v',
+      arch: 'a',
+      theme: 't',
+      developerMode: 'p',
+      installedModules: 'i',
+    },
   });
-  const [arch] = useQueryState('a', { defaultValue: defaultArchitecture });
-  const [installedModules] = useQueryState(
-    'i',
-    parseAsJson(installedModulesSchema).withDefault(defaultInstalledModules()),
+  // biome-ignore lint/correctness/useExhaustiveDependencies: On mount show defaults in adress bar
+  useEffect(() => {
+    setQueryStates(queryStates);
+  }, []);
+  return useMemo<Info>(
+    () => ({
+      ...queryStates,
+      // TODO also expose below via search params
+      font: 'SansSerif',
+      language: 'en',
+    }),
+    [queryStates],
   );
-  const [allowPreRelease] = useQueryState('p', parseAsInteger.withDefault(0));
-  const [theme] = useQueryState(
-    't',
-    parseAsStringLiteral(themeSchema).withDefault('system'),
-  );
-
-  const info: Info = {
-    version: version || defaultInstalledVersion,
-    arch: arch || defaultArchitecture,
-    theme: theme || 'system',
-    developerMode: allowPreRelease === 1,
-    installedModules: installedModules || defaultInstalledModules(),
-    // TODO also expose below via search params
-    font: 'SansSerif',
-    language: 'en',
-  };
-  return info;
 }
 
 function useInfo() {

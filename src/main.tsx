@@ -15,7 +15,7 @@ if (rootElement && !rootElement.innerHTML) {
   const root = ReactDOM.createRoot(rootElement);
   root.render(
     <StrictMode>
-      <NuqsAdapter>
+      <NuqsAdapter defaultOptions={{ clearOnDefault: false }}>
         <QueryClientProvider client={queryClient}>
           <App />
         </QueryClientProvider>
