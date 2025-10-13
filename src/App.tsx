@@ -240,15 +240,12 @@ interface ReleaseStats {
 
 function useRelease(repo: Repository, allowPreRelease: boolean): ReleaseStats {
   const { info } = useInfo();
-  const arch = info?.arch || defaultArchitecture;
-  const installedJaspVersion = info?.version || defaultInstalledVersion;
-  const installedModules = info?.installedModules || defaultInstalledModules();
   return getReleaseInfo(
     repo,
-    installedJaspVersion,
+    info.version,
     allowPreRelease,
-    arch,
-    installedModules,
+    info.arch,
+    info.installedModules,
   );
 }
 
@@ -516,9 +513,10 @@ function filterReposBySearchTerm(
  */
 function useDarkTheme(): boolean {
   const { info } = useInfo();
-  if (info?.theme === 'dark') return true;
-  if (info?.theme === 'light') return false;
-  if (info?.theme === 'system') {
+  const theme = info.theme;
+  if (theme === 'dark') return true;
+  if (theme === 'light') return false;
+  if (theme === 'system') {
     if (typeof window !== 'undefined') {
       return window.matchMedia('(prefers-color-scheme: dark)').matches;
     }
@@ -619,14 +617,14 @@ function useInfo() {
   if (!insideQt) {
     return { info: infoFromSearchParams, isInfoFetched: true, error: null };
   }
+  if (info === undefined) {
+    return { info: infoFromSearchParams, isInfoFetched: true, error: null };
+  }
   return { info, isInfoFetched, error: error || infoError };
 }
 
 export function App() {
   const { info, error, isInfoFetched } = useInfo();
-  const architecture = info?.arch || defaultArchitecture;
-  const installedJaspVersion = info?.version || defaultInstalledVersion;
-  const initialAllowPreRelease = info?.developerMode || false;
   const [catalogUrl] = useQueryState('c', { defaultValue: defaultCatalog });
   const {
     data: repositories,
@@ -639,11 +637,11 @@ export function App() {
   ]);
   const [searchTerm, setSearchTerm] = useState<string>('');
   const [allowPreRelease, setAllowPreRelease] = useState<boolean>(
-    initialAllowPreRelease,
+    info.developerMode,
   );
   useEffect(() => {
-    setAllowPreRelease(info?.developerMode || false);
-  }, [info?.developerMode]);
+    setAllowPreRelease(info.developerMode);
+  }, [info.developerMode]);
   const availableChannels = uniqueChannels(repositories || []);
   const reposOfSelectedChannels = filterOnChannels(
     repositories || [],
@@ -651,9 +649,9 @@ export function App() {
   );
   const installableRepos = filterOnInstallableRepositories(
     reposOfSelectedChannels,
-    installedJaspVersion,
+    info.version,
     allowPreRelease,
-    architecture,
+    info.arch,
   );
   const filteredRepos = filterReposBySearchTerm(installableRepos, searchTerm);
 
