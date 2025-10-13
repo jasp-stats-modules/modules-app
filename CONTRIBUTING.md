@@ -28,7 +28,7 @@ This section is for maintainers of the package.
 
 ## You want to develop web app inside JASP stats
 
-To develop/test the qt webchannel integration, you must run the web app inside JASP stats desktop application.
+To develop/test the Qt WebChannel integration, you must run the web app inside JASP stats desktop application.
 
 1. Start development server with `pnpm dev --host 0.0.0.0`.
 2. In ../jasp-desktop/Desktop/components/JASP/Widgets/ModulesMenu.qml file in WebEngineView section, set **url** to url that is accessable by JASP desktop and comment out the production url. For example "http://172.17.0.1:3000"

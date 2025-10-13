@@ -44,7 +44,8 @@ The web application is a single page application (SPA) with the following charac
 - Uses [Vite](https://vitejs.dev/) as the build tool
 - Uses [pnpm](https://pnpm.io/) as the package manager
 - Uses [Tailwind CSS](https://tailwindcss.com/) for styling
-- Uses [TanStack Router](https://tanstack.com/router) for routing, with an initial file-based router setup in `src/routes`
+- Uses [nuqs](https://nuqs.dev/) for URL query string parsing
+- Uses [Qt WebChannel](https://doc.qt.io/qt-6/qtwebchannel-index.html) for communication between the web app and the JASP desktop app
 - Uses [biome](https://biomejs.dev/) for linting and formatting
 - Fetches data from the [GitHub GraphQL API](https://docs.github.com/en/graphql) to get available JASP modules and their release assets
 
@@ -77,6 +78,8 @@ pnpm start
 ```
 
 Application will be running at http://localhost:3000 (unless stated otherwise).
+
+See [CONTRIBUTING.md](CONTRIBUTING.md#you-want-to-develop-web-app-inside-jasp-stats) for development within JASP stats desktop application.
 
 # Building For Production
 
