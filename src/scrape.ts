@@ -98,7 +98,7 @@ export function extractArchitectureFromUrl(url: string): string {
     return 'Windows_arm64';
   }
   if (filename.includes('Flatpak_x86_64')) {
-    return 'Linux_x86_64';
+    return 'Flatpak_x86_64';
   }
   if (filename.includes('Linux_arm64')) {
     return 'Linux_arm64';
@@ -173,6 +173,12 @@ async function releaseAssetsPaged(
       publishedAt: '2025-05-07T21:56:13Z',
       jaspVersionRange: '>=0.94.0',
       assets: [
+        {
+          downloadUrl:
+            'https://github.com/jasp-stats-modules/jaspAnova/releases/download/2cbd8a3e_R-4-4-1/jaspAnova_0.95.0_Flatpak_x86_64_R-4-5-1.JASPModule',
+          downloadCount: 0,
+          architecture: 'Flatpak_x86_64',
+        },
         {
           downloadUrl:
             'https://github.com/jasp-stats-modules/jaspAnova/releases/download/2cbd8a3e_R-4-4-1/jaspAnova_0.95.0_MacOS_x86_64_R-4-5-1.JASPModule',
