@@ -591,9 +591,7 @@ function useInfo() {
   useEffect(() => {
     if (!jasp?.environmentInfoChanged) return;
     const callback = (envInfo: Info) => {
-      console.log('Environment info changed:', envInfo);
-      // TODO use envInfo arg from event to update info var?
-      queryClient.invalidateQueries({ queryKey: ['jaspInfo'] });
+      queryClient.setQueryData(['jaspInfo'], envInfo);
     };
     jasp.environmentInfoChanged.connect(callback);
     return () => {
