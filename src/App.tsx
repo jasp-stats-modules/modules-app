@@ -10,7 +10,7 @@ import {
 } from 'nuqs';
 import type { Dispatch, SetStateAction } from 'react';
 import { useEffect, useMemo, useState } from 'react';
-import { useTranslation } from 'react-i18next';
+import { Trans, useTranslation } from 'react-i18next';
 import { satisfies } from 'semver';
 import * as v from 'valibot';
 import { cn } from '@/lib/utils';
@@ -106,11 +106,12 @@ async function getCatalog(
 }
 
 function Loading() {
+  const { t } = useTranslation();
   return (
     <div className="flex h-screen items-center justify-center bg-gray-50 dark:bg-gray-900">
       <div className="flex flex-col items-center rounded-lg border border-gray-200 bg-white p-6 shadow-sm transition-shadow duration-200 hover:shadow-md dark:border-gray-700 dark:bg-gray-800 dark:hover:shadow-lg">
         <div className="text-gray-700 dark:text-gray-200">
-          Loading list of available modules
+          {t('Loading list of available modules')}
         </div>
         <div className="mt-3">
           <span className="block h-10 w-10 animate-spin rounded-full border-4 border-blue-500 border-t-transparent"></span>
@@ -137,6 +138,7 @@ function ChannelSelector({
   channels: string[];
   className?: string;
 }) {
+  const { t } = useTranslation();
   return (
     <fieldset
       className={cn(
@@ -145,7 +147,7 @@ function ChannelSelector({
       )}
     >
       <legend className="mb-1 block font-medium text-gray-700 text-xs dark:text-gray-300">
-        Select channel:
+        {t('Select channel')}:
       </legend>
       <div className="flex flex-wrap gap-3">
         {channels.map((c) => (
@@ -189,6 +191,7 @@ function Checkbox({
   className?: string;
   inputClassName?: string;
 }) {
+  const { t } = useTranslation();
   return (
     <label
       className={cn(
@@ -213,7 +216,7 @@ function Checkbox({
           fill="currentColor"
           viewBox="0 0 20 20"
         >
-          <title>Checkmark</title>
+          <title>{t('Checkmark')}</title>
           <path
             fillRule="evenodd"
             d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
@@ -227,6 +230,7 @@ function Checkbox({
 }
 
 function InstallButton({ asset }: { asset?: Asset }) {
+  const { t } = useTranslation();
   if (!asset) {
     return null;
   }
@@ -235,12 +239,13 @@ function InstallButton({ asset }: { asset?: Asset }) {
       href={asset.downloadUrl}
       className="inline-flex items-center rounded bg-green-600 px-3 py-1.5 font-medium text-white text-xs transition-colors duration-200 hover:bg-green-700 dark:bg-green-700 dark:hover:bg-green-800"
     >
-      Install
+      {t('Install')}
     </a>
   );
 }
 
 function UpdateButton({ asset }: { asset?: Asset }) {
+  const { t } = useTranslation();
   if (!asset) {
     return null;
   }
@@ -249,12 +254,13 @@ function UpdateButton({ asset }: { asset?: Asset }) {
       href={asset.downloadUrl}
       className="inline-flex items-center rounded bg-blue-600 px-3 py-1.5 font-medium text-white text-xs transition-colors duration-200 hover:bg-blue-700 dark:bg-blue-700 dark:hover:bg-blue-800"
     >
-      Update
+      {t('Update')}
     </a>
   );
 }
 
 function UninstallButton({ moduleName }: { moduleName: string }) {
+  const { t } = useTranslation();
   const { data: jasp } = useJaspQtObject();
 
   async function uninstall() {
@@ -265,10 +271,10 @@ function UninstallButton({ moduleName }: { moduleName: string }) {
     <button
       type="button"
       onClick={uninstall}
-      title="Uninstall this module"
+      title={t('Uninstall this module')}
       className="mt-3 inline-flex items-center rounded bg-red-500 px-3 py-1.5 font-medium text-white text-xs transition-colors duration-200 hover:bg-red-700 dark:bg-red-700 dark:hover:bg-red-800"
     >
-      Uninstall
+      {t('Uninstall')}
     </button>
   );
 }
@@ -363,13 +369,14 @@ function ReleaseAction({
   latestPreRelease?: Release;
   latestVersionInstalled: boolean;
 }) {
+  const { t } = useTranslation();
   return (
     <div className="flex flex-col">
       {canUpdate && <UpdateButton asset={asset} />}
       {canInstall && !canUpdate && <InstallButton asset={asset} />}
       {allowPreRelease && latestPreRelease && (
         <span className="text-gray-500 text-xs dark:text-gray-400">
-          Pre release
+          {t('Pre release')}
         </span>
       )}
       {insideQt && (canUpdate || latestVersionInstalled) && (
@@ -377,10 +384,10 @@ function ReleaseAction({
       )}
       {latestVersionInstalled && (
         <span
-          title="Latest version is installed"
+          title={t('Latest version is installed')}
           className="px-2 py-1.5 text-gray-500 text-xs dark:text-gray-400"
         >
-          Installed
+          {t('Installed')}
         </span>
       )}
     </div>
@@ -404,23 +411,42 @@ function ReleaseStats({
   return (
     <div className="flex flex-row justify-between text-gray-500 text-xs dark:text-gray-400">
       <div>
-        {installedVersion
-          ? ` installed: ${installedVersion}, latest`
-          : 'latest '}{' '}
-        {latestVersion} on {publishedAt} with {downloads} downloads
+        {installedVersion ? (
+          <Trans
+            i18nKey="Release stats with installed"
+            values={{
+              installedVersion,
+              latestVersion,
+              publishedAt,
+              downloads,
+            }}
+          />
+        ) : (
+          <Trans
+            i18nKey="Release stats without installed"
+            values={{
+              latestVersion,
+              publishedAt,
+              downloads,
+            }}
+          />
+        )}
       </div>
-      <div>by {maintainer}</div>
+      <div>
+        <Trans i18nKey="Maintainer label" values={{ maintainer }} />
+      </div>
     </div>
   );
 }
 
 function RepositoryLinks({ homepageUrl }: { homepageUrl?: string }) {
+  const { t } = useTranslation();
   if (!homepageUrl) {
     return null;
   }
   return (
     <a
-      title="Go to home page of module"
+      title={t('Go to home page of module')}
       target="_blank"
       rel="noopener noreferrer"
       href={homepageUrl}
@@ -431,6 +457,7 @@ function RepositoryLinks({ homepageUrl }: { homepageUrl?: string }) {
 }
 
 function RepositoryChannels({ channels }: { channels: string[] }) {
+  const { t } = useTranslation();
   if (!channels || channels.length === 0) {
     return null;
   }
@@ -440,7 +467,7 @@ function RepositoryChannels({ channels }: { channels: string[] }) {
         <span
           key={channel}
           className="rounded-md bg-gray-50 px-2 py-0.5 text-gray-700 text-xs dark:bg-gray-900 dark:text-gray-400"
-          title="Channel"
+          title={t('Channel')}
         >
           {channel}
         </span>
@@ -680,10 +707,24 @@ export function App() {
   const filteredRepos = filterReposBySearchTerm(installableRepos, searchTerm);
 
   if (error) {
-    return <div>Error fetching environment info: {`${error}`}</div>;
+    return (
+      <div>
+        <Trans
+          i18nKey="Error fetching environment info"
+          values={{ error: String(error) }}
+        />
+      </div>
+    );
   }
   if (repositoriesError) {
-    return <div>Error fetching catalog: {`${repositoriesError}`}</div>;
+    return (
+      <div>
+        <Trans
+          i18nKey="Error fetching catalog"
+          values={{ error: String(repositoriesError) }}
+        />
+      </div>
+    );
   }
   if (!isInfoFetched && !isRepositoriesFetched) {
     return <Loading />;
@@ -708,9 +749,11 @@ export function App() {
               <Checkbox
                 checked={allowPreRelease}
                 onChange={setAllowPreRelease}
-                label="Show pre-releases"
+                label={t('Show pre-releases')}
                 name="allowPreReleases"
-                description="When checked shows pre-releases. Pre-releases are releases that a module developer has not yet marked as stable."
+                description={t(
+                  'When checked shows pre-releases. Pre-releases are releases that a module developer has not yet marked as stable.',
+                )}
               />
             </div>
             <div>
@@ -736,8 +779,9 @@ export function App() {
           ))}
           {filteredRepos.length === 0 && (
             <div className="text-gray-500 dark:text-gray-400">
-              No modules found. Please clear search, change channel or upgrade
-              JASP.
+              {t(
+                'No modules found. Please clear search, change channel or upgrade JASP.',
+              )}
             </div>
           )}
         </div>
