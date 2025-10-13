@@ -14,7 +14,7 @@ import { satisfies } from 'semver';
 import * as v from 'valibot';
 import { cn } from '@/lib/utils';
 import type { Asset, Release, Repository } from '@/types';
-import { type Info, useJaspQtObject } from '@/useJaspQtObject';
+import { type Info, insideQt, useJaspQtObject } from '@/useJaspQtObject';
 
 const defaultArchitecture = 'Windows_x86-64';
 const defaultInstalledVersion = '0.95.1';
@@ -311,7 +311,6 @@ function ReleaseAction({
   latestPreRelease?: Release;
   latestVersionInstalled: boolean;
 }) {
-  const insideQt = typeof qt !== 'undefined';
   return (
     <div className="flex flex-col">
       {canUpdate && <UpdateButton asset={asset} />}
@@ -584,7 +583,6 @@ function useInfo() {
   // if app is running inside JASP, then
   // info from Qt webchannel is used otherwise
   // info from search params is used.
-  const insideQt = typeof qt !== 'undefined';
   const infoFromSearchParams = useInfoFromSearchParams();
   const { data: jasp, isFetched, error } = useJaspQtObject();
   const queryClient = useQueryClient();

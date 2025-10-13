@@ -35,8 +35,9 @@ interface JaspQWebChannel {
   };
 }
 
+export const insideQt = typeof qt !== 'undefined';
+
 export async function jaspQtObject(): Promise<JaspObject | null> {
-  const insideQt = typeof qt !== 'undefined';
   if (!insideQt) {
     return null;
   }
