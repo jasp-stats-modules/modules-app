@@ -658,10 +658,10 @@ export function App() {
   const filteredRepos = filterReposBySearchTerm(installableRepos, searchTerm);
 
   if (error) {
-    return <div>Error: {`${error}`}</div>;
+    return <div>Error fetching environment info: {`${error}`}</div>;
   }
   if (repositoriesError) {
-    return <div>Error!: {`${repositoriesError}`}</div>;
+    return <div>Error fetching catalog: {`${repositoriesError}`}</div>;
   }
   if (!isInfoFetched && !isRepositoriesFetched) {
     return <Loading />;
