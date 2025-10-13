@@ -1,68 +1,75 @@
-import {
-  queryOptions,
-  useQueryErrorResetBoundary,
-} from '@tanstack/react-query';
-import {
-  createFileRoute,
-  type ErrorComponentProps,
-  notFound,
-} from '@tanstack/react-router';
+import { queryOptions, useQuery, useQueryClient } from '@tanstack/react-query';
 import { House } from 'lucide-react';
+import {
+  parseAsBoolean,
+  parseAsJson,
+  parseAsString,
+  parseAsStringLiteral,
+  useQueryState,
+  useQueryStates,
+} from 'nuqs';
 import type { Dispatch, SetStateAction } from 'react';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { satisfies } from 'semver';
 import * as v from 'valibot';
 import { cn } from '@/lib/utils';
 import type { Asset, Release, Repository } from '@/types';
+import { type Info, insideQt, useJaspQtObject } from '@/useJaspQtObject';
 
-const defaultArchitecture = 'Windows_x86-64';
-const defaultInstalledVersion = '0.95.1';
-// const defaultInstalledModules = () => ({})
-// TODO remove example once JASP has app integrated
-const defaultInstalledModules = () => ({
-  jaspEquivalenceTTests: '7aad95f4',
-  jaspTTests: 'a8098ba98',
-});
 const defaultChannel = 'jasp-modules';
 const defaultCatalog = 'index.json';
 
-const SearchSchema = v.object({
-  // Architecture of installed JASP
-  a: v.optional(
-    v.fallback(v.string(), defaultArchitecture),
-    defaultArchitecture,
+const defaultArchitecture = 'Windows_x86-64';
+const defaultInstalledVersion = '0.95.1';
+const defaultInstalledModules = () => ({});
+const installedModulesSchema = v.record(v.string(), v.string());
+const themeSchema = ['dark', 'light', 'system'] as const;
+const infoSearchParamKeys = {
+  version: parseAsString.withDefault(defaultInstalledVersion),
+  arch: parseAsString.withDefault(defaultArchitecture),
+  installedModules: parseAsJson(installedModulesSchema).withDefault(
+    defaultInstalledModules(),
   ),
-  // Version of installed JASP
-  v: v.optional(
-    v.fallback(v.string(), defaultInstalledVersion),
-    defaultInstalledVersion,
-  ),
-  // Installed modules where key is the module name and value is the version
-  i: v.optional(
-    v.fallback(v.record(v.string(), v.string()), defaultInstalledModules),
-    defaultInstalledModules,
-  ),
-  // Initial value for allow pre-release
-  p: v.optional(v.picklist([0, 1]), 0),
-  // The URL for the catalog of modules
-  c: v.optional(v.fallback(v.string(), defaultCatalog), defaultCatalog),
-  // Theme: dark or light or system
-  t: v.optional(v.picklist(['dark', 'light', 'system']), 'system'),
-});
+  developerMode: parseAsBoolean.withDefault(false),
+  theme: parseAsStringLiteral(themeSchema).withDefault('system'),
+};
+
+function useInfoFromSearchParams(): Info {
+  const [queryStates, setQueryStates] = useQueryStates(infoSearchParamKeys, {
+    urlKeys: {
+      version: 'v',
+      arch: 'a',
+      theme: 't',
+      developerMode: 'p',
+      installedModules: 'i',
+    },
+  });
+  // biome-ignore lint/correctness/useExhaustiveDependencies: On mount show defaults in address bar
+  useEffect(() => {
+    setQueryStates(queryStates);
+  }, []);
+  return useMemo<Info>(
+    () => ({
+      ...queryStates,
+      // TODO also expose below via search params
+      font: 'SansSerif',
+      language: 'en',
+    }),
+    [queryStates],
+  );
+}
 
 async function getCatalog(
   catalogUrl: string,
   signal: AbortSignal,
 ): Promise<Repository[]> {
-  // trusting that url returns type Repository[],
-  // could validate schema with valibot, but why waste the users cpu cycles on that
   return fetch(catalogUrl, {
     signal,
   })
     .then((res) => {
       if (!res.ok) {
         if (res.status === 404) {
-          notFound();
+          throw new Error(`Catalog not found at ${catalogUrl}`);
         }
         throw res;
       }
@@ -86,48 +93,11 @@ function Loading() {
   );
 }
 
-function CatalogError({ error }: ErrorComponentProps) {
-  const queryErrorResetBoundary = useQueryErrorResetBoundary();
-
-  useEffect(() => {
-    queryErrorResetBoundary.reset();
-  }, [queryErrorResetBoundary]);
-
-  return (
-    <div className="flex h-screen items-center justify-center bg-gray-50 dark:bg-gray-900">
-      <div className="flex flex-col items-center rounded-lg border-4 border-red-200 bg-white p-6 shadow-sm transition-shadow duration-200 hover:shadow-md dark:border-gray-700 dark:bg-gray-800 dark:hover:shadow-lg">
-        <details>
-          <summary className="mt-2 cursor-pointer font-medium text-gray-700 text-sm dark:text-gray-200">
-            Error loading list of available modules
-          </summary>
-          <pre className="mt-2 rounded-md bg-gray-100 p-2 dark:bg-gray-800">
-            {error.name}: {error.message}
-          </pre>
-        </details>
-      </div>
-    </div>
-  );
-}
-
 const catalogQueryOptions = (catalogUrl: string) =>
   queryOptions({
     queryKey: ['catalog', { catalogUrl }],
     queryFn: ({ signal }) => getCatalog(catalogUrl, signal),
   });
-
-export const Route = createFileRoute('/')({
-  component: App,
-  // component: Loading,
-  validateSearch: SearchSchema,
-  loaderDeps: ({ search: { c } }) => ({
-    catalogUrl: c,
-  }),
-  // @ts-expect-error TS2339 - unclear how to get typed context from docs
-  loader: async ({ deps: { catalogUrl }, context: { queryClient } }) =>
-    await queryClient.ensureQueryData(catalogQueryOptions(catalogUrl)),
-  pendingComponent: Loading,
-  errorComponent: CatalogError,
-});
 
 function ChannelSelector({
   selectedChannels,
@@ -257,6 +227,25 @@ function UpdateButton({ asset }: { asset?: Asset }) {
   );
 }
 
+function UninstallButton({ moduleName }: { moduleName: string }) {
+  const { data: jasp } = useJaspQtObject();
+
+  async function uninstall() {
+    await jasp?.uninstall(moduleName);
+  }
+
+  return (
+    <button
+      type="button"
+      onClick={uninstall}
+      title="Uninstall this module"
+      className="mt-3 inline-flex items-center rounded bg-red-500 px-3 py-1.5 font-medium text-white text-xs transition-colors duration-200 hover:bg-red-700 dark:bg-red-700 dark:hover:bg-red-800"
+    >
+      Uninstall
+    </button>
+  );
+}
+
 function findReleaseThatSatisfiesInstalledJaspVersion(
   releases: Release[],
   installed_version: string,
@@ -278,18 +267,13 @@ interface ReleaseStats {
 }
 
 function useRelease(repo: Repository, allowPreRelease: boolean): ReleaseStats {
-  const {
-    i: installedModules,
-    a: arch,
-    v: installedJaspVersion,
-  } = Route.useSearch();
-
+  const { info } = useInfo();
   return getReleaseInfo(
     repo,
-    installedJaspVersion,
+    info.version,
     allowPreRelease,
-    arch,
-    installedModules,
+    info.arch,
+    info.installedModules,
   );
 }
 
@@ -336,6 +320,7 @@ function getReleaseInfo(
 }
 
 function ReleaseAction({
+  moduleName,
   asset,
   canUpdate,
   canInstall,
@@ -343,6 +328,7 @@ function ReleaseAction({
   latestPreRelease,
   latestVersionInstalled,
 }: {
+  moduleName: string;
   asset: Asset;
   canUpdate: boolean;
   canInstall: boolean;
@@ -358,6 +344,9 @@ function ReleaseAction({
         <span className="text-gray-500 text-xs dark:text-gray-400">
           Pre release
         </span>
+      )}
+      {insideQt && (canUpdate || latestVersionInstalled) && (
+        <UninstallButton moduleName={moduleName} />
       )}
       {latestVersionInstalled && (
         <span
@@ -468,6 +457,7 @@ function RepositoryCard({
         </div>
         {asset && (
           <ReleaseAction
+            moduleName={repo.name}
             asset={asset}
             canUpdate={canUpdate}
             canInstall={canInstall}
@@ -549,12 +539,18 @@ function filterReposBySearchTerm(
  *
  * @returns true if dark theme should be used
  */
-function useTheme(): boolean {
-  const { t: theme } = Route.useSearch();
-  const systemThemeIsDark = window.matchMedia(
-    '(prefers-color-scheme: dark)',
-  ).matches;
-  return theme === 'dark' || (theme === 'system' && systemThemeIsDark);
+function useDarkTheme(): boolean {
+  const { info } = useInfo();
+  const theme = info.theme;
+  if (theme === 'dark') return true;
+  if (theme === 'light') return false;
+  if (theme === 'system') {
+    if (typeof window !== 'undefined') {
+      return window.matchMedia('(prefers-color-scheme: dark)').matches;
+    }
+    return false;
+  }
+  return false;
 }
 
 function uniqueChannels(repositories: Repository[]): string[] {
@@ -578,33 +574,87 @@ function filterOnChannels(
   );
 }
 
-function App() {
+function useInfo() {
+  // if app is running inside JASP, then
+  // info from Qt webchannel is used otherwise
+  // info from search params is used.
+  const infoFromSearchParams = useInfoFromSearchParams();
+  const { data: jasp, isFetched, error } = useJaspQtObject();
+
+  // Subscribe to environmentInfoChanged signal to update info
+  const queryClient = useQueryClient();
+  useEffect(() => {
+    if (!jasp?.environmentInfoChanged) return;
+    const callback = (data: Info) => {
+      queryClient.setQueryData(['jaspInfo'], data);
+    };
+    jasp.environmentInfoChanged.connect(callback);
+    return () => {
+      jasp.environmentInfoChanged.disconnect(callback);
+    };
+  }, [jasp, queryClient]);
+
+  // Fetch info
   const {
-    a: architecture,
-    v: installedJaspVersion,
-    p: initialAllowPreRelease,
-  } = Route.useSearch();
-  const isDarkTheme = useTheme();
-  const repositories: Repository[] = Route.useLoaderData();
+    data: info,
+    isFetched: isInfoFetched,
+    error: infoError,
+  } = useQuery({
+    queryKey: ['jaspInfo'],
+    queryFn: () => jasp?.info(),
+    enabled: insideQt && !!jasp && isFetched,
+  });
+
+  if (!insideQt) {
+    return { info: infoFromSearchParams, isInfoFetched: true, error: null };
+  }
+  if (info === undefined) {
+    return { info: infoFromSearchParams, isInfoFetched: true, error: null };
+  }
+  return { info, isInfoFetched, error: error || infoError };
+}
+
+export function App() {
+  const { info, error, isInfoFetched } = useInfo();
+  const [catalogUrl] = useQueryState('c', { defaultValue: defaultCatalog });
+  const {
+    data: repositories,
+    isFetched: isRepositoriesFetched,
+    error: repositoriesError,
+  } = useQuery(catalogQueryOptions(catalogUrl));
+  const isDarkTheme = useDarkTheme();
   const [selectedChannels, setSelectedChannels] = useState<string[]>([
     defaultChannel,
   ]);
   const [searchTerm, setSearchTerm] = useState<string>('');
   const [allowPreRelease, setAllowPreRelease] = useState<boolean>(
-    initialAllowPreRelease === 1,
+    info.developerMode,
   );
-  const availableChannels = uniqueChannels(repositories);
+  useEffect(() => {
+    setAllowPreRelease(info.developerMode);
+  }, [info.developerMode]);
+  const availableChannels = uniqueChannels(repositories || []);
   const reposOfSelectedChannels = filterOnChannels(
-    repositories,
+    repositories || [],
     selectedChannels,
   );
   const installableRepos = filterOnInstallableRepositories(
     reposOfSelectedChannels,
-    installedJaspVersion,
+    info.version,
     allowPreRelease,
-    architecture,
+    info.arch,
   );
   const filteredRepos = filterReposBySearchTerm(installableRepos, searchTerm);
+
+  if (error) {
+    return <div>Error fetching environment info: {`${error}`}</div>;
+  }
+  if (repositoriesError) {
+    return <div>Error fetching catalog: {`${repositoriesError}`}</div>;
+  }
+  if (!isInfoFetched && !isRepositoriesFetched) {
+    return <Loading />;
+  }
 
   return (
     <main
@@ -643,7 +693,6 @@ function App() {
             </div>
           </div>
         </div>
-
         <div className="space-y-3">
           {filteredRepos.map((repo) => (
             <RepositoryCard

@@ -22,8 +22,8 @@ The JASP desktop application can tell the web application which version/architec
 
 - v: the version of the JASP desktop application for example `0.95.0`
 - a: the architecture of the JASP desktop application for example `Windows_x86-64`
-- i: installed modules. A JSON object with the module names as keys and their versions as values. The object has to be [URL encoded](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/encodeURIComponent). For example, `{"22jaspEquivalenceTTests":"0.95.0","22jaspTTests":"0.94.0"}` becomes `%7B%2222jaspEquivalenceTTests%22%3A%220.95.0%22%2C%2222jaspTTests%22%3A%220.94.0%22%7D`.
-- p: show pre-releases initially. Use `1` to show pre-releases and use `0` to hide them initially.
+- i: installed modules. A JSON object with the module names as keys and their versions as values. The object has to be [URL encoded](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/encodeURIComponent). For example, `{"jaspEquivalenceTTests":"0.95.0","jaspTTests":"0.94.0"}` becomes `%7B%22jaspEquivalenceTTests%22%3A%220.95.0%22%2C%22jaspTTests%22%3A%220.94.0%22%7D`.
+- p: show pre-releases initially. Use `true` to show pre-releases and use `false` to hide them initially.
 - c: URL for the catalog aka index.json. 
    When not set uses `index.json` (`public/index.json` in local development or on deployed site uses `https://jasp-stats-modules.github.io/modules-app/index.json`).
    If URL is not a relative path aka other server then make sure correct [CORS headers](https://developer.mozilla.org/en-US/docs/Web/HTTP/Guides/CORS) are returned on server that hosts index.json.
@@ -44,7 +44,8 @@ The web application is a single page application (SPA) with the following charac
 - Uses [Vite](https://vitejs.dev/) as the build tool
 - Uses [pnpm](https://pnpm.io/) as the package manager
 - Uses [Tailwind CSS](https://tailwindcss.com/) for styling
-- Uses [TanStack Router](https://tanstack.com/router) for routing, with an initial file-based router setup in `src/routes`
+- Uses [nuqs](https://nuqs.dev/) for URL query string parsing
+- Uses [Qt WebChannel](https://doc.qt.io/qt-6/qtwebchannel-index.html) for communication between the web app and the JASP desktop app
 - Uses [biome](https://biomejs.dev/) for linting and formatting
 - Fetches data from the [GitHub GraphQL API](https://docs.github.com/en/graphql) to get available JASP modules and their release assets
 
@@ -77,6 +78,8 @@ pnpm start
 ```
 
 Application will be running at http://localhost:3000 (unless stated otherwise).
+
+See [CONTRIBUTING.md](CONTRIBUTING.md#you-want-to-develop-web-app-inside-jasp-stats) for development within JASP stats desktop application.
 
 # Building For Production
 
