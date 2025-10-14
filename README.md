@@ -48,7 +48,7 @@ The web application is a single page application (SPA) with the following charac
 - Uses [nuqs](https://nuqs.dev/) for URL query string parsing
 - Uses [Qt WebChannel](https://doc.qt.io/qt-6/qtwebchannel-index.html) for communication between the web app and the JASP desktop app
 - Uses [biome](https://biomejs.dev/) for linting and formatting
-- Uses [i18next](https://www.i18next.com/) for multi language support. Unique texts of modules themselves are not translated.
+- Uses [intlayer](https://intlayer.org/) for multi language support. Unique texts of modules themselves are not translated.
 - Fetches data from the [GitHub GraphQL API](https://docs.github.com/en/graphql) to get available JASP modules and their release assets
 
 To get a list of available JASP modules, it does the following with the help of the `src/scrape.ts` script:
@@ -116,22 +116,17 @@ pnpm check
 
 ## Multi language Support
 
-Translations are stored in `src/locales/` directory.
+Translations are stored in `src/**/*.content.tsx` files.
 
-```shell
-# To find untranslated strings
-pnpx i18next-cli lint
-# To see the status of translations
-pnpx i18next-cli status
-# To regenerate typescript types, t('key-does-not-exist') will be a type error.
-pnpx i18next-cli types
-# To generate new keys from react code
-pnpx i18next-cli extract
-# To sync translation files
-pnpx i18next-cli sync
-```
+The linting is done with TypeScript.
+Types for translations can be generated with:
 
-The `./i18next.config.ts` file contains list of supported locales.
+- `pnpm dev`
+- `pnpm typecheck`
+- `pnpx intlayer build`
+- [VS code extension](https://intlayer.org/doc/vs-code-extension)
+
+The `./intlayer.config.ts` file contains list of supported locales.
 
 ## Contributing
 
