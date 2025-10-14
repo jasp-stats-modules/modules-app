@@ -32,7 +32,7 @@ const config: IntlayerConfig = {
     defaultLocale: Locales.ENGLISH,
   },
   editor: {
-    applicationURL: "http//localhost:3000"
+    applicationURL: "http://localhost:3000"
   }
 };
 
