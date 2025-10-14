@@ -1,0 +1,23 @@
+{
+  "Search for a module": "Поиск модуля",
+  "Loading list of available modules": "Загрузка списка доступных модулей",
+  "Select channel": "Выберите канал",
+  "Install": "Установить",
+  "Update": "Обновить",
+  "Uninstall": "Удалить",
+  "Uninstall this module": "Удалить этот модуль",
+  "Pre release": "Предварительный релиз",
+  "Installed": "Установлено",
+  "Latest version is installed": "Установлена последняя версия",
+  "Go to home page of module": "Перейти на домашнюю страницу модуля",
+  "Channel": "Канал",
+  "Show pre-releases": "Показать предварительные релизы",
+  "allow-prereleases-checkbox-description": "При включении отображаются предварительные релизы. Это версии, которые разработчик модуля ещё не отметил как стабильные.",
+  "Release stats with installed": "Установлено {{installedVersion}}, последняя {{latestVersion}} от {{publishedAt}}, загрузок: {{downloads}}",
+  "Release stats without installed": "Последняя {{latestVersion}} от {{publishedAt}}, загрузок: {{downloads}}",
+  "Maintainer label": "от {{maintainer}}",
+  "No modules found": "Модули не найдены. Очистите поиск, смените канал или обновите JASP.",
+  "Error fetching environment info": "Ошибка при получении сведений об окружении: {{error}}",
+  "Error fetching catalog": "Ошибка при получении каталога: {{error}}",
+  "Checkmark": "Флажок"
+}

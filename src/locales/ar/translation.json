@@ -1,0 +1,23 @@
+{
+  "Search for a module": "ابحث عن وحدة",
+  "Loading list of available modules": "جاري تحميل قائمة الوحدات المتاحة",
+  "Select channel": "اختر القناة",
+  "Install": "تثبيت",
+  "Update": "تحديث",
+  "Uninstall": "إزالة التثبيت",
+  "Uninstall this module": "إزالة تثبيت هذه الوحدة",
+  "Pre release": "إصدار تجريبي",
+  "Installed": "مثبت",
+  "Latest version is installed": "أحدث إصدار مثبت",
+  "Go to home page of module": "انتقل إلى الصفحة الرئيسية للوحدة",
+  "Channel": "قناة",
+  "Show pre-releases": "عرض الإصدارات التجريبية",
+  "allow-prereleases-checkbox-description": "عند التحديد يتم عرض الإصدارات التجريبية. الإصدارات التجريبية هي إصدارات لم يعتبرها مطور الوحدة مستقرة بعد.",
+  "Release stats with installed": "تم تثبيت {{installedVersion}}، أحدث إصدار {{latestVersion}} بتاريخ {{publishedAt}} مع {{downloads}} تنزيلًا",
+  "Release stats without installed": "أحدث إصدار {{latestVersion}} بتاريخ {{publishedAt}} مع {{downloads}} تنزيلًا",
+  "Maintainer label": "بواسطة {{maintainer}}",
+  "No modules found": "لم يتم العثور على وحدات. يرجى مسح البحث أو تغيير القناة أو ترقية JASP.",
+  "Error fetching environment info": "خطأ في جلب معلومات البيئة: {{error}}",
+  "Error fetching catalog": "خطأ في جلب الكتالوج: {{error}}",
+  "Checkmark": "علامة اختيار"
+}

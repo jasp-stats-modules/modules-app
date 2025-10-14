@@ -1,0 +1,23 @@
+{
+  "Search for a module": "Modul keresése",
+  "Loading list of available modules": "Elérhető modulok listájának betöltése",
+  "Select channel": "Csatorna kiválasztása",
+  "Install": "Telepítés",
+  "Update": "Frissítés",
+  "Uninstall": "Eltávolítás",
+  "Uninstall this module": "Modul eltávolítása",
+  "Pre release": "Előzetes kiadás",
+  "Installed": "Telepítve",
+  "Latest version is installed": "A legújabb verzió telepítve van",
+  "Go to home page of module": "Ugrás a modul honlapjára",
+  "Channel": "Csatorna",
+  "Show pre-releases": "Előzetes kiadások megjelenítése",
+  "allow-prereleases-checkbox-description": "Bejelölés esetén megjelennek az előzetes kiadások. Ezek olyan verziók, amelyeket a modul fejlesztője még nem jelölt stabilnak.",
+  "Release stats with installed": "Telepítve: {{installedVersion}}, legújabb: {{latestVersion}} ({{publishedAt}}), {{downloads}} letöltéssel",
+  "Release stats without installed": "Legújabb: {{latestVersion}} ({{publishedAt}}), {{downloads}} letöltéssel",
+  "Maintainer label": "{{maintainer}} készítette",
+  "No modules found": "Nem találhatók modulok. Törölje a keresést, váltson csatornát vagy frissítse a JASP-ot.",
+  "Error fetching environment info": "Hiba a környezeti információ lekérésekor: {{error}}",
+  "Error fetching catalog": "Hiba a katalógus lekérésekor: {{error}}",
+  "Checkmark": "Pipa"
+}

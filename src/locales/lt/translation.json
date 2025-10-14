@@ -1,0 +1,23 @@
+{
+  "Search for a module": "Ieškoti modulio",
+  "Loading list of available modules": "Įkeliamas galimų modulių sąrašas",
+  "Select channel": "Pasirinkti kanalą",
+  "Install": "Įdiegti",
+  "Update": "Atnaujinti",
+  "Uninstall": "Pašalinti",
+  "Uninstall this module": "Pašalinti šį modulį",
+  "Pre release": "Išankstinė versija",
+  "Installed": "Įdiegta",
+  "Latest version is installed": "Įdiegta naujausia versija",
+  "Go to home page of module": "Eiti į modulio pagrindinį puslapį",
+  "Channel": "Kanalas",
+  "Show pre-releases": "Rodyti išankstines versijas",
+  "allow-prereleases-checkbox-description": "Pažymėjus rodomos išankstinės versijos. Tai versijos, kurių modulio kūrėjas dar nepažymėjo kaip stabilių.",
+  "Release stats with installed": "Įdiegta {{installedVersion}}, naujausia {{latestVersion}} {{publishedAt}} su {{downloads}} atsisiuntimų",
+  "Release stats without installed": "Naujausia {{latestVersion}} {{publishedAt}} su {{downloads}} atsisiuntimų",
+  "Maintainer label": "autorius {{maintainer}}",
+  "No modules found": "Modulių nerasta. Išvalykite paiešką, pakeiskite kanalą arba atnaujinkite JASP.",
+  "Error fetching environment info": "Klaida gaunant aplinkos informaciją: {{error}}",
+  "Error fetching catalog": "Klaida gaunant katalogą: {{error}}",
+  "Checkmark": "Žymėjimo ženklas"
+}

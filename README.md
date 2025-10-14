@@ -28,8 +28,9 @@ The JASP desktop application can tell the web application which version/architec
    When not set uses `index.json` (`public/index.json` in local development or on deployed site uses `https://jasp-stats-modules.github.io/modules-app/index.json`).
    If URL is not a relative path aka other server then make sure correct [CORS headers](https://developer.mozilla.org/en-US/docs/Web/HTTP/Guides/CORS) are returned on server that hosts index.json.
 - t: Theme. Use `dark` for dark theme, `light` for light theme, and `system` to match system theme (default).
+- l: Language. Use `en` for English (default). For example use `nl` for Dutch.
 
-A full URL could look like [https://jasp-stats-modules.github.io/modules-app/?a=Windows_x86-64&v=0.95.0&i=%7B%22jaspEquivalenceTTests%22%3A%220.95.0%22%2C%22jaspTTests%22%3A%220.94.0%22%7D&p=0](https://jasp-stats-modules.github.io/modules-app/?a=Windows_x86-64&v=0.95.0&i=%7B%22jaspEquivalenceTTests%22%3A%220.95.0%22%2C%22jaspTTests%22%3A%220.94.0%22%7D&p=0).
+A full URL could look like [https://jasp-stats-modules.github.io/modules-app/?a=Windows_x86-64&v=0.95.0&i=%7B%22jaspEquivalenceTTests%22%3A%220.95.0%22%2C%22jaspTTests%22%3A%220.94.0%22%7D&p=0](https://jasp-stats-modules.github.io/modules-app/?a=Windows_x86-64&v=0.95.0&i=%7B%22jaspEquivalenceTTests%22%3A%220.95.0%22%2C%22jaspTTests%22%3A%220.94.0%22%7D&p=0&t=dark&l=nl).
 
 ## Update list of modules
 
@@ -47,6 +48,7 @@ The web application is a single page application (SPA) with the following charac
 - Uses [nuqs](https://nuqs.dev/) for URL query string parsing
 - Uses [Qt WebChannel](https://doc.qt.io/qt-6/qtwebchannel-index.html) for communication between the web app and the JASP desktop app
 - Uses [biome](https://biomejs.dev/) for linting and formatting
+- Uses [i18next](https://www.i18next.com/) for multi language support. Unique texts of modules themselves are not translated.
 - Fetches data from the [GitHub GraphQL API](https://docs.github.com/en/graphql) to get available JASP modules and their release assets
 
 To get a list of available JASP modules, it does the following with the help of the `src/scrape.ts` script:
@@ -111,6 +113,25 @@ Can be formatted and linted with:
 ```bash
 pnpm check
 ```
+
+## Multi language Support
+
+Translations are stored in `src/locales/` directory.
+
+```shell
+# To find untranslated strings
+pnpx i18next-cli lint
+# To see the status of translations
+pnpx i18next-cli status
+# To regenerate typescript types, t('key-does-not-exist') will be a type error.
+pnpx i18next-cli types
+# To generate new keys from react code
+pnpx i18next-cli extract
+# To sync translation files
+pnpx i18next-cli sync
+```
+
+The `./i18next.config.ts` file contains list of supported locales.
 
 ## Contributing
 

@@ -1,0 +1,23 @@
+{
+  "Search for a module": "Претражи модул",
+  "Loading list of available modules": "Учитавање списка доступних модула",
+  "Select channel": "Изаберите канал",
+  "Install": "Инсталирај",
+  "Update": "Ажурирај",
+  "Uninstall": "Деинсталирај",
+  "Uninstall this module": "Деинсталирај овај модул",
+  "Pre release": "Пре-релиз",
+  "Installed": "Инсталирано",
+  "Latest version is installed": "Најновија верзија је инсталирана",
+  "Go to home page of module": "Отвори почетну страницу модула",
+  "Channel": "Канал",
+  "Show pre-releases": "Прикажи пре-релизе",
+  "allow-prereleases-checkbox-description": "Када је означено приказују се пре-релиз издања. То су издања која програмер модула још није означио као стабилна.",
+  "Release stats with installed": "Инсталирано {{installedVersion}}, најновије {{latestVersion}} {{publishedAt}} са {{downloads}} преузимања",
+  "Release stats without installed": "Најновије {{latestVersion}} {{publishedAt}} са {{downloads}} преузимања",
+  "Maintainer label": "аутор {{maintainer}}",
+  "No modules found": "Ниједан модул није пронађен. Обришите претрагу, промените канал или ажурирајте JASP.",
+  "Error fetching environment info": "Грешка при добављању информација о окружењу: {{error}}",
+  "Error fetching catalog": "Грешка при добављању каталога: {{error}}",
+  "Checkmark": "Ознака"
+}

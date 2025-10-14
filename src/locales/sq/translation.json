@@ -1,0 +1,23 @@
+{
+  "Search for a module": "Kërko një modul",
+  "Loading list of available modules": "Po ngarkohet lista e moduleve të disponueshme",
+  "Select channel": "Zgjidh kanalin",
+  "Install": "Instalo",
+  "Update": "Përditëso",
+  "Uninstall": "Çinstalo",
+  "Uninstall this module": "Çinstalo këtë modul",
+  "Pre release": "Version paraprak",
+  "Installed": "I instaluar",
+  "Latest version is installed": "Versioni më i fundit është instaluar",
+  "Go to home page of module": "Shko në faqen kryesore të modulit",
+  "Channel": "Kanal",
+  "Show pre-releases": "Shfaq versionet paraprake",
+  "allow-prereleases-checkbox-description": "Kur përzgjidhet shfaq versionet paraprake. Këto janë versione që zhvilluesi i modulit ende nuk i ka shënuar si të qëndrueshme.",
+  "Release stats with installed": "I instaluar {{installedVersion}}, më i fundit {{latestVersion}} më {{publishedAt}} me {{downloads}} shkarkime",
+  "Release stats without installed": "Më i fundit {{latestVersion}} më {{publishedAt}} me {{downloads}} shkarkime",
+  "Maintainer label": "nga {{maintainer}}",
+  "No modules found": "Nuk u gjetën module. Pastro kërkimin, ndrysho kanalin ose përmirëso JASP.",
+  "Error fetching environment info": "Gabim gjatë marrjes së informacionit të ambientit: {{error}}",
+  "Error fetching catalog": "Gabim gjatë marrjes së katalogut: {{error}}",
+  "Checkmark": "Shenjë kontrolli"
+}

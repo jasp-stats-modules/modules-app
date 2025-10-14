@@ -48,3 +48,30 @@ jobs:
 
       - name: Run Type Check
         run: pnpm typecheck
+  i18n:
+    name: i18n Check
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10
+
+      - name: Use Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22.18.0'
+          cache: "pnpm"
+
+      # TODO needed?
+      # - name: Install dependencies
+      #   run: pnpm install
+
+      - name: Run i18n lint
+        run: pnpx i18next-cli lint
+
+      - name: Run i18n status
+        run: pnpx i18next-cli status

@@ -1,0 +1,23 @@
+{
+  "Search for a module": "Szukaj modułu",
+  "Loading list of available modules": "Wczytywanie listy dostępnych modułów",
+  "Select channel": "Wybierz kanał",
+  "Install": "Zainstaluj",
+  "Update": "Aktualizuj",
+  "Uninstall": "Odinstaluj",
+  "Uninstall this module": "Odinstaluj ten moduł",
+  "Pre release": "Wersja wstępna",
+  "Installed": "Zainstalowano",
+  "Latest version is installed": "Najnowsza wersja jest zainstalowana",
+  "Go to home page of module": "Przejdź do strony modułu",
+  "Channel": "Kanał",
+  "Show pre-releases": "Pokaż wersje wstępne",
+  "allow-prereleases-checkbox-description": "Po zaznaczeniu pokazuje wersje wstępne. Są to wydania, które deweloper modułu nie oznaczył jeszcze jako stabilne.",
+  "Release stats with installed": "Zainstalowano {{installedVersion}}, najnowsza {{latestVersion}} z {{publishedAt}} z {{downloads}} pobraniami",
+  "Release stats without installed": "Najnowsza {{latestVersion}} z {{publishedAt}} z {{downloads}} pobraniami",
+  "Maintainer label": "autor {{maintainer}}",
+  "No modules found": "Nie znaleziono modułów. Wyczyść wyszukiwanie, zmień kanał lub zaktualizuj JASP.",
+  "Error fetching environment info": "Błąd podczas pobierania informacji o środowisku: {{error}}",
+  "Error fetching catalog": "Błąd podczas pobierania katalogu: {{error}}",
+  "Checkmark": "Znak wyboru"
+}

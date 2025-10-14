@@ -25,31 +25,6 @@ const defaultInstalledVersion = '0.95.1';
 const defaultInstalledModules = () => ({});
 const installedModulesSchema = v.record(v.string(), v.string());
 const themeSchema = ['dark', 'light', 'system'] as const;
-const languageSchema = [
-  'en',
-  'ar',
-  'cs',
-  'de',
-  'es',
-  'et',
-  'eu',
-  'fr',
-  'gl',
-  'hu',
-  'id',
-  'it',
-  'ja',
-  'lt',
-  'nl',
-  'pl',
-  'pt',
-  'ru',
-  'sq',
-  'sr',
-  'tr',
-  'zh_Hans',
-  'zh_Hant',
-] as const;
 const infoSearchParamKeys = {
   version: parseAsString.withDefault(defaultInstalledVersion),
   arch: parseAsString.withDefault(defaultArchitecture),
@@ -58,7 +33,7 @@ const infoSearchParamKeys = {
   ),
   developerMode: parseAsBoolean.withDefault(false),
   theme: parseAsStringLiteral(themeSchema).withDefault('system'),
-  language: parseAsStringLiteral(languageSchema).withDefault('en'),
+  language: parseAsString.withDefault('en'),
 };
 
 function useInfoFromSearchParams(): Info {
@@ -751,9 +726,7 @@ export function App() {
                 onChange={setAllowPreRelease}
                 label={t('Show pre-releases')}
                 name="allowPreReleases"
-                description={t(
-                  'When checked shows pre-releases. Pre-releases are releases that a module developer has not yet marked as stable.',
-                )}
+                description={t('allow-prereleases-checkbox-description')}
               />
             </div>
             <div>
@@ -779,9 +752,7 @@ export function App() {
           ))}
           {filteredRepos.length === 0 && (
             <div className="text-gray-500 dark:text-gray-400">
-              {t(
-                'No modules found. Please clear search, change channel or upgrade JASP.',
-              )}
+              {t('No modules found')}
             </div>
           )}
         </div>

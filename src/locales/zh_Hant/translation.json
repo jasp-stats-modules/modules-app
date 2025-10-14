@@ -1,0 +1,23 @@
+{
+  "Search for a module": "搜尋模組",
+  "Loading list of available modules": "正在載入可用模組清單",
+  "Select channel": "選擇通道",
+  "Install": "安裝",
+  "Update": "更新",
+  "Uninstall": "移除",
+  "Uninstall this module": "移除此模組",
+  "Pre release": "預先發佈",
+  "Installed": "已安裝",
+  "Latest version is installed": "已安裝最新版本",
+  "Go to home page of module": "前往模組首頁",
+  "Channel": "通道",
+  "Show pre-releases": "顯示預先發佈版本",
+  "allow-prereleases-checkbox-description": "勾選後會顯示預先發佈版本。預先發佈是模組開發者尚未標記為穩定的版本。",
+  "Release stats with installed": "已安裝 {{installedVersion}}，最新 {{latestVersion}} 於 {{publishedAt}} 發佈，共 {{downloads}} 次下載",
+  "Release stats without installed": "最新 {{latestVersion}} 於 {{publishedAt}} 發佈，共 {{downloads}} 次下載",
+  "Maintainer label": "由 {{maintainer}} 提供",
+  "No modules found": "找不到模組。請清除搜尋、變更通道或升級 JASP。",
+  "Error fetching environment info": "取得環境資訊時發生錯誤：{{error}}",
+  "Error fetching catalog": "取得目錄時發生錯誤：{{error}}",
+  "Checkmark": "核取記號"
+}
