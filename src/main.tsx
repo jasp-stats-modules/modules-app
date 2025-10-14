@@ -4,6 +4,7 @@ import ReactDOM from 'react-dom/client';
 import './styles.css';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { NuqsAdapter } from 'nuqs/adapters/react';
+import { IntlayerProvider } from 'react-intlayer';
 import { App } from './App.tsx';
 import reportWebVitals from './reportWebVitals.ts';
 
@@ -16,9 +17,11 @@ if (rootElement && !rootElement.innerHTML) {
   root.render(
     <StrictMode>
       <NuqsAdapter defaultOptions={{ clearOnDefault: false }}>
-        <QueryClientProvider client={queryClient}>
-          <App />
-        </QueryClientProvider>
+        <IntlayerProvider>
+          <QueryClientProvider client={queryClient}>
+            <App />
+          </QueryClientProvider>
+        </IntlayerProvider>
       </NuqsAdapter>
     </StrictMode>,
   );
