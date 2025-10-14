@@ -31,6 +31,9 @@ const config: IntlayerConfig = {
     ],
     defaultLocale: Locales.ENGLISH,
   },
+  build: {
+    outputFormat: ["esm"],
+  },
   editor: {
     applicationURL: "http://localhost:3000"
   }
