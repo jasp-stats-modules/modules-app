@@ -167,6 +167,7 @@ async function releaseAssetsPaged(
   // For now we insert a dummy release,
   // try out with ?v=0.95.0 should show release below and not one with 2cbd8a6d as version
   results
+    .sort((a, b) => a.releaseSource.localeCompare(b.releaseSource))
     .find((repo) => repo.releaseSource === 'jasp-stats-modules/jaspAnova')
     ?.releases.push({
       version: '0.94.0',
@@ -308,7 +309,8 @@ function transformRelease(release: GqlRelease, nameWithOwner: string): Release {
           architecture: extractArchitectureFromUrl(a.downloadUrl),
         };
         return asset;
-      }),
+      })
+      .sort((a, b) => a.architecture.localeCompare(b.architecture)),
   };
   return newRelease;
 }
