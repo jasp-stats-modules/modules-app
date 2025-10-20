@@ -163,7 +163,7 @@ async function releaseAssetsPaged(
       width: 20,
       complete: chalk.green('█'),
       incomplete: chalk.gray('░'),
-    }
+    },
   );
   for (let i = 0; i < totalBatches; i++) {
     const batch = batches[i];
