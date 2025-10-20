@@ -640,6 +640,46 @@ function useInfo() {
   return { info, isInfoFetched, error: error || infoError };
 }
 
+function sanitizeFontName(name: string | null): string | null {
+  if (!name) return null;
+
+  const cleaned = name.replace(/["']/g, '').trim();
+  if (cleaned.length === 0 || cleaned.length > 60) return null;
+
+  if (!/^[A-Za-z0-9\s\-,]+$/.test(cleaned)) return null;
+
+  try {
+    if (typeof document !== 'undefined' && document.fonts?.check) {
+      // check whether the browser has the family available
+      const checkStr = `12px "${cleaned}"`;
+      if (document.fonts.check(checkStr)) {
+        return cleaned;
+      }
+    }
+  } catch {
+    // ignore detection errors
+  }
+  console.error(`Font "${cleaned}" is not available, falling back to default.`);
+  return null;
+}
+
+function useFont() {
+  const { info } = useInfo();
+  useEffect(() => {
+    if (typeof document === 'undefined') return;
+    const root = document.documentElement;
+    const font = sanitizeFontName(info.font);
+    if (!font) {
+      root.style.removeProperty('--app-font-family');
+      return;
+    }
+    root.style.setProperty('--app-font-family', font);
+    return () => {
+      root.style.removeProperty('--app-font-family');
+    };
+  }, [info.font]);
+}
+
 export function App() {
   const {
     show_prereleases,
@@ -655,18 +695,7 @@ export function App() {
     error: repositoriesError,
   } = useQuery(catalogQueryOptions(catalogUrl));
   const isDarkTheme = useDarkTheme();
-  useEffect(() => {
-    if (typeof document === 'undefined') return;
-    const root = document.documentElement;
-    if (!info.font) {
-      root.style.removeProperty('--app-font-family');
-      return;
-    }
-    root.style.setProperty('--app-font-family', info.font);
-    return () => {
-      root.style.removeProperty('--app-font-family');
-    };
-  }, [info.font]);
+  useFont();
   const [selectedChannels, setSelectedChannels] = useState<string[]>([
     defaultChannel,
   ]);
