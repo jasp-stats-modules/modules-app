@@ -148,7 +148,7 @@ function batchedArray<T>(array: T[], size: number): T[][] {
 async function releaseAssetsPaged(
   repo2channels: Repo2Channels,
   firstAssets = 20,
-  pageSize = 100,
+  pageSize = 10,
 ): Promise<Repository[]> {
   const repositoriesWithOwners = Object.keys(repo2channels);
   const batches = batchedArray(repositoriesWithOwners, pageSize);
