@@ -21,6 +21,22 @@
   font-display: swap;
 }
 
+@font-face {
+  font-family: 'Fira Code';
+  src: url('/fonts/FiraCode-VF.woff2') format('woff2');
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Fira Code Retina';
+  src: url('/fonts/FiraCode-Retina.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
 body {
   /* biome-ignore lint/suspicious/noUnknownAtRules: tailwind plugin */
   @apply m-0;
