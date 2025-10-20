@@ -35,6 +35,7 @@ const infoSearchParamKeys = {
   developerMode: parseAsBoolean.withDefault(false),
   theme: parseAsStringLiteral(themeSchema).withDefault('system'),
   language: parseAsString.withDefault('en'),
+  font: parseAsString,
 };
 
 function useInfoFromSearchParams(): Info {
@@ -46,6 +47,7 @@ function useInfoFromSearchParams(): Info {
       developerMode: 'p',
       installedModules: 'i',
       language: 'l',
+      font: 'f',
     },
   });
   // biome-ignore lint/correctness/useExhaustiveDependencies: On mount show defaults in address bar
