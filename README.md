@@ -49,6 +49,7 @@ The web application is a single page application (SPA) with the following charac
 - Uses [Qt WebChannel](https://doc.qt.io/qt-6/qtwebchannel-index.html) for communication between the web app and the JASP desktop app
 - Uses [biome](https://biomejs.dev/) for linting and formatting
 - Uses [intlayer](https://intlayer.org/) for multi language support. Unique texts of modules themselves are not translated.
+- Uses [Vitest](https://vitest.dev/) for testing
 - Fetches data from the [GitHub GraphQL API](https://docs.github.com/en/graphql) to get available JASP modules and their release assets
 
 To get a list of available JASP modules, it does the following with the help of the `src/scrape.ts` script:
@@ -94,7 +95,7 @@ pnpm build
 
 ## Testing
 
-We use [Vitest](https://vitest.dev/) for testing. You can run the tests with:
+You can run the tests with:
 
 ```bash
 pnpm test
@@ -116,17 +117,16 @@ pnpm check
 
 ## Multi language Support
 
+The `./intlayer.config.ts` file contains list of supported locales.
 Translations are stored in `src/**/*.content.tsx` files.
 
 The linting is done with TypeScript.
 Types for translations can be generated with:
 
-- `pnpm dev`
-- `pnpm typecheck`
-- `pnpx intlayer build`
+- `pnpm dev` or
+- `pnpm typecheck` or
+- `pnpx intlayer build` or
 - [VS code extension](https://intlayer.org/doc/vs-code-extension)
-
-The `./intlayer.config.ts` file contains list of supported locales.
 
 ## Contributing
 
