@@ -29,6 +29,7 @@ The JASP desktop application can tell the web application which version/architec
    If URL is not a relative path aka other server then make sure correct [CORS headers](https://developer.mozilla.org/en-US/docs/Web/HTTP/Guides/CORS) are returned on server that hosts index.json.
 - t: Theme. Use `dark` for dark theme, `light` for light theme, and `system` to match system theme (default).
 - l: Language. Use `en` for English (default). For example use `nl` for Dutch.
+- f: Font name. Use the name of a font installed on your system. For example use `SansSerif`. Besides OS fonts also `FreeSans`, `Fira Code` and `Fira Code Retina` fonts are available.
 
 A full URL could look like [https://jasp-stats-modules.github.io/modules-app/?a=Windows_x86-64&v=0.95.0&i=%7B%22jaspEquivalenceTTests%22%3A%220.95.0%22%2C%22jaspTTests%22%3A%220.94.0%22%7D&p=0](https://jasp-stats-modules.github.io/modules-app/?a=Windows_x86-64&v=0.95.0&i=%7B%22jaspEquivalenceTTests%22%3A%220.95.0%22%2C%22jaspTTests%22%3A%220.94.0%22%7D&p=0&t=dark&l=nl).
 

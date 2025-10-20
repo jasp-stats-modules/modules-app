@@ -6,7 +6,7 @@ export interface Info {
   arch: string;
   theme: string;
   developerMode: boolean;
-  font: string;
+  font: string | null;
   language: string;
   installedModules: Record<string, string>;
 }

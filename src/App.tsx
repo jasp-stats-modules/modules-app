@@ -10,7 +10,7 @@ import {
   useQueryStates,
 } from 'nuqs';
 import type { Dispatch, SetStateAction } from 'react';
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useIntlayer, useLocale } from 'react-intlayer';
 import { satisfies } from 'semver';
 import * as v from 'valibot';
@@ -35,6 +35,7 @@ const infoSearchParamKeys = {
   developerMode: parseAsBoolean.withDefault(false),
   theme: parseAsStringLiteral(themeSchema).withDefault('system'),
   language: parseAsString.withDefault('en'),
+  font: parseAsString,
 };
 
 function useInfoFromSearchParams(): Info {
@@ -46,20 +47,14 @@ function useInfoFromSearchParams(): Info {
       developerMode: 'p',
       installedModules: 'i',
       language: 'l',
+      font: 'f',
     },
   });
   // biome-ignore lint/correctness/useExhaustiveDependencies: On mount show defaults in address bar
   useEffect(() => {
     setQueryStates(queryStates);
   }, []);
-  return useMemo<Info>(
-    () => ({
-      ...queryStates,
-      // TODO also expose below via search params
-      font: 'SansSerif',
-    }),
-    [queryStates],
-  );
+  return queryStates as Info;
 }
 
 async function getCatalog(
@@ -645,6 +640,46 @@ function useInfo() {
   return { info, isInfoFetched, error: error || infoError };
 }
 
+function sanitizeFontName(name: string | null): string | null {
+  if (!name) return null;
+
+  const cleaned = name.replace(/["']/g, '').trim();
+  if (cleaned.length === 0 || cleaned.length > 60) return null;
+
+  if (!/^[A-Za-z0-9\s\-,]+$/.test(cleaned)) return null;
+
+  try {
+    if (typeof document !== 'undefined' && document.fonts?.check) {
+      // check whether the browser has the family available
+      const checkStr = `12px "${cleaned}"`;
+      if (document.fonts.check(checkStr)) {
+        return cleaned;
+      }
+    }
+  } catch {
+    // ignore detection errors
+  }
+  console.error(`Font "${cleaned}" is not available, falling back to default.`);
+  return null;
+}
+
+function useFont() {
+  const { info } = useInfo();
+  useEffect(() => {
+    if (typeof document === 'undefined') return;
+    const root = document.documentElement;
+    const font = sanitizeFontName(info.font);
+    if (!font) {
+      root.style.removeProperty('--app-font-family');
+      return;
+    }
+    root.style.setProperty('--app-font-family', font);
+    return () => {
+      root.style.removeProperty('--app-font-family');
+    };
+  }, [info.font]);
+}
+
 export function App() {
   const {
     show_prereleases,
@@ -660,6 +695,7 @@ export function App() {
     error: repositoriesError,
   } = useQuery(catalogQueryOptions(catalogUrl));
   const isDarkTheme = useDarkTheme();
+  useFont();
   const [selectedChannels, setSelectedChannels] = useState<string[]>([
     defaultChannel,
   ]);

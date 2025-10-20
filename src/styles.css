@@ -3,12 +3,50 @@
 /* biome-ignore lint/suspicious/noUnknownAtRules: tailwind-ism */
 @custom-variant dark (&:where(.dark, .dark *));
 
+@font-face {
+  font-family: "FreeSans";
+  src:
+    local("FreeSans"),
+    url("/fonts/FreeSans.woff") format("woff");
+  font-weight: 300 500;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "FreeSans";
+  src:
+    local("FreeSans Bold"),
+    local("FreeSans-Bold"),
+    url("/fonts/FreeSansBold.woff") format("woff");
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Fira Code";
+  src: url("/fonts/FiraCode-VF.woff2") format("woff2");
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Fira Code Retina";
+  src: url("/fonts/FiraCode-Retina.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
 body {
   /* biome-ignore lint/suspicious/noUnknownAtRules: tailwind plugin */
   @apply m-0;
   font-family:
-    -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen", "Ubuntu",
-    "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif;
+    var(--app-font-family), -apple-system, BlinkMacSystemFont, "Segoe UI",
+    "Roboto", "Oxygen", "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans",
+    "Helvetica Neue", sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
