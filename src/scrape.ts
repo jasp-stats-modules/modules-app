@@ -148,7 +148,6 @@ function batchedArray<T>(array: T[], size: number): T[][] {
 
 async function releaseAssetsPaged(
   repo2channels: Repo2Channels,
-  firstAssets = 20,
   pageSize = 10,
 ): Promise<Repository[]> {
   const repositoriesWithOwners = Object.keys(repo2channels);
@@ -167,7 +166,7 @@ async function releaseAssetsPaged(
   );
   for (let i = 0; i < totalBatches; i++) {
     const batch = batches[i];
-    const rawBatchResults = await releaseAssets(batch, firstAssets);
+    const rawBatchResults = await releaseAssets(batch);
     const batchResults = associateChannelsWithRepositories(
       rawBatchResults,
       repo2channels,
@@ -181,7 +180,7 @@ async function releaseAssetsPaged(
   // For now we insert a dummy release,
   // try out with ?v=0.95.0 should show release below and not one with 2cbd8a6d as version
   results
-    .sort((a, b) => a.releaseSource.localeCompare(b.releaseSource))
+    .sort((a, b) => a.releaseSource.localeCompare(b.releaseSource, 'en'))
     .find((repo) => repo.releaseSource === 'jasp-stats-modules/jaspAnova')
     ?.releases.push({
       version: '0.94.0',
@@ -324,7 +323,7 @@ function transformRelease(release: GqlRelease, nameWithOwner: string): Release {
         };
         return asset;
       })
-      .sort((a, b) => a.architecture.localeCompare(b.architecture)),
+      .sort((a, b) => a.architecture.localeCompare(b.architecture, 'en')),
   };
   return newRelease;
 }
