@@ -13,6 +13,7 @@
     "serve": "vite preview",
     "test": "vitest run",
     "scrape": "node src/scrape.ts",
+    "pretypecheck": "intlayer build",
     "typecheck": "tsc",
     "check": "biome check --write --unsafe"
   },
@@ -20,10 +21,12 @@
     "@tailwindcss/vite": "^4.0.6",
     "@tanstack/react-query": "^5.85.5",
     "clsx": "^2.1.1",
+    "intlayer": "^6.1.6",
     "lucide-react": "^0.542.0",
     "nuqs": "^2.7.1",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
+    "react-intlayer": "^6.1.6",
     "semver": "^7.7.2",
     "tailwind-merge": "^3.3.1",
     "tailwindcss": "^4.0.6",
@@ -47,6 +50,7 @@
     "jsdom": "^26.0.0",
     "typescript": "^5.7.2",
     "vite": "^6.3.5",
+    "vite-intlayer": "^6.1.6",
     "vitest": "^3.0.5",
     "web-vitals": "^4.2.4"
   }

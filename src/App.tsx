@@ -1,4 +1,5 @@
 import { queryOptions, useQuery, useQueryClient } from '@tanstack/react-query';
+import { getHTMLTextDir } from 'intlayer';
 import { House } from 'lucide-react';
 import {
   parseAsBoolean,
@@ -10,6 +11,7 @@ import {
 } from 'nuqs';
 import type { Dispatch, SetStateAction } from 'react';
 import { useEffect, useMemo, useState } from 'react';
+import { useIntlayer, useLocale } from 'react-intlayer';
 import { satisfies } from 'semver';
 import * as v from 'valibot';
 import { cn } from '@/lib/utils';
@@ -32,6 +34,7 @@ const infoSearchParamKeys = {
   ),
   developerMode: parseAsBoolean.withDefault(false),
   theme: parseAsStringLiteral(themeSchema).withDefault('system'),
+  language: parseAsString.withDefault('en'),
 };
 
 function useInfoFromSearchParams(): Info {
@@ -42,6 +45,7 @@ function useInfoFromSearchParams(): Info {
       theme: 't',
       developerMode: 'p',
       installedModules: 'i',
+      language: 'l',
     },
   });
   // biome-ignore lint/correctness/useExhaustiveDependencies: On mount show defaults in address bar
@@ -53,7 +57,6 @@ function useInfoFromSearchParams(): Info {
       ...queryStates,
       // TODO also expose below via search params
       font: 'SansSerif',
-      language: 'en',
     }),
     [queryStates],
   );
@@ -79,12 +82,11 @@ async function getCatalog(
 }
 
 function Loading() {
+  const { loading } = useIntlayer('app');
   return (
     <div className="flex h-screen items-center justify-center bg-gray-50 dark:bg-gray-900">
       <div className="flex flex-col items-center rounded-lg border border-gray-200 bg-white p-6 shadow-sm transition-shadow duration-200 hover:shadow-md dark:border-gray-700 dark:bg-gray-800 dark:hover:shadow-lg">
-        <div className="text-gray-700 dark:text-gray-200">
-          Loading list of available modules
-        </div>
+        <div className="text-gray-700 dark:text-gray-200">{loading}</div>
         <div className="mt-3">
           <span className="block h-10 w-10 animate-spin rounded-full border-4 border-blue-500 border-t-transparent"></span>
         </div>
@@ -110,6 +112,7 @@ function ChannelSelector({
   channels: string[];
   className?: string;
 }) {
+  const { select_channel } = useIntlayer('app');
   return (
     <fieldset
       className={cn(
@@ -118,7 +121,7 @@ function ChannelSelector({
       )}
     >
       <legend className="mb-1 block font-medium text-gray-700 text-xs dark:text-gray-300">
-        Select channel:
+        {select_channel}:
       </legend>
       <div className="flex flex-wrap gap-3">
         {channels.map((c) => (
@@ -162,6 +165,7 @@ function Checkbox({
   className?: string;
   inputClassName?: string;
 }) {
+  const { checkmark } = useIntlayer('app');
   return (
     <label
       className={cn(
@@ -186,7 +190,7 @@ function Checkbox({
           fill="currentColor"
           viewBox="0 0 20 20"
         >
-          <title>Checkmark</title>
+          <title>{checkmark}</title>
           <path
             fillRule="evenodd"
             d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
@@ -200,6 +204,7 @@ function Checkbox({
 }
 
 function InstallButton({ asset }: { asset?: Asset }) {
+  const { install } = useIntlayer('app');
   if (!asset) {
     return null;
   }
@@ -208,12 +213,13 @@ function InstallButton({ asset }: { asset?: Asset }) {
       href={asset.downloadUrl}
       className="inline-flex items-center rounded bg-green-600 px-3 py-1.5 font-medium text-white text-xs transition-colors duration-200 hover:bg-green-700 dark:bg-green-700 dark:hover:bg-green-800"
     >
-      Install
+      {install}
     </a>
   );
 }
 
 function UpdateButton({ asset }: { asset?: Asset }) {
+  const { update } = useIntlayer('app');
   if (!asset) {
     return null;
   }
@@ -222,26 +228,27 @@ function UpdateButton({ asset }: { asset?: Asset }) {
       href={asset.downloadUrl}
       className="inline-flex items-center rounded bg-blue-600 px-3 py-1.5 font-medium text-white text-xs transition-colors duration-200 hover:bg-blue-700 dark:bg-blue-700 dark:hover:bg-blue-800"
     >
-      Update
+      {update}
     </a>
   );
 }
 
 function UninstallButton({ moduleName }: { moduleName: string }) {
+  const { uninstall, uninstall_this_module } = useIntlayer('app');
   const { data: jasp } = useJaspQtObject();
 
-  async function uninstall() {
+  async function doUninstall() {
     await jasp?.uninstall(moduleName);
   }
 
   return (
     <button
       type="button"
-      onClick={uninstall}
-      title="Uninstall this module"
+      onClick={doUninstall}
+      title={uninstall_this_module.value}
       className="mt-3 inline-flex items-center rounded bg-red-500 px-3 py-1.5 font-medium text-white text-xs transition-colors duration-200 hover:bg-red-700 dark:bg-red-700 dark:hover:bg-red-800"
     >
-      Uninstall
+      {uninstall}
     </button>
   );
 }
@@ -336,13 +343,15 @@ function ReleaseAction({
   latestPreRelease?: Release;
   latestVersionInstalled: boolean;
 }) {
+  const { pre_release, latest_version_installed, installed } =
+    useIntlayer('app');
   return (
     <div className="flex flex-col">
       {canUpdate && <UpdateButton asset={asset} />}
       {canInstall && !canUpdate && <InstallButton asset={asset} />}
       {allowPreRelease && latestPreRelease && (
         <span className="text-gray-500 text-xs dark:text-gray-400">
-          Pre release
+          {pre_release}
         </span>
       )}
       {insideQt && (canUpdate || latestVersionInstalled) && (
@@ -350,10 +359,10 @@ function ReleaseAction({
       )}
       {latestVersionInstalled && (
         <span
-          title="Latest version is installed"
+          title={latest_version_installed.value}
           className="px-2 py-1.5 text-gray-500 text-xs dark:text-gray-400"
         >
-          Installed
+          {installed}
         </span>
       )}
     </div>
@@ -373,27 +382,38 @@ function ReleaseStats({
   maintainer: string;
   downloads: number;
 }) {
+  const { release_stats_installed, release_stats_notinstalled, by_maintainer } =
+    useIntlayer('app');
   const publishedAt = new Date(latestPublishedAt).toLocaleDateString();
   return (
     <div className="flex flex-row justify-between text-gray-500 text-xs dark:text-gray-400">
       <div>
         {installedVersion
-          ? ` installed: ${installedVersion}, latest`
-          : 'latest '}{' '}
-        {latestVersion} on {publishedAt} with {downloads} downloads
+          ? release_stats_installed({
+              installedVersion,
+              latestVersion,
+              publishedAt,
+              downloads,
+            })
+          : release_stats_notinstalled({
+              latestVersion,
+              publishedAt,
+              downloads,
+            })}
       </div>
-      <div>by {maintainer}</div>
+      <div>{by_maintainer({ maintainer })}</div>
     </div>
   );
 }
 
 function RepositoryLinks({ homepageUrl }: { homepageUrl?: string }) {
+  const { go_to_home_page_of_module } = useIntlayer('app');
   if (!homepageUrl) {
     return null;
   }
   return (
     <a
-      title="Go to home page of module"
+      title={go_to_home_page_of_module.value}
       target="_blank"
       rel="noopener noreferrer"
       href={homepageUrl}
@@ -404,6 +424,7 @@ function RepositoryLinks({ homepageUrl }: { homepageUrl?: string }) {
 }
 
 function RepositoryChannels({ channels }: { channels: string[] }) {
+  const { channel: channelText } = useIntlayer('app');
   if (!channels || channels.length === 0) {
     return null;
   }
@@ -413,7 +434,7 @@ function RepositoryChannels({ channels }: { channels: string[] }) {
         <span
           key={channel}
           className="rounded-md bg-gray-50 px-2 py-0.5 text-gray-700 text-xs dark:bg-gray-900 dark:text-gray-400"
-          title="Channel"
+          title={channelText.value}
         >
           {channel}
         </span>
@@ -605,6 +626,16 @@ function useInfo() {
     enabled: insideQt && !!jasp && isFetched,
   });
 
+  const { setLocale } = useLocale();
+  useEffect(() => {
+    const lang = info?.language || infoFromSearchParams.language;
+    setLocale(lang);
+    if (document) {
+      document.documentElement.lang = lang;
+      document.documentElement.dir = getHTMLTextDir(lang);
+    }
+  }, [info?.language, infoFromSearchParams.language, setLocale]);
+
   if (!insideQt) {
     return { info: infoFromSearchParams, isInfoFetched: true, error: null };
   }
@@ -615,6 +646,12 @@ function useInfo() {
 }
 
 export function App() {
+  const {
+    show_prereleases,
+    allow_prereleases_checkbox_description,
+    search_for_a_module,
+    no_modules_found,
+  } = useIntlayer('app');
   const { info, error, isInfoFetched } = useInfo();
   const [catalogUrl] = useQueryState('c', { defaultValue: defaultCatalog });
   const {
@@ -647,10 +684,10 @@ export function App() {
   const filteredRepos = filterReposBySearchTerm(installableRepos, searchTerm);
 
   if (error) {
-    return <div>Error fetching environment info: {`${error}`}</div>;
+    return <div>Error fetching environment info: {String(error)}</div>;
   }
   if (repositoriesError) {
-    return <div>Error fetching catalog: {`${repositoriesError}`}</div>;
+    return <div>Error fetching catalog: {String(repositoriesError)}</div>;
   }
   if (!isInfoFetched && !isRepositoriesFetched) {
     return <Loading />;
@@ -675,14 +712,14 @@ export function App() {
               <Checkbox
                 checked={allowPreRelease}
                 onChange={setAllowPreRelease}
-                label="Show pre-releases"
+                label={show_prereleases.value}
                 name="allowPreReleases"
-                description="When checked shows pre-releases. Pre-releases are releases that a module developer has not yet marked as stable."
+                description={allow_prereleases_checkbox_description.value}
               />
             </div>
             <div>
               <label className="mb-1 block font-medium text-gray-700 text-xs dark:text-gray-300">
-                Search for a module:
+                {search_for_a_module}:
                 <input
                   type="search"
                   value={searchTerm}
@@ -703,8 +740,7 @@ export function App() {
           ))}
           {filteredRepos.length === 0 && (
             <div className="text-gray-500 dark:text-gray-400">
-              No modules found. Please clear search, change channel or upgrade
-              JASP.
+              {no_modules_found}
             </div>
           )}
         </div>

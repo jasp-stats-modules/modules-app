@@ -28,8 +28,9 @@ The JASP desktop application can tell the web application which version/architec
    When not set uses `index.json` (`public/index.json` in local development or on deployed site uses `https://jasp-stats-modules.github.io/modules-app/index.json`).
    If URL is not a relative path aka other server then make sure correct [CORS headers](https://developer.mozilla.org/en-US/docs/Web/HTTP/Guides/CORS) are returned on server that hosts index.json.
 - t: Theme. Use `dark` for dark theme, `light` for light theme, and `system` to match system theme (default).
+- l: Language. Use `en` for English (default). For example use `nl` for Dutch.
 
-A full URL could look like [https://jasp-stats-modules.github.io/modules-app/?a=Windows_x86-64&v=0.95.0&i=%7B%22jaspEquivalenceTTests%22%3A%220.95.0%22%2C%22jaspTTests%22%3A%220.94.0%22%7D&p=0](https://jasp-stats-modules.github.io/modules-app/?a=Windows_x86-64&v=0.95.0&i=%7B%22jaspEquivalenceTTests%22%3A%220.95.0%22%2C%22jaspTTests%22%3A%220.94.0%22%7D&p=0).
+A full URL could look like [https://jasp-stats-modules.github.io/modules-app/?a=Windows_x86-64&v=0.95.0&i=%7B%22jaspEquivalenceTTests%22%3A%220.95.0%22%2C%22jaspTTests%22%3A%220.94.0%22%7D&p=0](https://jasp-stats-modules.github.io/modules-app/?a=Windows_x86-64&v=0.95.0&i=%7B%22jaspEquivalenceTTests%22%3A%220.95.0%22%2C%22jaspTTests%22%3A%220.94.0%22%7D&p=0&t=dark&l=nl).
 
 ## Update list of modules
 
@@ -47,6 +48,8 @@ The web application is a single page application (SPA) with the following charac
 - Uses [nuqs](https://nuqs.dev/) for URL query string parsing
 - Uses [Qt WebChannel](https://doc.qt.io/qt-6/qtwebchannel-index.html) for communication between the web app and the JASP desktop app
 - Uses [biome](https://biomejs.dev/) for linting and formatting
+- Uses [intlayer](https://intlayer.org/) for multi language support. Unique texts of modules themselves are not translated.
+- Uses [Vitest](https://vitest.dev/) for testing
 - Fetches data from the [GitHub GraphQL API](https://docs.github.com/en/graphql) to get available JASP modules and their release assets
 
 To get a list of available JASP modules, it does the following with the help of the `src/scrape.ts` script:
@@ -92,7 +95,7 @@ pnpm build
 
 ## Testing
 
-We use [Vitest](https://vitest.dev/) for testing. You can run the tests with:
+You can run the tests with:
 
 ```bash
 pnpm test
@@ -111,6 +114,19 @@ Can be formatted and linted with:
 ```bash
 pnpm check
 ```
+
+## Multi language Support
+
+The `./intlayer.config.ts` file contains list of supported locales.
+Translations are stored in `src/**/*.content.tsx` files.
+
+The linting is done with TypeScript.
+Types for translations can be generated with:
+
+- `pnpm dev` or
+- `pnpm typecheck` or
+- `pnpx intlayer build` or
+- [VS code extension](https://intlayer.org/doc/vs-code-extension)
 
 ## Contributing
 
