@@ -7,6 +7,7 @@ import {
 import chalk from 'chalk';
 import dedent from 'dedent';
 import matter from 'gray-matter';
+import ProgressBar from 'progress';
 import type { Asset, Release, Repository } from './types';
 
 const MyOctokit = Octokit.plugin(paginateGraphQL);
@@ -153,13 +154,26 @@ async function releaseAssetsPaged(
   const repositoriesWithOwners = Object.keys(repo2channels);
   const batches = batchedArray(repositoriesWithOwners, pageSize);
   const results: Repository[] = [];
-  for (const batch of batches) {
+
+  const totalBatches = batches.length;
+  const bar = new ProgressBar(
+    `${chalk.cyan('Progress:')} [:bar] :current/:total batches :etas`,
+    {
+      total: totalBatches,
+      width: 20,
+      complete: chalk.green('█'),
+      incomplete: chalk.gray('░'),
+    }
+  );
+  for (let i = 0; i < totalBatches; i++) {
+    const batch = batches[i];
     const rawBatchResults = await releaseAssets(batch, firstAssets);
     const batchResults = associateChannelsWithRepositories(
       rawBatchResults,
       repo2channels,
     );
     results.push(...batchResults);
+    bar.tick();
   }
 
   // TODO remove once a release is on GitHub that does not work on installed JASP version
