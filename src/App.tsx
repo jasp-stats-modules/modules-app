@@ -10,7 +10,7 @@ import {
   useQueryStates,
 } from 'nuqs';
 import type { Dispatch, SetStateAction } from 'react';
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useIntlayer, useLocale } from 'react-intlayer';
 import { satisfies } from 'semver';
 import * as v from 'valibot';
@@ -54,14 +54,7 @@ function useInfoFromSearchParams(): Info {
   useEffect(() => {
     setQueryStates(queryStates);
   }, []);
-  return useMemo<Info>(
-    () => ({
-      ...queryStates,
-      // TODO also expose below via search params
-      font: 'SansSerif',
-    }),
-    [queryStates],
-  );
+  return queryStates as Info;
 }
 
 async function getCatalog(
@@ -662,6 +655,18 @@ export function App() {
     error: repositoriesError,
   } = useQuery(catalogQueryOptions(catalogUrl));
   const isDarkTheme = useDarkTheme();
+  useEffect(() => {
+    if (typeof document === 'undefined') return;
+    const root = document.documentElement;
+    if (!info.font) {
+      root.style.removeProperty('--app-font-family');
+      return;
+    }
+    root.style.setProperty('--app-font-family', info.font);
+    return () => {
+      root.style.removeProperty('--app-font-family');
+    };
+  }, [info.font]);
   const [selectedChannels, setSelectedChannels] = useState<string[]>([
     defaultChannel,
   ]);
