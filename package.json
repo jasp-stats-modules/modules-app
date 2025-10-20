@@ -13,7 +13,8 @@
     "serve": "vite preview",
     "test": "vitest run",
     "scrape": "node src/scrape.ts",
-    "typecheck": "intlayer build && tsc",
+    "pretypecheck": "intlayer build",
+    "typecheck": "tsc",
     "check": "biome check --write --unsafe"
   },
   "dependencies": {
