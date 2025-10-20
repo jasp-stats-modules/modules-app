@@ -1,5 +1,5 @@
 {
-  "include": ["**/*.ts", "**/*.tsx", ".intlayer/**/*.ts"],
+  "include": ["**/*.ts", "**/*.tsx", ".intlayer/types/*.ts"],
   "compilerOptions": {
     "target": "ES2022",
     "jsx": "react-jsx",

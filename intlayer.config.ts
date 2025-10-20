@@ -34,6 +34,10 @@ const config: IntlayerConfig = {
   build: {
     outputFormat: ["esm"],
   },
+  content: {
+    fileExtensions: [ ".content.tsx"],
+    contentDir: ['src']
+  },
   editor: {
     applicationURL: "http://localhost:3000"
   }
