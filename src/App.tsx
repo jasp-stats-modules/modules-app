@@ -79,11 +79,21 @@ async function getCatalog(
 function Loading() {
   const { loading } = useIntlayer('app');
   return (
-    <div className="flex h-screen items-center justify-center bg-gray-50 dark:bg-gray-900">
-      <div className="flex flex-col items-center rounded-lg border border-gray-200 bg-white p-6 shadow-sm transition-shadow duration-200 hover:shadow-md dark:border-gray-700 dark:bg-gray-800 dark:hover:shadow-lg">
-        <div className="text-gray-700 dark:text-gray-200">{loading}</div>
+    <div className="flex h-screen items-center justify-center bg-jasp-app">
+  <div className="flex flex-col items-center rounded-lg border border-jasp-strong bg-jasp-card p-6 shadow-sm transition-shadow duration-200 hover:shadow-md">
+        <div className="text-jasp-muted">{loading}</div>
         <div className="mt-3">
-          <span className="block h-10 w-10 animate-spin rounded-full border-4 border-blue-500 border-t-transparent"></span>
+          <span
+            className={cn(
+              'animate-spin',
+              'block',
+              'border-4',
+              'h-10',
+              'rounded-full',
+              'spinner-jasp-primary',
+              'w-10',
+            )}
+          ></span>
         </div>
       </div>
     </div>
@@ -111,11 +121,11 @@ function ChannelSelector({
   return (
     <fieldset
       className={cn(
-        'mb-1 block rounded border border-gray-300 p-2 dark:border-gray-600',
+        'mb-1 block rounded border border-jasp-soft p-2',
         className,
       )}
     >
-      <legend className="mb-1 block font-medium text-gray-700 text-xs dark:text-gray-300">
+      <legend className="mb-1 block font-medium text-jasp-muted text-xs">
         {select_channel}:
       </legend>
       <div className="flex flex-wrap gap-3">
@@ -164,7 +174,7 @@ function Checkbox({
   return (
     <label
       className={cn(
-        'flex items-center font-medium text-gray-700 text-xs dark:text-gray-300',
+        'flex items-center font-medium text-jasp-muted text-xs',
         className,
       )}
       title={description}
@@ -174,7 +184,12 @@ function Checkbox({
           type="checkbox"
           name={name}
           className={cn(
-            'peer h-4 w-4 appearance-none rounded border-2 border-gray-300 bg-white checked:border-blue-600 checked:bg-blue-600 focus:ring-2 focus:ring-blue-500 focus:ring-offset-0 dark:border-gray-600 dark:bg-gray-700 dark:focus:ring-blue-400 dark:checked:border-blue-500 dark:checked:bg-blue-500',
+            'appearance-none',
+            'h-4',
+            'jasp-checkbox',
+            'peer',
+            'rounded',
+            'w-4',
             inputClassName,
           )}
           checked={checked}
@@ -206,7 +221,7 @@ function InstallButton({ asset }: { asset?: Asset }) {
   return (
     <a
       href={asset.downloadUrl}
-      className="inline-flex items-center rounded bg-green-600 px-3 py-1.5 font-medium text-white text-xs transition-colors duration-200 hover:bg-green-700 dark:bg-green-700 dark:hover:bg-green-800"
+  className="btn-jasp btn-jasp-install"
     >
       {install}
     </a>
@@ -221,7 +236,7 @@ function UpdateButton({ asset }: { asset?: Asset }) {
   return (
     <a
       href={asset.downloadUrl}
-      className="inline-flex items-center rounded bg-blue-600 px-3 py-1.5 font-medium text-white text-xs transition-colors duration-200 hover:bg-blue-700 dark:bg-blue-700 dark:hover:bg-blue-800"
+  className="btn-jasp btn-jasp-update"
     >
       {update}
     </a>
@@ -241,7 +256,7 @@ function UninstallButton({ moduleName }: { moduleName: string }) {
       type="button"
       onClick={doUninstall}
       title={uninstall_this_module.value}
-      className="mt-3 inline-flex items-center rounded bg-red-500 px-3 py-1.5 font-medium text-white text-xs transition-colors duration-200 hover:bg-red-700 dark:bg-red-700 dark:hover:bg-red-800"
+  className="btn-jasp btn-jasp-danger mt-3"
     >
       {uninstall}
     </button>
@@ -345,7 +360,7 @@ function ReleaseAction({
       {canUpdate && <UpdateButton asset={asset} />}
       {canInstall && !canUpdate && <InstallButton asset={asset} />}
       {allowPreRelease && latestPreRelease && (
-        <span className="text-gray-500 text-xs dark:text-gray-400">
+        <span className="text-jasp-muted-strong text-xs">
           {pre_release}
         </span>
       )}
@@ -355,7 +370,7 @@ function ReleaseAction({
       {latestVersionInstalled && (
         <span
           title={latest_version_installed.value}
-          className="px-2 py-1.5 text-gray-500 text-xs dark:text-gray-400"
+          className="px-2 py-1.5 text-jasp-muted-strong text-xs"
         >
           {installed}
         </span>
@@ -381,7 +396,7 @@ function ReleaseStats({
     useIntlayer('app');
   const publishedAt = new Date(latestPublishedAt).toLocaleDateString();
   return (
-    <div className="flex flex-row justify-between text-gray-500 text-xs dark:text-gray-400">
+  <div className="flex flex-row justify-between text-jasp-muted-strong text-xs">
       <div>
         {installedVersion
           ? release_stats_installed({
@@ -428,7 +443,14 @@ function RepositoryChannels({ channels }: { channels: string[] }) {
       {channels.map((channel) => (
         <span
           key={channel}
-          className="rounded-md bg-gray-50 px-2 py-0.5 text-gray-700 text-xs dark:bg-gray-900 dark:text-gray-400"
+          className={cn(
+            'bg-jasp-badge',
+            'px-2',
+            'py-0.5',
+            'rounded-md',
+            'text-jasp-muted',
+            'text-xs',
+          )}
           title={channelText.value}
         >
           {channel}
@@ -455,14 +477,16 @@ function RepositoryCard({
   } = useRelease(repo, allowPreRelease);
 
   return (
-    <div className="flex flex-col gap-2 rounded-lg border border-gray-200 bg-white p-3 shadow-sm transition-shadow duration-200 hover:shadow-md dark:border-gray-700 dark:bg-gray-800 dark:hover:shadow-lg">
+  <div className="flex flex-col gap-2 rounded-lg border border-jasp-card bg-jasp-card p-3 shadow-sm transition-shadow duration-200 hover:shadow-md">
       <div className="flex items-start justify-between gap-2">
         <div className="flex flex-col gap-2">
-          <h3 className="font-semibold text-gray-900 text-lg dark:text-gray-100">
+          <h3 className="font-semibold text-jasp-primary text-lg">
             {repo.name}
           </h3>
           {repo.shortDescriptionHTML && (
-            <div className="prose prose-sm text-gray-600 text-sm dark:text-gray-300">
+            <div
+              className={cn('prose', 'prose-sm', 'text-jasp-muted', 'text-sm')}
+            >
               {repo.shortDescriptionHTML}
             </div>
           )}
@@ -732,12 +756,12 @@ export function App() {
   return (
     <main
       className={cn(
-        'min-h-screen bg-gray-50 py-4 text-gray-900 dark:bg-gray-900 dark:text-gray-100',
+        'min-h-screen bg-jasp-app py-4 text-jasp-primary',
         isDarkTheme && 'dark',
       )}
     >
       <div className="w-full px-2">
-        <div className="mb-4 rounded-lg border border-gray-200 bg-white p-3 shadow-sm dark:border-gray-700 dark:bg-gray-800">
+  <div className="mb-4 rounded-lg border border-jasp-card bg-jasp-card p-3 shadow-sm">
           <div className="flex flex-col gap-3">
             <div className="flex flex-row gap-3">
               <ChannelSelector
@@ -754,13 +778,13 @@ export function App() {
               />
             </div>
             <div>
-              <label className="mb-1 block font-medium text-gray-700 text-xs dark:text-gray-300">
+              <label className="mb-1 block font-medium text-jasp-muted text-xs">
                 {search_for_a_module}:
                 <input
                   type="search"
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
-                  className="w-full rounded border border-gray-300 px-2 py-1.5 text-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 dark:placeholder-gray-400 dark:focus:border-blue-400"
+                  className={cn('jasp-input', 'px-2', 'py-1.5', 'rounded', 'text-sm', 'w-full')}
                 />
               </label>
             </div>
@@ -775,7 +799,7 @@ export function App() {
             />
           ))}
           {filteredRepos.length === 0 && (
-            <div className="text-gray-500 dark:text-gray-400">
+            <div className="text-jasp-muted-strong">
               {no_modules_found}
             </div>
           )}

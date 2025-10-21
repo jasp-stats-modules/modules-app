@@ -1,7 +1,207 @@
 @import "tailwindcss";
 
-/* biome-ignore lint/suspicious/noUnknownAtRules: tailwind-ism */
-@custom-variant dark (&:where(.dark, .dark *));
+.bg-jasp-app {
+  background-color: #ececec;
+}
+
+.dark .bg-jasp-app,
+.dark.bg-jasp-app {
+  background-color: #141414;
+}
+
+.bg-jasp-card {
+  background-color: #ffffff;
+}
+
+.dark .bg-jasp-card {
+  background-color: #1a1a1a;
+}
+
+.bg-jasp-badge {
+  background-color: #f4f6f7;
+}
+
+.dark .bg-jasp-badge {
+  background-color: #1a1a1a;
+}
+
+.border-jasp-strong {
+  border-color: #9a9a9a;
+}
+
+.dark .border-jasp-strong {
+  border-color: #5c5c5c;
+}
+
+.border-jasp-card {
+  border-color: #d1d1d1;
+}
+
+.dark .border-jasp-card {
+  border-color: #5c5c5c;
+}
+
+.border-jasp-soft {
+  border-color: #d1d1d1;
+}
+
+.dark .border-jasp-soft {
+  border-color: #404040;
+}
+
+.text-jasp-primary {
+  color: #000000;
+}
+
+.dark .text-jasp-primary {
+  color: #eeeeee;
+}
+
+.text-jasp-muted {
+  color: #5c5c5c;
+}
+
+.dark .text-jasp-muted {
+  color: #c1c1c1;
+}
+
+.text-jasp-muted-strong {
+  color: #404040;
+}
+
+.dark .text-jasp-muted-strong {
+  color: #d0d0d0;
+}
+
+.btn-jasp {
+  align-items: center;
+  border-radius: 0.25rem;
+  display: inline-flex;
+  font-size: 0.75rem;
+  font-weight: 500;
+  padding: 0.375rem 0.75rem;
+  text-decoration: none;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.btn-jasp-install {
+  background-color: #8cc63e;
+  color: #ffffff;
+}
+
+.btn-jasp-install:hover {
+  background-color: #36ce4c;
+}
+
+.dark .btn-jasp-install {
+  background-color: #7ca61e;
+}
+
+.dark .btn-jasp-install:hover {
+  background-color: #36ce4c;
+}
+
+.btn-jasp-update {
+  background-color: #14a1e3;
+  color: #ffffff;
+}
+
+.btn-jasp-update:hover {
+  background-color: #0069d9;
+}
+
+.dark .btn-jasp-update {
+  background-color: #0481c3;
+}
+
+.dark .btn-jasp-update:hover {
+  background-color: #015ba9;
+}
+
+.btn-jasp-danger {
+  background-color: #fc625d;
+  color: #ffffff;
+}
+
+.btn-jasp-danger:hover {
+  background-color: #cd0a0a;
+}
+
+.dark .btn-jasp-danger {
+  background-color: #cd0a0a;
+}
+
+.dark .btn-jasp-danger:hover {
+  background-color: #fc625d;
+}
+
+.jasp-checkbox {
+  border: 2px solid #d1d1d1;
+  background-color: #ffffff;
+  transition: border-color 0.2s ease, background-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.jasp-checkbox:checked {
+  border-color: #14a1e3;
+  background-color: #14a1e3;
+}
+
+.jasp-checkbox:focus {
+  outline: 2px solid #14a1e3;
+  outline-offset: 0;
+}
+
+.dark .jasp-checkbox {
+  border-color: #404040;
+  background-color: #404040;
+}
+
+.dark .jasp-checkbox:checked {
+  border-color: #0481c3;
+  background-color: #0481c3;
+}
+
+.dark .jasp-checkbox:focus {
+  outline: 2px solid #015ba9;
+}
+
+.jasp-input {
+  border: 1px solid #d1d1d1;
+  background-color: #ffffff;
+  color: #000000;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.jasp-input::placeholder {
+  color: #6b6b6b;
+}
+
+.jasp-input:focus {
+  border-color: #14a1e3;
+  box-shadow: 0 0 0 1px #14a1e3;
+  outline: none;
+}
+
+.dark .jasp-input {
+  border-color: #404040;
+  background-color: #404040;
+  color: #eeeeee;
+}
+
+.dark .jasp-input::placeholder {
+  color: #b5b5b5;
+}
+
+.dark .jasp-input:focus {
+  border-color: #015ba9;
+  box-shadow: 0 0 0 1px #015ba9;
+}
+
+.spinner-jasp-primary {
+  border-color: #14a1e3;
+  border-top-color: transparent;
+}
 
 @font-face {
   font-family: "FreeSans";
@@ -41,8 +241,7 @@
 }
 
 body {
-  /* biome-ignore lint/suspicious/noUnknownAtRules: tailwind plugin */
-  @apply m-0;
+  margin: 0;
   font-family:
     var(--app-font-family), -apple-system, BlinkMacSystemFont, "Segoe UI",
     "Roboto", "Oxygen", "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans",
