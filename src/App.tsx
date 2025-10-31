@@ -565,6 +565,17 @@ function useDarkTheme(): boolean {
   return false;
 }
 
+function useTheme() {
+  const isDarkTheme = useDarkTheme();
+
+  useEffect(() => {
+    const root = window.document.documentElement;
+    root.classList.remove('light', 'dark');
+    const theme = isDarkTheme ? 'dark' : 'light';
+    root.classList.add(theme);
+  }, [isDarkTheme]);
+}
+
 function uniqueChannels(repositories: Repository[]): string[] {
   const channels = new Set<string>();
   for (const repo of repositories) {
@@ -690,17 +701,7 @@ export function App() {
     isFetched: isRepositoriesFetched,
     error: repositoriesError,
   } = useQuery(catalogQueryOptions(catalogUrl));
-  const isDarkTheme = useDarkTheme();
-
-  useEffect(() => {
-    const root = window.document.documentElement;
-
-    root.classList.remove('light', 'dark');
-
-    const theme = isDarkTheme ? 'dark' : 'light';
-    root.classList.add(theme);
-  }, [isDarkTheme]);
-
+  useTheme();
   useFont();
   const [selectedChannels, setSelectedChannels] = useState<string[]>([
     defaultChannel,
