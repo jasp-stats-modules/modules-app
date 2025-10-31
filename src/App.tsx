@@ -203,7 +203,7 @@ function InstallButton({ asset }: { asset?: Asset }) {
   return (
     <a
       href={asset.downloadUrl}
-      className="inline-flex items-center rounded bg-green-600 px-3 py-1.5 font-medium text-white text-xs transition-colors duration-200 hover:bg-green-700 dark:bg-green-700 dark:hover:bg-green-800"
+      className="inline-flex items-center rounded bg-jasp-green px-3 py-1.5 font-medium text-primary text-xs transition-colors duration-200 hover:bg-green-600 dark:hover:bg-green-800"
     >
       {install}
     </a>
@@ -218,7 +218,7 @@ function UpdateButton({ asset }: { asset?: Asset }) {
   return (
     <a
       href={asset.downloadUrl}
-      className="inline-flex items-center rounded bg-blue-600 px-3 py-1.5 font-medium text-white text-xs transition-colors duration-200 hover:bg-blue-700 dark:bg-blue-700 dark:hover:bg-blue-800"
+      className="inline-flex items-center rounded bg-jasp-blue px-3 py-1.5 font-medium text-primary text-xs transition-colors duration-200 hover:bg-blue-700 dark:bg-blue-700 dark:hover:bg-blue-800"
     >
       {update}
     </a>
@@ -238,7 +238,7 @@ function UninstallButton({ moduleName }: { moduleName: string }) {
       type="button"
       onClick={doUninstall}
       title={uninstall_this_module.value}
-      className="mt-3 inline-flex items-center rounded bg-red-500 px-3 py-1.5 font-medium text-white text-xs transition-colors duration-200 hover:bg-red-700 dark:bg-red-700 dark:hover:bg-red-800"
+      className="mt-3 inline-flex items-center rounded bg-destructive px-3 py-1.5 font-medium text-primary text-xs transition-colors duration-200 hover:bg-red-700 dark:bg-red-700 dark:hover:bg-red-800"
     >
       {uninstall}
     </button>
@@ -408,7 +408,7 @@ function RepositoryLinks({ homepageUrl }: { homepageUrl?: string }) {
       rel="noopener noreferrer"
       href={homepageUrl}
     >
-      <House size={12} className="text-primary" />
+      <House size={12} className="text-foreground" />
     </a>
   );
 }
@@ -423,10 +423,9 @@ function RepositoryChannels({ channels }: { channels: string[] }) {
       {channels.map((channel) => (
         <span
           key={channel}
-          // className="rounded-md bg-background px-2 py-0.5 text-foreground text-xs"
           className={cn(
-            "inline-flex items-center justify-center rounded-full border px-2 py-0.5 text-xs font-medium w-fit whitespace-nowrap shrink-0 [&>svg]:size-3 gap-1 [&>svg]:pointer-events-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive transition-[color,box-shadow] overflow-hidden",
-            "border-transparent bg-secondary text-secondary-foreground [a&]:hover:bg-secondary/90",
+            'inline-flex w-fit shrink-0 items-center justify-center gap-1 overflow-hidden whitespace-nowrap rounded-full border px-2 py-0.5 font-medium text-xs transition-[color,box-shadow] focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 aria-invalid:border-destructive aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 [&>svg]:pointer-events-none [&>svg]:size-3',
+            'border-transparent bg-secondary text-secondary-foreground [a&]:hover:bg-secondary/90',
           )}
           title={channelText.value}
         >
@@ -454,12 +453,12 @@ function RepositoryCard({
   } = useRelease(repo, allowPreRelease);
 
   return (
-    <div className="flex flex-col gap-2 rounded-lg border border-border bg-card-background p-3 text-card shadow-sm transition-shadow duration-200 hover:shadow-md dark:hover:shadow-lg">
+    <div className="flex flex-col gap-2 rounded-lg border border-border bg-card p-3 text-card-foreground shadow-sm transition-shadow duration-200 hover:shadow-md dark:hover:shadow-lg">
       <div className="flex items-start justify-between gap-2">
         <div className="flex flex-col gap-2">
-          <h3 className="font-semibold text-lg text-primary">{repo.name}</h3>
+          <h3 className="font-semibold text-lg">{repo.name}</h3>
           {repo.shortDescriptionHTML && (
-            <div className="prose prose-sm text-primary text-sm">
+            <div className="prose prose-sm text-sm">
               {repo.shortDescriptionHTML}
             </div>
           )}
@@ -763,7 +762,7 @@ export function App() {
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
                   className={cn(
-                    'h-9 w-full min-w-0 rounded-md border border-input bg-transparent px-3 py-1 text-base shadow-xs outline-none transition-[color,box-shadow] selection:bg-primary selection:text-primary-foreground file:inline-flex file:h-7 file:border-0 file:bg-transparent file:font-medium file:text-foreground file:text-sm placeholder:text-muted-foreground disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50 md:text-sm dark:bg-input/30',
+                    'h-9 w-full min-w-0 rounded-md border border-input bg-popover px-3 py-1 text-base shadow-xs outline-none transition-[color,box-shadow] selection:bg-primary selection:text-primary-foreground file:inline-flex file:h-7 file:border-0 file:bg-transparent file:font-medium file:text-foreground file:text-sm placeholder:text-muted-foreground disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50 md:text-sm dark:bg-input/30',
                     'focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50',
                     'aria-invalid:border-destructive aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40',
                   )}
@@ -780,9 +779,7 @@ export function App() {
               allowPreRelease={allowPreRelease}
             />
           ))}
-          {filteredRepos.length === 0 && (
-            <div className="text-primary">{no_modules_found}</div>
-          )}
+          {filteredRepos.length === 0 && <div>{no_modules_found}</div>}
         </div>
       </div>
     </main>
