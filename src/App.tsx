@@ -79,11 +79,11 @@ async function getCatalog(
 function Loading() {
   const { loading } = useIntlayer('app');
   return (
-    <div className="flex h-screen items-center justify-center bg-gray-50 dark:bg-gray-900">
-      <div className="flex flex-col items-center rounded-lg border border-gray-200 bg-white p-6 shadow-sm transition-shadow duration-200 hover:shadow-md dark:border-gray-700 dark:bg-gray-800 dark:hover:shadow-lg">
-        <div className="text-gray-700 dark:text-gray-200">{loading}</div>
+    <div className="flex h-screen items-center justify-center bg-background text-foreground">
+      <div className="flex flex-col items-center rounded-lg border border-border bg-background p-6 shadow-sm transition-shadow duration-200 hover:shadow-md dark:hover:shadow-lg">
+        <div>{loading}</div>
         <div className="mt-3">
-          <span className="block h-10 w-10 animate-spin rounded-full border-4 border-blue-500 border-t-transparent"></span>
+          <span className="block h-10 w-10 animate-spin rounded-full border-4 border-accent border-t-transparent"></span>
         </div>
       </div>
     </div>
@@ -110,12 +110,9 @@ function ChannelSelector({
   const { select_channel } = useIntlayer('app');
   return (
     <fieldset
-      className={cn(
-        'mb-1 block rounded border border-gray-300 p-2 dark:border-gray-600',
-        className,
-      )}
+      className={cn('mb-1 block rounded border border-border p-2', className)}
     >
-      <legend className="mb-1 block font-medium text-gray-700 text-xs dark:text-gray-300">
+      <legend className="mb-1 block font-medium text-xs">
         {select_channel}:
       </legend>
       <div className="flex flex-wrap gap-3">
@@ -174,7 +171,7 @@ function Checkbox({
           type="checkbox"
           name={name}
           className={cn(
-            'peer h-4 w-4 appearance-none rounded border-2 border-gray-300 bg-white checked:border-blue-600 checked:bg-blue-600 focus:ring-2 focus:ring-blue-500 focus:ring-offset-0 dark:border-gray-600 dark:bg-gray-700 dark:focus:ring-blue-400 dark:checked:border-blue-500 dark:checked:bg-blue-500',
+            'peer size-4 shrink-0 rounded-[4px] border border-input shadow-xs outline-none transition-shadow focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 disabled:cursor-not-allowed disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-destructive/20 data-[state=checked]:border-primary data-[state=checked]:bg-primary data-[state=checked]:text-primary-foreground dark:bg-input/30 dark:data-[state=checked]:bg-primary dark:aria-invalid:ring-destructive/40',
             inputClassName,
           )}
           checked={checked}
@@ -345,9 +342,7 @@ function ReleaseAction({
       {canUpdate && <UpdateButton asset={asset} />}
       {canInstall && !canUpdate && <InstallButton asset={asset} />}
       {allowPreRelease && latestPreRelease && (
-        <span className="text-gray-500 text-xs dark:text-gray-400">
-          {pre_release}
-        </span>
+        <span className="text-muted text-xs">{pre_release}</span>
       )}
       {insideQt && (canUpdate || latestVersionInstalled) && (
         <UninstallButton moduleName={moduleName} />
@@ -355,7 +350,7 @@ function ReleaseAction({
       {latestVersionInstalled && (
         <span
           title={latest_version_installed.value}
-          className="px-2 py-1.5 text-gray-500 text-xs dark:text-gray-400"
+          className="px-2 py-1.5 text-muted text-xs"
         >
           {installed}
         </span>
@@ -381,7 +376,7 @@ function ReleaseStats({
     useIntlayer('app');
   const publishedAt = new Date(latestPublishedAt).toLocaleDateString();
   return (
-    <div className="flex flex-row justify-between text-gray-500 text-xs dark:text-gray-400">
+    <div className="flex flex-row justify-between text-muted-foreground text-xs">
       <div>
         {installedVersion
           ? release_stats_installed({
@@ -413,7 +408,7 @@ function RepositoryLinks({ homepageUrl }: { homepageUrl?: string }) {
       rel="noopener noreferrer"
       href={homepageUrl}
     >
-      <House size={12} />
+      <House size={12} className="text-primary" />
     </a>
   );
 }
@@ -428,7 +423,11 @@ function RepositoryChannels({ channels }: { channels: string[] }) {
       {channels.map((channel) => (
         <span
           key={channel}
-          className="rounded-md bg-gray-50 px-2 py-0.5 text-gray-700 text-xs dark:bg-gray-900 dark:text-gray-400"
+          // className="rounded-md bg-background px-2 py-0.5 text-foreground text-xs"
+          className={cn(
+            "inline-flex items-center justify-center rounded-full border px-2 py-0.5 text-xs font-medium w-fit whitespace-nowrap shrink-0 [&>svg]:size-3 gap-1 [&>svg]:pointer-events-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive transition-[color,box-shadow] overflow-hidden",
+            "border-transparent bg-secondary text-secondary-foreground [a&]:hover:bg-secondary/90",
+          )}
           title={channelText.value}
         >
           {channel}
@@ -455,14 +454,12 @@ function RepositoryCard({
   } = useRelease(repo, allowPreRelease);
 
   return (
-    <div className="flex flex-col gap-2 rounded-lg border border-gray-200 bg-white p-3 shadow-sm transition-shadow duration-200 hover:shadow-md dark:border-gray-700 dark:bg-gray-800 dark:hover:shadow-lg">
+    <div className="flex flex-col gap-2 rounded-lg border border-border bg-card-background p-3 text-card shadow-sm transition-shadow duration-200 hover:shadow-md dark:hover:shadow-lg">
       <div className="flex items-start justify-between gap-2">
         <div className="flex flex-col gap-2">
-          <h3 className="font-semibold text-gray-900 text-lg dark:text-gray-100">
-            {repo.name}
-          </h3>
+          <h3 className="font-semibold text-lg text-primary">{repo.name}</h3>
           {repo.shortDescriptionHTML && (
-            <div className="prose prose-sm text-gray-600 text-sm dark:text-gray-300">
+            <div className="prose prose-sm text-primary text-sm">
               {repo.shortDescriptionHTML}
             </div>
           )}
@@ -695,6 +692,16 @@ export function App() {
     error: repositoriesError,
   } = useQuery(catalogQueryOptions(catalogUrl));
   const isDarkTheme = useDarkTheme();
+
+  useEffect(() => {
+    const root = window.document.documentElement;
+
+    root.classList.remove('light', 'dark');
+
+    const theme = isDarkTheme ? 'dark' : 'light';
+    root.classList.add(theme);
+  }, [isDarkTheme]);
+
   useFont();
   const [selectedChannels, setSelectedChannels] = useState<string[]>([
     defaultChannel,
@@ -730,14 +737,9 @@ export function App() {
   }
 
   return (
-    <main
-      className={cn(
-        'min-h-screen bg-gray-50 py-4 text-gray-900 dark:bg-gray-900 dark:text-gray-100',
-        isDarkTheme && 'dark',
-      )}
-    >
+    <main className="min-h-screen py-4">
       <div className="w-full px-2">
-        <div className="mb-4 rounded-lg border border-gray-200 bg-white p-3 shadow-sm dark:border-gray-700 dark:bg-gray-800">
+        <div className="mb-4 rounded-lg border border-border bg-card p-3 text-card-foreground shadow-sm">
           <div className="flex flex-col gap-3">
             <div className="flex flex-row gap-3">
               <ChannelSelector
@@ -754,13 +756,17 @@ export function App() {
               />
             </div>
             <div>
-              <label className="mb-1 block font-medium text-gray-700 text-xs dark:text-gray-300">
+              <label className="mb-1 block font-medium text-xs">
                 {search_for_a_module}:
                 <input
                   type="search"
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
-                  className="w-full rounded border border-gray-300 px-2 py-1.5 text-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 dark:placeholder-gray-400 dark:focus:border-blue-400"
+                  className={cn(
+                    'h-9 w-full min-w-0 rounded-md border border-input bg-transparent px-3 py-1 text-base shadow-xs outline-none transition-[color,box-shadow] selection:bg-primary selection:text-primary-foreground file:inline-flex file:h-7 file:border-0 file:bg-transparent file:font-medium file:text-foreground file:text-sm placeholder:text-muted-foreground disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50 md:text-sm dark:bg-input/30',
+                    'focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50',
+                    'aria-invalid:border-destructive aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40',
+                  )}
                 />
               </label>
             </div>
@@ -775,9 +781,7 @@ export function App() {
             />
           ))}
           {filteredRepos.length === 0 && (
-            <div className="text-gray-500 dark:text-gray-400">
-              {no_modules_found}
-            </div>
+            <div className="text-primary">{no_modules_found}</div>
           )}
         </div>
       </div>
