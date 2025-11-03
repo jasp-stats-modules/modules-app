@@ -54,6 +54,7 @@
     "gray-matter": "^4.0.3",
     "jsdom": "^26.0.0",
     "progress": "^2.0.3",
+    "tailwind-scrollbar": "^4.0.2",
     "typescript": "^5.7.2",
     "vite": "^6.3.5",
     "vite-intlayer": "^6.1.6",

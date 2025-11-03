@@ -40,6 +40,7 @@
   --color-sidebar-ring: var(--sidebar-ring);
   --color-jasp-blue: var(--jasp-blue);
   --color-jasp-green: var(--jasp-green);
+  --color-thumb-hover: var(--thumb-hover);
 }
 
 :root {
@@ -61,7 +62,7 @@
   --destructive: #fc625d; /* red */
   --border: #e0e0e0; /* grayLighter */
   --input: oklch(0.923 0.003 48.717);
-  --ring: oklch(0.709 0.01 56.259);
+  --ring: #d1d1d1; /* gray */
   --chart-1: oklch(0.646 0.222 41.116);
   --chart-2: oklch(0.6 0.118 184.704);
   --chart-3: oklch(0.398 0.07 227.392);
@@ -77,6 +78,7 @@
   --sidebar-ring: oklch(0.709 0.01 56.259);
   --jasp-blue: #14a1e3;
   --jasp-green: #8cc63e;
+  --thumb-hover: #97c4f2; /* blueLighter */
 }
 
 .dark {
@@ -97,7 +99,7 @@
   --destructive: #cd0a0a;
   --border: #404040;
   --input: oklch(1 0 0 / 15%);
-  --ring: oklch(0.553 0.013 58.071);
+  --ring: #5c5c5c;
   --chart-1: oklch(0.488 0.243 264.376);
   --chart-2: oklch(0.696 0.17 162.48);
   --chart-3: oklch(0.769 0.188 70.08);
@@ -113,6 +115,7 @@
   --sidebar-ring: oklch(0.553 0.013 58.071);
   --jasp-blue: #0481c3;
   --jasp-green: #7ca61e;
+  --thumb-hover: #015ba9;
 }
 
 @font-face {
@@ -154,7 +157,7 @@
 
 @layer base {
   body {
-    @apply bg-background text-foreground;
+    @apply bg-background text-foreground scrollbar scrollbar-thumb-ring scrollbar-hover:scrollbar-thumb-thumb-hover scrollbar-track-background;
   }
 }
 
@@ -171,4 +174,9 @@ body {
 code {
   font-family:
     source-code-pro, Menlo, Monaco, Consolas, "Courier New", monospace;
+}
+
+@plugin "tailwind-scrollbar" {
+  /* biome-ignore lint/correctness/noUnknownProperty: tailwindism */
+  preferredStrategy: "pseudoelements";
 }
