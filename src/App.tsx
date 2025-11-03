@@ -79,21 +79,11 @@ async function getCatalog(
 function Loading() {
   const { loading } = useIntlayer('app');
   return (
-    <div className="flex h-screen items-center justify-center bg-jasp-app">
-  <div className="flex flex-col items-center rounded-lg border border-jasp-strong bg-jasp-card p-6 shadow-sm transition-shadow duration-200 hover:shadow-md">
-        <div className="text-jasp-muted">{loading}</div>
+    <div className="flex h-screen items-center justify-center bg-background text-foreground">
+      <div className="flex flex-col items-center rounded-lg border border-border bg-background p-6 shadow-sm transition-shadow duration-200 hover:shadow-md dark:hover:shadow-lg">
+        <div>{loading}</div>
         <div className="mt-3">
-          <span
-            className={cn(
-              'animate-spin',
-              'block',
-              'border-4',
-              'h-10',
-              'rounded-full',
-              'spinner-jasp-primary',
-              'w-10',
-            )}
-          ></span>
+          <span className="block h-10 w-10 animate-spin rounded-full border-4 border-accent border-t-transparent"></span>
         </div>
       </div>
     </div>
@@ -120,12 +110,9 @@ function ChannelSelector({
   const { select_channel } = useIntlayer('app');
   return (
     <fieldset
-      className={cn(
-        'mb-1 block rounded border border-jasp-soft p-2',
-        className,
-      )}
+      className={cn('mb-1 block rounded border border-border p-2', className)}
     >
-      <legend className="mb-1 block font-medium text-jasp-muted text-xs">
+      <legend className="mb-1 block font-medium text-xs">
         {select_channel}:
       </legend>
       <div className="flex flex-wrap gap-3">
@@ -184,12 +171,7 @@ function Checkbox({
           type="checkbox"
           name={name}
           className={cn(
-            'appearance-none',
-            'h-4',
-            'jasp-checkbox',
-            'peer',
-            'rounded',
-            'w-4',
+            'peer size-4 shrink-0 rounded-[4px] border border-input shadow-xs outline-none transition-shadow focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 disabled:cursor-not-allowed disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-destructive/20 data-[state=checked]:border-primary data-[state=checked]:bg-primary data-[state=checked]:text-primary-foreground dark:bg-input/30 dark:data-[state=checked]:bg-primary dark:aria-invalid:ring-destructive/40',
             inputClassName,
           )}
           checked={checked}
@@ -221,7 +203,7 @@ function InstallButton({ asset }: { asset?: Asset }) {
   return (
     <a
       href={asset.downloadUrl}
-  className="btn-jasp btn-jasp-install"
+      className="inline-flex items-center rounded bg-jasp-green px-3 py-1.5 font-medium text-primary text-xs transition-colors duration-200 hover:bg-green-600 dark:hover:bg-green-800"
     >
       {install}
     </a>
@@ -236,7 +218,7 @@ function UpdateButton({ asset }: { asset?: Asset }) {
   return (
     <a
       href={asset.downloadUrl}
-  className="btn-jasp btn-jasp-update"
+      className="inline-flex items-center rounded bg-jasp-blue px-3 py-1.5 font-medium text-primary text-xs transition-colors duration-200 hover:bg-blue-700 dark:bg-blue-700 dark:hover:bg-blue-800"
     >
       {update}
     </a>
@@ -256,7 +238,7 @@ function UninstallButton({ moduleName }: { moduleName: string }) {
       type="button"
       onClick={doUninstall}
       title={uninstall_this_module.value}
-  className="btn-jasp btn-jasp-danger mt-3"
+      className="mt-3 inline-flex items-center rounded bg-destructive px-3 py-1.5 font-medium text-primary text-xs transition-colors duration-200 hover:bg-red-700 dark:bg-red-700 dark:hover:bg-red-800"
     >
       {uninstall}
     </button>
@@ -360,9 +342,7 @@ function ReleaseAction({
       {canUpdate && <UpdateButton asset={asset} />}
       {canInstall && !canUpdate && <InstallButton asset={asset} />}
       {allowPreRelease && latestPreRelease && (
-        <span className="text-jasp-muted-strong text-xs">
-          {pre_release}
-        </span>
+        <span className="text-muted text-xs">{pre_release}</span>
       )}
       {insideQt && (canUpdate || latestVersionInstalled) && (
         <UninstallButton moduleName={moduleName} />
@@ -370,7 +350,7 @@ function ReleaseAction({
       {latestVersionInstalled && (
         <span
           title={latest_version_installed.value}
-          className="px-2 py-1.5 text-jasp-muted-strong text-xs"
+          className="px-2 py-1.5 text-muted text-xs"
         >
           {installed}
         </span>
@@ -396,7 +376,7 @@ function ReleaseStats({
     useIntlayer('app');
   const publishedAt = new Date(latestPublishedAt).toLocaleDateString();
   return (
-  <div className="flex flex-row justify-between text-jasp-muted-strong text-xs">
+    <div className="flex flex-row justify-between text-muted-foreground text-xs">
       <div>
         {installedVersion
           ? release_stats_installed({
@@ -428,7 +408,7 @@ function RepositoryLinks({ homepageUrl }: { homepageUrl?: string }) {
       rel="noopener noreferrer"
       href={homepageUrl}
     >
-      <House size={12} />
+      <House size={12} className="text-foreground" />
     </a>
   );
 }
@@ -444,12 +424,8 @@ function RepositoryChannels({ channels }: { channels: string[] }) {
         <span
           key={channel}
           className={cn(
-            'bg-jasp-badge',
-            'px-2',
-            'py-0.5',
-            'rounded-md',
-            'text-jasp-muted',
-            'text-xs',
+            'inline-flex w-fit shrink-0 items-center justify-center gap-1 overflow-hidden whitespace-nowrap rounded-full border px-2 py-0.5 font-medium text-xs transition-[color,box-shadow] focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 aria-invalid:border-destructive aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 [&>svg]:pointer-events-none [&>svg]:size-3',
+            'border-transparent bg-secondary text-secondary-foreground [a&]:hover:bg-secondary/90',
           )}
           title={channelText.value}
         >
@@ -477,16 +453,12 @@ function RepositoryCard({
   } = useRelease(repo, allowPreRelease);
 
   return (
-  <div className="flex flex-col gap-2 rounded-lg border border-jasp-card bg-jasp-card p-3 shadow-sm transition-shadow duration-200 hover:shadow-md">
+    <div className="flex flex-col gap-2 rounded-lg border border-border bg-card p-3 text-card-foreground shadow-sm transition-shadow duration-200 hover:shadow-md dark:hover:shadow-lg">
       <div className="flex items-start justify-between gap-2">
         <div className="flex flex-col gap-2">
-          <h3 className="font-semibold text-jasp-primary text-lg">
-            {repo.name}
-          </h3>
+          <h3 className="font-semibold text-lg">{repo.name}</h3>
           {repo.shortDescriptionHTML && (
-            <div
-              className={cn('prose', 'prose-sm', 'text-jasp-muted', 'text-sm')}
-            >
+            <div className="prose prose-sm text-sm">
               {repo.shortDescriptionHTML}
             </div>
           )}
@@ -591,6 +563,17 @@ function useDarkTheme(): boolean {
     return false;
   }
   return false;
+}
+
+function useTheme() {
+  const isDarkTheme = useDarkTheme();
+
+  useEffect(() => {
+    const root = window.document.documentElement;
+    root.classList.remove('light', 'dark');
+    const theme = isDarkTheme ? 'dark' : 'light';
+    root.classList.add(theme);
+  }, [isDarkTheme]);
 }
 
 function uniqueChannels(repositories: Repository[]): string[] {
@@ -718,7 +701,7 @@ export function App() {
     isFetched: isRepositoriesFetched,
     error: repositoriesError,
   } = useQuery(catalogQueryOptions(catalogUrl));
-  const isDarkTheme = useDarkTheme();
+  useTheme();
   useFont();
   const [selectedChannels, setSelectedChannels] = useState<string[]>([
     defaultChannel,
@@ -754,14 +737,9 @@ export function App() {
   }
 
   return (
-    <main
-      className={cn(
-        'min-h-screen bg-jasp-app py-4 text-jasp-primary',
-        isDarkTheme && 'dark',
-      )}
-    >
+    <main className="min-h-screen py-4">
       <div className="w-full px-2">
-  <div className="mb-4 rounded-lg border border-jasp-card bg-jasp-card p-3 shadow-sm">
+        <div className="mb-4 rounded-lg border border-border bg-card p-3 text-card-foreground shadow-sm">
           <div className="flex flex-col gap-3">
             <div className="flex flex-row gap-3">
               <ChannelSelector
@@ -778,13 +756,17 @@ export function App() {
               />
             </div>
             <div>
-              <label className="mb-1 block font-medium text-jasp-muted text-xs">
+              <label className="mb-1 block font-medium text-xs">
                 {search_for_a_module}:
                 <input
                   type="search"
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
-                  className={cn('jasp-input', 'px-2', 'py-1.5', 'rounded', 'text-sm', 'w-full')}
+                  className={cn(
+                    'h-9 w-full min-w-0 rounded-md border border-input bg-popover px-3 py-1 text-base shadow-xs outline-none transition-[color,box-shadow] selection:bg-primary selection:text-primary-foreground file:inline-flex file:h-7 file:border-0 file:bg-transparent file:font-medium file:text-foreground file:text-sm placeholder:text-muted-foreground disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50 md:text-sm dark:bg-input/30',
+                    'focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50',
+                    'aria-invalid:border-destructive aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40',
+                  )}
                 />
               </label>
             </div>
@@ -798,11 +780,7 @@ export function App() {
               allowPreRelease={allowPreRelease}
             />
           ))}
-          {filteredRepos.length === 0 && (
-            <div className="text-jasp-muted-strong">
-              {no_modules_found}
-            </div>
-          )}
+          {filteredRepos.length === 0 && <div>{no_modules_found}</div>}
         </div>
       </div>
     </main>
