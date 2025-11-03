@@ -37,6 +37,9 @@ jobs:
         run: pnpm test
   browser-tests:
     runs-on: ubuntu-latest
+    container:
+      image: mcr.microsoft.com/playwright:v1.56.1-noble
+      options: --user 1001
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -55,8 +58,5 @@ jobs:
       - name: Install dependencies
         run: pnpm install
     
-      - name: Install playwright browsers
-        run: pnpx playwright install --with-deps
-
       - name: Run browser tests
         run: pnpm test:browser
