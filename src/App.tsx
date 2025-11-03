@@ -789,12 +789,6 @@ export function App() {
     return <Loading />;
   }
 
-  // return (
-  //   <div className="scrollbar-thumb-custom scrollbar-track-custom-light scrollbar-hover:scrollbar-thumb-[#059669] scrollbar-active:scrollbar-thumb-emerald-500/50 scrollbar h-32 overflow-y-scroll">
-  //     <div className="h-64 bg-slate-400"></div>
-  //   </div>
-  // )
-
   return (
     <main className="px-2 py-4">
       <div className="mb-4 rounded-lg border border-border bg-card p-3 text-card-foreground shadow-sm">
