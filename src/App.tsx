@@ -18,6 +18,8 @@ import { cn } from '@/lib/utils';
 import type { Asset, Release, Repository } from '@/types';
 import { type Info, insideQt, useJaspQtObject } from '@/useJaspQtObject';
 
+type AppTranslations = ReturnType<typeof useIntlayer<'app'>>;
+
 const defaultChannel = 'jasp-modules';
 const defaultCatalog = 'index.json';
 
@@ -195,8 +197,14 @@ function Checkbox({
   );
 }
 
-function InstallButton({ asset }: { asset?: Asset }) {
-  const { install } = useIntlayer('app');
+function InstallButton({
+  asset,
+  translations,
+}: {
+  asset?: Asset;
+  translations: AppTranslations;
+}) {
+  const { install } = translations;
   if (!asset) {
     return null;
   }
@@ -210,8 +218,14 @@ function InstallButton({ asset }: { asset?: Asset }) {
   );
 }
 
-function UpdateButton({ asset }: { asset?: Asset }) {
-  const { update } = useIntlayer('app');
+function UpdateButton({
+  asset,
+  translations,
+}: {
+  asset?: Asset;
+  translations: AppTranslations;
+}) {
+  const { update } = translations;
   if (!asset) {
     return null;
   }
@@ -225,8 +239,14 @@ function UpdateButton({ asset }: { asset?: Asset }) {
   );
 }
 
-function UninstallButton({ moduleName }: { moduleName: string }) {
-  const { uninstall, uninstall_this_module } = useIntlayer('app');
+function UninstallButton({
+  moduleName,
+  translations,
+}: {
+  moduleName: string;
+  translations: AppTranslations;
+}) {
+  const { uninstall, uninstall_this_module } = translations;
   const { data: jasp } = useJaspQtObject();
 
   async function doUninstall() {
@@ -326,6 +346,7 @@ function ReleaseAction({
   allowPreRelease,
   latestPreRelease,
   latestVersionInstalled,
+  translations,
 }: {
   moduleName: string;
   asset: Asset;
@@ -334,18 +355,20 @@ function ReleaseAction({
   allowPreRelease: boolean;
   latestPreRelease?: Release;
   latestVersionInstalled: boolean;
+  translations: AppTranslations;
 }) {
-  const { pre_release, latest_version_installed, installed } =
-    useIntlayer('app');
+  const { pre_release, latest_version_installed, installed } = translations;
   return (
     <div className="flex flex-col">
-      {canUpdate && <UpdateButton asset={asset} />}
-      {canInstall && !canUpdate && <InstallButton asset={asset} />}
+      {canUpdate && <UpdateButton asset={asset} translations={translations} />}
+      {canInstall && !canUpdate && (
+        <InstallButton asset={asset} translations={translations} />
+      )}
       {allowPreRelease && latestPreRelease && (
         <span className="text-muted text-xs">{pre_release}</span>
       )}
       {insideQt && (canUpdate || latestVersionInstalled) && (
-        <UninstallButton moduleName={moduleName} />
+        <UninstallButton moduleName={moduleName} translations={translations} />
       )}
       {latestVersionInstalled && (
         <span
@@ -365,15 +388,17 @@ function ReleaseStats({
   latestPublishedAt,
   maintainer,
   downloads,
+  translations,
 }: {
   installedVersion?: string;
   latestVersion: string;
   latestPublishedAt: string;
   maintainer: string;
   downloads: number;
+  translations: AppTranslations;
 }) {
   const { release_stats_installed, release_stats_notinstalled, by_maintainer } =
-    useIntlayer('app');
+    translations;
   const publishedAt = new Date(latestPublishedAt).toLocaleDateString();
   return (
     <div className="flex flex-row justify-between text-muted-foreground text-xs">
@@ -396,8 +421,14 @@ function ReleaseStats({
   );
 }
 
-function RepositoryLinks({ homepageUrl }: { homepageUrl?: string }) {
-  const { go_to_home_page_of_module } = useIntlayer('app');
+function RepositoryLinks({
+  homepageUrl,
+  translations,
+}: {
+  homepageUrl?: string;
+  translations: AppTranslations;
+}) {
+  const { go_to_home_page_of_module } = translations;
   if (!homepageUrl) {
     return null;
   }
@@ -413,8 +444,14 @@ function RepositoryLinks({ homepageUrl }: { homepageUrl?: string }) {
   );
 }
 
-function RepositoryChannels({ channels }: { channels: string[] }) {
-  const { channel: channelText } = useIntlayer('app');
+function RepositoryChannels({
+  channels,
+  translations,
+}: {
+  channels: string[];
+  translations: AppTranslations;
+}) {
+  const { channel: channelText } = translations;
   if (!channels || channels.length === 0) {
     return null;
   }
@@ -438,9 +475,11 @@ function RepositoryChannels({ channels }: { channels: string[] }) {
 function RepositoryCard({
   repo,
   allowPreRelease,
+  translations,
 }: {
   repo: Repository;
   allowPreRelease: boolean;
+  translations: AppTranslations;
 }) {
   const {
     latestPreRelease,
@@ -463,8 +502,14 @@ function RepositoryCard({
             </div>
           )}
           <div className="flex items-center gap-2">
-            <RepositoryLinks homepageUrl={repo.homepageUrl} />
-            <RepositoryChannels channels={repo.channels} />
+            <RepositoryLinks
+              homepageUrl={repo.homepageUrl}
+              translations={translations}
+            />
+            <RepositoryChannels
+              channels={repo.channels}
+              translations={translations}
+            />
           </div>
         </div>
         {asset && (
@@ -476,6 +521,7 @@ function RepositoryCard({
             allowPreRelease={allowPreRelease}
             latestPreRelease={latestPreRelease}
             latestVersionInstalled={latestVersionInstalled}
+            translations={translations}
           />
         )}
       </div>
@@ -486,6 +532,7 @@ function RepositoryCard({
           latestPublishedAt={latestAnyRelease.publishedAt}
           maintainer={repo.organization}
           downloads={asset.downloadCount}
+          translations={translations}
         />
       )}
     </div>
@@ -688,12 +735,13 @@ function useFont() {
 }
 
 export function App() {
+  const translations = useIntlayer<'app'>('app');
   const {
     show_prereleases,
     allow_prereleases_checkbox_description,
     search_for_a_module,
     no_modules_found,
-  } = useIntlayer('app');
+  } = translations;
   const { info, error, isInfoFetched } = useInfo();
   const [catalogUrl] = useQueryState('c', { defaultValue: defaultCatalog });
   const {
@@ -778,6 +826,7 @@ export function App() {
               key={`${repo.organization}/${repo.name}`}
               repo={repo}
               allowPreRelease={allowPreRelease}
+              translations={translations}
             />
           ))}
           {filteredRepos.length === 0 && <div>{no_modules_found}</div>}
