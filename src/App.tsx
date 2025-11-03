@@ -13,6 +13,7 @@ import type { Dispatch, SetStateAction } from 'react';
 import { useEffect, useState } from 'react';
 import { useIntlayer, useLocale } from 'react-intlayer';
 import { satisfies } from 'semver';
+import { useDebounceValue } from 'usehooks-ts';
 import * as v from 'valibot';
 import { cn } from '@/lib/utils';
 import type { Asset, Release, Repository } from '@/types';
@@ -755,6 +756,7 @@ export function App() {
     defaultChannel,
   ]);
   const [searchTerm, setSearchTerm] = useState<string>('');
+  const [debouncedSearchTerm] = useDebounceValue(searchTerm, 300);
   const [allowPreRelease, setAllowPreRelease] = useState<boolean>(
     info.developerMode,
   );
@@ -772,7 +774,10 @@ export function App() {
     allowPreRelease,
     info.arch,
   );
-  const filteredRepos = filterReposBySearchTerm(installableRepos, searchTerm);
+  const filteredRepos = filterReposBySearchTerm(
+    installableRepos,
+    debouncedSearchTerm,
+  );
 
   if (error) {
     return <div>Error fetching environment info: {String(error)}</div>;
