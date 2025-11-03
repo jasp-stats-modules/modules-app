@@ -65,7 +65,7 @@ pnpm scrape
 pnpm build
 ```
 
-The built files will be in the `dist` folder, can hosted on any static file server or use `pnpm serve` to host.
+The built files will be in the `dist` folder, can be hosted on any static file server like GitHub Pages or use `pnpm serve` to host locally.
 
 ## Testing
 

@@ -17,7 +17,7 @@ A web application hosted at https://module-library.jasp-stats.org/ that allows y
 
 The web application is designed to be opened from inside JASP desktop application, but it can also be used as a standalone web application.
 
-The JASP desktop application tells the web application which version/architecture it is and which modules are installed by using a [websocket](https://doc.qt.io/qt-6/qtwebchannel-index.html).
+The JASP desktop application tells the web application which version/architecture it is and which modules are installed by using a [Qt WebChannel](https://doc.qt.io/qt-6/qtwebchannel-index.html).
 
 ### Search parameters
 
