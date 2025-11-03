@@ -1,14 +1,9 @@
 import { StrictMode } from 'react';
 import ReactDOM from 'react-dom/client';
 
-import './styles.css';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { NuqsAdapter } from 'nuqs/adapters/react';
-import { IntlayerProvider } from 'react-intlayer';
 import { App } from './App.tsx';
 import reportWebVitals from './reportWebVitals.ts';
-
-export const queryClient = new QueryClient();
+import { Wrapper } from './Wrapper.tsx';
 
 // Render the app
 const rootElement = document.getElementById('app');
@@ -16,13 +11,9 @@ if (rootElement && !rootElement.innerHTML) {
   const root = ReactDOM.createRoot(rootElement);
   root.render(
     <StrictMode>
-      <NuqsAdapter defaultOptions={{ clearOnDefault: false }}>
-        <IntlayerProvider>
-          <QueryClientProvider client={queryClient}>
-            <App />
-          </QueryClientProvider>
-        </IntlayerProvider>
-      </NuqsAdapter>
+      <Wrapper>
+        <App />
+      </Wrapper>
     </StrictMode>,
   );
 }

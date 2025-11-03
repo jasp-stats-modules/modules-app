@@ -1,9 +1,7 @@
 @import "tailwindcss";
 
-/* biome-ignore lint/suspicious/noUnknownAtRules: tailwind-ism */
 @custom-variant dark (&:is(.dark *));
 
-/* biome-ignore lint/suspicious/noUnknownAtRules: tailwind-ism */
 @theme inline {
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
@@ -156,14 +154,12 @@
 
 @layer base {
   body {
-    /* biome-ignore lint/suspicious/noUnknownAtRules: tailwind plugin */
     @apply bg-background text-foreground;
   }
 }
 
 body {
-  /* biome-ignore lint/suspicious/noUnknownAtRules: tailwind plugin */
-  @apply m-0;
+  margin: 0;
   font-family:
     var(--app-font-family), -apple-system, BlinkMacSystemFont, "Segoe UI",
     "Roboto", "Oxygen", "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans",
