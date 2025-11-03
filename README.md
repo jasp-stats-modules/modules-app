@@ -1,30 +1,33 @@
-Welcome to JASP stats modules web app!
+# Welcome to JASP stats modules web app!
 
 [![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 [![Checked with Biome](https://img.shields.io/badge/Checked_with-Biome-60a5fa?style=flat&logo=biome)](https://biomejs.dev)
 [![Deploy to GitHub Pages](https://github.com/jasp-stats-modules/modules-app/actions/workflows/deploy.yml/badge.svg)](https://github.com/jasp-stats-modules/modules-app/actions/workflows/deploy.yml)
 [![Code quality](https://github.com/jasp-stats-modules/modules-app/actions/workflows/quality.yml/badge.svg)](https://github.com/jasp-stats-modules/modules-app/actions/workflows/quality.yml)
+[![Tests](https://github.com/jasp-stats-modules/modules-app/actions/workflows/test.yml/badge.svg)](https://github.com/jasp-stats-modules/modules-app/actions/workflows/test.yml)
 [![FAIR checklist badge](https://fairsoftwarechecklist.net/badge.svg)](https://fairsoftwarechecklist.net/v0.2?f=31&a=32113&i=22300&r=113)
 [![Research Software Directory Badge](https://img.shields.io/badge/rsd-jasp_modules_app-00a3e3.svg)](https://research-software-directory.org/software/jasp-modules-app)
-[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.17305936.svg)](https://doi.org/10.5281/zenodo.17305936)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.17305935.svg)](https://doi.org/10.5281/zenodo.17305935)
+
+## Usage
 
 A web application hosted at https://module-library.jasp-stats.org/ that allows you to search/filter all the available JASP modules and install them.
 
 [![Screenshot of the app](screenshot.png)](screenshot.png)
 
-# Usage
-
-## Search parameters
-
 The web application is designed to be opened from inside JASP desktop application, but it can also be used as a standalone web application.
 
-The JASP desktop application can tell the web application which version/architecture it is and which modules are installed by using search parameters (`?key=val`) in the URL.
+The JASP desktop application tells the web application which version/architecture it is and which modules are installed by using a [websocket](https://doc.qt.io/qt-6/qtwebchannel-index.html).
+
+### Search parameters
+
+In a standalone web application you can tell the web application which version/architecture it is and which modules are installed by using search parameters (`?key=val`) in the URL.
 
 - v: the version of the JASP desktop application for example `0.95.0`
 - a: the architecture of the JASP desktop application for example `Windows_x86-64`
 - i: installed modules. A JSON object with the module names as keys and their versions as values. The object has to be [URL encoded](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/encodeURIComponent). For example, `{"jaspEquivalenceTTests":"0.95.0","jaspTTests":"0.94.0"}` becomes `%7B%22jaspEquivalenceTTests%22%3A%220.95.0%22%2C%22jaspTTests%22%3A%220.94.0%22%7D`.
 - p: show pre-releases initially. Use `true` to show pre-releases and use `false` to hide them initially.
-- c: URL for the catalog aka index.json. 
+- c: URL for the list of modules aka index.json. 
    When not set uses `index.json` (`public/index.json` in local development or on deployed site uses `https://jasp-stats-modules.github.io/modules-app/index.json`).
    If URL is not a relative path aka other server then make sure correct [CORS headers](https://developer.mozilla.org/en-US/docs/Web/HTTP/Guides/CORS) are returned on server that hosts index.json.
 - t: Theme. Use `dark` for dark theme, `light` for light theme, and `system` to match system theme (default).
@@ -35,23 +38,10 @@ A full URL could look like [https://jasp-stats-modules.github.io/modules-app/?a=
 
 ## Update list of modules
 
-The list of modules can be updated by running the GitHub workflow at https://github.com/jasp-stats-modules/modules-app/actions/workflows/deploy.yml .
+The [list of modules](public/index.json) that the web application knows about can be updated by running the GitHub workflow at https://github.com/jasp-stats-modules/modules-app/actions/workflows/deploy.yml .
 Use the "Run workflow" button to trigger the workflow manually.
 
-# Architecture
-
-The web application is a single page application (SPA) with the following characteristics:
-
-- Built with [React](https://reactjs.org/) and [TypeScript](https://www.typescriptlang.org/)
-- Uses [Vite](https://vitejs.dev/) as the build tool
-- Uses [pnpm](https://pnpm.io/) as the package manager
-- Uses [Tailwind CSS](https://tailwindcss.com/) for styling
-- Uses [nuqs](https://nuqs.dev/) for URL query string parsing
-- Uses [Qt WebChannel](https://doc.qt.io/qt-6/qtwebchannel-index.html) for communication between the web app and the JASP desktop app
-- Uses [biome](https://biomejs.dev/) for linting and formatting
-- Uses [intlayer](https://intlayer.org/) for multi language support. Unique texts of modules themselves are not translated.
-- Uses [Vitest](https://vitest.dev/) for testing, and [Playwright](https://playwright.dev/) for browser testing
-- Fetches data from the [GitHub GraphQL API](https://docs.github.com/en/graphql) to get available JASP modules and their release assets
+### How it works
 
 To get a list of available JASP modules, it does the following with the help of the `src/scrape.ts` script:
 
@@ -71,70 +61,20 @@ To get a list of available JASP modules, it does the following with the help of 
 
 # Getting Started
 
-To run this application:
+To run this application locally, follow these steps:
 
 ```bash
+# Install dependencies
 pnpm install
 # Scrape a list of JASP module and their release assets from GitHub and save as src/index.json
 export GITHUB_TOKEN=<your personal fine grained access token, only access to public repositories is needed and no other permissions>
 pnpm scrape
+# Start the development server
 pnpm start  
 ```
 
 Application will be running at http://localhost:3000 (unless stated otherwise).
 
-See [CONTRIBUTING.md](CONTRIBUTING.md#you-want-to-develop-web-app-inside-jasp-stats) for development within JASP stats desktop application.
-
-# Building For Production
-
-To build run:
-
-```bash
-pnpm scrape
-pnpm build
-```
-
-## Testing
-
-You can run the unit tests with:
-
-```bash
-pnpm test
-```
-
-You can run the browser tests with:
-
-```bash
-pnpm test:browser
-```
-
-## Linting and Formatting
-
-Can be typechecked with:
-
-```bash
-pnpm typecheck
-```
-
-Can be formatted and linted with:
-
-```bash
-pnpm check
-```
-
-## Multi language Support
-
-The `./intlayer.config.ts` file contains list of supported locales.
-Translations are stored in `src/**/*.content.tsx` files.
-
-The linting is done with TypeScript.
-Types for translations can be generated with:
-
-- `pnpm dev` or
-- `pnpm typecheck` or
-- `pnpx intlayer build` or
-- [VS code extension](https://intlayer.org/doc/vs-code-extension)
-
 ## Contributing
 
-Contributions are welcome! Please read the [contributing guidelines](CONTRIBUTING.md) for more information.
+Contributions are welcome! Please read the [contributing guidelines](CONTRIBUTING.md) for more information and developer instructions.
