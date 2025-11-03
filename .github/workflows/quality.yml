@@ -28,6 +28,9 @@ jobs:
   typecheck:
     name: Type Check
     runs-on: ubuntu-latest
+    container:
+      image: mcr.microsoft.com/playwright:v1.56.1-noble
+      options: --user 1001
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -42,9 +45,6 @@ jobs:
         with:
           node-version: '22.18.0'
           cache: "pnpm"
-
-      - name: Install dependencies
-        run: pnpm install
 
       - name: Run Type Check
         run: pnpm typecheck
