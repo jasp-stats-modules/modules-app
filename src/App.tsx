@@ -83,7 +83,7 @@ function Loading() {
       <div className="flex flex-col items-center rounded-lg border border-border bg-background p-6 shadow-sm transition-shadow duration-200 hover:shadow-md dark:hover:shadow-lg">
         <div>{loading}</div>
         <div className="mt-3">
-          <span className="block h-10 w-10 animate-spin rounded-full border-4 border-accent border-t-transparent"></span>
+          <span className="block h-10 w-10 animate-spin rounded-full border-4 border-accent-foreground border-t-transparent"></span>
         </div>
       </div>
     </div>
@@ -732,7 +732,7 @@ export function App() {
   if (repositoriesError) {
     return <div>Error fetching catalog: {String(repositoriesError)}</div>;
   }
-  if (!isInfoFetched && !isRepositoriesFetched) {
+  if (!isInfoFetched || !isRepositoriesFetched) {
     return <Loading />;
   }
 
