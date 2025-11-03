@@ -107,3 +107,9 @@ Types for translations can be generated with:
 - `pnpm typecheck` or
 - `pnpx intlayer build` or
 - [VS code extension](https://intlayer.org/doc/vs-code-extension)
+
+## AI Disclaimer
+
+The documentation/software code in this repository has been partly generated and/or refined using
+GitHub CoPilot. All AI-output has been verified for correctness,
+accuracy and completeness, adapted where needed, and approved by the author.
