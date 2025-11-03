@@ -1,6 +1,7 @@
 import { resolve } from 'node:path';
 import tailwindcss from '@tailwindcss/vite';
 import viteReact from '@vitejs/plugin-react';
+import { playwright } from '@vitest/browser-playwright';
 import { intlayer } from 'vite-intlayer';
 import { defineConfig } from 'vitest/config';
 
@@ -16,9 +17,32 @@ export default defineConfig({
     intlayer(),
   ],
   test: {
-    globals: true,
-    environment: 'jsdom',
-    reporters: process.env.GITHUB_ACTIONS ? ['dot', 'github-actions'] : ['dot'],
+    reporters: process.env.GITHUB_ACTIONS
+      ? ['default', 'github-actions']
+      : ['default'],
+    projects: [
+      {
+        extends: true,
+        test: {
+          name: 'unit',
+          environment: 'node',
+          include: ['src/**/*.unit.{test,spec}.ts'],
+        },
+      },
+      {
+        extends: true,
+        test: {
+          name: 'browser',
+          include: ['src/**/*.browser.{test,spec}.ts?(x)'],
+          browser: {
+            enabled: true,
+            provider: playwright(),
+            // https://vitest.dev/guide/browser/playwright
+            instances: [{ browser: 'chromium' }],
+          },
+        },
+      },
+    ],
   },
   base: process.env.BASE_URL || '/',
   resolve: {

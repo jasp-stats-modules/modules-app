@@ -50,7 +50,7 @@ The web application is a single page application (SPA) with the following charac
 - Uses [Qt WebChannel](https://doc.qt.io/qt-6/qtwebchannel-index.html) for communication between the web app and the JASP desktop app
 - Uses [biome](https://biomejs.dev/) for linting and formatting
 - Uses [intlayer](https://intlayer.org/) for multi language support. Unique texts of modules themselves are not translated.
-- Uses [Vitest](https://vitest.dev/) for testing
+- Uses [Vitest](https://vitest.dev/) for testing, and [Playwright](https://playwright.dev/) for browser testing
 - Fetches data from the [GitHub GraphQL API](https://docs.github.com/en/graphql) to get available JASP modules and their release assets
 
 To get a list of available JASP modules, it does the following with the help of the `src/scrape.ts` script:
@@ -96,10 +96,16 @@ pnpm build
 
 ## Testing
 
-You can run the tests with:
+You can run the unit tests with:
 
 ```bash
 pnpm test
+```
+
+You can run the browser tests with:
+
+```bash
+pnpm test:browser
 ```
 
 ## Linting and Formatting

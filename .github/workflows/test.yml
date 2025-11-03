@@ -1,4 +1,4 @@
-name: Unit tests
+name: Tests
 
 on:
   push:
@@ -35,3 +35,28 @@ jobs:
 
       - name: Run tests
         run: pnpm test
+  browser-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10
+
+      - name: Use Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22.18.0'
+          cache: "pnpm"
+
+      - name: Install dependencies
+        run: pnpm install
+    
+      - name: Install playwright browsers
+        run: pnpx playwright install --with-deps
+
+      - name: Run browser tests
+        run: pnpm test:browser

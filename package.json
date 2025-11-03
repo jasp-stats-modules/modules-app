@@ -11,7 +11,8 @@
     "start": "vite --port 3000",
     "build": "vite build",
     "serve": "vite preview",
-    "test": "vitest run",
+    "test": "vitest run --project unit",
+    "test:browser": "vitest --project browser",
     "scrape": "node src/scrape.ts",
     "pretypecheck": "intlayer build",
     "typecheck": "tsc",
@@ -46,6 +47,7 @@
     "@types/react-dom": "^19.0.3",
     "@types/semver": "^7.7.0",
     "@vitejs/plugin-react": "^4.3.4",
+    "@vitest/browser-playwright": "^4.0.6",
     "babel-plugin-react-compiler": "^1.0.0",
     "chalk": "^5.5.0",
     "dedent": "^1.6.0",
@@ -55,7 +57,8 @@
     "typescript": "^5.7.2",
     "vite": "^6.3.5",
     "vite-intlayer": "^6.1.6",
-    "vitest": "^3.0.5",
+    "vitest": "^4.0.6",
+    "vitest-browser-react": "^2.0.2",
     "web-vitals": "^4.2.4"
   }
 }
