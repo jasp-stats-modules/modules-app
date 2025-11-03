@@ -6,7 +6,15 @@ import { defineConfig } from 'vitest/config';
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  plugins: [viteReact(), tailwindcss(), intlayer()],
+  plugins: [
+    viteReact({
+      babel: {
+        plugins: ['babel-plugin-react-compiler'],
+      },
+    }),
+    tailwindcss(),
+    intlayer(),
+  ],
   test: {
     globals: true,
     environment: 'jsdom',
