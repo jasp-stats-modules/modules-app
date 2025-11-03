@@ -756,7 +756,7 @@ export function App() {
     defaultChannel,
   ]);
   const [searchTerm, setSearchTerm] = useState<string>('');
-  const [debouncedSearchTerm] = useDebounceValue(searchTerm, 300);
+  const [debouncedSearchTerm] = useDebounceValue(searchTerm, 100);
   const [allowPreRelease, setAllowPreRelease] = useState<boolean>(
     info.developerMode,
   );
