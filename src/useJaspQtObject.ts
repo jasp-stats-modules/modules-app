@@ -52,6 +52,7 @@ export async function jaspQtObject(): Promise<JaspObject | null> {
       return new Promise<Info>((resolve, reject) => {
         try {
           moduleStoreApi.info((info: Info) => {
+            console.log('Received info from Qt:', info);
             resolve(info);
           });
         } catch (error) {
@@ -93,5 +94,10 @@ export function useJaspQtObject() {
   return useQuery({
     queryKey: ['jaspQtObject'],
     queryFn: jaspQtObject,
+    staleTime: Number.POSITIVE_INFINITY, // Never consider data stale
+    gcTime: Number.POSITIVE_INFINITY, // Never garbage collect
+    refetchOnMount: false,
+    refetchOnWindowFocus: false,
+    refetchOnReconnect: false,
   });
 }
