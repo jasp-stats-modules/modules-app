@@ -314,7 +314,13 @@ function getReleaseInfo(
   );
   const latestAnyRelease =
     allowPreRelease && latestPreRelease ? latestPreRelease : latestRelease;
-  const asset = latestAnyRelease?.assets.find((a) => a.architecture === arch);
+  let asset = latestAnyRelease?.assets.find((a) => a.architecture === arch);
+  if (!asset) {
+    asset = latestRelease?.assets.find((a) => a.architecture === arch);
+  }
+  if (!asset) {
+    throw new Error('No compatible asset found');
+  }
   const installedVersion = installedModules[repo.name];
   const latestVersionInstalled =
     installedVersion !== undefined &&
