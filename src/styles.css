@@ -157,7 +157,7 @@
 
 @layer base {
   body {
-    @apply bg-background text-foreground scrollbar scrollbar-thumb-ring scrollbar-hover:scrollbar-thumb-thumb-hover scrollbar-track-background;
+    @apply bg-background text-foreground scrollbar-thin scrollbar-thumb-ring scrollbar-hover:scrollbar-thumb-thumb-hover scrollbar-track-popover;
   }
 }
 
