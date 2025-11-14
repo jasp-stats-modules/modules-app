@@ -84,11 +84,11 @@
 }
 
 .dark {
-  --background: #212121;
+  --background: #141414;
   --foreground: #eee;
   --card: #1a1a1a;
   --card-foreground: oklch(0.985 0.001 106.423);
-  --popover: oklch(0.216 0.006 56.043);
+  --popover: #141414;
   --popover-foreground: oklch(0.985 0.001 106.423);
   --primary: oklch(0.923 0.003 48.717);
   --primary-foreground: oklch(0.216 0.006 56.043);
@@ -118,7 +118,7 @@
   --jasp-blue: #0481c3;
   --jasp-green: #7ca61e;
   --thumb-hover: #015ba9;
-  --jasp-gray-darker: #f4f6f7;
+  --jasp-gray-darker: #747677;
 }
 
 @font-face {
