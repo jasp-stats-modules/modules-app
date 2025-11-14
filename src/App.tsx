@@ -744,8 +744,8 @@ function useFont() {
 function JASPScrollBar({ children }: { children: React.ReactNode }) {
   return (
     <div className="border-jasp-gray-darker border-r-1">
-      <div className="scrollbar-thin scrollbar-thumb-ring scrollbar-hover:scrollbar-thumb-thumb-hover scrollbar-track-background h-screen overflow-y-auto border-background border-r-1">
-        <div className="min-h-screen border-background border-r-1">
+      <div className="scrollbar-thin scrollbar-thumb-ring scrollbar-hover:scrollbar-thumb-thumb-hover scrollbar-track-popover h-screen overflow-y-auto border-popover border-r-1">
+        <div className="min-h-screen border-popover border-r-1">
           <div className="min-h-screen border-jasp-gray-darker border-r-1">
             {children}
           </div>
