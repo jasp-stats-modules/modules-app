@@ -741,7 +741,7 @@ function useFont() {
   }, [info.font]);
 }
 
-function JaspScrollbar({ children }: { children: React.ReactNode }) {
+function JASPScrollBar({ children }: { children: React.ReactNode }) {
   return (
     <div className="border-jasp-gray-darker border-r-1">
       <div className="scrollbar-thin scrollbar-thumb-ring scrollbar-hover:scrollbar-thumb-thumb-hover scrollbar-track-popover h-screen overflow-y-auto border-popover border-r-1">
@@ -810,7 +810,7 @@ export function App() {
   }
 
   return (
-    <JaspScrollbar>
+    <JASPScrollBar>
       <main className="px-4 py-4">
         <div className="mb-4 rounded-lg border border-border bg-card p-3 text-card-foreground shadow-sm">
           <div className="flex flex-col gap-3">
@@ -857,6 +857,6 @@ export function App() {
           {filteredRepos.length === 0 && <div>{no_modules_found}</div>}
         </div>
       </main>
-    </JaspScrollbar>
+    </JASPScrollBar>
   );
 }
