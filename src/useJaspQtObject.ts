@@ -56,6 +56,7 @@ export async function jaspQtObject(): Promise<JaspObject | null> {
             resolve(info);
           });
         } catch (error) {
+          console.error('Error while fetching info from Qt:', error);
           reject(error);
         }
       });
@@ -85,6 +86,7 @@ async function createQtWebChannel(
         resolve(channel);
       });
     } catch (error) {
+      console.error('Error while creating Qt WebChannel:', error);
       reject(error);
     }
   });

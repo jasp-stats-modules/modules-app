@@ -41,6 +41,7 @@
   --color-jasp-blue: var(--jasp-blue);
   --color-jasp-green: var(--jasp-green);
   --color-thumb-hover: var(--thumb-hover);
+  --color-jasp-gray-darker: var(--jasp-gray-darker);
 }
 
 :root {
@@ -79,6 +80,7 @@
   --jasp-blue: #14a1e3;
   --jasp-green: #8cc63e;
   --thumb-hover: #97c4f2; /* blueLighter */
+  --jasp-gray-darker: #9a9a9a; /* grayDarker */
 }
 
 .dark {
@@ -116,6 +118,7 @@
   --jasp-blue: #0481c3;
   --jasp-green: #7ca61e;
   --thumb-hover: #015ba9;
+  --jasp-gray-darker: #f4f6f7;
 }
 
 @font-face {
@@ -157,7 +160,7 @@
 
 @layer base {
   body {
-    @apply bg-background text-foreground scrollbar scrollbar-thumb-ring scrollbar-hover:scrollbar-thumb-thumb-hover scrollbar-track-background;
+    @apply bg-background text-foreground;
   }
 }
 
