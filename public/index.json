@@ -12,22 +12,22 @@
         "assets": [
           {
             "downloadUrl": "https://github.com/jasp-stats-modules/jaspAcceptanceSampling/releases/download/0.95.5_ab108567_R-4-5-1_Release/jaspAcceptanceSampling_0.95.5_Flatpak_x86_64_R-4-5-1.JASPModule",
-            "downloadCount": 0,
+            "downloadCount": 3,
             "architecture": "Flatpak_x86_64"
           },
           {
             "downloadUrl": "https://github.com/jasp-stats-modules/jaspAcceptanceSampling/releases/download/0.95.5_ab108567_R-4-5-1_Release/jaspAcceptanceSampling_0.95.5_MacOS_arm64_R-4-5-1.JASPModule",
-            "downloadCount": 4,
+            "downloadCount": 11,
             "architecture": "MacOS_arm64"
           },
           {
             "downloadUrl": "https://github.com/jasp-stats-modules/jaspAcceptanceSampling/releases/download/0.95.5_ab108567_R-4-5-1_Release/jaspAcceptanceSampling_0.95.5_MacOS_x86_64_R-4-5-1.JASPModule",
-            "downloadCount": 1,
+            "downloadCount": 2,
             "architecture": "MacOS_x86_64"
           },
           {
             "downloadUrl": "https://github.com/jasp-stats-modules/jaspAcceptanceSampling/releases/download/0.95.5_ab108567_R-4-5-1_Release/jaspAcceptanceSampling_0.95.5_Windows_x86-64_R-4-5-1.JASPModule",
-            "downloadCount": 1,
+            "downloadCount": 6,
             "architecture": "Windows_x86-64"
           }
         ]
@@ -35,23 +35,28 @@
     ],
     "preReleases": [
       {
-        "publishedAt": "2025-10-22T15:16:11Z",
+        "publishedAt": "2025-11-13T12:54:48Z",
         "jaspVersionRange": ">=0.95.1",
         "version": "0.95.5",
         "assets": [
           {
-            "downloadUrl": "https://github.com/jasp-stats-modules/jaspAcceptanceSampling/releases/download/0.95.5_ab108567_R-4-5-1_Beta/jaspAcceptanceSampling_0.95.5_MacOS_arm64_R-4-5-1.JASPModule",
+            "downloadUrl": "https://github.com/jasp-stats-modules/jaspAcceptanceSampling/releases/download/0.95.5_dec3ad5b_R-4-5-1_Beta/jaspAcceptanceSampling_0.95.5_Flatpak_x86_64_R-4-5-1.JASPModule",
             "downloadCount": 0,
+            "architecture": "Flatpak_x86_64"
+          },
+          {
+            "downloadUrl": "https://github.com/jasp-stats-modules/jaspAcceptanceSampling/releases/download/0.95.5_dec3ad5b_R-4-5-1_Beta/jaspAcceptanceSampling_0.95.5_MacOS_arm64_R-4-5-1.JASPModule",
+            "downloadCount": 2,
             "architecture": "MacOS_arm64"
           },
           {
-            "downloadUrl": "https://github.com/jasp-stats-modules/jaspAcceptanceSampling/releases/download/0.95.5_ab108567_R-4-5-1_Beta/jaspAcceptanceSampling_0.95.5_MacOS_x86_64_R-4-5-1.JASPModule",
-            "downloadCount": 0,
+            "downloadUrl": "https://github.com/jasp-stats-modules/jaspAcceptanceSampling/releases/download/0.95.5_dec3ad5b_R-4-5-1_Beta/jaspAcceptanceSampling_0.95.5_MacOS_x86_64_R-4-5-1.JASPModule",
+            "downloadCount": 1,
             "architecture": "MacOS_x86_64"
           },
           {
-            "downloadUrl": "https://github.com/jasp-stats-modules/jaspAcceptanceSampling/releases/download/0.95.5_ab108567_R-4-5-1_Beta/jaspAcceptanceSampling_0.95.5_Windows_x86-64_R-4-5-1.JASPModule",
-            "downloadCount": 0,
+            "downloadUrl": "https://github.com/jasp-stats-modules/jaspAcceptanceSampling/releases/download/0.95.5_dec3ad5b_R-4-5-1_Beta/jaspAcceptanceSampling_0.95.5_Windows_x86-64_R-4-5-1.JASPModule",
+            "downloadCount": 1,
             "architecture": "Windows_x86-64"
           }
         ]
@@ -79,17 +84,17 @@
           },
           {
             "downloadUrl": "https://github.com/jasp-stats-modules/jaspAnova/releases/download/0.95.5_ac0b0a54_R-4-5-1_Release/jaspAnova_0.95.5_MacOS_arm64_R-4-5-1.JASPModule",
-            "downloadCount": 5,
+            "downloadCount": 12,
             "architecture": "MacOS_arm64"
           },
           {
             "downloadUrl": "https://github.com/jasp-stats-modules/jaspAnova/releases/download/0.95.5_ac0b0a54_R-4-5-1_Release/jaspAnova_0.95.5_MacOS_x86_64_R-4-5-1.JASPModule",
-            "downloadCount": 1,
+            "downloadCount": 2,
             "architecture": "MacOS_x86_64"
           },
           {
             "downloadUrl": "https://github.com/jasp-stats-modules/jaspAnova/releases/download/0.95.5_ac0b0a54_R-4-5-1_Release/jaspAnova_0.95.5_Windows_x86-64_R-4-5-1.JASPModule",
-            "downloadCount": 1,
+            "downloadCount": 5,
             "architecture": "Windows_x86-64"
           }
         ]
@@ -124,28 +129,28 @@
     ],
     "preReleases": [
       {
-        "publishedAt": "2025-10-22T15:01:54Z",
+        "publishedAt": "2025-11-13T12:41:22Z",
         "jaspVersionRange": ">=0.95.1",
         "version": "0.95.5",
         "assets": [
           {
-            "downloadUrl": "https://github.com/jasp-stats-modules/jaspAnova/releases/download/0.95.5_ac0b0a54_R-4-5-1_Beta/jaspAnova_0.95.5_Flatpak_x86_64_R-4-5-1.JASPModule",
+            "downloadUrl": "https://github.com/jasp-stats-modules/jaspAnova/releases/download/0.95.5_5af2777b_R-4-5-1_Beta/jaspAnova_0.95.5_Flatpak_x86_64_R-4-5-1.JASPModule",
             "downloadCount": 0,
             "architecture": "Flatpak_x86_64"
           },
           {
-            "downloadUrl": "https://github.com/jasp-stats-modules/jaspAnova/releases/download/0.95.5_ac0b0a54_R-4-5-1_Beta/jaspAnova_0.95.5_MacOS_arm64_R-4-5-1.JASPModule",
-            "downloadCount": 1,
+            "downloadUrl": "https://github.com/jasp-stats-modules/jaspAnova/releases/download/0.95.5_5af2777b_R-4-5-1_Beta/jaspAnova_0.95.5_MacOS_arm64_R-4-5-1.JASPModule",
+            "downloadCount": 2,
             "architecture": "MacOS_arm64"
           },
           {
-            "downloadUrl": "https://github.com/jasp-stats-modules/jaspAnova/releases/download/0.95.5_ac0b0a54_R-4-5-1_Beta/jaspAnova_0.95.5_MacOS_x86_64_R-4-5-1.JASPModule",
-            "downloadCount": 0,
+            "downloadUrl": "https://github.com/jasp-stats-modules/jaspAnova/releases/download/0.95.5_5af2777b_R-4-5-1_Beta/jaspAnova_0.95.5_MacOS_x86_64_R-4-5-1.JASPModule",
+            "downloadCount": 1,
             "architecture": "MacOS_x86_64"
           },
           {
-            "downloadUrl": "https://github.com/jasp-stats-modules/jaspAnova/releases/download/0.95.5_ac0b0a54_R-4-5-1_Beta/jaspAnova_0.95.5_Windows_x86-64_R-4-5-1.JASPModule",
-            "downloadCount": 0,
+            "downloadUrl": "https://github.com/jasp-stats-modules/jaspAnova/releases/download/0.95.5_5af2777b_R-4-5-1_Beta/jaspAnova_0.95.5_Windows_x86-64_R-4-5-1.JASPModule",
+            "downloadCount": 1,
             "architecture": "Windows_x86-64"
           }
         ]
@@ -168,22 +173,22 @@
         "assets": [
           {
             "downloadUrl": "https://github.com/jasp-stats-modules/jaspAudit/releases/download/0.95.5_b7884a72_R-4-5-1_Release/jaspAudit_0.95.5_Flatpak_x86_64_R-4-5-1.JASPModule",
-            "downloadCount": 0,
+            "downloadCount": 4,
             "architecture": "Flatpak_x86_64"
           },
           {
             "downloadUrl": "https://github.com/jasp-stats-modules/jaspAudit/releases/download/0.95.5_b7884a72_R-4-5-1_Release/jaspAudit_0.95.5_MacOS_arm64_R-4-5-1.JASPModule",
-            "downloadCount": 5,
+            "downloadCount": 12,
             "architecture": "MacOS_arm64"
           },
           {
             "downloadUrl": "https://github.com/jasp-stats-modules/jaspAudit/releases/download/0.95.5_b7884a72_R-4-5-1_Release/jaspAudit_0.95.5_MacOS_x86_64_R-4-5-1.JASPModule",
-            "downloadCount": 1,
+            "downloadCount": 2,
             "architecture": "MacOS_x86_64"
           },
           {
             "downloadUrl": "https://github.com/jasp-stats-modules/jaspAudit/releases/download/0.95.5_b7884a72_R-4-5-1_Release/jaspAudit_0.95.5_Windows_x86-64_R-4-5-1.JASPModule",
-            "downloadCount": 1,
+            "downloadCount": 5,
             "architecture": "Windows_x86-64"
           }
         ]
@@ -191,23 +196,28 @@
     ],
     "preReleases": [
       {
-        "publishedAt": "2025-10-22T15:17:43Z",
+        "publishedAt": "2025-11-13T12:56:35Z",
         "jaspVersionRange": ">=0.95.1",
         "version": "0.95.5",
         "assets": [
           {
-            "downloadUrl": "https://github.com/jasp-stats-modules/jaspAudit/releases/download/0.95.5_b7884a72_R-4-5-1_Beta/jaspAudit_0.95.5_MacOS_arm64_R-4-5-1.JASPModule",
+            "downloadUrl": "https://github.com/jasp-stats-modules/jaspAudit/releases/download/0.95.5_c1fa2850_R-4-5-1_Beta/jaspAudit_0.95.5_Flatpak_x86_64_R-4-5-1.JASPModule",
             "downloadCount": 0,
+            "architecture": "Flatpak_x86_64"
+          },
+          {
+            "downloadUrl": "https://github.com/jasp-stats-modules/jaspAudit/releases/download/0.95.5_c1fa2850_R-4-5-1_Beta/jaspAudit_0.95.5_MacOS_arm64_R-4-5-1.JASPModule",
+            "downloadCount": 2,
             "architecture": "MacOS_arm64"
           },
           {
-            "downloadUrl": "https://github.com/jasp-stats-modules/jaspAudit/releases/download/0.95.5_b7884a72_R-4-5-1_Beta/jaspAudit_0.95.5_MacOS_x86_64_R-4-5-1.JASPModule",
-            "downloadCount": 0,
+            "downloadUrl": "https://github.com/jasp-stats-modules/jaspAudit/releases/download/0.95.5_c1fa2850_R-4-5-1_Beta/jaspAudit_0.95.5_MacOS_x86_64_R-4-5-1.JASPModule",
+            "downloadCount": 1,
             "architecture": "MacOS_x86_64"
           },
           {
-            "downloadUrl": "https://github.com/jasp-stats-modules/jaspAudit/releases/download/0.95.5_b7884a72_R-4-5-1_Beta/jaspAudit_0.95.5_Windows_x86-64_R-4-5-1.JASPModule",
-            "downloadCount": 0,
+            "downloadUrl": "https://github.com/jasp-stats-modules/jaspAudit/releases/download/0.95.5_c1fa2850_R-4-5-1_Beta/jaspAudit_0.95.5_Windows_x86-64_R-4-5-1.JASPModule",
+            "downloadCount": 1,
             "architecture": "Windows_x86-64"
           }
         ]
@@ -231,17 +241,17 @@
         "assets": [
           {
             "downloadUrl": "https://github.com/jasp-stats-modules/jaspBain/releases/download/0.95.5_cba1730d_R-4-5-1_Release/jaspBain_0.95.5_Flatpak_x86_64_R-4-5-1.JASPModule",
-            "downloadCount": 0,
+            "downloadCount": 3,
             "architecture": "Flatpak_x86_64"
           },
           {
             "downloadUrl": "https://github.com/jasp-stats-modules/jaspBain/releases/download/0.95.5_cba1730d_R-4-5-1_Release/jaspBain_0.95.5_MacOS_arm64_R-4-5-1.JASPModule",
-            "downloadCount": 5,
+            "downloadCount": 12,
             "architecture": "MacOS_arm64"
           },
           {
             "downloadUrl": "https://github.com/jasp-stats-modules/jaspBain/releases/download/0.95.5_cba1730d_R-4-5-1_Release/jaspBain_0.95.5_Windows_x86-64_R-4-5-1.JASPModule",
-            "downloadCount": 1,
+            "downloadCount": 5,
             "architecture": "Windows_x86-64"
           }
         ]
@@ -249,18 +259,23 @@
     ],
     "preReleases": [
       {
-        "publishedAt": "2025-10-22T15:21:16Z",
+        "publishedAt": "2025-11-13T13:03:40Z",
         "jaspVersionRange": ">=0.95.1",
         "version": "0.95.5",
         "assets": [
           {
-            "downloadUrl": "https://github.com/jasp-stats-modules/jaspBain/releases/download/0.95.5_cba1730d_R-4-5-1_Beta/jaspBain_0.95.5_MacOS_arm64_R-4-5-1.JASPModule",
-            "downloadCount": 1,
+            "downloadUrl": "https://github.com/jasp-stats-modules/jaspBain/releases/download/0.95.5_bcf28aa6_R-4-5-1_Beta/jaspBain_0.95.5_Flatpak_x86_64_R-4-5-1.JASPModule",
+            "downloadCount": 0,
+            "architecture": "Flatpak_x86_64"
+          },
+          {
+            "downloadUrl": "https://github.com/jasp-stats-modules/jaspBain/releases/download/0.95.5_bcf28aa6_R-4-5-1_Beta/jaspBain_0.95.5_MacOS_arm64_R-4-5-1.JASPModule",
+            "downloadCount": 3,
             "architecture": "MacOS_arm64"
           },
           {
-            "downloadUrl": "https://github.com/jasp-stats-modules/jaspBain/releases/download/0.95.5_cba1730d_R-4-5-1_Beta/jaspBain_0.95.5_Windows_x86-64_R-4-5-1.JASPModule",
-            "downloadCount": 0,
+            "downloadUrl": "https://github.com/jasp-stats-modules/jaspBain/releases/download/0.95.5_bcf28aa6_R-4-5-1_Beta/jaspBain_0.95.5_Windows_x86-64_R-4-5-1.JASPModule",
+            "downloadCount": 1,
             "architecture": "Windows_x86-64"
           }
         ]
@@ -283,22 +298,22 @@
         "assets": [
           {
             "downloadUrl": "https://github.com/jasp-stats-modules/jaspBFF/releases/download/0.95.5_e901b487_R-4-5-1_Release/jaspBFF_0.95.5_Flatpak_x86_64_R-4-5-1.JASPModule",
-            "downloadCount": 0,
+            "downloadCount": 4,
             "architecture": "Flatpak_x86_64"
           },
           {
             "downloadUrl": "https://github.com/jasp-stats-modules/jaspBFF/releases/download/0.95.5_e901b487_R-4-5-1_Release/jaspBFF_0.95.5_MacOS_arm64_R-4-5-1.JASPModule",
-            "downloadCount": 5,
+            "downloadCount": 12,
             "architecture": "MacOS_arm64"
           },
           {
             "downloadUrl": "https://github.com/jasp-stats-modules/jaspBFF/releases/download/0.95.5_e901b487_R-4-5-1_Release/jaspBFF_0.95.5_MacOS_x86_64_R-4-5-1.JASPModule",
-            "downloadCount": 1,
+            "downloadCount": 2,
             "architecture": "MacOS_x86_64"
           },
           {
             "downloadUrl": "https://github.com/jasp-stats-modules/jaspBFF/releases/download/0.95.5_e901b487_R-4-5-1_Release/jaspBFF_0.95.5_Windows_x86-64_R-4-5-1.JASPModule",
-            "downloadCount": 1,
+            "downloadCount": 5,
             "architecture": "Windows_x86-64"
           }
         ]
@@ -306,23 +321,28 @@
     ],
     "preReleases": [
       {
-        "publishedAt": "2025-10-22T15:18:29Z",
+        "publishedAt": "2025-11-13T12:57:21Z",
         "jaspVersionRange": ">=0.95.1",
         "version": "0.95.5",
         "assets": [
           {
-            "downloadUrl": "https://github.com/jasp-stats-modules/jaspBFF/releases/download/0.95.5_e901b487_R-4-5-1_Beta/jaspBFF_0.95.5_MacOS_arm64_R-4-5-1.JASPModule",
-            "downloadCount": 1,
+            "downloadUrl": "https://github.com/jasp-stats-modules/jaspBFF/releases/download/0.95.5_2d4b9903_R-4-5-1_Beta/jaspBFF_0.95.5_Flatpak_x86_64_R-4-5-1.JASPModule",
+            "downloadCount": 0,
+            "architecture": "Flatpak_x86_64"
+          },
+          {
+            "downloadUrl": "https://github.com/jasp-stats-modules/jaspBFF/releases/download/0.95.5_2d4b9903_R-4-5-1_Beta/jaspBFF_0.95.5_MacOS_arm64_R-4-5-1.JASPModule",
+            "downloadCount": 2,
             "architecture": "MacOS_arm64"
           },
           {
-            "downloadUrl": "https://github.com/jasp-stats-modules/jaspBFF/releases/download/0.95.5_e901b487_R-4-5-1_Beta/jaspBFF_0.95.5_MacOS_x86_64_R-4-5-1.JASPModule",
-            "downloadCount": 0,
+            "downloadUrl": "https://github.com/jasp-stats-modules/jaspBFF/releases/download/0.95.5_2d4b9903_R-4-5-1_Beta/jaspBFF_0.95.5_MacOS_x86_64_R-4-5-1.JASPModule",
+            "downloadCount": 1,
             "architecture": "MacOS_x86_64"
           },
           {
-            "downloadUrl": "https://github.com/jasp-stats-modules/jaspBFF/releases/download/0.95.5_e901b487_R-4-5-1_Beta/jaspBFF_0.95.5_Windows_x86-64_R-4-5-1.JASPModule",
-            "downloadCount": 0,
+            "downloadUrl": "https://github.com/jasp-stats-modules/jaspBFF/releases/download/0.95.5_2d4b9903_R-4-5-1_Beta/jaspBFF_0.95.5_Windows_x86-64_R-4-5-1.JASPModule",
+            "downloadCount": 1,
             "architecture": "Windows_x86-64"
           }
         ]
@@ -350,12 +370,12 @@
           },
           {
             "downloadUrl": "https://github.com/jasp-stats-modules/jaspBfpack/releases/download/0.95.5_161c2f95_R-4-5-1_Release/jaspBfpack_0.95.5_MacOS_arm64_R-4-5-1.JASPModule",
-            "downloadCount": 4,
+            "downloadCount": 11,
             "architecture": "MacOS_arm64"
           },
           {
             "downloadUrl": "https://github.com/jasp-stats-modules/jaspBfpack/releases/download/0.95.5_161c2f95_R-4-5-1_Release/jaspBfpack_0.95.5_Windows_x86-64_R-4-5-1.JASPModule",
-            "downloadCount": 1,
+            "downloadCount": 5,
             "architecture": "Windows_x86-64"
           }
         ]
@@ -363,18 +383,28 @@
     ],
     "preReleases": [
       {
-        "publishedAt": "2025-10-22T15:23:27Z",
+        "publishedAt": "2025-11-13T13:05:51Z",
         "jaspVersionRange": ">=0.95.1",
         "version": "0.95.5",
         "assets": [
           {
-            "downloadUrl": "https://github.com/jasp-stats-modules/jaspBfpack/releases/download/0.95.5_161c2f95_R-4-5-1_Beta/jaspBfpack_0.95.5_MacOS_arm64_R-4-5-1.JASPModule",
+            "downloadUrl": "https://github.com/jasp-stats-modules/jaspBfpack/releases/download/0.95.5_8ae9982f_R-4-5-1_Beta/jaspBfpack_0.95.5_Flatpak_x86_64_R-4-5-1.JASPModule",
             "downloadCount": 0,
+            "architecture": "Flatpak_x86_64"
+          },
+          {
+            "downloadUrl": "https://github.com/jasp-stats-modules/jaspBfpack/releases/download/0.95.5_8ae9982f_R-4-5-1_Beta/jaspBfpack_0.95.5_MacOS_arm64_R-4-5-1.JASPModule",
+            "downloadCount": 2,
             "architecture": "MacOS_arm64"
           },
           {
-            "downloadUrl": "https://github.com/jasp-stats-modules/jaspBfpack/releases/download/0.95.5_161c2f95_R-4-5-1_Beta/jaspBfpack_0.95.5_Windows_x86-64_R-4-5-1.JASPModule",
-            "downloadCount": 0,
+            "downloadUrl": "https://github.com/jasp-stats-modules/jaspBfpack/releases/download/0.95.5_8ae9982f_R-4-5-1_Beta/jaspBfpack_0.95.5_MacOS_x86_64_R-4-5-1.JASPModule",
+            "downloadCount": 1,
+            "architecture": "MacOS_x86_64"
+          },
+          {
+            "downloadUrl": "https://github.com/jasp-stats-modules/jaspBfpack/releases/download/0.95.5_8ae9982f_R-4-5-1_Beta/jaspBfpack_0.95.5_Windows_x86-64_R-4-5-1.JASPModule",
+            "downloadCount": 1,
             "architecture": "Windows_x86-64"
           }
         ]
@@ -402,17 +432,17 @@
           },
           {
             "downloadUrl": "https://github.com/jasp-stats-modules/jaspBsts/releases/download/0.95.5_0a97e620_R-4-5-1_Release/jaspBsts_0.95.5_MacOS_arm64_R-4-5-1.JASPModule",
-            "downloadCount": 5,
+            "downloadCount": 12,
             "architecture": "MacOS_arm64"
           },
           {
             "downloadUrl": "https://github.com/jasp-stats-modules/jaspBsts/releases/download/0.95.5_0a97e620_R-4-5-1_Release/jaspBsts_0.95.5_MacOS_x86_64_R-4-5-1.JASPModule",
-            "downloadCount": 1,
+            "downloadCount": 2,
             "architecture": "MacOS_x86_64"
           },
           {
             "downloadUrl": "https://github.com/jasp-stats-modules/jaspBsts/releases/download/0.95.5_0a97e620_R-4-5-1_Release/jaspBsts_0.95.5_Windows_x86-64_R-4-5-1.JASPModule",
-            "downloadCount": 1,
+            "downloadCount": 5,
             "architecture": "Windows_x86-64"
           }
         ]
@@ -420,23 +450,28 @@
     ],
     "preReleases": [
       {
-        "publishedAt": "2025-10-22T15:25:37Z",
+        "publishedAt": "2025-11-13T13:07:56Z",
         "jaspVersionRange": ">=0.95.1",
         "version": "0.95.5",
         "assets": [
           {
-            "downloadUrl": "https://github.com/jasp-stats-modules/jaspBsts/releases/download/0.95.5_0a97e620_R-4-5-1_Beta/jaspBsts_0.95.5_MacOS_arm64_R-4-5-1.JASPModule",
-            "downloadCount": 1,
+            "downloadUrl": "https://github.com/jasp-stats-modules/jaspBsts/releases/download/0.95.5_e4eaaa9c_R-4-5-1_Beta/jaspBsts_0.95.5_Flatpak_x86_64_R-4-5-1.JASPModule",
+            "downloadCount": 0,
+            "architecture": "Flatpak_x86_64"
+          },
+          {
+            "downloadUrl": "https://github.com/jasp-stats-modules/jaspBsts/releases/download/0.95.5_e4eaaa9c_R-4-5-1_Beta/jaspBsts_0.95.5_MacOS_arm64_R-4-5-1.JASPModule",
+            "downloadCount": 3,
             "architecture": "MacOS_arm64"
           },
           {
-            "downloadUrl": "https://github.com/jasp-stats-modules/jaspBsts/releases/download/0.95.5_0a97e620_R-4-5-1_Beta/jaspBsts_0.95.5_MacOS_x86_64_R-4-5-1.JASPModule",
-            "downloadCount": 0,
+            "downloadUrl": "https://github.com/jasp-stats-modules/jaspBsts/releases/download/0.95.5_e4eaaa9c_R-4-5-1_Beta/jaspBsts_0.95.5_MacOS_x86_64_R-4-5-1.JASPModule",
+            "downloadCount": 1,
             "architecture": "MacOS_x86_64"
           },
           {
-            "downloadUrl": "https://github.com/jasp-stats-modules/jaspBsts/releases/download/0.95.5_0a97e620_R-4-5-1_Beta/jaspBsts_0.95.5_Windows_x86-64_R-4-5-1.JASPModule",
-            "downloadCount": 0,
+            "downloadUrl": "https://github.com/jasp-stats-modules/jaspBsts/releases/download/0.95.5_e4eaaa9c_R-4-5-1_Beta/jaspBsts_0.95.5_Windows_x86-64_R-4-5-1.JASPModule",
+            "downloadCount": 1,
             "architecture": "Windows_x86-64"
           }
         ]
@@ -459,22 +494,22 @@
         "assets": [
           {
             "downloadUrl": "https://github.com/jasp-stats-modules/jaspCircular/releases/download/0.95.5_805ea164_R-4-5-1_Release/jaspCircular_0.95.5_Flatpak_x86_64_R-4-5-1.JASPModule",
-            "downloadCount": 0,
+            "downloadCount": 1,
             "architecture": "Flatpak_x86_64"
           },
           {
             "downloadUrl": "https://github.com/jasp-stats-modules/jaspCircular/releases/download/0.95.5_805ea164_R-4-5-1_Release/jaspCircular_0.95.5_MacOS_arm64_R-4-5-1.JASPModule",
-            "downloadCount": 4,
+            "downloadCount": 12,
             "architecture": "MacOS_arm64"
           },
           {
             "downloadUrl": "https://github.com/jasp-stats-modules/jaspCircular/releases/download/0.95.5_805ea164_R-4-5-1_Release/jaspCircular_0.95.5_MacOS_x86_64_R-4-5-1.JASPModule",
-            "downloadCount": 1,
+            "downloadCount": 3,
             "architecture": "MacOS_x86_64"
           },
           {
             "downloadUrl": "https://github.com/jasp-stats-modules/jaspCircular/releases/download/0.95.5_805ea164_R-4-5-1_Release/jaspCircular_0.95.5_Windows_x86-64_R-4-5-1.JASPModule",
-            "downloadCount": 1,
+            "downloadCount": 6,
             "architecture": "Windows_x86-64"
           }
         ]
@@ -526,17 +561,17 @@
           },
           {
             "downloadUrl": "https://github.com/jasp-stats-modules/jaspCochrane/releases/download/0.95.5_18f83657_R-4-5-1_Release/jaspCochrane_0.95.5_MacOS_arm64_R-4-5-1.JASPModule",
-            "downloadCount": 4,
+            "downloadCount": 11,
             "architecture": "MacOS_arm64"
           },
           {
             "downloadUrl": "https://github.com/jasp-stats-modules/jaspCochrane/releases/download/0.95.5_18f83657_R-4-5-1_Release/jaspCochrane_0.95.5_MacOS_x86_64_R-4-5-1.JASPModule",
-            "downloadCount": 1,
+            "downloadCount": 2,
             "architecture": "MacOS_x86_64"
           },
           {
             "downloadUrl": "https://github.com/jasp-stats-modules/jaspCochrane/releases/download/0.95.5_18f83657_R-4-5-1_Release/jaspCochrane_0.95.5_Windows_x86-64_R-4-5-1.JASPModule",
-            "downloadCount": 1,
+            "downloadCount": 5,
             "architecture": "Windows_x86-64"
           }
         ]
@@ -544,23 +579,28 @@
     ],
     "preReleases": [
       {
-        "publishedAt": "2025-10-22T15:28:46Z",
+        "publishedAt": "2025-11-13T13:10:12Z",
         "jaspVersionRange": ">=0.95.1",
         "version": "0.95.5",
         "assets": [
           {
-            "downloadUrl": "https://github.com/jasp-stats-modules/jaspCochrane/releases/download/0.95.5_18f83657_R-4-5-1_Beta/jaspCochrane_0.95.5_MacOS_arm64_R-4-5-1.JASPModule",
-            "downloadCount": 1,
+            "downloadUrl": "https://github.com/jasp-stats-modules/jaspCochrane/releases/download/0.95.5_3384b0a8_R-4-5-1_Beta/jaspCochrane_0.95.5_Flatpak_x86_64_R-4-5-1.JASPModule",
+            "downloadCount": 0,
+            "architecture": "Flatpak_x86_64"
+          },
+          {
+            "downloadUrl": "https://github.com/jasp-stats-modules/jaspCochrane/releases/download/0.95.5_3384b0a8_R-4-5-1_Beta/jaspCochrane_0.95.5_MacOS_arm64_R-4-5-1.JASPModule",
+            "downloadCount": 2,
             "architecture": "MacOS_arm64"
           },
           {
-            "downloadUrl": "https://github.com/jasp-stats-modules/jaspCochrane/releases/download/0.95.5_18f83657_R-4-5-1_Beta/jaspCochrane_0.95.5_MacOS_x86_64_R-4-5-1.JASPModule",
-            "downloadCount": 0,
+            "downloadUrl": "https://github.com/jasp-stats-modules/jaspCochrane/releases/download/0.95.5_3384b0a8_R-4-5-1_Beta/jaspCochrane_0.95.5_MacOS_x86_64_R-4-5-1.JASPModule",
+            "downloadCount": 1,
             "architecture": "MacOS_x86_64"
           },
           {
-            "downloadUrl": "https://github.com/jasp-stats-modules/jaspCochrane/releases/download/0.95.5_18f83657_R-4-5-1_Beta/jaspCochrane_0.95.5_Windows_x86-64_R-4-5-1.JASPModule",
-            "downloadCount": 0,
+            "downloadUrl": "https://github.com/jasp-stats-modules/jaspCochrane/releases/download/0.95.5_3384b0a8_R-4-5-1_Beta/jaspCochrane_0.95.5_Windows_x86-64_R-4-5-1.JASPModule",
+            "downloadCount": 1,
             "architecture": "Windows_x86-64"
           }
         ]
@@ -588,12 +628,12 @@
           },
           {
             "downloadUrl": "https://github.com/jasp-stats-modules/jaspDescriptives/releases/download/0.95.5_475de536_R-4-5-1_Release/jaspDescriptives_0.95.5_MacOS_arm64_R-4-5-1.JASPModule",
-            "downloadCount": 5,
+            "downloadCount": 13,
             "architecture": "MacOS_arm64"
           },
           {
             "downloadUrl": "https://github.com/jasp-stats-modules/jaspDescriptives/releases/download/0.95.5_475de536_R-4-5-1_Release/jaspDescriptives_0.95.5_Windows_x86-64_R-4-5-1.JASPModule",
-            "downloadCount": 1,
+            "downloadCount": 6,
             "architecture": "Windows_x86-64"
           }
         ]
@@ -601,23 +641,18 @@
     ],
     "preReleases": [
       {
-        "publishedAt": "2025-10-22T15:05:14Z",
+        "publishedAt": "2025-11-13T12:52:40Z",
         "jaspVersionRange": ">=0.95.1",
         "version": "0.95.5",
         "assets": [
           {
-            "downloadUrl": "https://github.com/jasp-stats-modules/jaspDescriptives/releases/download/0.95.5_475de536_R-4-5-1_Beta/jaspDescriptives_0.95.5_Flatpak_x86_64_R-4-5-1.JASPModule",
+            "downloadUrl": "https://github.com/jasp-stats-modules/jaspDescriptives/releases/download/0.95.5_33d16856_R-4-5-1_Beta/jaspDescriptives_0.95.5_Flatpak_x86_64_R-4-5-1.JASPModule",
             "downloadCount": 0,
             "architecture": "Flatpak_x86_64"
           },
           {
-            "downloadUrl": "https://github.com/jasp-stats-modules/jaspDescriptives/releases/download/0.95.5_475de536_R-4-5-1_Beta/jaspDescriptives_0.95.5_MacOS_arm64_R-4-5-1.JASPModule",
-            "downloadCount": 0,
-            "architecture": "MacOS_arm64"
-          },
-          {
-            "downloadUrl": "https://github.com/jasp-stats-modules/jaspDescriptives/releases/download/0.95.5_475de536_R-4-5-1_Beta/jaspDescriptives_0.95.5_Windows_x86-64_R-4-5-1.JASPModule",
-            "downloadCount": 0,
+            "downloadUrl": "https://github.com/jasp-stats-modules/jaspDescriptives/releases/download/0.95.5_33d16856_R-4-5-1_Beta/jaspDescriptives_0.95.5_Windows_x86-64_R-4-5-1.JASPModule",
+            "downloadCount": 2,
             "architecture": "Windows_x86-64"
           }
         ]
@@ -640,22 +675,22 @@
         "assets": [
           {
             "downloadUrl": "https://github.com/jasp-stats-modules/jaspDistributions/releases/download/0.95.5_93d45734_R-4-5-1_Release/jaspDistributions_0.95.5_Flatpak_x86_64_R-4-5-1.JASPModule",
-            "downloadCount": 0,
+            "downloadCount": 1,
             "architecture": "Flatpak_x86_64"
           },
           {
             "downloadUrl": "https://github.com/jasp-stats-modules/jaspDistributions/releases/download/0.95.5_93d45734_R-4-5-1_Release/jaspDistributions_0.95.5_MacOS_arm64_R-4-5-1.JASPModule",
-            "downloadCount": 4,
+            "downloadCount": 11,
             "architecture": "MacOS_arm64"
           },
           {
             "downloadUrl": "https://github.com/jasp-stats-modules/jaspDistributions/releases/download/0.95.5_93d45734_R-4-5-1_Release/jaspDistributions_0.95.5_MacOS_x86_64_R-4-5-1.JASPModule",
-            "downloadCount": 1,
+            "downloadCount": 2,
             "architecture": "MacOS_x86_64"
           },
           {
             "downloadUrl": "https://github.com/jasp-stats-modules/jaspDistributions/releases/download/0.95.5_93d45734_R-4-5-1_Release/jaspDistributions_0.95.5_Windows_x86-64_R-4-5-1.JASPModule",
-            "downloadCount": 1,
+            "downloadCount": 5,
             "architecture": "Windows_x86-64"
           }
         ]
@@ -663,23 +698,28 @@
     ],
     "preReleases": [
       {
-        "publishedAt": "2025-10-22T15:29:45Z",
+        "publishedAt": "2025-11-13T13:11:09Z",
         "jaspVersionRange": ">=0.95.1",
         "version": "0.95.5",
         "assets": [
           {
-            "downloadUrl": "https://github.com/jasp-stats-modules/jaspDistributions/releases/download/0.95.5_93d45734_R-4-5-1_Beta/jaspDistributions_0.95.5_MacOS_arm64_R-4-5-1.JASPModule",
-            "downloadCount": 1,
+            "downloadUrl": "https://github.com/jasp-stats-modules/jaspDistributions/releases/download/0.95.5_88171705_R-4-5-1_Beta/jaspDistributions_0.95.5_Flatpak_x86_64_R-4-5-1.JASPModule",
+            "downloadCount": 0,
+            "architecture": "Flatpak_x86_64"
+          },
+          {
+            "downloadUrl": "https://github.com/jasp-stats-modules/jaspDistributions/releases/download/0.95.5_88171705_R-4-5-1_Beta/jaspDistributions_0.95.5_MacOS_arm64_R-4-5-1.JASPModule",
+            "downloadCount": 3,
             "architecture": "MacOS_arm64"
           },
           {
-            "downloadUrl": "https://github.com/jasp-stats-modules/jaspDistributions/releases/download/0.95.5_93d45734_R-4-5-1_Beta/jaspDistributions_0.95.5_MacOS_x86_64_R-4-5-1.JASPModule",
-            "downloadCount": 0,
+            "downloadUrl": "https://github.com/jasp-stats-modules/jaspDistributions/releases/download/0.95.5_88171705_R-4-5-1_Beta/jaspDistributions_0.95.5_MacOS_x86_64_R-4-5-1.JASPModule",
+            "downloadCount": 1,
             "architecture": "MacOS_x86_64"
           },
           {
-            "downloadUrl": "https://github.com/jasp-stats-modules/jaspDistributions/releases/download/0.95.5_93d45734_R-4-5-1_Beta/jaspDistributions_0.95.5_Windows_x86-64_R-4-5-1.JASPModule",
-            "downloadCount": 0,
+            "downloadUrl": "https://github.com/jasp-stats-modules/jaspDistributions/releases/download/0.95.5_88171705_R-4-5-1_Beta/jaspDistributions_0.95.5_Windows_x86-64_R-4-5-1.JASPModule",
+            "downloadCount": 1,
             "architecture": "Windows_x86-64"
           }
         ]
@@ -707,17 +747,17 @@
           },
           {
             "downloadUrl": "https://github.com/jasp-stats-modules/jaspEquivalenceTTests/releases/download/0.95.5_06cbae0e_R-4-5-1_Release/jaspEquivalenceTTests_0.95.5_MacOS_arm64_R-4-5-1.JASPModule",
-            "downloadCount": 4,
+            "downloadCount": 11,
             "architecture": "MacOS_arm64"
           },
           {
             "downloadUrl": "https://github.com/jasp-stats-modules/jaspEquivalenceTTests/releases/download/0.95.5_06cbae0e_R-4-5-1_Release/jaspEquivalenceTTests_0.95.5_MacOS_x86_64_R-4-5-1.JASPModule",
-            "downloadCount": 1,
+            "downloadCount": 2,
             "architecture": "MacOS_x86_64"
           },
           {
             "downloadUrl": "https://github.com/jasp-stats-modules/jaspEquivalenceTTests/releases/download/0.95.5_06cbae0e_R-4-5-1_Release/jaspEquivalenceTTests_0.95.5_Windows_x86-64_R-4-5-1.JASPModule",
-            "downloadCount": 1,
+            "downloadCount": 5,
             "architecture": "Windows_x86-64"
           }
         ]
@@ -725,23 +765,28 @@
     ],
     "preReleases": [
       {
-        "publishedAt": "2025-10-22T15:31:34Z",
+        "publishedAt": "2025-11-13T13:12:48Z",
         "jaspVersionRange": ">=0.95.1",
         "version": "0.95.5",
         "assets": [
           {
-            "downloadUrl": "https://github.com/jasp-stats-modules/jaspEquivalenceTTests/releases/download/0.95.5_06cbae0e_R-4-5-1_Beta/jaspEquivalenceTTests_0.95.5_MacOS_arm64_R-4-5-1.JASPModule",
-            "downloadCount": 1,
+            "downloadUrl": "https://github.com/jasp-stats-modules/jaspEquivalenceTTests/releases/download/0.95.5_b1b95cbb_R-4-5-1_Beta/jaspEquivalenceTTests_0.95.5_Flatpak_x86_64_R-4-5-1.JASPModule",
+            "downloadCount": 0,
+            "architecture": "Flatpak_x86_64"
+          },
+          {
+            "downloadUrl": "https://github.com/jasp-stats-modules/jaspEquivalenceTTests/releases/download/0.95.5_b1b95cbb_R-4-5-1_Beta/jaspEquivalenceTTests_0.95.5_MacOS_arm64_R-4-5-1.JASPModule",
+            "downloadCount": 3,
             "architecture": "MacOS_arm64"
           },
           {
-            "downloadUrl": "https://github.com/jasp-stats-modules/jaspEquivalenceTTests/releases/download/0.95.5_06cbae0e_R-4-5-1_Beta/jaspEquivalenceTTests_0.95.5_MacOS_x86_64_R-4-5-1.JASPModule",
-            "downloadCount": 0,
+            "downloadUrl": "https://github.com/jasp-stats-modules/jaspEquivalenceTTests/releases/download/0.95.5_b1b95cbb_R-4-5-1_Beta/jaspEquivalenceTTests_0.95.5_MacOS_x86_64_R-4-5-1.JASPModule",
+            "downloadCount": 1,
             "architecture": "MacOS_x86_64"
           },
           {
-            "downloadUrl": "https://github.com/jasp-stats-modules/jaspEquivalenceTTests/releases/download/0.95.5_06cbae0e_R-4-5-1_Beta/jaspEquivalenceTTests_0.95.5_Windows_x86-64_R-4-5-1.JASPModule",
-            "downloadCount": 0,
+            "downloadUrl": "https://github.com/jasp-stats-modules/jaspEquivalenceTTests/releases/download/0.95.5_b1b95cbb_R-4-5-1_Beta/jaspEquivalenceTTests_0.95.5_Windows_x86-64_R-4-5-1.JASPModule",
+            "downloadCount": 1,
             "architecture": "Windows_x86-64"
           }
         ]
@@ -764,22 +809,22 @@
         "assets": [
           {
             "downloadUrl": "https://github.com/jasp-stats-modules/jaspEsci/releases/download/0.95.5_9939ebda_R-4-5-1_Release/jaspEsci_0.95.5_Flatpak_x86_64_R-4-5-1.JASPModule",
-            "downloadCount": 0,
+            "downloadCount": 1,
             "architecture": "Flatpak_x86_64"
           },
           {
             "downloadUrl": "https://github.com/jasp-stats-modules/jaspEsci/releases/download/0.95.5_9939ebda_R-4-5-1_Release/jaspEsci_0.95.5_MacOS_arm64_R-4-5-1.JASPModule",
-            "downloadCount": 5,
+            "downloadCount": 13,
             "architecture": "MacOS_arm64"
           },
           {
             "downloadUrl": "https://github.com/jasp-stats-modules/jaspEsci/releases/download/0.95.5_9939ebda_R-4-5-1_Release/jaspEsci_0.95.5_MacOS_x86_64_R-4-5-1.JASPModule",
-            "downloadCount": 1,
+            "downloadCount": 3,
             "architecture": "MacOS_x86_64"
           },
           {
             "downloadUrl": "https://github.com/jasp-stats-modules/jaspEsci/releases/download/0.95.5_9939ebda_R-4-5-1_Release/jaspEsci_0.95.5_Windows_x86-64_R-4-5-1.JASPModule",
-            "downloadCount": 1,
+            "downloadCount": 6,
             "architecture": "Windows_x86-64"
           }
         ]
@@ -831,17 +876,17 @@
           },
           {
             "downloadUrl": "https://github.com/jasp-stats-modules/jaspFactor/releases/download/0.95.5_febb2611_R-4-5-1_Release/jaspFactor_0.95.5_MacOS_arm64_R-4-5-1.JASPModule",
-            "downloadCount": 5,
+            "downloadCount": 12,
             "architecture": "MacOS_arm64"
           },
           {
             "downloadUrl": "https://github.com/jasp-stats-modules/jaspFactor/releases/download/0.95.5_febb2611_R-4-5-1_Release/jaspFactor_0.95.5_MacOS_x86_64_R-4-5-1.JASPModule",
-            "downloadCount": 1,
+            "downloadCount": 2,
             "architecture": "MacOS_x86_64"
           },
           {
             "downloadUrl": "https://github.com/jasp-stats-modules/jaspFactor/releases/download/0.95.5_febb2611_R-4-5-1_Release/jaspFactor_0.95.5_Windows_x86-64_R-4-5-1.JASPModule",
-            "downloadCount": 1,
+            "downloadCount": 5,
             "architecture": "Windows_x86-64"
           }
         ]
@@ -849,28 +894,28 @@
     ],
     "preReleases": [
       {
-        "publishedAt": "2025-10-22T15:08:12Z",
+        "publishedAt": "2025-11-13T12:45:38Z",
         "jaspVersionRange": ">=0.95.1",
         "version": "0.95.5",
         "assets": [
           {
-            "downloadUrl": "https://github.com/jasp-stats-modules/jaspFactor/releases/download/0.95.5_febb2611_R-4-5-1_Beta/jaspFactor_0.95.5_Flatpak_x86_64_R-4-5-1.JASPModule",
+            "downloadUrl": "https://github.com/jasp-stats-modules/jaspFactor/releases/download/0.95.5_334ccc9a_R-4-5-1_Beta/jaspFactor_0.95.5_Flatpak_x86_64_R-4-5-1.JASPModule",
             "downloadCount": 0,
             "architecture": "Flatpak_x86_64"
           },
           {
-            "downloadUrl": "https://github.com/jasp-stats-modules/jaspFactor/releases/download/0.95.5_febb2611_R-4-5-1_Beta/jaspFactor_0.95.5_MacOS_arm64_R-4-5-1.JASPModule",
-            "downloadCount": 1,
+            "downloadUrl": "https://github.com/jasp-stats-modules/jaspFactor/releases/download/0.95.5_334ccc9a_R-4-5-1_Beta/jaspFactor_0.95.5_MacOS_arm64_R-4-5-1.JASPModule",
+            "downloadCount": 2,
             "architecture": "MacOS_arm64"
           },
           {
-            "downloadUrl": "https://github.com/jasp-stats-modules/jaspFactor/releases/download/0.95.5_febb2611_R-4-5-1_Beta/jaspFactor_0.95.5_MacOS_x86_64_R-4-5-1.JASPModule",
-            "downloadCount": 0,
+            "downloadUrl": "https://github.com/jasp-stats-modules/jaspFactor/releases/download/0.95.5_334ccc9a_R-4-5-1_Beta/jaspFactor_0.95.5_MacOS_x86_64_R-4-5-1.JASPModule",
+            "downloadCount": 1,
             "architecture": "MacOS_x86_64"
           },
           {
-            "downloadUrl": "https://github.com/jasp-stats-modules/jaspFactor/releases/download/0.95.5_febb2611_R-4-5-1_Beta/jaspFactor_0.95.5_Windows_x86-64_R-4-5-1.JASPModule",
-            "downloadCount": 0,
+            "downloadUrl": "https://github.com/jasp-stats-modules/jaspFactor/releases/download/0.95.5_334ccc9a_R-4-5-1_Beta/jaspFactor_0.95.5_Windows_x86-64_R-4-5-1.JASPModule",
+            "downloadCount": 1,
             "architecture": "Windows_x86-64"
           }
         ]
@@ -898,17 +943,17 @@
           },
           {
             "downloadUrl": "https://github.com/jasp-stats-modules/jaspFrequencies/releases/download/0.95.5_9ff9e991_R-4-5-1_Release/jaspFrequencies_0.95.5_MacOS_arm64_R-4-5-1.JASPModule",
-            "downloadCount": 5,
+            "downloadCount": 12,
             "architecture": "MacOS_arm64"
           },
           {
             "downloadUrl": "https://github.com/jasp-stats-modules/jaspFrequencies/releases/download/0.95.5_9ff9e991_R-4-5-1_Release/jaspFrequencies_0.95.5_MacOS_x86_64_R-4-5-1.JASPModule",
-            "downloadCount": 1,
+            "downloadCount": 2,
             "architecture": "MacOS_x86_64"
           },
           {
             "downloadUrl": "https://github.com/jasp-stats-modules/jaspFrequencies/releases/download/0.95.5_9ff9e991_R-4-5-1_Release/jaspFrequencies_0.95.5_Windows_x86-64_R-4-5-1.JASPModule",
-            "downloadCount": 1,
+            "downloadCount": 6,
             "architecture": "Windows_x86-64"
           }
         ]
@@ -916,28 +961,28 @@
     ],
     "preReleases": [
       {
-        "publishedAt": "2025-10-22T15:09:30Z",
+        "publishedAt": "2025-11-13T12:46:54Z",
         "jaspVersionRange": ">=0.95.1",
         "version": "0.95.5",
         "assets": [
           {
-            "downloadUrl": "https://github.com/jasp-stats-modules/jaspFrequencies/releases/download/0.95.5_9ff9e991_R-4-5-1_Beta/jaspFrequencies_0.95.5_Flatpak_x86_64_R-4-5-1.JASPModule",
+            "downloadUrl": "https://github.com/jasp-stats-modules/jaspFrequencies/releases/download/0.95.5_0c38032c_R-4-5-1_Beta/jaspFrequencies_0.95.5_Flatpak_x86_64_R-4-5-1.JASPModule",
             "downloadCount": 0,
             "architecture": "Flatpak_x86_64"
           },
           {
-            "downloadUrl": "https://github.com/jasp-stats-modules/jaspFrequencies/releases/download/0.95.5_9ff9e991_R-4-5-1_Beta/jaspFrequencies_0.95.5_MacOS_arm64_R-4-5-1.JASPModule",
-            "downloadCount": 1,
+            "downloadUrl": "https://github.com/jasp-stats-modules/jaspFrequencies/releases/download/0.95.5_0c38032c_R-4-5-1_Beta/jaspFrequencies_0.95.5_MacOS_arm64_R-4-5-1.JASPModule",
+            "downloadCount": 2,
             "architecture": "MacOS_arm64"
           },
           {
-            "downloadUrl": "https://github.com/jasp-stats-modules/jaspFrequencies/releases/download/0.95.5_9ff9e991_R-4-5-1_Beta/jaspFrequencies_0.95.5_MacOS_x86_64_R-4-5-1.JASPModule",
-            "downloadCount": 0,
+            "downloadUrl": "https://github.com/jasp-stats-modules/jaspFrequencies/releases/download/0.95.5_0c38032c_R-4-5-1_Beta/jaspFrequencies_0.95.5_MacOS_x86_64_R-4-5-1.JASPModule",
+            "downloadCount": 1,
             "architecture": "MacOS_x86_64"
           },
           {
-            "downloadUrl": "https://github.com/jasp-stats-modules/jaspFrequencies/releases/download/0.95.5_9ff9e991_R-4-5-1_Beta/jaspFrequencies_0.95.5_Windows_x86-64_R-4-5-1.JASPModule",
-            "downloadCount": 0,
+            "downloadUrl": "https://github.com/jasp-stats-modules/jaspFrequencies/releases/download/0.95.5_0c38032c_R-4-5-1_Beta/jaspFrequencies_0.95.5_Windows_x86-64_R-4-5-1.JASPModule",
+            "downloadCount": 1,
             "architecture": "Windows_x86-64"
           }
         ]
@@ -960,22 +1005,22 @@
         "assets": [
           {
             "downloadUrl": "https://github.com/jasp-stats-modules/jaspJags/releases/download/0.95.5_13046f14_R-4-5-1_Release/jaspJags_0.95.5_Flatpak_x86_64_R-4-5-1.JASPModule",
-            "downloadCount": 0,
+            "downloadCount": 1,
             "architecture": "Flatpak_x86_64"
           },
           {
             "downloadUrl": "https://github.com/jasp-stats-modules/jaspJags/releases/download/0.95.5_13046f14_R-4-5-1_Release/jaspJags_0.95.5_MacOS_arm64_R-4-5-1.JASPModule",
-            "downloadCount": 5,
+            "downloadCount": 12,
             "architecture": "MacOS_arm64"
           },
           {
             "downloadUrl": "https://github.com/jasp-stats-modules/jaspJags/releases/download/0.95.5_13046f14_R-4-5-1_Release/jaspJags_0.95.5_MacOS_x86_64_R-4-5-1.JASPModule",
-            "downloadCount": 1,
+            "downloadCount": 2,
             "architecture": "MacOS_x86_64"
           },
           {
             "downloadUrl": "https://github.com/jasp-stats-modules/jaspJags/releases/download/0.95.5_13046f14_R-4-5-1_Release/jaspJags_0.95.5_Windows_x86-64_R-4-5-1.JASPModule",
-            "downloadCount": 1,
+            "downloadCount": 5,
             "architecture": "Windows_x86-64"
           }
         ]
@@ -983,23 +1028,28 @@
     ],
     "preReleases": [
       {
-        "publishedAt": "2025-10-22T15:33:25Z",
+        "publishedAt": "2025-11-13T13:13:33Z",
         "jaspVersionRange": ">=0.95.1",
         "version": "0.95.5",
         "assets": [
           {
-            "downloadUrl": "https://github.com/jasp-stats-modules/jaspJags/releases/download/0.95.5_13046f14_R-4-5-1_Beta/jaspJags_0.95.5_MacOS_arm64_R-4-5-1.JASPModule",
-            "downloadCount": 1,
+            "downloadUrl": "https://github.com/jasp-stats-modules/jaspJags/releases/download/0.95.5_c7785a64_R-4-5-1_Beta/jaspJags_0.95.5_Flatpak_x86_64_R-4-5-1.JASPModule",
+            "downloadCount": 0,
+            "architecture": "Flatpak_x86_64"
+          },
+          {
+            "downloadUrl": "https://github.com/jasp-stats-modules/jaspJags/releases/download/0.95.5_c7785a64_R-4-5-1_Beta/jaspJags_0.95.5_MacOS_arm64_R-4-5-1.JASPModule",
+            "downloadCount": 3,
             "architecture": "MacOS_arm64"
           },
           {
-            "downloadUrl": "https://github.com/jasp-stats-modules/jaspJags/releases/download/0.95.5_13046f14_R-4-5-1_Beta/jaspJags_0.95.5_MacOS_x86_64_R-4-5-1.JASPModule",
-            "downloadCount": 0,
+            "downloadUrl": "https://github.com/jasp-stats-modules/jaspJags/releases/download/0.95.5_c7785a64_R-4-5-1_Beta/jaspJags_0.95.5_MacOS_x86_64_R-4-5-1.JASPModule",
+            "downloadCount": 1,
             "architecture": "MacOS_x86_64"
           },
           {
-            "downloadUrl": "https://github.com/jasp-stats-modules/jaspJags/releases/download/0.95.5_13046f14_R-4-5-1_Beta/jaspJags_0.95.5_Windows_x86-64_R-4-5-1.JASPModule",
-            "downloadCount": 0,
+            "downloadUrl": "https://github.com/jasp-stats-modules/jaspJags/releases/download/0.95.5_c7785a64_R-4-5-1_Beta/jaspJags_0.95.5_Windows_x86-64_R-4-5-1.JASPModule",
+            "downloadCount": 1,
             "architecture": "Windows_x86-64"
           }
         ]
@@ -1027,17 +1077,17 @@
           },
           {
             "downloadUrl": "https://github.com/jasp-stats-modules/jaspLearnBayes/releases/download/0.95.5_7d8e14a7_R-4-5-1_Release/jaspLearnBayes_0.95.5_MacOS_arm64_R-4-5-1.JASPModule",
-            "downloadCount": 5,
+            "downloadCount": 12,
             "architecture": "MacOS_arm64"
           },
           {
             "downloadUrl": "https://github.com/jasp-stats-modules/jaspLearnBayes/releases/download/0.95.5_7d8e14a7_R-4-5-1_Release/jaspLearnBayes_0.95.5_MacOS_x86_64_R-4-5-1.JASPModule",
-            "downloadCount": 1,
+            "downloadCount": 2,
             "architecture": "MacOS_x86_64"
           },
           {
             "downloadUrl": "https://github.com/jasp-stats-modules/jaspLearnBayes/releases/download/0.95.5_7d8e14a7_R-4-5-1_Release/jaspLearnBayes_0.95.5_Windows_x86-64_R-4-5-1.JASPModule",
-            "downloadCount": 1,
+            "downloadCount": 6,
             "architecture": "Windows_x86-64"
           }
         ]
@@ -1045,23 +1095,28 @@
     ],
     "preReleases": [
       {
-        "publishedAt": "2025-10-22T15:34:27Z",
+        "publishedAt": "2025-11-13T13:14:30Z",
         "jaspVersionRange": ">=0.95.1",
         "version": "0.95.5",
         "assets": [
           {
-            "downloadUrl": "https://github.com/jasp-stats-modules/jaspLearnBayes/releases/download/0.95.5_7d8e14a7_R-4-5-1_Beta/jaspLearnBayes_0.95.5_MacOS_arm64_R-4-5-1.JASPModule",
+            "downloadUrl": "https://github.com/jasp-stats-modules/jaspLearnBayes/releases/download/0.95.5_f234df30_R-4-5-1_Beta/jaspLearnBayes_0.95.5_Flatpak_x86_64_R-4-5-1.JASPModule",
             "downloadCount": 0,
+            "architecture": "Flatpak_x86_64"
+          },
+          {
+            "downloadUrl": "https://github.com/jasp-stats-modules/jaspLearnBayes/releases/download/0.95.5_f234df30_R-4-5-1_Beta/jaspLearnBayes_0.95.5_MacOS_arm64_R-4-5-1.JASPModule",
+            "downloadCount": 3,
             "architecture": "MacOS_arm64"
           },
           {
-            "downloadUrl": "https://github.com/jasp-stats-modules/jaspLearnBayes/releases/download/0.95.5_7d8e14a7_R-4-5-1_Beta/jaspLearnBayes_0.95.5_MacOS_x86_64_R-4-5-1.JASPModule",
-            "downloadCount": 0,
+            "downloadUrl": "https://github.com/jasp-stats-modules/jaspLearnBayes/releases/download/0.95.5_f234df30_R-4-5-1_Beta/jaspLearnBayes_0.95.5_MacOS_x86_64_R-4-5-1.JASPModule",
+            "downloadCount": 1,
             "architecture": "MacOS_x86_64"
           },
           {
-            "downloadUrl": "https://github.com/jasp-stats-modules/jaspLearnBayes/releases/download/0.95.5_7d8e14a7_R-4-5-1_Beta/jaspLearnBayes_0.95.5_Windows_x86-64_R-4-5-1.JASPModule",
-            "downloadCount": 0,
+            "downloadUrl": "https://github.com/jasp-stats-modules/jaspLearnBayes/releases/download/0.95.5_f234df30_R-4-5-1_Beta/jaspLearnBayes_0.95.5_Windows_x86-64_R-4-5-1.JASPModule",
+            "downloadCount": 1,
             "architecture": "Windows_x86-64"
           }
         ]
@@ -1089,17 +1144,17 @@
           },
           {
             "downloadUrl": "https://github.com/jasp-stats-modules/jaspLearnStats/releases/download/0.95.5_d98307c7_R-4-5-1_Release/jaspLearnStats_0.95.5_MacOS_arm64_R-4-5-1.JASPModule",
-            "downloadCount": 4,
+            "downloadCount": 11,
             "architecture": "MacOS_arm64"
           },
           {
             "downloadUrl": "https://github.com/jasp-stats-modules/jaspLearnStats/releases/download/0.95.5_d98307c7_R-4-5-1_Release/jaspLearnStats_0.95.5_MacOS_x86_64_R-4-5-1.JASPModule",
-            "downloadCount": 1,
+            "downloadCount": 2,
             "architecture": "MacOS_x86_64"
           },
           {
             "downloadUrl": "https://github.com/jasp-stats-modules/jaspLearnStats/releases/download/0.95.5_d98307c7_R-4-5-1_Release/jaspLearnStats_0.95.5_Windows_x86-64_R-4-5-1.JASPModule",
-            "downloadCount": 1,
+            "downloadCount": 7,
             "architecture": "Windows_x86-64"
           }
         ]
@@ -1107,23 +1162,28 @@
     ],
     "preReleases": [
       {
-        "publishedAt": "2025-10-22T15:36:31Z",
+        "publishedAt": "2025-11-13T13:16:29Z",
         "jaspVersionRange": ">=0.95.1",
         "version": "0.95.5",
         "assets": [
           {
-            "downloadUrl": "https://github.com/jasp-stats-modules/jaspLearnStats/releases/download/0.95.5_d98307c7_R-4-5-1_Beta/jaspLearnStats_0.95.5_MacOS_arm64_R-4-5-1.JASPModule",
-            "downloadCount": 1,
+            "downloadUrl": "https://github.com/jasp-stats-modules/jaspLearnStats/releases/download/0.95.5_2943b85b_R-4-5-1_Beta/jaspLearnStats_0.95.5_Flatpak_x86_64_R-4-5-1.JASPModule",
+            "downloadCount": 0,
+            "architecture": "Flatpak_x86_64"
+          },
+          {
+            "downloadUrl": "https://github.com/jasp-stats-modules/jaspLearnStats/releases/download/0.95.5_2943b85b_R-4-5-1_Beta/jaspLearnStats_0.95.5_MacOS_arm64_R-4-5-1.JASPModule",
+            "downloadCount": 3,
             "architecture": "MacOS_arm64"
           },
           {
-            "downloadUrl": "https://github.com/jasp-stats-modules/jaspLearnStats/releases/download/0.95.5_d98307c7_R-4-5-1_Beta/jaspLearnStats_0.95.5_MacOS_x86_64_R-4-5-1.JASPModule",
-            "downloadCount": 0,
+            "downloadUrl": "https://github.com/jasp-stats-modules/jaspLearnStats/releases/download/0.95.5_2943b85b_R-4-5-1_Beta/jaspLearnStats_0.95.5_MacOS_x86_64_R-4-5-1.JASPModule",
+            "downloadCount": 1,
             "architecture": "MacOS_x86_64"
           },
           {
-            "downloadUrl": "https://github.com/jasp-stats-modules/jaspLearnStats/releases/download/0.95.5_d98307c7_R-4-5-1_Beta/jaspLearnStats_0.95.5_Windows_x86-64_R-4-5-1.JASPModule",
-            "downloadCount": 0,
+            "downloadUrl": "https://github.com/jasp-stats-modules/jaspLearnStats/releases/download/0.95.5_2943b85b_R-4-5-1_Beta/jaspLearnStats_0.95.5_Windows_x86-64_R-4-5-1.JASPModule",
+            "downloadCount": 1,
             "architecture": "Windows_x86-64"
           }
         ]
@@ -1146,22 +1206,22 @@
         "assets": [
           {
             "downloadUrl": "https://github.com/jasp-stats-modules/jaspMachineLearning/releases/download/0.95.5_6e356712_R-4-5-1_Release/jaspMachineLearning_0.95.5_Flatpak_x86_64_R-4-5-1.JASPModule",
-            "downloadCount": 1,
+            "downloadCount": 2,
             "architecture": "Flatpak_x86_64"
           },
           {
             "downloadUrl": "https://github.com/jasp-stats-modules/jaspMachineLearning/releases/download/0.95.5_6e356712_R-4-5-1_Release/jaspMachineLearning_0.95.5_MacOS_arm64_R-4-5-1.JASPModule",
-            "downloadCount": 5,
+            "downloadCount": 12,
             "architecture": "MacOS_arm64"
           },
           {
             "downloadUrl": "https://github.com/jasp-stats-modules/jaspMachineLearning/releases/download/0.95.5_6e356712_R-4-5-1_Release/jaspMachineLearning_0.95.5_MacOS_x86_64_R-4-5-1.JASPModule",
-            "downloadCount": 1,
+            "downloadCount": 2,
             "architecture": "MacOS_x86_64"
           },
           {
             "downloadUrl": "https://github.com/jasp-stats-modules/jaspMachineLearning/releases/download/0.95.5_6e356712_R-4-5-1_Release/jaspMachineLearning_0.95.5_Windows_x86-64_R-4-5-1.JASPModule",
-            "downloadCount": 1,
+            "downloadCount": 7,
             "architecture": "Windows_x86-64"
           }
         ]
@@ -1169,23 +1229,28 @@
     ],
     "preReleases": [
       {
-        "publishedAt": "2025-10-22T15:38:04Z",
+        "publishedAt": "2025-11-13T13:18:03Z",
         "jaspVersionRange": ">=0.95.1",
         "version": "0.95.5",
         "assets": [
           {
-            "downloadUrl": "https://github.com/jasp-stats-modules/jaspMachineLearning/releases/download/0.95.5_6e356712_R-4-5-1_Beta/jaspMachineLearning_0.95.5_MacOS_arm64_R-4-5-1.JASPModule",
+            "downloadUrl": "https://github.com/jasp-stats-modules/jaspMachineLearning/releases/download/0.95.5_7d2a62bd_R-4-5-1_Beta/jaspMachineLearning_0.95.5_Flatpak_x86_64_R-4-5-1.JASPModule",
             "downloadCount": 1,
+            "architecture": "Flatpak_x86_64"
+          },
+          {
+            "downloadUrl": "https://github.com/jasp-stats-modules/jaspMachineLearning/releases/download/0.95.5_7d2a62bd_R-4-5-1_Beta/jaspMachineLearning_0.95.5_MacOS_arm64_R-4-5-1.JASPModule",
+            "downloadCount": 3,
             "architecture": "MacOS_arm64"
           },
           {
-            "downloadUrl": "https://github.com/jasp-stats-modules/jaspMachineLearning/releases/download/0.95.5_6e356712_R-4-5-1_Beta/jaspMachineLearning_0.95.5_MacOS_x86_64_R-4-5-1.JASPModule",
-            "downloadCount": 0,
+            "downloadUrl": "https://github.com/jasp-stats-modules/jaspMachineLearning/releases/download/0.95.5_7d2a62bd_R-4-5-1_Beta/jaspMachineLearning_0.95.5_MacOS_x86_64_R-4-5-1.JASPModule",
+            "downloadCount": 1,
             "architecture": "MacOS_x86_64"
           },
           {
-            "downloadUrl": "https://github.com/jasp-stats-modules/jaspMachineLearning/releases/download/0.95.5_6e356712_R-4-5-1_Beta/jaspMachineLearning_0.95.5_Windows_x86-64_R-4-5-1.JASPModule",
-            "downloadCount": 0,
+            "downloadUrl": "https://github.com/jasp-stats-modules/jaspMachineLearning/releases/download/0.95.5_7d2a62bd_R-4-5-1_Beta/jaspMachineLearning_0.95.5_Windows_x86-64_R-4-5-1.JASPModule",
+            "downloadCount": 1,
             "architecture": "Windows_x86-64"
           }
         ]
@@ -1213,17 +1278,17 @@
           },
           {
             "downloadUrl": "https://github.com/jasp-stats-modules/jaspMetaAnalysis/releases/download/0.95.5_ef747570_R-4-5-1_Release/jaspMetaAnalysis_0.95.5_MacOS_arm64_R-4-5-1.JASPModule",
-            "downloadCount": 4,
+            "downloadCount": 11,
             "architecture": "MacOS_arm64"
           },
           {
             "downloadUrl": "https://github.com/jasp-stats-modules/jaspMetaAnalysis/releases/download/0.95.5_ef747570_R-4-5-1_Release/jaspMetaAnalysis_0.95.5_MacOS_x86_64_R-4-5-1.JASPModule",
-            "downloadCount": 1,
+            "downloadCount": 2,
             "architecture": "MacOS_x86_64"
           },
           {
             "downloadUrl": "https://github.com/jasp-stats-modules/jaspMetaAnalysis/releases/download/0.95.5_ef747570_R-4-5-1_Release/jaspMetaAnalysis_0.95.5_Windows_x86-64_R-4-5-1.JASPModule",
-            "downloadCount": 1,
+            "downloadCount": 5,
             "architecture": "Windows_x86-64"
           }
         ]
@@ -1231,23 +1296,28 @@
     ],
     "preReleases": [
       {
-        "publishedAt": "2025-10-22T15:41:09Z",
+        "publishedAt": "2025-11-13T13:20:59Z",
         "jaspVersionRange": ">=0.95.1",
         "version": "0.95.5",
         "assets": [
           {
-            "downloadUrl": "https://github.com/jasp-stats-modules/jaspMetaAnalysis/releases/download/0.95.5_ef747570_R-4-5-1_Beta/jaspMetaAnalysis_0.95.5_MacOS_arm64_R-4-5-1.JASPModule",
-            "downloadCount": 1,
+            "downloadUrl": "https://github.com/jasp-stats-modules/jaspMetaAnalysis/releases/download/0.95.5_338cad8d_R-4-5-1_Beta/jaspMetaAnalysis_0.95.5_Flatpak_x86_64_R-4-5-1.JASPModule",
+            "downloadCount": 0,
+            "architecture": "Flatpak_x86_64"
+          },
+          {
+            "downloadUrl": "https://github.com/jasp-stats-modules/jaspMetaAnalysis/releases/download/0.95.5_338cad8d_R-4-5-1_Beta/jaspMetaAnalysis_0.95.5_MacOS_arm64_R-4-5-1.JASPModule",
+            "downloadCount": 2,
             "architecture": "MacOS_arm64"
           },
           {
-            "downloadUrl": "https://github.com/jasp-stats-modules/jaspMetaAnalysis/releases/download/0.95.5_ef747570_R-4-5-1_Beta/jaspMetaAnalysis_0.95.5_MacOS_x86_64_R-4-5-1.JASPModule",
-            "downloadCount": 0,
+            "downloadUrl": "https://github.com/jasp-stats-modules/jaspMetaAnalysis/releases/download/0.95.5_338cad8d_R-4-5-1_Beta/jaspMetaAnalysis_0.95.5_MacOS_x86_64_R-4-5-1.JASPModule",
+            "downloadCount": 1,
             "architecture": "MacOS_x86_64"
           },
           {
-            "downloadUrl": "https://github.com/jasp-stats-modules/jaspMetaAnalysis/releases/download/0.95.5_ef747570_R-4-5-1_Beta/jaspMetaAnalysis_0.95.5_Windows_x86-64_R-4-5-1.JASPModule",
-            "downloadCount": 0,
+            "downloadUrl": "https://github.com/jasp-stats-modules/jaspMetaAnalysis/releases/download/0.95.5_338cad8d_R-4-5-1_Beta/jaspMetaAnalysis_0.95.5_Windows_x86-64_R-4-5-1.JASPModule",
+            "downloadCount": 1,
             "architecture": "Windows_x86-64"
           }
         ]
@@ -1275,17 +1345,17 @@
           },
           {
             "downloadUrl": "https://github.com/jasp-stats-modules/jaspMixedModels/releases/download/0.95.5_e3105684_R-4-5-1_Release/jaspMixedModels_0.95.5_MacOS_arm64_R-4-5-1.JASPModule",
-            "downloadCount": 4,
+            "downloadCount": 11,
             "architecture": "MacOS_arm64"
           },
           {
             "downloadUrl": "https://github.com/jasp-stats-modules/jaspMixedModels/releases/download/0.95.5_e3105684_R-4-5-1_Release/jaspMixedModels_0.95.5_MacOS_x86_64_R-4-5-1.JASPModule",
-            "downloadCount": 1,
+            "downloadCount": 2,
             "architecture": "MacOS_x86_64"
           },
           {
             "downloadUrl": "https://github.com/jasp-stats-modules/jaspMixedModels/releases/download/0.95.5_e3105684_R-4-5-1_Release/jaspMixedModels_0.95.5_Windows_x86-64_R-4-5-1.JASPModule",
-            "downloadCount": 1,
+            "downloadCount": 6,
             "architecture": "Windows_x86-64"
           }
         ]
@@ -1293,23 +1363,23 @@
     ],
     "preReleases": [
       {
-        "publishedAt": "2025-10-22T15:11:46Z",
+        "publishedAt": "2025-11-13T12:50:12Z",
         "jaspVersionRange": ">=0.95.1",
         "version": "0.95.5",
         "assets": [
           {
-            "downloadUrl": "https://github.com/jasp-stats-modules/jaspMixedModels/releases/download/0.95.5_e3105684_R-4-5-1_Beta/jaspMixedModels_0.95.5_MacOS_arm64_R-4-5-1.JASPModule",
-            "downloadCount": 1,
+            "downloadUrl": "https://github.com/jasp-stats-modules/jaspMixedModels/releases/download/0.95.5_fafc0791_R-4-5-1_Beta/jaspMixedModels_0.95.5_Flatpak_x86_64_R-4-5-1.JASPModule",
+            "downloadCount": 0,
+            "architecture": "Flatpak_x86_64"
+          },
+          {
+            "downloadUrl": "https://github.com/jasp-stats-modules/jaspMixedModels/releases/download/0.95.5_fafc0791_R-4-5-1_Beta/jaspMixedModels_0.95.5_MacOS_arm64_R-4-5-1.JASPModule",
+            "downloadCount": 2,
             "architecture": "MacOS_arm64"
           },
           {
-            "downloadUrl": "https://github.com/jasp-stats-modules/jaspMixedModels/releases/download/0.95.5_e3105684_R-4-5-1_Beta/jaspMixedModels_0.95.5_MacOS_x86_64_R-4-5-1.JASPModule",
-            "downloadCount": 0,
-            "architecture": "MacOS_x86_64"
-          },
-          {
-            "downloadUrl": "https://github.com/jasp-stats-modules/jaspMixedModels/releases/download/0.95.5_e3105684_R-4-5-1_Beta/jaspMixedModels_0.95.5_Windows_x86-64_R-4-5-1.JASPModule",
-            "downloadCount": 0,
+            "downloadUrl": "https://github.com/jasp-stats-modules/jaspMixedModels/releases/download/0.95.5_fafc0791_R-4-5-1_Beta/jaspMixedModels_0.95.5_Windows_x86-64_R-4-5-1.JASPModule",
+            "downloadCount": 1,
             "architecture": "Windows_x86-64"
           }
         ]
@@ -1337,17 +1407,17 @@
           },
           {
             "downloadUrl": "https://github.com/jasp-stats-modules/jaspNetwork/releases/download/0.95.5_48abe2f1_R-4-5-1_Release/jaspNetwork_0.95.5_MacOS_arm64_R-4-5-1.JASPModule",
-            "downloadCount": 5,
+            "downloadCount": 13,
             "architecture": "MacOS_arm64"
           },
           {
             "downloadUrl": "https://github.com/jasp-stats-modules/jaspNetwork/releases/download/0.95.5_48abe2f1_R-4-5-1_Release/jaspNetwork_0.95.5_MacOS_x86_64_R-4-5-1.JASPModule",
-            "downloadCount": 1,
+            "downloadCount": 3,
             "architecture": "MacOS_x86_64"
           },
           {
             "downloadUrl": "https://github.com/jasp-stats-modules/jaspNetwork/releases/download/0.95.5_48abe2f1_R-4-5-1_Release/jaspNetwork_0.95.5_Windows_x86-64_R-4-5-1.JASPModule",
-            "downloadCount": 1,
+            "downloadCount": 6,
             "architecture": "Windows_x86-64"
           }
         ]
@@ -1399,17 +1469,17 @@
           },
           {
             "downloadUrl": "https://github.com/jasp-stats-modules/jaspPower/releases/download/0.95.5_7119b68b_R-4-5-1_Release/jaspPower_0.95.5_MacOS_arm64_R-4-5-1.JASPModule",
-            "downloadCount": 5,
+            "downloadCount": 13,
             "architecture": "MacOS_arm64"
           },
           {
             "downloadUrl": "https://github.com/jasp-stats-modules/jaspPower/releases/download/0.95.5_7119b68b_R-4-5-1_Release/jaspPower_0.95.5_MacOS_x86_64_R-4-5-1.JASPModule",
-            "downloadCount": 1,
+            "downloadCount": 3,
             "architecture": "MacOS_x86_64"
           },
           {
             "downloadUrl": "https://github.com/jasp-stats-modules/jaspPower/releases/download/0.95.5_7119b68b_R-4-5-1_Release/jaspPower_0.95.5_Windows_x86-64_R-4-5-1.JASPModule",
-            "downloadCount": 1,
+            "downloadCount": 6,
             "architecture": "Windows_x86-64"
           }
         ]
@@ -1461,17 +1531,17 @@
           },
           {
             "downloadUrl": "https://github.com/jasp-stats-modules/jaspPredictiveAnalytics/releases/download/0.95.5_43846c9f_R-4-5-1_Release/jaspPredictiveAnalytics_0.95.5_MacOS_arm64_R-4-5-1.JASPModule",
-            "downloadCount": 5,
+            "downloadCount": 12,
             "architecture": "MacOS_arm64"
           },
           {
             "downloadUrl": "https://github.com/jasp-stats-modules/jaspPredictiveAnalytics/releases/download/0.95.5_43846c9f_R-4-5-1_Release/jaspPredictiveAnalytics_0.95.5_MacOS_x86_64_R-4-5-1.JASPModule",
-            "downloadCount": 1,
+            "downloadCount": 2,
             "architecture": "MacOS_x86_64"
           },
           {
             "downloadUrl": "https://github.com/jasp-stats-modules/jaspPredictiveAnalytics/releases/download/0.95.5_43846c9f_R-4-5-1_Release/jaspPredictiveAnalytics_0.95.5_Windows_x86-64_R-4-5-1.JASPModule",
-            "downloadCount": 1,
+            "downloadCount": 5,
             "architecture": "Windows_x86-64"
           }
         ]
@@ -1479,23 +1549,28 @@
     ],
     "preReleases": [
       {
-        "publishedAt": "2025-10-22T15:47:14Z",
+        "publishedAt": "2025-11-13T13:23:45Z",
         "jaspVersionRange": ">=0.95.1",
         "version": "0.95.5",
         "assets": [
           {
-            "downloadUrl": "https://github.com/jasp-stats-modules/jaspPredictiveAnalytics/releases/download/0.95.5_43846c9f_R-4-5-1_Beta/jaspPredictiveAnalytics_0.95.5_MacOS_arm64_R-4-5-1.JASPModule",
+            "downloadUrl": "https://github.com/jasp-stats-modules/jaspPredictiveAnalytics/releases/download/0.95.5_abf77b4a_R-4-5-1_Beta/jaspPredictiveAnalytics_0.95.5_Flatpak_x86_64_R-4-5-1.JASPModule",
             "downloadCount": 0,
+            "architecture": "Flatpak_x86_64"
+          },
+          {
+            "downloadUrl": "https://github.com/jasp-stats-modules/jaspPredictiveAnalytics/releases/download/0.95.5_abf77b4a_R-4-5-1_Beta/jaspPredictiveAnalytics_0.95.5_MacOS_arm64_R-4-5-1.JASPModule",
+            "downloadCount": 2,
             "architecture": "MacOS_arm64"
           },
           {
-            "downloadUrl": "https://github.com/jasp-stats-modules/jaspPredictiveAnalytics/releases/download/0.95.5_43846c9f_R-4-5-1_Beta/jaspPredictiveAnalytics_0.95.5_MacOS_x86_64_R-4-5-1.JASPModule",
-            "downloadCount": 0,
+            "downloadUrl": "https://github.com/jasp-stats-modules/jaspPredictiveAnalytics/releases/download/0.95.5_abf77b4a_R-4-5-1_Beta/jaspPredictiveAnalytics_0.95.5_MacOS_x86_64_R-4-5-1.JASPModule",
+            "downloadCount": 1,
             "architecture": "MacOS_x86_64"
           },
           {
-            "downloadUrl": "https://github.com/jasp-stats-modules/jaspPredictiveAnalytics/releases/download/0.95.5_43846c9f_R-4-5-1_Beta/jaspPredictiveAnalytics_0.95.5_Windows_x86-64_R-4-5-1.JASPModule",
-            "downloadCount": 0,
+            "downloadUrl": "https://github.com/jasp-stats-modules/jaspPredictiveAnalytics/releases/download/0.95.5_abf77b4a_R-4-5-1_Beta/jaspPredictiveAnalytics_0.95.5_Windows_x86-64_R-4-5-1.JASPModule",
+            "downloadCount": 1,
             "architecture": "Windows_x86-64"
           }
         ]
@@ -1518,22 +1593,22 @@
         "assets": [
           {
             "downloadUrl": "https://github.com/jasp-stats-modules/jaspProcess/releases/download/0.95.5_6ecbc4ca_R-4-5-1_Release/jaspProcess_0.95.5_Flatpak_x86_64_R-4-5-1.JASPModule",
-            "downloadCount": 0,
+            "downloadCount": 1,
             "architecture": "Flatpak_x86_64"
           },
           {
             "downloadUrl": "https://github.com/jasp-stats-modules/jaspProcess/releases/download/0.95.5_6ecbc4ca_R-4-5-1_Release/jaspProcess_0.95.5_MacOS_arm64_R-4-5-1.JASPModule",
-            "downloadCount": 5,
+            "downloadCount": 12,
             "architecture": "MacOS_arm64"
           },
           {
             "downloadUrl": "https://github.com/jasp-stats-modules/jaspProcess/releases/download/0.95.5_6ecbc4ca_R-4-5-1_Release/jaspProcess_0.95.5_MacOS_x86_64_R-4-5-1.JASPModule",
-            "downloadCount": 1,
+            "downloadCount": 2,
             "architecture": "MacOS_x86_64"
           },
           {
             "downloadUrl": "https://github.com/jasp-stats-modules/jaspProcess/releases/download/0.95.5_6ecbc4ca_R-4-5-1_Release/jaspProcess_0.95.5_Windows_x86-64_R-4-5-1.JASPModule",
-            "downloadCount": 1,
+            "downloadCount": 5,
             "architecture": "Windows_x86-64"
           }
         ]
@@ -1541,23 +1616,28 @@
     ],
     "preReleases": [
       {
-        "publishedAt": "2025-10-22T15:49:02Z",
+        "publishedAt": "2025-11-13T13:25:30Z",
         "jaspVersionRange": ">=0.95.1",
         "version": "0.95.5",
         "assets": [
           {
-            "downloadUrl": "https://github.com/jasp-stats-modules/jaspProcess/releases/download/0.95.5_6ecbc4ca_R-4-5-1_Beta/jaspProcess_0.95.5_MacOS_arm64_R-4-5-1.JASPModule",
-            "downloadCount": 1,
+            "downloadUrl": "https://github.com/jasp-stats-modules/jaspProcess/releases/download/0.95.5_e217458c_R-4-5-1_Beta/jaspProcess_0.95.5_Flatpak_x86_64_R-4-5-1.JASPModule",
+            "downloadCount": 0,
+            "architecture": "Flatpak_x86_64"
+          },
+          {
+            "downloadUrl": "https://github.com/jasp-stats-modules/jaspProcess/releases/download/0.95.5_e217458c_R-4-5-1_Beta/jaspProcess_0.95.5_MacOS_arm64_R-4-5-1.JASPModule",
+            "downloadCount": 3,
             "architecture": "MacOS_arm64"
           },
           {
-            "downloadUrl": "https://github.com/jasp-stats-modules/jaspProcess/releases/download/0.95.5_6ecbc4ca_R-4-5-1_Beta/jaspProcess_0.95.5_MacOS_x86_64_R-4-5-1.JASPModule",
-            "downloadCount": 0,
+            "downloadUrl": "https://github.com/jasp-stats-modules/jaspProcess/releases/download/0.95.5_e217458c_R-4-5-1_Beta/jaspProcess_0.95.5_MacOS_x86_64_R-4-5-1.JASPModule",
+            "downloadCount": 1,
             "architecture": "MacOS_x86_64"
           },
           {
-            "downloadUrl": "https://github.com/jasp-stats-modules/jaspProcess/releases/download/0.95.5_6ecbc4ca_R-4-5-1_Beta/jaspProcess_0.95.5_Windows_x86-64_R-4-5-1.JASPModule",
-            "downloadCount": 0,
+            "downloadUrl": "https://github.com/jasp-stats-modules/jaspProcess/releases/download/0.95.5_e217458c_R-4-5-1_Beta/jaspProcess_0.95.5_Windows_x86-64_R-4-5-1.JASPModule",
+            "downloadCount": 1,
             "architecture": "Windows_x86-64"
           }
         ]
@@ -1580,22 +1660,22 @@
         "assets": [
           {
             "downloadUrl": "https://github.com/jasp-stats-modules/jaspProphet/releases/download/0.95.5_3f0200fe_R-4-5-1_Release/jaspProphet_0.95.5_Flatpak_x86_64_R-4-5-1.JASPModule",
-            "downloadCount": 0,
+            "downloadCount": 1,
             "architecture": "Flatpak_x86_64"
           },
           {
             "downloadUrl": "https://github.com/jasp-stats-modules/jaspProphet/releases/download/0.95.5_3f0200fe_R-4-5-1_Release/jaspProphet_0.95.5_MacOS_arm64_R-4-5-1.JASPModule",
-            "downloadCount": 4,
+            "downloadCount": 12,
             "architecture": "MacOS_arm64"
           },
           {
             "downloadUrl": "https://github.com/jasp-stats-modules/jaspProphet/releases/download/0.95.5_3f0200fe_R-4-5-1_Release/jaspProphet_0.95.5_MacOS_x86_64_R-4-5-1.JASPModule",
-            "downloadCount": 1,
+            "downloadCount": 3,
             "architecture": "MacOS_x86_64"
           },
           {
             "downloadUrl": "https://github.com/jasp-stats-modules/jaspProphet/releases/download/0.95.5_3f0200fe_R-4-5-1_Release/jaspProphet_0.95.5_Windows_x86-64_R-4-5-1.JASPModule",
-            "downloadCount": 1,
+            "downloadCount": 6,
             "architecture": "Windows_x86-64"
           }
         ]
@@ -1609,7 +1689,7 @@
         "assets": [
           {
             "downloadUrl": "https://github.com/jasp-stats-modules/jaspProphet/releases/download/0.95.5_3f0200fe_R-4-5-1_Beta/jaspProphet_0.95.5_MacOS_arm64_R-4-5-1.JASPModule",
-            "downloadCount": 1,
+            "downloadCount": 2,
             "architecture": "MacOS_arm64"
           },
           {
@@ -1642,22 +1722,22 @@
         "assets": [
           {
             "downloadUrl": "https://github.com/jasp-stats-modules/jaspQualityControl/releases/download/0.95.5_7aaacf67_R-4-5-1_Release/jaspQualityControl_0.95.5_Flatpak_x86_64_R-4-5-1.JASPModule",
-            "downloadCount": 0,
+            "downloadCount": 1,
             "architecture": "Flatpak_x86_64"
           },
           {
             "downloadUrl": "https://github.com/jasp-stats-modules/jaspQualityControl/releases/download/0.95.5_7aaacf67_R-4-5-1_Release/jaspQualityControl_0.95.5_MacOS_arm64_R-4-5-1.JASPModule",
-            "downloadCount": 5,
+            "downloadCount": 12,
             "architecture": "MacOS_arm64"
           },
           {
             "downloadUrl": "https://github.com/jasp-stats-modules/jaspQualityControl/releases/download/0.95.5_7aaacf67_R-4-5-1_Release/jaspQualityControl_0.95.5_MacOS_x86_64_R-4-5-1.JASPModule",
-            "downloadCount": 1,
+            "downloadCount": 2,
             "architecture": "MacOS_x86_64"
           },
           {
             "downloadUrl": "https://github.com/jasp-stats-modules/jaspQualityControl/releases/download/0.95.5_7aaacf67_R-4-5-1_Release/jaspQualityControl_0.95.5_Windows_x86-64_R-4-5-1.JASPModule",
-            "downloadCount": 1,
+            "downloadCount": 5,
             "architecture": "Windows_x86-64"
           }
         ]
@@ -1665,23 +1745,28 @@
     ],
     "preReleases": [
       {
-        "publishedAt": "2025-10-22T15:52:28Z",
+        "publishedAt": "2025-11-13T13:27:25Z",
         "jaspVersionRange": ">=0.95.1",
         "version": "0.95.5",
         "assets": [
           {
-            "downloadUrl": "https://github.com/jasp-stats-modules/jaspQualityControl/releases/download/0.95.5_7aaacf67_R-4-5-1_Beta/jaspQualityControl_0.95.5_MacOS_arm64_R-4-5-1.JASPModule",
+            "downloadUrl": "https://github.com/jasp-stats-modules/jaspQualityControl/releases/download/0.95.5_e0767225_R-4-5-1_Beta/jaspQualityControl_0.95.5_Flatpak_x86_64_R-4-5-1.JASPModule",
             "downloadCount": 0,
+            "architecture": "Flatpak_x86_64"
+          },
+          {
+            "downloadUrl": "https://github.com/jasp-stats-modules/jaspQualityControl/releases/download/0.95.5_e0767225_R-4-5-1_Beta/jaspQualityControl_0.95.5_MacOS_arm64_R-4-5-1.JASPModule",
+            "downloadCount": 2,
             "architecture": "MacOS_arm64"
           },
           {
-            "downloadUrl": "https://github.com/jasp-stats-modules/jaspQualityControl/releases/download/0.95.5_7aaacf67_R-4-5-1_Beta/jaspQualityControl_0.95.5_MacOS_x86_64_R-4-5-1.JASPModule",
-            "downloadCount": 0,
+            "downloadUrl": "https://github.com/jasp-stats-modules/jaspQualityControl/releases/download/0.95.5_e0767225_R-4-5-1_Beta/jaspQualityControl_0.95.5_MacOS_x86_64_R-4-5-1.JASPModule",
+            "downloadCount": 1,
             "architecture": "MacOS_x86_64"
           },
           {
-            "downloadUrl": "https://github.com/jasp-stats-modules/jaspQualityControl/releases/download/0.95.5_7aaacf67_R-4-5-1_Beta/jaspQualityControl_0.95.5_Windows_x86-64_R-4-5-1.JASPModule",
-            "downloadCount": 0,
+            "downloadUrl": "https://github.com/jasp-stats-modules/jaspQualityControl/releases/download/0.95.5_e0767225_R-4-5-1_Beta/jaspQualityControl_0.95.5_Windows_x86-64_R-4-5-1.JASPModule",
+            "downloadCount": 1,
             "architecture": "Windows_x86-64"
           }
         ]
@@ -1709,17 +1794,17 @@
           },
           {
             "downloadUrl": "https://github.com/jasp-stats-modules/jaspRegression/releases/download/0.95.5_7dffe8e3_R-4-5-1_Release/jaspRegression_0.95.5_MacOS_arm64_R-4-5-1.JASPModule",
-            "downloadCount": 5,
+            "downloadCount": 12,
             "architecture": "MacOS_arm64"
           },
           {
             "downloadUrl": "https://github.com/jasp-stats-modules/jaspRegression/releases/download/0.95.5_7dffe8e3_R-4-5-1_Release/jaspRegression_0.95.5_MacOS_x86_64_R-4-5-1.JASPModule",
-            "downloadCount": 1,
+            "downloadCount": 2,
             "architecture": "MacOS_x86_64"
           },
           {
             "downloadUrl": "https://github.com/jasp-stats-modules/jaspRegression/releases/download/0.95.5_7dffe8e3_R-4-5-1_Release/jaspRegression_0.95.5_Windows_x86-64_R-4-5-1.JASPModule",
-            "downloadCount": 1,
+            "downloadCount": 5,
             "architecture": "Windows_x86-64"
           }
         ]
@@ -1727,23 +1812,28 @@
     ],
     "preReleases": [
       {
-        "publishedAt": "2025-10-22T15:14:05Z",
+        "publishedAt": "2025-11-13T12:52:48Z",
         "jaspVersionRange": ">=0.95.1",
         "version": "0.95.5",
         "assets": [
           {
-            "downloadUrl": "https://github.com/jasp-stats-modules/jaspRegression/releases/download/0.95.5_7dffe8e3_R-4-5-1_Beta/jaspRegression_0.95.5_MacOS_arm64_R-4-5-1.JASPModule",
-            "downloadCount": 1,
+            "downloadUrl": "https://github.com/jasp-stats-modules/jaspRegression/releases/download/0.95.5_bc42bae9_R-4-5-1_Beta/jaspRegression_0.95.5_Flatpak_x86_64_R-4-5-1.JASPModule",
+            "downloadCount": 0,
+            "architecture": "Flatpak_x86_64"
+          },
+          {
+            "downloadUrl": "https://github.com/jasp-stats-modules/jaspRegression/releases/download/0.95.5_bc42bae9_R-4-5-1_Beta/jaspRegression_0.95.5_MacOS_arm64_R-4-5-1.JASPModule",
+            "downloadCount": 3,
             "architecture": "MacOS_arm64"
           },
           {
-            "downloadUrl": "https://github.com/jasp-stats-modules/jaspRegression/releases/download/0.95.5_7dffe8e3_R-4-5-1_Beta/jaspRegression_0.95.5_MacOS_x86_64_R-4-5-1.JASPModule",
-            "downloadCount": 0,
+            "downloadUrl": "https://github.com/jasp-stats-modules/jaspRegression/releases/download/0.95.5_bc42bae9_R-4-5-1_Beta/jaspRegression_0.95.5_MacOS_x86_64_R-4-5-1.JASPModule",
+            "downloadCount": 1,
             "architecture": "MacOS_x86_64"
           },
           {
-            "downloadUrl": "https://github.com/jasp-stats-modules/jaspRegression/releases/download/0.95.5_7dffe8e3_R-4-5-1_Beta/jaspRegression_0.95.5_Windows_x86-64_R-4-5-1.JASPModule",
-            "downloadCount": 0,
+            "downloadUrl": "https://github.com/jasp-stats-modules/jaspRegression/releases/download/0.95.5_bc42bae9_R-4-5-1_Beta/jaspRegression_0.95.5_Windows_x86-64_R-4-5-1.JASPModule",
+            "downloadCount": 1,
             "architecture": "Windows_x86-64"
           }
         ]
@@ -1766,17 +1856,17 @@
         "assets": [
           {
             "downloadUrl": "https://github.com/jasp-stats-modules/jaspReliability/releases/download/0.95.5_a6f50c69_R-4-5-1_Release/jaspReliability_0.95.5_Flatpak_x86_64_R-4-5-1.JASPModule",
-            "downloadCount": 0,
+            "downloadCount": 1,
             "architecture": "Flatpak_x86_64"
           },
           {
             "downloadUrl": "https://github.com/jasp-stats-modules/jaspReliability/releases/download/0.95.5_a6f50c69_R-4-5-1_Release/jaspReliability_0.95.5_MacOS_arm64_R-4-5-1.JASPModule",
-            "downloadCount": 5,
+            "downloadCount": 12,
             "architecture": "MacOS_arm64"
           },
           {
             "downloadUrl": "https://github.com/jasp-stats-modules/jaspReliability/releases/download/0.95.5_a6f50c69_R-4-5-1_Release/jaspReliability_0.95.5_Windows_x86-64_R-4-5-1.JASPModule",
-            "downloadCount": 1,
+            "downloadCount": 5,
             "architecture": "Windows_x86-64"
           }
         ]
@@ -1784,18 +1874,23 @@
     ],
     "preReleases": [
       {
-        "publishedAt": "2025-10-22T15:53:39Z",
+        "publishedAt": "2025-11-13T13:28:42Z",
         "jaspVersionRange": ">=0.95.1",
         "version": "0.95.5",
         "assets": [
           {
-            "downloadUrl": "https://github.com/jasp-stats-modules/jaspReliability/releases/download/0.95.5_a6f50c69_R-4-5-1_Beta/jaspReliability_0.95.5_MacOS_arm64_R-4-5-1.JASPModule",
-            "downloadCount": 1,
+            "downloadUrl": "https://github.com/jasp-stats-modules/jaspReliability/releases/download/0.95.5_da8a6e82_R-4-5-1_Beta/jaspReliability_0.95.5_Flatpak_x86_64_R-4-5-1.JASPModule",
+            "downloadCount": 0,
+            "architecture": "Flatpak_x86_64"
+          },
+          {
+            "downloadUrl": "https://github.com/jasp-stats-modules/jaspReliability/releases/download/0.95.5_da8a6e82_R-4-5-1_Beta/jaspReliability_0.95.5_MacOS_arm64_R-4-5-1.JASPModule",
+            "downloadCount": 3,
             "architecture": "MacOS_arm64"
           },
           {
-            "downloadUrl": "https://github.com/jasp-stats-modules/jaspReliability/releases/download/0.95.5_a6f50c69_R-4-5-1_Beta/jaspReliability_0.95.5_Windows_x86-64_R-4-5-1.JASPModule",
-            "downloadCount": 0,
+            "downloadUrl": "https://github.com/jasp-stats-modules/jaspReliability/releases/download/0.95.5_da8a6e82_R-4-5-1_Beta/jaspReliability_0.95.5_Windows_x86-64_R-4-5-1.JASPModule",
+            "downloadCount": 1,
             "architecture": "Windows_x86-64"
           }
         ]
@@ -1823,17 +1918,17 @@
           },
           {
             "downloadUrl": "https://github.com/jasp-stats-modules/jaspRem/releases/download/0.95.5_56d20e19_R-4-5-1_Release/jaspRem_0.95.5_MacOS_arm64_R-4-5-1.JASPModule",
-            "downloadCount": 1,
+            "downloadCount": 3,
             "architecture": "MacOS_arm64"
           },
           {
             "downloadUrl": "https://github.com/jasp-stats-modules/jaspRem/releases/download/0.95.5_56d20e19_R-4-5-1_Release/jaspRem_0.95.5_MacOS_x86_64_R-4-5-1.JASPModule",
-            "downloadCount": 1,
+            "downloadCount": 2,
             "architecture": "MacOS_x86_64"
           },
           {
             "downloadUrl": "https://github.com/jasp-stats-modules/jaspRem/releases/download/0.95.5_56d20e19_R-4-5-1_Release/jaspRem_0.95.5_Windows_x86-64_R-4-5-1.JASPModule",
-            "downloadCount": 0,
+            "downloadCount": 1,
             "architecture": "Windows_x86-64"
           }
         ]
@@ -1885,22 +1980,22 @@
         "assets": [
           {
             "downloadUrl": "https://github.com/jasp-stats-modules/jaspSem/releases/download/0.95.5_c2284bc5_R-4-5-1_Release/jaspSem_0.95.5_Flatpak_x86_64_R-4-5-1.JASPModule",
-            "downloadCount": 0,
+            "downloadCount": 1,
             "architecture": "Flatpak_x86_64"
           },
           {
             "downloadUrl": "https://github.com/jasp-stats-modules/jaspSem/releases/download/0.95.5_c2284bc5_R-4-5-1_Release/jaspSem_0.95.5_MacOS_arm64_R-4-5-1.JASPModule",
-            "downloadCount": 5,
+            "downloadCount": 12,
             "architecture": "MacOS_arm64"
           },
           {
             "downloadUrl": "https://github.com/jasp-stats-modules/jaspSem/releases/download/0.95.5_c2284bc5_R-4-5-1_Release/jaspSem_0.95.5_MacOS_x86_64_R-4-5-1.JASPModule",
-            "downloadCount": 1,
+            "downloadCount": 2,
             "architecture": "MacOS_x86_64"
           },
           {
             "downloadUrl": "https://github.com/jasp-stats-modules/jaspSem/releases/download/0.95.5_c2284bc5_R-4-5-1_Release/jaspSem_0.95.5_Windows_x86-64_R-4-5-1.JASPModule",
-            "downloadCount": 1,
+            "downloadCount": 5,
             "architecture": "Windows_x86-64"
           }
         ]
@@ -1908,23 +2003,28 @@
     ],
     "preReleases": [
       {
-        "publishedAt": "2025-10-22T15:55:51Z",
+        "publishedAt": "2025-11-13T13:30:49Z",
         "jaspVersionRange": ">=0.95.1",
         "version": "0.95.5",
         "assets": [
           {
-            "downloadUrl": "https://github.com/jasp-stats-modules/jaspSem/releases/download/0.95.5_c2284bc5_R-4-5-1_Beta/jaspSem_0.95.5_MacOS_arm64_R-4-5-1.JASPModule",
-            "downloadCount": 1,
+            "downloadUrl": "https://github.com/jasp-stats-modules/jaspSem/releases/download/0.95.5_d83adfde_R-4-5-1_Beta/jaspSem_0.95.5_Flatpak_x86_64_R-4-5-1.JASPModule",
+            "downloadCount": 0,
+            "architecture": "Flatpak_x86_64"
+          },
+          {
+            "downloadUrl": "https://github.com/jasp-stats-modules/jaspSem/releases/download/0.95.5_d83adfde_R-4-5-1_Beta/jaspSem_0.95.5_MacOS_arm64_R-4-5-1.JASPModule",
+            "downloadCount": 3,
             "architecture": "MacOS_arm64"
           },
           {
-            "downloadUrl": "https://github.com/jasp-stats-modules/jaspSem/releases/download/0.95.5_c2284bc5_R-4-5-1_Beta/jaspSem_0.95.5_MacOS_x86_64_R-4-5-1.JASPModule",
-            "downloadCount": 0,
+            "downloadUrl": "https://github.com/jasp-stats-modules/jaspSem/releases/download/0.95.5_d83adfde_R-4-5-1_Beta/jaspSem_0.95.5_MacOS_x86_64_R-4-5-1.JASPModule",
+            "downloadCount": 1,
             "architecture": "MacOS_x86_64"
           },
           {
-            "downloadUrl": "https://github.com/jasp-stats-modules/jaspSem/releases/download/0.95.5_c2284bc5_R-4-5-1_Beta/jaspSem_0.95.5_Windows_x86-64_R-4-5-1.JASPModule",
-            "downloadCount": 0,
+            "downloadUrl": "https://github.com/jasp-stats-modules/jaspSem/releases/download/0.95.5_d83adfde_R-4-5-1_Beta/jaspSem_0.95.5_Windows_x86-64_R-4-5-1.JASPModule",
+            "downloadCount": 1,
             "architecture": "Windows_x86-64"
           }
         ]
@@ -1947,22 +2047,22 @@
         "assets": [
           {
             "downloadUrl": "https://github.com/jasp-stats-modules/jaspSummaryStatistics/releases/download/0.95.5_e15426cd_R-4-5-1_Release/jaspSummaryStatistics_0.95.5_Flatpak_x86_64_R-4-5-1.JASPModule",
-            "downloadCount": 0,
+            "downloadCount": 1,
             "architecture": "Flatpak_x86_64"
           },
           {
             "downloadUrl": "https://github.com/jasp-stats-modules/jaspSummaryStatistics/releases/download/0.95.5_e15426cd_R-4-5-1_Release/jaspSummaryStatistics_0.95.5_MacOS_arm64_R-4-5-1.JASPModule",
-            "downloadCount": 5,
+            "downloadCount": 12,
             "architecture": "MacOS_arm64"
           },
           {
             "downloadUrl": "https://github.com/jasp-stats-modules/jaspSummaryStatistics/releases/download/0.95.5_e15426cd_R-4-5-1_Release/jaspSummaryStatistics_0.95.5_MacOS_x86_64_R-4-5-1.JASPModule",
-            "downloadCount": 1,
+            "downloadCount": 2,
             "architecture": "MacOS_x86_64"
           },
           {
             "downloadUrl": "https://github.com/jasp-stats-modules/jaspSummaryStatistics/releases/download/0.95.5_e15426cd_R-4-5-1_Release/jaspSummaryStatistics_0.95.5_Windows_x86-64_R-4-5-1.JASPModule",
-            "downloadCount": 1,
+            "downloadCount": 7,
             "architecture": "Windows_x86-64"
           }
         ]
@@ -1970,23 +2070,28 @@
     ],
     "preReleases": [
       {
-        "publishedAt": "2025-10-22T15:58:38Z",
+        "publishedAt": "2025-11-13T13:33:27Z",
         "jaspVersionRange": ">=0.95.1",
         "version": "0.95.5",
         "assets": [
           {
-            "downloadUrl": "https://github.com/jasp-stats-modules/jaspSummaryStatistics/releases/download/0.95.5_e15426cd_R-4-5-1_Beta/jaspSummaryStatistics_0.95.5_MacOS_arm64_R-4-5-1.JASPModule",
-            "downloadCount": 1,
+            "downloadUrl": "https://github.com/jasp-stats-modules/jaspSummaryStatistics/releases/download/0.95.5_54ace1f3_R-4-5-1_Beta/jaspSummaryStatistics_0.95.5_Flatpak_x86_64_R-4-5-1.JASPModule",
+            "downloadCount": 0,
+            "architecture": "Flatpak_x86_64"
+          },
+          {
+            "downloadUrl": "https://github.com/jasp-stats-modules/jaspSummaryStatistics/releases/download/0.95.5_54ace1f3_R-4-5-1_Beta/jaspSummaryStatistics_0.95.5_MacOS_arm64_R-4-5-1.JASPModule",
+            "downloadCount": 2,
             "architecture": "MacOS_arm64"
           },
           {
-            "downloadUrl": "https://github.com/jasp-stats-modules/jaspSummaryStatistics/releases/download/0.95.5_e15426cd_R-4-5-1_Beta/jaspSummaryStatistics_0.95.5_MacOS_x86_64_R-4-5-1.JASPModule",
-            "downloadCount": 0,
+            "downloadUrl": "https://github.com/jasp-stats-modules/jaspSummaryStatistics/releases/download/0.95.5_54ace1f3_R-4-5-1_Beta/jaspSummaryStatistics_0.95.5_MacOS_x86_64_R-4-5-1.JASPModule",
+            "downloadCount": 1,
             "architecture": "MacOS_x86_64"
           },
           {
-            "downloadUrl": "https://github.com/jasp-stats-modules/jaspSummaryStatistics/releases/download/0.95.5_e15426cd_R-4-5-1_Beta/jaspSummaryStatistics_0.95.5_Windows_x86-64_R-4-5-1.JASPModule",
-            "downloadCount": 0,
+            "downloadUrl": "https://github.com/jasp-stats-modules/jaspSummaryStatistics/releases/download/0.95.5_54ace1f3_R-4-5-1_Beta/jaspSummaryStatistics_0.95.5_Windows_x86-64_R-4-5-1.JASPModule",
+            "downloadCount": 1,
             "architecture": "Windows_x86-64"
           }
         ]
@@ -2009,22 +2114,22 @@
         "assets": [
           {
             "downloadUrl": "https://github.com/jasp-stats-modules/jaspSurvival/releases/download/0.95.5_abaf2013_R-4-5-1_Release/jaspSurvival_0.95.5_Flatpak_x86_64_R-4-5-1.JASPModule",
-            "downloadCount": 0,
+            "downloadCount": 1,
             "architecture": "Flatpak_x86_64"
           },
           {
             "downloadUrl": "https://github.com/jasp-stats-modules/jaspSurvival/releases/download/0.95.5_abaf2013_R-4-5-1_Release/jaspSurvival_0.95.5_MacOS_arm64_R-4-5-1.JASPModule",
-            "downloadCount": 5,
+            "downloadCount": 13,
             "architecture": "MacOS_arm64"
           },
           {
             "downloadUrl": "https://github.com/jasp-stats-modules/jaspSurvival/releases/download/0.95.5_abaf2013_R-4-5-1_Release/jaspSurvival_0.95.5_MacOS_x86_64_R-4-5-1.JASPModule",
-            "downloadCount": 1,
+            "downloadCount": 3,
             "architecture": "MacOS_x86_64"
           },
           {
             "downloadUrl": "https://github.com/jasp-stats-modules/jaspSurvival/releases/download/0.95.5_abaf2013_R-4-5-1_Release/jaspSurvival_0.95.5_Windows_x86-64_R-4-5-1.JASPModule",
-            "downloadCount": 1,
+            "downloadCount": 6,
             "architecture": "Windows_x86-64"
           }
         ]
@@ -2094,28 +2199,28 @@
     ],
     "preReleases": [
       {
-        "publishedAt": "2025-10-22T14:56:36Z",
+        "publishedAt": "2025-11-13T12:39:04Z",
         "jaspVersionRange": ">=0.95.1",
         "version": "0.95.5",
         "assets": [
           {
-            "downloadUrl": "https://github.com/jasp-stats-modules/jaspTestModule/releases/download/0.95.5_6d8597ee_R-4-5-1_Beta/jaspTestModule_0.95.5_Flatpak_x86_64_R-4-5-1.JASPModule",
+            "downloadUrl": "https://github.com/jasp-stats-modules/jaspTestModule/releases/download/0.95.5_8fb1052c_R-4-5-1_Beta/jaspTestModule_0.95.5_Flatpak_x86_64_R-4-5-1.JASPModule",
             "downloadCount": 0,
             "architecture": "Flatpak_x86_64"
           },
           {
-            "downloadUrl": "https://github.com/jasp-stats-modules/jaspTestModule/releases/download/0.95.5_6d8597ee_R-4-5-1_Beta/jaspTestModule_0.95.5_MacOS_arm64_R-4-5-1.JASPModule",
-            "downloadCount": 1,
+            "downloadUrl": "https://github.com/jasp-stats-modules/jaspTestModule/releases/download/0.95.5_8fb1052c_R-4-5-1_Beta/jaspTestModule_0.95.5_MacOS_arm64_R-4-5-1.JASPModule",
+            "downloadCount": 3,
             "architecture": "MacOS_arm64"
           },
           {
-            "downloadUrl": "https://github.com/jasp-stats-modules/jaspTestModule/releases/download/0.95.5_6d8597ee_R-4-5-1_Beta/jaspTestModule_0.95.5_MacOS_x86_64_R-4-5-1.JASPModule",
-            "downloadCount": 1,
+            "downloadUrl": "https://github.com/jasp-stats-modules/jaspTestModule/releases/download/0.95.5_8fb1052c_R-4-5-1_Beta/jaspTestModule_0.95.5_MacOS_x86_64_R-4-5-1.JASPModule",
+            "downloadCount": 2,
             "architecture": "MacOS_x86_64"
           },
           {
-            "downloadUrl": "https://github.com/jasp-stats-modules/jaspTestModule/releases/download/0.95.5_6d8597ee_R-4-5-1_Beta/jaspTestModule_0.95.5_Windows_x86-64_R-4-5-1.JASPModule",
-            "downloadCount": 0,
+            "downloadUrl": "https://github.com/jasp-stats-modules/jaspTestModule/releases/download/0.95.5_8fb1052c_R-4-5-1_Beta/jaspTestModule_0.95.5_Windows_x86-64_R-4-5-1.JASPModule",
+            "downloadCount": 2,
             "architecture": "Windows_x86-64"
           }
         ]
@@ -2143,17 +2248,17 @@
           },
           {
             "downloadUrl": "https://github.com/jasp-stats-modules/jaspTTests/releases/download/0.95.5_35b5453d_R-4-5-1_Release/jaspTTests_0.95.5_MacOS_arm64_R-4-5-1.JASPModule",
-            "downloadCount": 5,
+            "downloadCount": 12,
             "architecture": "MacOS_arm64"
           },
           {
             "downloadUrl": "https://github.com/jasp-stats-modules/jaspTTests/releases/download/0.95.5_35b5453d_R-4-5-1_Release/jaspTTests_0.95.5_MacOS_x86_64_R-4-5-1.JASPModule",
-            "downloadCount": 1,
+            "downloadCount": 2,
             "architecture": "MacOS_x86_64"
           },
           {
             "downloadUrl": "https://github.com/jasp-stats-modules/jaspTTests/releases/download/0.95.5_35b5453d_R-4-5-1_Release/jaspTTests_0.95.5_Windows_x86-64_R-4-5-1.JASPModule",
-            "downloadCount": 1,
+            "downloadCount": 6,
             "architecture": "Windows_x86-64"
           }
         ]
@@ -2161,23 +2266,28 @@
     ],
     "preReleases": [
       {
-        "publishedAt": "2025-10-22T15:15:04Z",
+        "publishedAt": "2025-11-13T12:53:45Z",
         "jaspVersionRange": ">=0.95.1",
         "version": "0.95.5",
         "assets": [
           {
-            "downloadUrl": "https://github.com/jasp-stats-modules/jaspTTests/releases/download/0.95.5_35b5453d_R-4-5-1_Beta/jaspTTests_0.95.5_MacOS_arm64_R-4-5-1.JASPModule",
+            "downloadUrl": "https://github.com/jasp-stats-modules/jaspTTests/releases/download/0.95.5_57c4a780_R-4-5-1_Beta/jaspTTests_0.95.5_Flatpak_x86_64_R-4-5-1.JASPModule",
             "downloadCount": 0,
+            "architecture": "Flatpak_x86_64"
+          },
+          {
+            "downloadUrl": "https://github.com/jasp-stats-modules/jaspTTests/releases/download/0.95.5_57c4a780_R-4-5-1_Beta/jaspTTests_0.95.5_MacOS_arm64_R-4-5-1.JASPModule",
+            "downloadCount": 2,
             "architecture": "MacOS_arm64"
           },
           {
-            "downloadUrl": "https://github.com/jasp-stats-modules/jaspTTests/releases/download/0.95.5_35b5453d_R-4-5-1_Beta/jaspTTests_0.95.5_MacOS_x86_64_R-4-5-1.JASPModule",
-            "downloadCount": 0,
+            "downloadUrl": "https://github.com/jasp-stats-modules/jaspTTests/releases/download/0.95.5_57c4a780_R-4-5-1_Beta/jaspTTests_0.95.5_MacOS_x86_64_R-4-5-1.JASPModule",
+            "downloadCount": 1,
             "architecture": "MacOS_x86_64"
           },
           {
-            "downloadUrl": "https://github.com/jasp-stats-modules/jaspTTests/releases/download/0.95.5_35b5453d_R-4-5-1_Beta/jaspTTests_0.95.5_Windows_x86-64_R-4-5-1.JASPModule",
-            "downloadCount": 0,
+            "downloadUrl": "https://github.com/jasp-stats-modules/jaspTTests/releases/download/0.95.5_57c4a780_R-4-5-1_Beta/jaspTTests_0.95.5_Windows_x86-64_R-4-5-1.JASPModule",
+            "downloadCount": 1,
             "architecture": "Windows_x86-64"
           }
         ]
@@ -2205,17 +2315,17 @@
           },
           {
             "downloadUrl": "https://github.com/jasp-stats-modules/jaspVisualModeling/releases/download/0.95.5_0f164e57_R-4-5-1_Release/jaspVisualModeling_0.95.5_MacOS_arm64_R-4-5-1.JASPModule",
-            "downloadCount": 5,
+            "downloadCount": 13,
             "architecture": "MacOS_arm64"
           },
           {
             "downloadUrl": "https://github.com/jasp-stats-modules/jaspVisualModeling/releases/download/0.95.5_0f164e57_R-4-5-1_Release/jaspVisualModeling_0.95.5_MacOS_x86_64_R-4-5-1.JASPModule",
-            "downloadCount": 1,
+            "downloadCount": 3,
             "architecture": "MacOS_x86_64"
           },
           {
             "downloadUrl": "https://github.com/jasp-stats-modules/jaspVisualModeling/releases/download/0.95.5_0f164e57_R-4-5-1_Release/jaspVisualModeling_0.95.5_Windows_x86-64_R-4-5-1.JASPModule",
-            "downloadCount": 1,
+            "downloadCount": 6,
             "architecture": "Windows_x86-64"
           }
         ]
