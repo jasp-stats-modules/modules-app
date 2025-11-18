@@ -54,13 +54,14 @@ describe('getReleaseInfo', () => {
       { jaspAcceptanceSampling: '0.95.5' },
       ['jaspAcceptanceSampling'],
     );
-    const expected = {
+    const expected: ReturnType<typeof getReleaseInfo> = {
       asset: repo.releases[0].assets[3],
       canInstall: false,
       canUninstall: true,
       canUpdate: false,
       installedVersion: '0.95.5',
       latestAnyRelease: repo.releases[0],
+      latestPreRelease: undefined,
       latestRelease: repo.releases[0],
       latestVersionInstalled: true,
     };
