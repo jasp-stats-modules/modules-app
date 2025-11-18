@@ -9,8 +9,8 @@ import {
   useQueryState,
   useQueryStates,
 } from 'nuqs';
-import type { Dispatch, SetStateAction } from 'react';
-import { useEffect, useState } from 'react';
+import type { Dispatch, ReactNode, SetStateAction } from 'react';
+import { createContext, useContext, useEffect, useMemo, useState } from 'react';
 import { useIntlayer, useLocale } from 'react-intlayer';
 import { satisfies } from 'semver';
 import { useDebounceValue } from 'usehooks-ts';
@@ -651,54 +651,90 @@ function filterOnChannels(
   );
 }
 
-function useInfo() {
+interface JaspInfoContextValue {
+  info: Info;
+  isInfoFetched: boolean;
+  error: unknown;
+}
+
+const JaspInfoContext = createContext<JaspInfoContextValue | undefined>(
+  undefined,
+);
+
+function JaspInfoProvider({ children }: { children: ReactNode }) {
   // if app is running inside JASP, then
   // info from Qt webchannel is used otherwise
   // info from search params is used.
   const infoFromSearchParams = useInfoFromSearchParams();
-  const { data: jasp, isFetched, error } = useJaspQtObject();
+  const {
+    data: jasp,
+    isFetched: isJaspFetched,
+    error: jaspError,
+  } = useJaspQtObject();
 
   // Subscribe to environmentInfoChanged signal to update info
   const queryClient = useQueryClient();
+  const callback = (data: Info) => {
+    queryClient.setQueryData(['jaspInfo'], data);
+  };
   useEffect(() => {
     if (!jasp?.environmentInfoChanged) return;
-    const callback = (data: Info) => {
-      queryClient.setQueryData(['jaspInfo'], data);
-    };
     jasp.environmentInfoChanged.connect(callback);
     return () => {
       jasp.environmentInfoChanged.disconnect(callback);
     };
-  }, [jasp, queryClient]);
+    // biome-ignore lint/correctness/useExhaustiveDependencies: callback is memoized by react compiler
+  }, [jasp?.environmentInfoChanged, callback]);
 
   // Fetch info
   const {
-    data: info,
+    data: infoFromQt,
     isFetched: isInfoFetched,
     error: infoError,
   } = useQuery({
     queryKey: ['jaspInfo'],
     queryFn: () => jasp?.info(),
-    enabled: insideQt && !!jasp && isFetched,
+    enabled: insideQt && !!jasp && isJaspFetched,
   });
 
   const { setLocale } = useLocale();
   useEffect(() => {
-    const lang = info?.language || infoFromSearchParams.language;
+    const lang =
+      (insideQt && infoFromQt?.language) || infoFromSearchParams.language;
     setLocale(lang);
-    if (document) {
+    if (typeof document !== 'undefined') {
       document.documentElement.lang = lang;
       document.documentElement.dir = getHTMLTextDir(lang);
     }
-  }, [info?.language, infoFromSearchParams.language, setLocale]);
+  }, [infoFromQt?.language, infoFromSearchParams.language, setLocale]);
 
-  if (!insideQt) {
-    return { info: infoFromSearchParams, isInfoFetched: true, error: null };
+  const value = useMemo<JaspInfoContextValue>(() => {
+    if (!insideQt) {
+      return { info: infoFromSearchParams, isInfoFetched: true, error: null };
+    }
+    if (infoFromQt === undefined) {
+      return { info: infoFromSearchParams, isInfoFetched: true, error: null };
+    }
+    return {
+      info: infoFromQt,
+      isInfoFetched,
+      error: jaspError ?? infoError ?? null,
+    };
+  }, [infoFromQt, infoFromSearchParams, infoError, isInfoFetched, jaspError]);
+
+  return (
+    <JaspInfoContext.Provider value={value}>
+      {children}
+    </JaspInfoContext.Provider>
+  );
+}
+
+function useInfo(): JaspInfoContextValue {
+  const context = useContext(JaspInfoContext);
+  if (!context) {
+    throw new Error('useInfo must be used within a JaspInfoProvider');
   }
-  if (info === undefined) {
-    return { info: infoFromSearchParams, isInfoFetched: true, error: null };
-  }
-  return { info, isInfoFetched, error: error || infoError };
+  return context;
 }
 
 function sanitizeFontName(name: string | null): string | null {
@@ -741,7 +777,7 @@ function useFont() {
   }, [info.font]);
 }
 
-function JASPScrollBar({ children }: { children: React.ReactNode }) {
+function JASPScrollBar({ children }: { children: ReactNode }) {
   return (
     <div className="border-jasp-gray-darker border-r-1">
       <div className="scrollbar-thin scrollbar-thumb-ring scrollbar-hover:scrollbar-thumb-thumb-hover scrollbar-track-popover h-screen overflow-y-auto border-popover border-r-1">
@@ -755,7 +791,7 @@ function JASPScrollBar({ children }: { children: React.ReactNode }) {
   );
 }
 
-export function App() {
+function AppContent() {
   const translations = useIntlayer<'app'>('app');
   const {
     show_prereleases,
@@ -858,5 +894,13 @@ export function App() {
         </div>
       </main>
     </JASPScrollBar>
+  );
+}
+
+export function App() {
+  return (
+    <JaspInfoProvider>
+      <AppContent />
+    </JaspInfoProvider>
   );
 }
