@@ -1,6 +1,8 @@
 import { useQuery } from '@tanstack/react-query';
 import { QWebChannel } from './qwebchannel';
 
+// This interface should be in sync with what JASP collects
+// in Desktop/modules/modulelibrary.cpp:getEnvironmentInfo
 export interface Info {
   version: string;
   arch: string;
@@ -9,6 +11,7 @@ export interface Info {
   font: string | null;
   language: string;
   installedModules: Record<string, string>;
+  uninstallableModules: string[];
 }
 
 interface QtSignal<T> {

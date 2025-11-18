@@ -26,6 +26,7 @@ In a standalone web application you can tell the web application which version/a
 - v: the version of the JASP desktop application for example `0.95.0`
 - a: the architecture of the JASP desktop application for example `Windows_x86-64`
 - i: installed modules. A JSON object with the module names as keys and their versions as values. The object has to be [URL encoded](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/encodeURIComponent). For example, `{"jaspEquivalenceTTests":"0.95.0","jaspTTests":"0.94.0"}` becomes `%7B%22jaspEquivalenceTTests%22%3A%220.95.0%22%2C%22jaspTTests%22%3A%220.94.0%22%7D`.
+- u: List of modules that can be uninstalled. As a JSON array, it has to be [URL encoded](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/encodeURIComponent). For example, `["jaspTTests","jaspRegression"]` becomes `%5B%22jaspTTests%22%2C%22jaspRegression%22%5D`.
 - p: show pre-releases initially. Use `true` to show pre-releases and use `false` to hide them initially.
 - c: URL for the list of modules aka index.json. 
    When not set uses `index.json` (`public/index.json` in local development or on deployed site uses `https://jasp-stats-modules.github.io/modules-app/index.json`).
