@@ -384,7 +384,6 @@ function RepositoryCard({
 
   return (
     <li
-      aria-label={repo.name}
       className="flex flex-col gap-2 rounded-lg border border-border bg-card p-3 text-card-foreground shadow-sm transition-shadow duration-200 hover:shadow-md dark:hover:shadow-lg"
     >
       <div className="flex items-start justify-between gap-2">
