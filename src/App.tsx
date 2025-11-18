@@ -10,15 +10,7 @@ import {
   useQueryStates,
 } from 'nuqs';
 import type { Dispatch, ReactNode, SetStateAction } from 'react';
-import {
-  createContext,
-  useCallback,
-  useContext,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from 'react';
+import { createContext, useContext, useEffect, useMemo, useState } from 'react';
 import { useIntlayer, useLocale } from 'react-intlayer';
 import { satisfies } from 'semver';
 import { useDebounceValue } from 'usehooks-ts';
@@ -683,15 +675,15 @@ function JaspInfoProvider({ children }: { children: ReactNode }) {
   // Subscribe to environmentInfoChanged signal to update info
   const queryClient = useQueryClient();
   const callback = (data: Info) => {
-      queryClient.setQueryData(['jaspInfo'], data);
-    }
+    queryClient.setQueryData(['jaspInfo'], data);
+  };
   useEffect(() => {
     if (!jasp?.environmentInfoChanged) return;
     jasp.environmentInfoChanged.connect(callback);
     return () => {
       jasp.environmentInfoChanged.disconnect(callback);
     };
-  // biome-ignore lint/correctness/useExhaustiveDependencies: callback is memoized by react compiler
+    // biome-ignore lint/correctness/useExhaustiveDependencies: callback is memoized by react compiler
   }, [jasp?.environmentInfoChanged, callback]);
 
   // Fetch info
