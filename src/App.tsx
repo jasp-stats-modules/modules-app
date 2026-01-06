@@ -384,11 +384,17 @@ function RepositoryCard({
     canUninstall,
   } = useRelease(repo, allowPreRelease);
 
+  const cardId = `repo-card-${repo.name}`;
   return (
-    <li className="flex flex-col gap-2 rounded-lg border border-border bg-card p-3 text-card-foreground shadow-sm transition-shadow duration-200 hover:shadow-md dark:hover:shadow-lg">
+    <li
+      aria-labelledby={cardId}
+      className="flex flex-col gap-2 rounded-lg border border-border bg-card p-3 text-card-foreground shadow-sm transition-shadow duration-200 hover:shadow-md dark:hover:shadow-lg"
+    >
       <div className="flex items-start justify-between gap-2">
         <div className="flex flex-col gap-2">
-          <h3 className="font-semibold text-lg">{repo.name}</h3>
+          <h3 id={cardId} className="font-semibold text-lg">
+            {repo.name}
+          </h3>
           {repo.shortDescriptionHTML && (
             <div className="prose prose-sm text-sm">
               {repo.shortDescriptionHTML}
