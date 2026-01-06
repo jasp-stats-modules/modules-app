@@ -258,7 +258,9 @@ function ReleaseAction({
         <InstallButton asset={asset} translations={translations} />
       )}
       {allowPreRelease && latestPreRelease && (
-        <span className="text-muted text-xs">{pre_release}</span>
+        <span className="text-muted-foreground text-xs">
+          {pre_release.value}
+        </span>
       )}
       {insideQt && canUninstall && (canUpdate || latestVersionInstalled) && (
         <UninstallButton moduleName={moduleName} translations={translations} />
@@ -266,9 +268,9 @@ function ReleaseAction({
       {latestVersionInstalled && (
         <span
           title={latest_version_installed.value}
-          className="px-2 py-1.5 text-muted text-xs"
+          className="px-2 py-1.5 text-muted-foreground text-xs"
         >
-          {installed}
+          {installed.value}
         </span>
       )}
     </div>
