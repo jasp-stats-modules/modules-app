@@ -403,7 +403,7 @@ function RepositoryCard({
             />
           </div>
         </div>
-        {asset && (
+        {asset ? (
           <ReleaseAction
             moduleName={repo.name}
             asset={asset}
@@ -415,6 +415,8 @@ function RepositoryCard({
             latestVersionInstalled={latestVersionInstalled}
             translations={translations}
           />
+        ) : (
+          <span>No compatible asset found</span>
         )}
       </div>
       {latestAnyRelease && asset && (
@@ -442,15 +444,19 @@ function filterOnInstallableRepositories(
       repo.releases,
       installedJaspVersion,
     );
-    if (!latestRelease) {
-      // No compatible release found, trying pre-release
-      latestRelease = findReleaseThatSatisfiesInstalledJaspVersion(
+    if (allowPreRelease) {
+      // Assume pre-releases are newer than regular releases
+      // so use pre-release as latest
+      const latestPreRelease = findReleaseThatSatisfiesInstalledJaspVersion(
         repo.preReleases,
         installedJaspVersion,
       );
-      if (!allowPreRelease || !latestRelease) {
-        return false;
+      if (latestPreRelease) {
+        latestRelease = latestPreRelease;
       }
+    }
+    if (!latestRelease) {
+      return false;
     }
     const hasArch = latestRelease.assets.some(
       (a) => a.architecture === architecture,
