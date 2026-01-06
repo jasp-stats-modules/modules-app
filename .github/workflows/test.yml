@@ -48,11 +48,10 @@ jobs:
         with:
           name: 'Unit test coverage'
 
-      # TODO remove test-browser-mocked before pr merge
       - name: ⚙️ Generating coverage badges
         uses: jpb06/coverage-badges-action@latest
         with:
-          branches: main,test-browser-mocked
+          branches: main
           badges-icon: vitest
           output-folder: .github/badges/unit
           badges-labels-prefix: Test coverage (unit)
@@ -95,7 +94,7 @@ jobs:
       - name: ⚙️ Generating coverage badges
         uses: jpb06/coverage-badges-action@latest
         with:
-          branches: main,test-browser-mocked
+          branches: main
           badges-icon: vitest
           output-folder: .github/badges/browser
           badges-labels-prefix: Test coverage (browser)
