@@ -45,9 +45,6 @@ export function getReleaseInfo(
   if (!asset) {
     asset = latestRelease?.assets.find((a) => a.architecture === arch);
   }
-  if (!asset) {
-    throw new Error('No compatible asset found');
-  }
   const installedVersion = installedModules[repo.name];
   const latestVersionInstalled =
     installedVersion !== undefined &&
