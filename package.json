@@ -48,6 +48,7 @@
     "@types/semver": "^7.7.0",
     "@vitejs/plugin-react": "^4.3.4",
     "@vitest/browser-playwright": "^4.0.6",
+    "@vitest/coverage-v8": "^4.0.16",
     "babel-plugin-react-compiler": "^1.0.0",
     "chalk": "^5.5.0",
     "dedent": "^1.6.0",
