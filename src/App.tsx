@@ -19,10 +19,6 @@ type AppTranslations = ReturnType<typeof useIntlayer<'app'>>;
 const defaultChannel = 'jasp-modules';
 const defaultCatalog = 'index.json';
 
-type AppProps = {
-  initialCatalogUrl?: string;
-};
-
 async function getCatalog(
   catalogUrl: string,
   signal: AbortSignal,
@@ -602,7 +598,7 @@ function JASPScrollBar({ children }: { children: ReactNode }) {
   );
 }
 
-export function App({ initialCatalogUrl = defaultCatalog }: AppProps) {
+export function App() {
   const translations = useIntlayer<'app'>('app');
   const {
     show_prereleases,
@@ -612,7 +608,7 @@ export function App({ initialCatalogUrl = defaultCatalog }: AppProps) {
   } = translations;
   const { info, error, isInfoFetched } = useInfo();
   const [catalogUrl] = useQueryState('c', {
-    defaultValue: initialCatalogUrl,
+    defaultValue: defaultCatalog,
   });
   const {
     data: repositories,

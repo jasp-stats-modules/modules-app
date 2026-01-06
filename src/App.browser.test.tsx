@@ -1,16 +1,14 @@
 import { beforeEach, describe, expect, test } from 'vitest';
 import { type RenderResult, render } from 'vitest-browser-react';
 import { App } from './App';
-import { Wrapper } from './Wrapper';
+import { NuqslessWrapper } from './Wrapper';
+import { withNuqsTestingAdapter } from 'nuqs/adapters/testing'
 
 describe('App component', () => {
   let screen: RenderResult;
   beforeEach(async () => {
-    // Use test catalog and set architecture to match fixtures
-    history.replaceState(null, '', '?c=index.test.json&a=MacOS_arm64');
-
-    screen = await render(<App initialCatalogUrl="index.test.json" />, {
-      wrapper: Wrapper,
+    screen = await render(<NuqslessWrapper><App/></NuqslessWrapper>, {
+      wrapper: withNuqsTestingAdapter({searchParams: {c: 'index.test.json', a: 'MacOS_arm64'}}),
     });
   });
 
@@ -22,7 +20,7 @@ describe('App component', () => {
 
   test('Many (>3) install buttons are rendered', async () => {
     const buttons = screen.getByText('Install');
-    expect(buttons.length).toBeGreaterThan(2);
+    expect(buttons.length).toBeGreaterThan(3);
   });
 
   describe('Search for existing modules', () => {
