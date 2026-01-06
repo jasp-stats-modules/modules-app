@@ -84,6 +84,13 @@ pnpm exec playwright install chromium
 pnpm test:browser
 ```
 
+To get code coverage report run:
+
+```bash
+pnpm test --coverage --coverage.reportsDirectory=./coverage/unit
+pnpm test:browser run --coverage --coverage.reportsDirectory=./coverage/browser
+```
+
 ## Linting and Formatting
 
 Can be typechecked with:
