@@ -227,6 +227,7 @@ export interface GqlRelease {
     nodes: {
       downloadUrl: string;
       downloadCount: number;
+      size: number;
     }[];
   };
 }
@@ -359,6 +360,7 @@ async function releaseAssets(
                 nodes {
                   downloadUrl
                   downloadCount
+                  size
                 }
               }
             }
