@@ -43,6 +43,10 @@ export default defineConfig({
         },
       },
     ],
+    coverage: {
+      reporter: process.env.GITHUB_ACTIONS ? ['text', 'json', 'json-summary'] : ['text', 'html', 'clover', 'json', 'json-summary', 'text-summary'],
+      reportOnFailure: true,
+    }
   },
   base: process.env.BASE_URL || '/',
   resolve: {

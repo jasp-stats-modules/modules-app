@@ -12,6 +12,9 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
+permissions:
+  pull-requests: write  # Needed to write coverage report to PR comment
+
 jobs:
   test:
     runs-on: ubuntu-latest
@@ -33,8 +36,15 @@ jobs:
       - name: Install dependencies
         run: pnpm install
 
-      - name: Run tests
-        run: pnpm test
+      - name: Run unit tests with coverage
+        run: pnpm test --coverage
+
+      - name: 'Report Coverage'
+        if: always() 
+        uses: davelosert/vitest-coverage-report-action@v2
+        with:
+          name: 'Unit test coverage'
+
   browser-tests:
     runs-on: ubuntu-latest
     container:
@@ -58,5 +68,11 @@ jobs:
       - name: Install dependencies
         run: pnpm install
     
-      - name: Run browser tests
-        run: pnpm test:browser
+      - name: Run browser tests with coverage
+        run: pnpm test:browser run --coverage
+
+      - name: 'Report Coverage'
+        if: always() 
+        uses: davelosert/vitest-coverage-report-action@v2
+        with:
+          name: 'Browser test coverage'
