@@ -53,6 +53,7 @@
     "dedent": "^1.6.0",
     "gray-matter": "^4.0.3",
     "jsdom": "^26.0.0",
+    "playwright": "^1.57.0",
     "progress": "^2.0.3",
     "tailwind-scrollbar": "^4.0.2",
     "typescript": "^5.7.2",

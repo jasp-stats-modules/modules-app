@@ -75,9 +75,12 @@ You can run the unit tests with:
 pnpm test
 ```
 
-You can run the browser tests with:
+You can run the [browser tests](https://vitest.dev/guide/browser/) with:
 
 ```bash
+# Run once to install browser binaries
+pnpm exec playwright install chromium
+# Then run the browser tests
 pnpm test:browser
 ```
 
