@@ -45,6 +45,16 @@ jobs:
         with:
           name: 'Unit test coverage'
 
+      # TODO remove test-browser-mocked just before merging
+      - name: ⚙️ Generating coverage badges
+        uses: jpb06/coverage-badges-action@latest
+          with:
+            branches: main,test-browser-mocked
+            badges-icon: vitest
+            output-folder: .github/badges/unit
+            badges-labels-prefix: Test coverage (unit)
+            commit-message: 'Updating unit test coverage badges [skip ci]'
+
   browser-tests:
     runs-on: ubuntu-latest
     container:
@@ -76,3 +86,12 @@ jobs:
         uses: davelosert/vitest-coverage-report-action@v2
         with:
           name: 'Browser test coverage'
+
+      - name: ⚙️ Generating coverage badges
+        uses: jpb06/coverage-badges-action@latest
+          with:
+            branches: main,test-browser-mocked
+            badges-icon: vitest
+            output-folder: .github/badges/browser
+            badges-labels-prefix: Test coverage (browser)
+            commit-message: 'Updating browser test coverage badges [skip ci]'

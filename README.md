@@ -8,6 +8,8 @@
 [![FAIR checklist badge](https://fairsoftwarechecklist.net/badge.svg)](https://fairsoftwarechecklist.net/v0.2?f=31&a=32113&i=22300&r=113)
 [![Research Software Directory Badge](https://img.shields.io/badge/rsd-jasp_modules_app-00a3e3.svg)](https://research-software-directory.org/software/jasp-modules-app)
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.17305935.svg)](https://doi.org/10.5281/zenodo.17305935)
+![Test coverage (unit)](./.github/badges/unit/coverage-total.svg)
+![Test coverage (browser)](./.github/badges/browser/coverage-total.svg)
 
 ## Usage
 
