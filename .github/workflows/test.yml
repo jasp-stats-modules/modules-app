@@ -20,7 +20,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
 
       - name: Install pnpm
         uses: pnpm/action-setup@v4
@@ -45,11 +47,11 @@ jobs:
         with:
           name: 'Unit test coverage'
 
-      # TODO replace branches: '*' with branches: 'main' before pr merge
+      # TODO remove test-browser-mocked before pr merge
       - name: ⚙️ Generating coverage badges
         uses: jpb06/coverage-badges-action@latest
         with:
-          branches: '*'
+          branches: main,test-browser-mocked
           badges-icon: vitest
           output-folder: .github/badges/unit
           badges-labels-prefix: Test coverage (unit)
@@ -62,7 +64,9 @@ jobs:
       options: --user 1001
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
 
       - name: Install pnpm
         uses: pnpm/action-setup@v4
@@ -90,7 +94,7 @@ jobs:
       - name: ⚙️ Generating coverage badges
         uses: jpb06/coverage-badges-action@latest
         with:
-          branches: '*'
+          branches: main,test-browser-mocked
           badges-icon: vitest
           output-folder: .github/badges/browser
           badges-labels-prefix: Test coverage (browser)
