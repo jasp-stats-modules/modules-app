@@ -1,0 +1,103 @@
+[
+  {
+    "name": "jaspAnova",
+    "shortDescriptionHTML": "Test Module 1",
+    "releaseSource": "jasp-stats-modules/jaspAnova",
+    "organization": "jasp-stats",
+    "releases": [
+      {
+        "publishedAt": "2025-01-01T00:00:00Z",
+        "jaspVersionRange": ">=0.95.1",
+        "version": "0.95.5",
+        "assets": [
+          {
+            "downloadUrl": "https://github.com/test/test/releases/download/v0.95.5/test1_MacOS_arm64.JASPModule",
+            "downloadCount": 10,
+            "architecture": "MacOS_arm64"
+          }
+        ]
+      }
+    ],
+    "preReleases": [
+      {
+        "publishedAt": "2025-01-15T00:00:00Z",
+        "jaspVersionRange": ">=0.95.1",
+        "version": "0.96.0-beta.1",
+        "assets": [
+          {
+            "downloadUrl": "https://github.com/test/test/releases/download/v0.96.0-beta.1/test1_MacOS_arm64.JASPModule",
+            "downloadCount": 5,
+            "architecture": "MacOS_arm64"
+          }
+        ]
+      }
+    ],
+    "channels": ["jasp-modules"]
+  },
+  {
+    "name": "jaspBayesian",
+    "shortDescriptionHTML": "Test Module 2",
+    "releaseSource": "jasp-stats-modules/jaspBayesian",
+    "organization": "jasp-stats",
+    "releases": [
+      {
+        "publishedAt": "2025-01-01T00:00:00Z",
+        "jaspVersionRange": ">=0.95.1",
+        "version": "0.95.5",
+        "assets": [
+          {
+            "downloadUrl": "https://github.com/test/test/releases/download/v0.95.5/test2_MacOS_arm64.JASPModule",
+            "downloadCount": 10,
+            "architecture": "MacOS_arm64"
+          }
+        ]
+      }
+    ],
+    "preReleases": [],
+    "channels": ["jasp-modules"]
+  },
+  {
+    "name": "jaspDescriptives",
+    "shortDescriptionHTML": "Test Module 3",
+    "releaseSource": "jasp-stats-modules/jaspDescriptives",
+    "organization": "jasp-stats",
+    "releases": [
+      {
+        "publishedAt": "2025-01-01T00:00:00Z",
+        "jaspVersionRange": ">=0.95.1",
+        "version": "0.95.5",
+        "assets": [
+          {
+            "downloadUrl": "https://github.com/test/test/releases/download/v0.95.5/test3_MacOS_arm64.JASPModule",
+            "downloadCount": 10,
+            "architecture": "MacOS_arm64"
+          }
+        ]
+      }
+    ],
+    "preReleases": [],
+    "channels": ["jasp-modules"]
+  },
+  {
+    "name": "jaspRegression",
+    "shortDescriptionHTML": "Test Module 4",
+    "releaseSource": "jasp-stats-modules/jaspRegression",
+    "organization": "jasp-stats",
+    "releases": [
+      {
+        "publishedAt": "2025-01-01T00:00:00Z",
+        "jaspVersionRange": ">=0.95.1",
+        "version": "0.95.5",
+        "assets": [
+          {
+            "downloadUrl": "https://github.com/test/test/releases/download/v0.95.5/test4_MacOS_arm64.JASPModule",
+            "downloadCount": 10,
+            "architecture": "MacOS_arm64"
+          }
+        ]
+      }
+    ],
+    "preReleases": [],
+    "channels": ["jasp-modules"]
+  }
+]
