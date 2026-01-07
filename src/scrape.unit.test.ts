@@ -199,7 +199,7 @@ describe('extractArchitectureFromUrl', () => {
       'https://github.com/owner/repo/releases/download/0.95.5_ab108567_R-4-5-1_Release/jaspAcceptanceSampling_0.95.5_Flatpak_x86_64_R-4-5-1.JASPModule',
       'Flatpak_x86_64',
     ],
-  ])('extracts %s from %s', (url, expected) => {
+  ])('from %s extracts %s', (url, expected) => {
     expect(extractArchitectureFromUrl(url)).toBe(expected);
   });
 

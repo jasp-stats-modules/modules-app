@@ -93,7 +93,7 @@ pnpm test --coverage --coverage.reportsDirectory=./coverage/unit
 pnpm test:browser run --coverage --coverage.reportsDirectory=./coverage/browser
 ```
 
-To keep track of code coverage over time the [./github/badges/](./github/badges/) directory is updated on each run on the main branch in the [GitHub Actions test workflow](.github/workflows/test.yml).
+To keep track of code coverage over time the [.github/badges/](.github/badges/) directory is updated on each run on the main branch in the [GitHub Actions test workflow](.github/workflows/test.yml).
 
 ## Linting and Formatting
 

@@ -13,7 +13,7 @@ concurrency:
   cancel-in-progress: true
 
 permissions:
-  contents: write
+  contents: write # Needed to commit coverage badges
   pull-requests: write  # Needed to write coverage report to PR comment
 
 jobs:
