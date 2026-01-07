@@ -278,12 +278,16 @@ describe('App component', () => {
       await expect.element(jaspAnovaCard).toBeInTheDocument();
 
       // Should have an Install button since Windows_x86-64 asset is available
-      const installButton = jaspAnovaCard.getByRole('link', { name: 'Install' });
+      const installButton = jaspAnovaCard.getByRole('link', {
+        name: 'Install',
+      });
       await expect.element(installButton).toBeInTheDocument();
-      await expect.element(installButton).toHaveAttribute(
-        'href',
-        'https://github.com/test/test/releases/download/v0.95.5/test1_Windows_x86-64.JASPModule',
-      );
+      await expect
+        .element(installButton)
+        .toHaveAttribute(
+          'href',
+          'https://github.com/test/test/releases/download/v0.95.5/test1_Windows_x86-64.JASPModule',
+        );
 
       // jaspAnova should be the only listitem since it's the only module with Windows_x86-64 asset
       const allListItems = screen.getByRole('listitem');
@@ -291,6 +295,4 @@ describe('App component', () => {
       expect(listItemElements.length).toBe(1);
     });
   });
-
-  
 });
