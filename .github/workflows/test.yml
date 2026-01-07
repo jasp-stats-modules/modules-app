@@ -50,7 +50,7 @@ jobs:
         uses: actions/upload-artifact@v6
         with:
           name: unit-coverage
-          path: coverage/unit/coverage-summary.json
+          path: coverage/coverage-summary.json
 
   browser-tests:
     runs-on: ubuntu-latest
@@ -88,7 +88,7 @@ jobs:
         uses: actions/upload-artifact@v6
         with:
           name: browser-coverage
-          path: coverage/browser/coverage-summary.json
+          path: coverage/coverage-summary.json
 
   badges:
     name: 'Generate and commit coverage badges'
