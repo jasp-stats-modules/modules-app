@@ -148,8 +148,8 @@ jobs:
         uses: peter-evans/create-pull-request@v8
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-          commit-message: 'Updating coverage badges [skip ci]'
-          branch: coverage/badges-${{ github.run_id }}
+          commit-message: 'Updating coverage badges'
+          branch: coverage-badges-${{ github.run_id }}
           title: 'Update coverage badges'
           body: 'Automated update of coverage badges (unit & browser).'
           labels: coverage
