@@ -14,6 +14,11 @@
             "downloadUrl": "https://github.com/test/test/releases/download/v0.95.5/test1_MacOS_arm64.JASPModule",
             "downloadCount": 10,
             "architecture": "MacOS_arm64"
+          },
+          {
+            "downloadUrl": "https://github.com/test/test/releases/download/v0.95.5/test1_Windows_x86-64.JASPModule",
+            "downloadCount": 25,
+            "architecture": "Windows_x86-64"
           }
         ]
       }
@@ -99,5 +104,28 @@
     ],
     "preReleases": [],
     "channels": ["jasp-modules"]
+  },
+  {
+    "name": "jaspRapid",
+    "shortDescriptionHTML": "Test Module on custom channel",
+    "releaseSource": "nlesc/jaspRapid",
+    "organization": "nlesc",
+    "homepageUrl": "https://github.com/nlesc/jaspRapid",
+    "releases": [
+      {
+        "publishedAt": "2025-01-05T00:00:00Z",
+        "jaspVersionRange": ">=0.95.1",
+        "version": "0.95.5",
+        "assets": [
+          {
+            "downloadUrl": "https://github.com/nlesc/jaspRapid/releases/download/v0.95.5/testRapid_MacOS_arm64.JASPModule",
+            "downloadCount": 15,
+            "architecture": "MacOS_arm64"
+          }
+        ]
+      }
+    ],
+    "preReleases": [],
+    "channels": ["test-modules"]
   }
 ]
