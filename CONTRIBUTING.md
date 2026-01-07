@@ -80,9 +80,20 @@ You can run the [browser tests](https://vitest.dev/guide/browser/) with:
 ```bash
 # Run once to install browser binaries
 pnpm exec playwright install chromium
-# Then run the browser tests
+# Then run the browser tests interactively
 pnpm test:browser
+# Or run tests once with
+pnpm test:browser run
 ```
+
+To get code coverage report run:
+
+```bash
+pnpm test --coverage --coverage.reportsDirectory=./coverage/unit
+pnpm test:browser run --coverage --coverage.reportsDirectory=./coverage/browser
+```
+
+To keep track of code coverage over time the [.github/badges/](.github/badges/) directory is updated on each run on the main branch in the [GitHub Actions test workflow](.github/workflows/test.yml).
 
 ## Linting and Formatting
 

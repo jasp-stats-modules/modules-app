@@ -12,51 +12,90 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
+permissions:
+  contents: write # Needed to commit coverage badges
+  pull-requests: write  # Needed to write coverage report to PR comment
+
 jobs:
   test:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
+      - name: 📥 Checkout repository
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
 
-      - name: Install pnpm
+      - name: 📦 Install pnpm
         uses: pnpm/action-setup@v4
         with:
           version: 10
 
-      - name: Use Node.js
+      - name: 🟢 Use Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '22.18.0'
           cache: "pnpm"
 
-      - name: Install dependencies
+      - name: ⬇️ Install dependencies
         run: pnpm install
 
-      - name: Run tests
-        run: pnpm test
+      - name: 🧪 Run unit tests with coverage
+        run: pnpm test --coverage
+
+      - name: '📊 Report Coverage'
+        if: always() 
+        uses: davelosert/vitest-coverage-report-action@v2
+        with:
+          name: 'Unit test coverage'
+
+      - name: 🎖️ Generating coverage badges
+        uses: jpb06/coverage-badges-action@latest
+        with:
+          branches: main
+          badges-icon: vitest
+          output-folder: .github/badges/unit
+          badges-labels-prefix: Test coverage (unit)
+          commit-message: 'Updating unit test coverage badges [skip ci]'
+
   browser-tests:
     runs-on: ubuntu-latest
     container:
       image: mcr.microsoft.com/playwright:v1.57.0-noble
       options: --user 1001
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
+      - name: 📥 Checkout repository
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
 
-      - name: Install pnpm
+      - name: 📦 Install pnpm
         uses: pnpm/action-setup@v4
         with:
           version: 10
 
-      - name: Use Node.js
+      - name: 🟢 Use Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '22.18.0'
           cache: "pnpm"
 
-      - name: Install dependencies
+      - name: ⬇️ Install dependencies
         run: pnpm install
     
-      - name: Run browser tests
-        run: pnpm test:browser
+      - name: 🧪 Run browser tests with coverage
+        run: pnpm test:browser run --coverage
+
+      - name: '📊 Report Coverage'
+        if: always() 
+        uses: davelosert/vitest-coverage-report-action@v2
+        with:
+          name: 'Browser test coverage'
+
+      - name: '🎖️ Generating coverage badges'
+        uses: jpb06/coverage-badges-action@latest
+        with:
+          branches: main
+          badges-icon: vitest
+          output-folder: .github/badges/browser
+          badges-labels-prefix: Test coverage (browser)
+          commit-message: 'Updating browser test coverage badges [skip ci]'

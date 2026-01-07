@@ -7,14 +7,20 @@ import { JaspInfoProvider } from './useInfo';
 
 export const queryClient = new QueryClient();
 
+export function NuqslessWrapper({ children }: { children: React.ReactNode }) {
+  return (
+    <IntlayerProvider>
+      <QueryClientProvider client={queryClient}>
+        <JaspInfoProvider>{children}</JaspInfoProvider>
+      </QueryClientProvider>
+    </IntlayerProvider>
+  );
+}
+
 export function Wrapper({ children }: { children: React.ReactNode }) {
   return (
     <NuqsAdapter defaultOptions={{ clearOnDefault: false }}>
-      <IntlayerProvider>
-        <QueryClientProvider client={queryClient}>
-          <JaspInfoProvider>{children}</JaspInfoProvider>
-        </QueryClientProvider>
-      </IntlayerProvider>
+      <NuqslessWrapper>{children}</NuqslessWrapper>
     </NuqsAdapter>
   );
 }
