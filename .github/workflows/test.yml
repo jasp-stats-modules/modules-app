@@ -22,8 +22,6 @@ jobs:
     steps:
       - name: 📥 Checkout repository
         uses: actions/checkout@v6
-        with:
-          fetch-depth: 0
 
       - name: 📦 Install pnpm
         uses: pnpm/action-setup@v4
@@ -31,7 +29,7 @@ jobs:
           version: 10
 
       - name: 🟢 Use Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v6
         with:
           node-version: '22.18.0'
           cache: "pnpm"
@@ -48,14 +46,11 @@ jobs:
         with:
           name: 'Unit test coverage'
 
-      - name: 🎖️ Generating coverage badges
-        uses: jpb06/coverage-badges-action@latest
+      - name: 📦 Upload unit coverage data
+        uses: actions/upload-artifact@v6
         with:
-          branches: main
-          badges-icon: vitest
-          output-folder: .github/badges/unit
-          badges-labels-prefix: Test coverage (unit)
-          commit-message: 'Updating unit test coverage badges [skip ci]'
+          name: unit-coverage
+          path: coverage/unit/coverage-summary.json
 
   browser-tests:
     runs-on: ubuntu-latest
@@ -65,8 +60,6 @@ jobs:
     steps:
       - name: 📥 Checkout repository
         uses: actions/checkout@v6
-        with:
-          fetch-depth: 0
 
       - name: 📦 Install pnpm
         uses: pnpm/action-setup@v4
@@ -74,7 +67,7 @@ jobs:
           version: 10
 
       - name: 🟢 Use Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v6
         with:
           node-version: '22.18.0'
           cache: "pnpm"
@@ -91,11 +84,72 @@ jobs:
         with:
           name: 'Browser test coverage'
 
-      - name: '🎖️ Generating coverage badges'
-        uses: jpb06/coverage-badges-action@latest
+      - name: 📦 Upload browser coverage data
+        uses: actions/upload-artifact@v6
         with:
+          name: browser-coverage
+          path: coverage/browser/coverage-summary.json
+
+  badges:
+    name: 'Generate and commit coverage badges'
+    if: github.ref == 'refs/heads/main'
+    needs: [test, browser-tests]
+    runs-on: ubuntu-latest
+    steps:
+      - name: 📥 Checkout repository
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - name: � Download unit coverage data
+        uses: actions/download-artifact@v7
+        with:
+          name: unit-coverage
+          path: coverage/unit/
+
+      - name: 📦 Download browser coverage data
+        uses: actions/download-artifact@v7
+        with:
+          name: browser-coverage
+          path: coverage/browser/
+
+      - name: � Install pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10
+
+      - name: 🟢 Use Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: '22.18.0'
+          cache: "pnpm"
+
+      - name: 🎖️ Generating unit test coverage badges
+        uses: jpb06/coverage-badges-action@v1.4.6
+        with:
+          no-commit: true
+          branches: main
+          badges-icon: vitest
+          output-folder: .github/badges/unit
+          badges-labels-prefix: Test coverage (unit)
+          coverage-summary-path: coverage/unit/coverage-summary.json
+
+      - name: 🎖️ Generating browser test coverage badges
+        uses: jpb06/coverage-badges-action@v1.4.6
+        with:
+          no-commit: true
           branches: main
           badges-icon: vitest
           output-folder: .github/badges/browser
           badges-labels-prefix: Test coverage (browser)
-          commit-message: 'Updating browser test coverage badges [skip ci]'
+          coverage-summary-path: coverage/browser/coverage-summary.json
+
+      - name: 📝 Create PR with badges
+        uses: peter-evans/create-pull-request@v8
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          commit-message: 'Updating coverage badges [skip ci]'
+          branch: coverage/badges-${{ github.run_id }}
+          title: 'Update coverage badges'
+          body: 'Automated update of coverage badges (unit & browser).'
+          labels: coverage
