@@ -46,7 +46,7 @@ jobs:
         with:
           name: 'Unit test coverage'
 
-      - name: 📦 Upload unit coverage data
+      - name: 💾 Upload unit coverage data
         uses: actions/upload-artifact@v6
         with:
           name: unit-coverage
@@ -84,7 +84,7 @@ jobs:
         with:
           name: 'Browser test coverage'
 
-      - name: 📦 Upload browser coverage data
+      - name: 💾 Upload browser coverage data
         uses: actions/upload-artifact@v6
         with:
           name: browser-coverage
@@ -101,19 +101,19 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: � Download unit coverage data
+      - name: 📂 Download unit coverage data
         uses: actions/download-artifact@v7
         with:
           name: unit-coverage
           path: coverage/unit/
 
-      - name: 📦 Download browser coverage data
+      - name: 📂 Download browser coverage data
         uses: actions/download-artifact@v7
         with:
           name: browser-coverage
           path: coverage/browser/
 
-      - name: � Install pnpm
+      - name: 📦 Install pnpm
         uses: pnpm/action-setup@v4
         with:
           version: 10
