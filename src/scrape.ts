@@ -146,7 +146,7 @@ export function batchedArray<T>(array: T[], size: number): T[][] {
   return batches;
 }
 
-async function releaseAssetsPaged(
+export async function releaseAssetsPaged(
   repo2channels: Repo2Channels,
   pageSize = 10,
   octokit: InstanceType<typeof MyOctokit>,
@@ -419,7 +419,7 @@ async function releaseAssets(
     });
 }
 
-function logReleaseStatistics(repositories: Repository[]) {
+export function logReleaseStatistics(repositories: Repository[]): string {
   let totalReleases = 0;
   let totalPreReleases = 0;
   let totalAssets = 0;
@@ -440,16 +440,17 @@ function logReleaseStatistics(repositories: Repository[]) {
   });
   const avgAssetsPerRelease =
     countedReleases > 0 ? totalAssets / countedReleases : 0;
-  console.info('Repositories:', repositories.length);
-  console.info('Total releases:', totalReleases);
-  console.info('Total pre-releases:', totalPreReleases);
-  // If avgAssetsPerRelease is not an int, then there is a release with not all architectures
-  console.info(
-    'Average number of assets per release:',
-    avgAssetsPerRelease % 1 === 0
-      ? avgAssetsPerRelease
-      : chalk.red(avgAssetsPerRelease.toFixed(2)),
-  );
+  const lines = [
+    `Repositories: ${repositories.length}`,
+    `Total releases: ${totalReleases}`,
+    `Total pre-releases: ${totalPreReleases}`,
+    `Average number of assets per release: ${
+      avgAssetsPerRelease % 1 === 0
+        ? avgAssetsPerRelease
+        : chalk.red(avgAssetsPerRelease.toFixed(2))
+    }`,
+  ];
+  return lines.join('\n');
 }
 
 function invertRepoToChannels(
@@ -472,12 +473,14 @@ function invertRepoToChannels(
   return channel2repos;
 }
 
-function logChannelStats(repo2channels: Repo2Channels) {
+export function logChannelStats(repo2channels: Repo2Channels): string {
   const channel2repos = invertRepoToChannels(repo2channels);
-  console.info('Found', Object.keys(channel2repos).length, 'channels');
+  const lines: string[] = [];
+  lines.push(`Found ${Object.keys(channel2repos).length} channels`);
   for (const [channel, repos] of Object.entries(channel2repos)) {
-    console.info(' - ', channel, ':', repos.length);
+    lines.push(` - ${channel}: ${repos.length}`);
   }
+  return lines.join('\n');
 }
 
 async function scrape(
@@ -489,11 +492,11 @@ async function scrape(
 
   console.info('Fetching submodules from', `${owner}/${repo}`);
   const repo2channels = await downloadSubmodules(owner, repo, octokit);
-  logChannelStats(repo2channels);
+  console.info(logChannelStats(repo2channels));
   console.info('Fetching release assets');
   const repositories = await releaseAssetsPaged(repo2channels, 10, octokit);
 
-  logReleaseStatistics(repositories);
+  console.info(logReleaseStatistics(repositories));
 
   const body = JSON.stringify(repositories, null, 2);
   await fs.writeFile(output, body);
