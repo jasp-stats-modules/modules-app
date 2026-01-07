@@ -11,9 +11,8 @@ import ProgressBar from 'progress';
 import type { Asset, Release, Repository } from './types';
 
 const MyOctokit = Octokit.plugin(paginateGraphQL);
-const octokit = new MyOctokit({ auth: process.env.GITHUB_TOKEN });
 
-function url2nameWithOwner(url: string): string {
+export function url2nameWithOwner(url: string): string {
   // For example
   // "https://github.com/jasp-stats-modules/jaspBain.git" -> "jasp-stats-modules/jaspBain"
   const match = url.match(/github\.com\/([^/]+\/[^/]+)\.git/);
@@ -21,7 +20,7 @@ function url2nameWithOwner(url: string): string {
   return match[1];
 }
 
-function path2channel(path: string): string {
+export function path2channel(path: string): string {
   // For example
   // "jasp-modules/jaspAnova" -> "jasp-modules"
   return path.split('/')[0];
@@ -30,11 +29,12 @@ function path2channel(path: string): string {
 /**
  * Key is repository name with owner, value is array of channels
  */
-type Repo2Channels = Record<string, string[]>;
+export type Repo2Channels = Record<string, string[]>;
 
-async function downloadSubmodules(
+export async function downloadSubmodules(
   owner: string = 'jasp-stats-modules',
   repo: string = 'modules-registry',
+  octokit: InstanceType<typeof MyOctokit>,
 ): Promise<Repo2Channels> {
   interface GqlSubModule {
     name: string;
@@ -133,12 +133,12 @@ export function jaspVersionRangeFromDescription(
 }
 
 // TODO remove once all release descriptions fetched have valid yaml in frontmatter
-function addQuotesInDescription(input: string): string {
+export function addQuotesInDescription(input: string): string {
   const regex = /^(.*?): (>.*)$/m;
   return input.replace(regex, (_, p1, p2) => `${p1}: "${p2}"`);
 }
 
-function batchedArray<T>(array: T[], size: number): T[][] {
+export function batchedArray<T>(array: T[], size: number): T[][] {
   const batches: T[][] = [];
   for (let i = 0; i < array.length; i += size) {
     batches.push(array.slice(i, i + size));
@@ -149,6 +149,7 @@ function batchedArray<T>(array: T[], size: number): T[][] {
 async function releaseAssetsPaged(
   repo2channels: Repo2Channels,
   pageSize = 10,
+  octokit: InstanceType<typeof MyOctokit>,
 ): Promise<Repository[]> {
   const repositoriesWithOwners = Object.keys(repo2channels);
   const batches = batchedArray(repositoriesWithOwners, pageSize);
@@ -166,7 +167,7 @@ async function releaseAssetsPaged(
   );
   for (let i = 0; i < totalBatches; i++) {
     const batch = batches[i];
-    const rawBatchResults = await releaseAssets(batch);
+    const rawBatchResults = await releaseAssets(batch, 20, 20, octokit);
     const batchResults = associateChannelsWithRepositories(
       rawBatchResults,
       repo2channels,
@@ -287,13 +288,16 @@ export function latestReleasePerJaspVersionRange(
   return latest;
 }
 
-function versionFromTagName(tagName: string): string {
+export function versionFromTagName(tagName: string): string {
   // Expects the tagName to be in following format `<version>_<last-commit-of-tag>_R-<r-version-seperated-by-minus>`
   // For example for `0.95.0_2cbd8a6d_R-4-5-1` the version is `0.95.0`
   return tagName.slice(0, tagName.indexOf('_'));
 }
 
-function transformRelease(release: GqlRelease, nameWithOwner: string): Release {
+export function transformRelease(
+  release: GqlRelease,
+  nameWithOwner: string,
+): Release {
   const {
     tagName,
     releaseAssets,
@@ -332,6 +336,7 @@ async function releaseAssets(
   repos: Iterable<string>,
   firstReleases = 20,
   firstAssets = 20,
+  octokit: InstanceType<typeof MyOctokit>,
 ): Promise<Omit<Repository, 'channels'>[]> {
   const queries = Array.from(repos)
     .map((nameWithOwner, i) => {
@@ -480,11 +485,13 @@ async function scrape(
   repo: string = 'modules-registry',
   output: string = 'public/index.json',
 ) {
+  const octokit = new MyOctokit({ auth: process.env.GITHUB_TOKEN });
+
   console.info('Fetching submodules from', `${owner}/${repo}`);
-  const repo2channels = await downloadSubmodules(owner, repo);
+  const repo2channels = await downloadSubmodules(owner, repo, octokit);
   logChannelStats(repo2channels);
   console.info('Fetching release assets');
-  const repositories = await releaseAssetsPaged(repo2channels);
+  const repositories = await releaseAssetsPaged(repo2channels, 10, octokit);
 
   logReleaseStatistics(repositories);
 
