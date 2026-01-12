@@ -254,7 +254,7 @@ function ReleaseAction({
         <InstallButton asset={asset} translations={translations} />
       )}
       {allowPreRelease && latestPreRelease && (
-        <span className="text-muted-foreground text-xs">
+        <span className="text-muted-foreground text-xs whitespace-nowrap">
           {pre_release.value}
         </span>
       )}
