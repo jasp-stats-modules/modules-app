@@ -171,7 +171,7 @@ function InstallButton({
   return (
     <a
       href={asset.downloadUrl}
-      className="inline-flex items-center rounded bg-jasp-green px-3 py-1.5 font-medium text-primary text-xs whitespace-nowrap transition-colors duration-200 hover:bg-green-600 dark:hover:bg-green-800"
+      className="inline-flex items-center rounded bg-jasp-green px-3 py-1.5 font-medium text-primary text-xs whitespace-nowrap justify-center transition-colors duration-200 hover:bg-green-600 dark:hover:bg-green-800"
     >
       {install}
     </a>
@@ -192,7 +192,7 @@ function UpdateButton({
   return (
     <a
       href={asset.downloadUrl}
-      className="inline-flex items-center rounded bg-jasp-blue px-3 py-1.5 font-medium text-primary text-xs whitespace-nowrap transition-colors duration-200 hover:bg-blue-700 dark:bg-blue-700 dark:hover:bg-blue-800"
+      className="inline-flex items-center rounded bg-jasp-blue px-3 py-1.5 font-medium text-primary text-xs whitespace-nowrap justify-center transition-colors duration-200 hover:bg-blue-700 dark:bg-blue-700 dark:hover:bg-blue-800"
     >
       {update}
     </a>
@@ -218,7 +218,7 @@ function UninstallButton({
       type="button"
       onClick={doUninstall}
       title={uninstall_this_module.value}
-      className="mt-3 inline-flex items-center rounded bg-destructive px-3 py-1.5 font-medium text-primary text-xs whitespace-nowrap transition-colors duration-200 hover:bg-red-700 dark:bg-red-700 dark:hover:bg-red-800"
+      className="mt-3 inline-flex items-center rounded bg-destructive px-3 py-1.5 font-medium text-primary text-xs whitespace-nowrap justify-center transition-colors duration-200 hover:bg-red-700 dark:bg-red-700 dark:hover:bg-red-800"
     >
       {uninstall}
     </button>
@@ -254,7 +254,7 @@ function ReleaseAction({
         <InstallButton asset={asset} translations={translations} />
       )}
       {allowPreRelease && latestPreRelease && (
-        <span className="text-muted-foreground text-xs whitespace-nowrap">
+        <span className="text-muted-foreground text-xs whitespace-nowrap justify-center">
           {pre_release.value}
         </span>
       )}
