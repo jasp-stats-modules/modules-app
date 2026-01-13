@@ -10,11 +10,9 @@ on:
       second_scrape:
         description: 'Branch of https://github.com/jasp-stats-modules/modules-registry/ to scrape for second time (for example beta)'
         required: false
-        default: 'beta'
       second_output:
         description: 'Output file for second scrape (for example public/beta.json)'
         required: false
-        default: 'public/beta.json'
 
 # Only have one deployment in progress at a time
 concurrency:
