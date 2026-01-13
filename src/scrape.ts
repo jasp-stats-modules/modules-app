@@ -26,6 +26,111 @@ export function path2channel(path: string): string {
   return path.split('/')[0];
 }
 
+interface GqlSubModule {
+  gitUrl: string;
+  path: string;
+}
+
+/**
+ * Parse the content of a .gitmodules file and return array of submodule entries
+ */
+export function parseSubModulesFile(text: string): GqlSubModule[] {
+  const result: GqlSubModule[] = [];
+
+  let currentPath = '';
+  let currentUrl = '';
+
+  const lines = text.split(/\r?\n/);
+  for (const rawLine of lines) {
+    const line = rawLine.trim();
+    if (!line) continue;
+
+    // start of a new submodule block
+    if (line.startsWith('[submodule')) {
+      currentPath = '';
+      currentUrl = '';
+      continue;
+    }
+
+    const pathMatch = line.match(/^path\s*=\s*(.*)$/);
+    if (pathMatch) {
+      currentPath = pathMatch[1].trim();
+    }
+
+    const urlMatch = line.match(/^url\s*=\s*(.*)$/);
+    if (urlMatch) {
+      currentUrl = urlMatch[1].trim();
+    }
+
+    if (currentPath && currentUrl) {
+      // Only accept URLs in the form: https://github.com/<owner>/<repo>.git
+      const githubPattern = /^https:\/\/github\.com\/[^/]+\/[^^/]+\.git$/;
+      if (!githubPattern.test(currentUrl)) {
+        console.warn(
+          `Skipping submodule ${currentPath} with unsupported gitUrl: ${currentUrl}`,
+        );
+        currentPath = '';
+        currentUrl = '';
+        continue;
+      }
+
+      result.push({ path: currentPath, gitUrl: currentUrl });
+      currentPath = '';
+      currentUrl = '';
+    }
+  }
+
+  return result;
+}
+
+function submodulesToRepo2Channels(submodules: GqlSubModule[]): Repo2Channels {
+  const repo2channels: Repo2Channels = {};
+  for (const submodule of submodules) {
+    const channel = path2channel(submodule.path);
+    const nameWithOwner = url2nameWithOwner(submodule.gitUrl);
+    if (!repo2channels[nameWithOwner]) {
+      repo2channels[nameWithOwner] = [];
+    }
+    repo2channels[nameWithOwner].push(channel);
+  }
+  return repo2channels;
+}
+
+export async function downloadSubmodulesFromBranch(
+  owner: string,
+  repo: string,
+  branch: string,
+  octokit: InstanceType<typeof MyOctokit>,
+): Promise<Repo2Channels> {
+  interface Gql {
+    repository: {
+      object: {
+        text: string;
+      };
+    };
+  }
+
+  const query = dedent`
+    query getGitmodules($owner: String!, $repo: String!, $expression: String!) {
+      repository(owner: $owner, name: $repo) {
+        object(expression: $expression) {
+          ... on Blob { text }
+        }
+      }
+    }
+  `;
+
+  const expression = `${branch}:.gitmodules`;
+  const result = await octokit.graphql<Gql>(query, {
+    owner,
+    repo,
+    expression,
+  });
+  const text = result.repository.object.text;
+  const submodules = parseSubModulesFile(text);
+  return submodulesToRepo2Channels(submodules);
+}
+
 /**
  * Key is repository name with owner, value is array of channels
  */
@@ -36,12 +141,6 @@ export async function downloadSubmodules(
   repo: string = 'modules-registry',
   octokit: InstanceType<typeof MyOctokit>,
 ): Promise<Repo2Channels> {
-  interface GqlSubModule {
-    name: string;
-    gitUrl: string;
-    path: string;
-  }
-
   interface Gql {
     repository: {
       submodules: {
@@ -71,16 +170,7 @@ export async function downloadSubmodules(
     repo,
   });
   const submodules = result.repository.submodules.nodes;
-  const repo2channels: Repo2Channels = {};
-  for (const submodule of submodules) {
-    const channel = path2channel(submodule.path);
-    const nameWithOwner = url2nameWithOwner(submodule.gitUrl);
-    if (!repo2channels[nameWithOwner]) {
-      repo2channels[nameWithOwner] = [];
-    }
-    repo2channels[nameWithOwner].push(channel);
-  }
-  return repo2channels;
+  return submodulesToRepo2Channels(submodules);
 }
 
 export function extractArchitectureFromUrl(url: string): string {
@@ -484,6 +574,7 @@ export function logChannelStats(repo2channels: Repo2Channels): string {
 }
 
 async function scrape(
+  branch: string = 'main',
   owner: string = 'jasp-stats-modules',
   repo: string = 'modules-registry',
   output: string = 'public/index.json',
@@ -491,7 +582,17 @@ async function scrape(
   const octokit = new MyOctokit({ auth: process.env.GITHUB_TOKEN });
 
   console.info('Fetching submodules from', `${owner}/${repo}`);
-  const repo2channels = await downloadSubmodules(owner, repo, octokit);
+  let repo2channels: Repo2Channels;
+  if (branch !== 'main') {
+    repo2channels = await downloadSubmodulesFromBranch(
+      owner,
+      repo,
+      branch,
+      octokit,
+    );
+  } else {
+    repo2channels = await downloadSubmodules(owner, repo, octokit);
+  }
   console.info(logChannelStats(repo2channels));
   console.info('Fetching release assets');
   const repositories = await releaseAssetsPaged(repo2channels, 10, octokit);
@@ -505,5 +606,7 @@ async function scrape(
 
 // Allow running as a script
 if (import.meta.url === `file://${process.argv[1]}`) {
-  scrape();
+  const branch = process.argv[2] || 'main';
+  const output = process.argv[3] || 'public/index.json';
+  scrape(branch, 'jasp-stats-modules', 'modules-registry', output);
 }

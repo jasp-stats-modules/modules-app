@@ -71,7 +71,10 @@ To run this application locally, follow these steps:
 pnpm install
 # Scrape a list of JASP module and their release assets from GitHub and save as src/index.json
 export GITHUB_TOKEN=<your personal fine grained access token, only access to public repositories is needed and no other permissions>
+# To scrape modules HEAD of main branch of https://github.com/jasp-stats-modules/modules-registry/ to public/index.json
 pnpm scrape
+# Optionally: To scrape modules HEAD of beta branch to beta.json
+# pnpm run scrape beta public/beta.json
 # Start the development server
 pnpm start  
 ```

@@ -3,12 +3,21 @@ import { paginateGraphQL } from '@octokit/plugin-paginate-graphql';
 import chalk from 'chalk';
 import { graphql, HttpResponse } from 'msw';
 import { setupServer } from 'msw/node';
-import { afterAll, afterEach, beforeAll, describe, expect, test } from 'vitest';
+import {
+  afterAll,
+  afterEach,
+  beforeAll,
+  describe,
+  expect,
+  test,
+  vi,
+} from 'vitest';
 import type { GqlRelease } from './scrape';
 import {
   addQuotesInDescription,
   batchedArray,
   downloadSubmodules,
+  downloadSubmodulesFromBranch,
   extractArchitectureFromUrl,
   jaspVersionRangeFromDescription,
   latestReleasePerJaspVersionRange,
@@ -21,6 +30,102 @@ import {
   versionFromTagName,
 } from './scrape';
 import type { Repository } from './types';
+
+// Tests for branch-specific submodule fetching
+describe('downloadSubmodulesFromBranch', () => {
+  const MyOctokit = Octokit.plugin(paginateGraphQL);
+  const server = setupServer();
+
+  beforeAll(() => server.listen({ onUnhandledRequest: 'error' }));
+  afterEach(() => server.resetHandlers());
+  afterAll(() => server.close());
+
+  test('fetches and maps submodules from branch .gitmodules', async () => {
+    server.use(
+      graphql.query('getGitmodules', ({ variables }) => {
+        expect(variables.expression).toBe('feature-branch:.gitmodules');
+        return HttpResponse.json({
+          data: {
+            repository: {
+              object: {
+                text: `
+[submodule "jasp-modules/jaspAnova"]
+	path = jasp-modules/jaspAnova
+	url = https://github.com/jasp-stats-modules/jaspAnova.git
+
+[submodule "community-modules/jaspAcceptanceSampling"]
+	path = community-modules/jaspAcceptanceSampling
+	url = https://github.com/jasp-stats-modules/jaspAcceptanceSampling.git
+`,
+              },
+            },
+          },
+        });
+      }),
+    );
+
+    const octokit = new MyOctokit({ auth: 'fake-token' });
+    const result = await downloadSubmodulesFromBranch(
+      'jasp-stats-modules',
+      'modules-registry',
+      'feature-branch',
+      octokit,
+    );
+
+    expect(result).toEqual({
+      'jasp-stats-modules/jaspAnova': ['jasp-modules'],
+      'jasp-stats-modules/jaspAcceptanceSampling': ['community-modules'],
+    });
+  });
+
+  test('ignores malformed entries and non-github-https urls', async () => {
+    server.use(
+      graphql.query('getGitmodules', () => {
+        return HttpResponse.json({
+          data: {
+            repository: {
+              object: {
+                text: `
+[submodule "jasp-modules/jaspAnova"]
+	path = jasp-modules/jaspAnova
+	url = https://github.com/jasp-stats-modules/jaspAnova.git
+
+[submodule "bad-entry"]
+	path = 
+	url = not-a-url
+
+[submodule "other-entry"]
+	path = other-modules/jaspOther
+	url = git@github.com:someowner/somerepo.git
+`,
+              },
+            },
+          },
+        });
+      }),
+    );
+
+    const warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
+
+    const octokit = new MyOctokit({ auth: 'fake-token' });
+    const result = await downloadSubmodulesFromBranch(
+      'jasp-stats-modules',
+      'modules-registry',
+      'main',
+      octokit,
+    );
+
+    expect(result).toEqual({
+      'jasp-stats-modules/jaspAnova': ['jasp-modules'],
+    });
+
+    expect(warnSpy).toHaveBeenCalledWith(
+      expect.stringContaining('Skipping submodule other-modules/jaspOther'),
+    );
+
+    warnSpy.mockRestore();
+  });
+});
 
 describe('url2nameWithOwner', () => {
   test('extracts owner and repo from GitHub URL', () => {
