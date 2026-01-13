@@ -6,6 +6,15 @@ on:
     branches:
       - main
   workflow_dispatch:
+    inputs:
+      second_scrape:
+        description: 'Branch of https://github.com/jasp-stats-modules/modules-registry/ to scrape for second time (for example beta)'
+        required: false
+        default: 'beta'
+      second_output:
+        description: 'Output file for second scrape (for example public/beta.json)'
+        required: false
+        default: 'public/beta.json'
 
 # Only have one deployment in progress at a time
 concurrency:
@@ -35,6 +44,12 @@ jobs:
 
       - name: Run scrape
         run: pnpm run scrape
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Run scrape for branch (workflow_dispatch only)
+        if: ${{ github.event_name == 'workflow_dispatch' }}
+        run: pnpm run scrape ${{ github.event.inputs.second_scrape }} ${{ github.event.inputs.second_output }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     
