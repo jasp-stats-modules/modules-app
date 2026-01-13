@@ -47,7 +47,7 @@ jobs:
 
       - name: Run scrape for branch (workflow_dispatch only)
         if: ${{ github.event_name == 'workflow_dispatch' }}
-        run: pnpm run scrape ${{ github.event.inputs.second_scrape }} ${{ github.event.inputs.second_output }}
+        run: sleep 90 && pnpm run scrape ${{ github.event.inputs.second_scrape }} ${{ github.event.inputs.second_output }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     
