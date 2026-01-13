@@ -48,7 +48,7 @@ Use the "Run workflow" button to trigger the workflow manually.
 
 To get a list of available JASP modules, it does the following with the help of the `src/scrape.ts` script:
 
-1. Fetches the git submodules of the https://github.com/jasp-stats-modules/modules-registry repository.
+1. Fetches the git submodules of HEAD of main branch of the https://github.com/jasp-stats-modules/modules-registry repository.
    - the directory in which a submodule is located is the channel
 2. For each submodule fetches its releases
    1. Fetches the release data, paged per 100 repositories using GitHub GraphQL API
@@ -60,7 +60,10 @@ To get a list of available JASP modules, it does the following with the help of 
       ---
       ```
    4. Split releases into latest release for each JASP version range and latest pre release.
-3. Saves data in `src/index.json` for the web application to use
+3. Saves data in `public/index.json` for the web application to use
+
+If you want to scrape modules from an additional branch (e.g., beta) you can trigger the deploy workflow manually and specify the branch and output catalog file path.
+You can then view that catalog with `https://module-library.jasp-stats.org/?c=<catalog path without public/>`.
 
 # Getting Started
 
@@ -69,9 +72,11 @@ To run this application locally, follow these steps:
 ```bash
 # Install dependencies
 pnpm install
-# Scrape a list of JASP module and their release assets from GitHub and save as src/index.json
 export GITHUB_TOKEN=<your personal fine grained access token, only access to public repositories is needed and no other permissions>
+# Scrape a list of JASP module and their release assets from HEAD of main branch of https://github.com/jasp-stats-modules/modules-registry/ and save as public/index.json
 pnpm scrape
+# Optionally: To scrape modules HEAD of beta branch to beta.json
+# pnpm run scrape beta public/beta.json
 # Start the development server
 pnpm start  
 ```
