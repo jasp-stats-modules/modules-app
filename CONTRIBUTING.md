@@ -31,8 +31,99 @@ This section is for maintainers of the package.
 To develop/test the Qt WebChannel integration, you must run the web app inside JASP stats desktop application.
 
 1. Start development server with `pnpm dev --host 0.0.0.0`.
-2. In ../jasp-desktop/Desktop/components/JASP/Widgets/ModulesMenu.qml file in WebEngineView section, set **url** to url that is accessable by JASP desktop and comment out the production url. For example "http://172.17.0.1:3000"
-5. Follow JASP compile and run instructions at https://github.com/jasp-escience/jasp-desktop/blob/webchannel-test/Docs/development/jasp-build-guide-linux.md#build--run-inside-the-container .
-6. Open the module menu. You should see your web app loading inside JASP with [HMR](https://vite.dev/guide/features.html#hot-module-replacement).
+2. Compile JASP using instructions at https://github.com/jasp-escience/jasp-desktop/blob/webchannel-test/Docs/development/jasp-build-guide-linux.md#build--run-inside-the-container .
+3. Start JASP desktop application.
+4. In Preferences > Advanced, set **Module library URL** to url that is accessable by JASP desktop. For example "http://172.17.0.1:3000"
+5. Open the module menu. You should see your web app loading inside JASP with [HMR](https://vite.dev/guide/features.html#hot-module-replacement).
 
-<!-- TODO adjust build instructions url to main branch when merged. -->
+<!-- TODO adjust build instructions url to main repo and branch when merged. -->
+
+## Technology Stack
+
+The web application is a [single page application (SPA)](https://en.wikipedia.org/wiki/Single-page_application) that is built
+with [React](https://reactjs.org/) and [TypeScript](https://www.typescriptlang.org/) and uses:
+
+- [Vite](https://vitejs.dev/) as the build tool
+- [pnpm](https://pnpm.io/) as the package manager
+- [Tailwind CSS](https://tailwindcss.com/) for styling
+- [nuqs](https://nuqs.dev/) for URL query string parsing
+- [Qt WebChannel](https://doc.qt.io/qt-6/qtwebchannel-index.html) for communication between the web app and the JASP desktop app
+- [biome](https://biomejs.dev/) for linting and formatting
+- [intlayer](https://intlayer.org/) for multi language support. Unique texts of modules themselves are not translated.
+- [Vitest](https://vitest.dev/) for testing both unit and browser tests
+
+The [scrape script](./src/scrape.ts) is a Node.js script that:
+
+- Fetches data from the [GitHub GraphQL API](https://docs.github.com/en/graphql) to get available JASP modules and their release assets
+
+## Building For Production
+
+To build run:
+
+```bash
+pnpm scrape
+pnpm build
+```
+
+The built files will be in the `dist` folder, can be hosted on any static file server like GitHub Pages or use `pnpm serve` to host locally.
+
+## Testing
+
+You can run the unit tests with:
+
+```bash
+pnpm test
+```
+
+You can run the [browser tests](https://vitest.dev/guide/browser/) with:
+
+```bash
+# Run once to install browser binaries
+pnpm exec playwright install chromium
+# Then run the browser tests interactively
+pnpm test:browser
+# Or run tests once with
+pnpm test:browser run
+```
+
+To get code coverage report run:
+
+```bash
+pnpm test --coverage --coverage.reportsDirectory=./coverage/unit
+pnpm test:browser run --coverage --coverage.reportsDirectory=./coverage/browser
+```
+
+To keep track of code coverage over time the [.github/badges/](.github/badges/) directory is updated on each run on the main branch in the [GitHub Actions test workflow](.github/workflows/test.yml).
+
+## Linting and Formatting
+
+Can be typechecked with:
+
+```bash
+pnpm typecheck
+```
+
+Can be formatted and linted with:
+
+```bash
+pnpm check
+```
+
+## Multi language Support
+
+The `./intlayer.config.ts` file contains list of supported locales.
+Translations are stored in `src/**/*.content.tsx` files.
+
+The linting is done with TypeScript.
+Types for translations can be generated with:
+
+- `pnpm dev` or
+- `pnpm typecheck` or
+- `pnpx intlayer build` or
+- [VS code extension](https://intlayer.org/doc/vs-code-extension)
+
+## AI Disclaimer
+
+The documentation/software code in this repository has been partly generated and/or refined using
+GitHub CoPilot. All AI-output has been verified for correctness,
+accuracy and completeness, adapted where needed, and approved by the author.

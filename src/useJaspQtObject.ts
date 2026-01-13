@@ -1,6 +1,8 @@
 import { useQuery } from '@tanstack/react-query';
 import { QWebChannel } from './qwebchannel';
 
+// This interface should be in sync with what JASP collects
+// in Desktop/modules/modulelibrary.cpp:getEnvironmentInfo
 export interface Info {
   version: string;
   arch: string;
@@ -9,6 +11,7 @@ export interface Info {
   font: string | null;
   language: string;
   installedModules: Record<string, string>;
+  uninstallableModules: string[];
 }
 
 interface QtSignal<T> {
@@ -52,9 +55,11 @@ export async function jaspQtObject(): Promise<JaspObject | null> {
       return new Promise<Info>((resolve, reject) => {
         try {
           moduleStoreApi.info((info: Info) => {
+            console.log('Received info from Qt:', info);
             resolve(info);
           });
         } catch (error) {
+          console.error('Error while fetching info from Qt:', error);
           reject(error);
         }
       });
@@ -84,6 +89,7 @@ async function createQtWebChannel(
         resolve(channel);
       });
     } catch (error) {
+      console.error('Error while creating Qt WebChannel:', error);
       reject(error);
     }
   });
@@ -93,5 +99,10 @@ export function useJaspQtObject() {
   return useQuery({
     queryKey: ['jaspQtObject'],
     queryFn: jaspQtObject,
+    staleTime: Number.POSITIVE_INFINITY, // Never consider data stale
+    gcTime: Number.POSITIVE_INFINITY, // Never garbage collect
+    refetchOnMount: false,
+    refetchOnWindowFocus: false,
+    refetchOnReconnect: false,
   });
 }

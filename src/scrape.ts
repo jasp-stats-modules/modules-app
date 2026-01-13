@@ -11,9 +11,8 @@ import ProgressBar from 'progress';
 import type { Asset, Release, Repository } from './types';
 
 const MyOctokit = Octokit.plugin(paginateGraphQL);
-const octokit = new MyOctokit({ auth: process.env.GITHUB_TOKEN });
 
-function url2nameWithOwner(url: string): string {
+export function url2nameWithOwner(url: string): string {
   // For example
   // "https://github.com/jasp-stats-modules/jaspBain.git" -> "jasp-stats-modules/jaspBain"
   const match = url.match(/github\.com\/([^/]+\/[^/]+)\.git/);
@@ -21,7 +20,7 @@ function url2nameWithOwner(url: string): string {
   return match[1];
 }
 
-function path2channel(path: string): string {
+export function path2channel(path: string): string {
   // For example
   // "jasp-modules/jaspAnova" -> "jasp-modules"
   return path.split('/')[0];
@@ -30,11 +29,12 @@ function path2channel(path: string): string {
 /**
  * Key is repository name with owner, value is array of channels
  */
-type Repo2Channels = Record<string, string[]>;
+export type Repo2Channels = Record<string, string[]>;
 
-async function downloadSubmodules(
+export async function downloadSubmodules(
   owner: string = 'jasp-stats-modules',
   repo: string = 'modules-registry',
+  octokit: InstanceType<typeof MyOctokit>,
 ): Promise<Repo2Channels> {
   interface GqlSubModule {
     name: string;
@@ -133,12 +133,12 @@ export function jaspVersionRangeFromDescription(
 }
 
 // TODO remove once all release descriptions fetched have valid yaml in frontmatter
-function addQuotesInDescription(input: string): string {
+export function addQuotesInDescription(input: string): string {
   const regex = /^(.*?): (>.*)$/m;
   return input.replace(regex, (_, p1, p2) => `${p1}: "${p2}"`);
 }
 
-function batchedArray<T>(array: T[], size: number): T[][] {
+export function batchedArray<T>(array: T[], size: number): T[][] {
   const batches: T[][] = [];
   for (let i = 0; i < array.length; i += size) {
     batches.push(array.slice(i, i + size));
@@ -146,9 +146,10 @@ function batchedArray<T>(array: T[], size: number): T[][] {
   return batches;
 }
 
-async function releaseAssetsPaged(
+export async function releaseAssetsPaged(
   repo2channels: Repo2Channels,
   pageSize = 10,
+  octokit: InstanceType<typeof MyOctokit>,
 ): Promise<Repository[]> {
   const repositoriesWithOwners = Object.keys(repo2channels);
   const batches = batchedArray(repositoriesWithOwners, pageSize);
@@ -166,7 +167,7 @@ async function releaseAssetsPaged(
   );
   for (let i = 0; i < totalBatches; i++) {
     const batch = batches[i];
-    const rawBatchResults = await releaseAssets(batch);
+    const rawBatchResults = await releaseAssets(batch, 20, 20, octokit);
     const batchResults = associateChannelsWithRepositories(
       rawBatchResults,
       repo2channels,
@@ -287,13 +288,16 @@ export function latestReleasePerJaspVersionRange(
   return latest;
 }
 
-function versionFromTagName(tagName: string): string {
+export function versionFromTagName(tagName: string): string {
   // Expects the tagName to be in following format `<version>_<last-commit-of-tag>_R-<r-version-seperated-by-minus>`
   // For example for `0.95.0_2cbd8a6d_R-4-5-1` the version is `0.95.0`
   return tagName.slice(0, tagName.indexOf('_'));
 }
 
-function transformRelease(release: GqlRelease, nameWithOwner: string): Release {
+export function transformRelease(
+  release: GqlRelease,
+  nameWithOwner: string,
+): Release {
   const {
     tagName,
     releaseAssets,
@@ -332,6 +336,7 @@ async function releaseAssets(
   repos: Iterable<string>,
   firstReleases = 20,
   firstAssets = 20,
+  octokit: InstanceType<typeof MyOctokit>,
 ): Promise<Omit<Repository, 'channels'>[]> {
   const queries = Array.from(repos)
     .map((nameWithOwner, i) => {
@@ -414,7 +419,7 @@ async function releaseAssets(
     });
 }
 
-function logReleaseStatistics(repositories: Repository[]) {
+export function logReleaseStatistics(repositories: Repository[]): string {
   let totalReleases = 0;
   let totalPreReleases = 0;
   let totalAssets = 0;
@@ -435,16 +440,17 @@ function logReleaseStatistics(repositories: Repository[]) {
   });
   const avgAssetsPerRelease =
     countedReleases > 0 ? totalAssets / countedReleases : 0;
-  console.info('Repositories:', repositories.length);
-  console.info('Total releases:', totalReleases);
-  console.info('Total pre-releases:', totalPreReleases);
-  // If avgAssetsPerRelease is not an int, then there is a release with not all architectures
-  console.info(
-    'Average number of assets per release:',
-    avgAssetsPerRelease % 1 === 0
-      ? avgAssetsPerRelease
-      : chalk.red(avgAssetsPerRelease.toFixed(2)),
-  );
+  const lines = [
+    `Repositories: ${repositories.length}`,
+    `Total releases: ${totalReleases}`,
+    `Total pre-releases: ${totalPreReleases}`,
+    `Average number of assets per release: ${
+      avgAssetsPerRelease % 1 === 0
+        ? avgAssetsPerRelease
+        : chalk.red(avgAssetsPerRelease.toFixed(2))
+    }`,
+  ];
+  return lines.join('\n');
 }
 
 function invertRepoToChannels(
@@ -467,12 +473,14 @@ function invertRepoToChannels(
   return channel2repos;
 }
 
-function logChannelStats(repo2channels: Repo2Channels) {
+export function logChannelStats(repo2channels: Repo2Channels): string {
   const channel2repos = invertRepoToChannels(repo2channels);
-  console.info('Found', Object.keys(channel2repos).length, 'channels');
+  const lines: string[] = [];
+  lines.push(`Found ${Object.keys(channel2repos).length} channels`);
   for (const [channel, repos] of Object.entries(channel2repos)) {
-    console.info(' - ', channel, ':', repos.length);
+    lines.push(` - ${channel}: ${repos.length}`);
   }
+  return lines.join('\n');
 }
 
 async function scrape(
@@ -480,13 +488,15 @@ async function scrape(
   repo: string = 'modules-registry',
   output: string = 'public/index.json',
 ) {
-  console.info('Fetching submodules from', `${owner}/${repo}`);
-  const repo2channels = await downloadSubmodules(owner, repo);
-  logChannelStats(repo2channels);
-  console.info('Fetching release assets');
-  const repositories = await releaseAssetsPaged(repo2channels);
+  const octokit = new MyOctokit({ auth: process.env.GITHUB_TOKEN });
 
-  logReleaseStatistics(repositories);
+  console.info('Fetching submodules from', `${owner}/${repo}`);
+  const repo2channels = await downloadSubmodules(owner, repo, octokit);
+  console.info(logChannelStats(repo2channels));
+  console.info('Fetching release assets');
+  const repositories = await releaseAssetsPaged(repo2channels, 10, octokit);
+
+  console.info(logReleaseStatistics(repositories));
 
   const body = JSON.stringify(repositories, null, 2);
   await fs.writeFile(output, body);

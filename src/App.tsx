@@ -1,61 +1,23 @@
-import { queryOptions, useQuery, useQueryClient } from '@tanstack/react-query';
-import { getHTMLTextDir } from 'intlayer';
+import { queryOptions, useQuery } from '@tanstack/react-query';
 import { House } from 'lucide-react';
-import {
-  parseAsBoolean,
-  parseAsJson,
-  parseAsString,
-  parseAsStringLiteral,
-  useQueryState,
-  useQueryStates,
-} from 'nuqs';
-import type { Dispatch, SetStateAction } from 'react';
+import { useQueryState } from 'nuqs';
+import type { Dispatch, ReactNode, SetStateAction } from 'react';
 import { useEffect, useState } from 'react';
-import { useIntlayer, useLocale } from 'react-intlayer';
-import { satisfies } from 'semver';
-import * as v from 'valibot';
+import { useIntlayer } from 'react-intlayer';
+import { useDebounceValue } from 'usehooks-ts';
 import { cn } from '@/lib/utils';
 import type { Asset, Release, Repository } from '@/types';
-import { type Info, insideQt, useJaspQtObject } from '@/useJaspQtObject';
+import { insideQt, useJaspQtObject } from '@/useJaspQtObject';
+import { useInfo } from './useInfo';
+import {
+  findReleaseThatSatisfiesInstalledJaspVersion,
+  useRelease,
+} from './useRelease';
+
+type AppTranslations = ReturnType<typeof useIntlayer<'app'>>;
 
 const defaultChannel = 'jasp-modules';
 const defaultCatalog = 'index.json';
-
-const defaultArchitecture = 'Windows_x86-64';
-const defaultInstalledVersion = '0.95.1';
-const defaultInstalledModules = () => ({});
-const installedModulesSchema = v.record(v.string(), v.string());
-const themeSchema = ['dark', 'light', 'system'] as const;
-const infoSearchParamKeys = {
-  version: parseAsString.withDefault(defaultInstalledVersion),
-  arch: parseAsString.withDefault(defaultArchitecture),
-  installedModules: parseAsJson(installedModulesSchema).withDefault(
-    defaultInstalledModules(),
-  ),
-  developerMode: parseAsBoolean.withDefault(false),
-  theme: parseAsStringLiteral(themeSchema).withDefault('system'),
-  language: parseAsString.withDefault('en'),
-  font: parseAsString,
-};
-
-function useInfoFromSearchParams(): Info {
-  const [queryStates, setQueryStates] = useQueryStates(infoSearchParamKeys, {
-    urlKeys: {
-      version: 'v',
-      arch: 'a',
-      theme: 't',
-      developerMode: 'p',
-      installedModules: 'i',
-      language: 'l',
-      font: 'f',
-    },
-  });
-  // biome-ignore lint/correctness/useExhaustiveDependencies: On mount show defaults in address bar
-  useEffect(() => {
-    setQueryStates(queryStates);
-  }, []);
-  return queryStates as Info;
-}
 
 async function getCatalog(
   catalogUrl: string,
@@ -79,11 +41,11 @@ async function getCatalog(
 function Loading() {
   const { loading } = useIntlayer('app');
   return (
-    <div className="flex h-screen items-center justify-center bg-gray-50 dark:bg-gray-900">
-      <div className="flex flex-col items-center rounded-lg border border-gray-200 bg-white p-6 shadow-sm transition-shadow duration-200 hover:shadow-md dark:border-gray-700 dark:bg-gray-800 dark:hover:shadow-lg">
-        <div className="text-gray-700 dark:text-gray-200">{loading}</div>
+    <div className="flex h-screen items-center justify-center bg-background text-foreground">
+      <div className="flex flex-col items-center rounded-lg border border-border bg-background p-6 shadow-sm transition-shadow duration-200 hover:shadow-md dark:hover:shadow-lg">
+        <div>{loading}</div>
         <div className="mt-3">
-          <span className="block h-10 w-10 animate-spin rounded-full border-4 border-blue-500 border-t-transparent"></span>
+          <span className="block h-10 w-10 animate-spin rounded-full border-4 border-accent-foreground border-t-transparent"></span>
         </div>
       </div>
     </div>
@@ -110,12 +72,9 @@ function ChannelSelector({
   const { select_channel } = useIntlayer('app');
   return (
     <fieldset
-      className={cn(
-        'mb-1 block rounded border border-gray-300 p-2 dark:border-gray-600',
-        className,
-      )}
+      className={cn('mb-1 block rounded border border-border p-2', className)}
     >
-      <legend className="mb-1 block font-medium text-gray-700 text-xs dark:text-gray-300">
+      <legend className="mb-1 block font-medium text-xs">
         {select_channel}:
       </legend>
       <div className="flex flex-wrap gap-3">
@@ -164,7 +123,7 @@ function Checkbox({
   return (
     <label
       className={cn(
-        'flex items-center font-medium text-gray-700 text-xs dark:text-gray-300',
+        'flex items-center font-medium text-jasp-muted text-xs',
         className,
       )}
       title={description}
@@ -174,7 +133,7 @@ function Checkbox({
           type="checkbox"
           name={name}
           className={cn(
-            'peer h-4 w-4 appearance-none rounded border-2 border-gray-300 bg-white checked:border-blue-600 checked:bg-blue-600 focus:ring-2 focus:ring-blue-500 focus:ring-offset-0 dark:border-gray-600 dark:bg-gray-700 dark:focus:ring-blue-400 dark:checked:border-blue-500 dark:checked:bg-blue-500',
+            'peer size-4 shrink-0 rounded-[4px] border border-input shadow-xs outline-none transition-shadow focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 disabled:cursor-not-allowed disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-destructive/20 data-[state=checked]:border-primary data-[state=checked]:bg-primary data-[state=checked]:text-primary-foreground dark:bg-input/30 dark:data-[state=checked]:bg-primary dark:aria-invalid:ring-destructive/40',
             inputClassName,
           )}
           checked={checked}
@@ -198,38 +157,56 @@ function Checkbox({
   );
 }
 
-function InstallButton({ asset }: { asset?: Asset }) {
-  const { install } = useIntlayer('app');
+function InstallButton({
+  asset,
+  translations,
+}: {
+  asset?: Asset;
+  translations: AppTranslations;
+}) {
+  const { install } = translations;
   if (!asset) {
     return null;
   }
   return (
     <a
       href={asset.downloadUrl}
-      className="inline-flex items-center rounded bg-green-600 px-3 py-1.5 font-medium text-white text-xs transition-colors duration-200 hover:bg-green-700 dark:bg-green-700 dark:hover:bg-green-800"
+      className="inline-flex items-center rounded bg-jasp-green px-3 py-1.5 font-medium text-primary text-xs transition-colors duration-200 hover:bg-green-600 dark:hover:bg-green-800"
     >
       {install}
     </a>
   );
 }
 
-function UpdateButton({ asset }: { asset?: Asset }) {
-  const { update } = useIntlayer('app');
+function UpdateButton({
+  asset,
+  translations,
+}: {
+  asset?: Asset;
+  translations: AppTranslations;
+}) {
+  const { update } = translations;
   if (!asset) {
     return null;
   }
   return (
     <a
       href={asset.downloadUrl}
-      className="inline-flex items-center rounded bg-blue-600 px-3 py-1.5 font-medium text-white text-xs transition-colors duration-200 hover:bg-blue-700 dark:bg-blue-700 dark:hover:bg-blue-800"
+      className="inline-flex items-center rounded bg-jasp-blue px-3 py-1.5 font-medium text-primary text-xs transition-colors duration-200 hover:bg-blue-700 dark:bg-blue-700 dark:hover:bg-blue-800"
     >
       {update}
     </a>
   );
 }
 
-function UninstallButton({ moduleName }: { moduleName: string }) {
-  const { uninstall, uninstall_this_module } = useIntlayer('app');
+function UninstallButton({
+  moduleName,
+  translations,
+}: {
+  moduleName: string;
+  translations: AppTranslations;
+}) {
+  const { uninstall, uninstall_this_module } = translations;
   const { data: jasp } = useJaspQtObject();
 
   async function doUninstall() {
@@ -241,84 +218,11 @@ function UninstallButton({ moduleName }: { moduleName: string }) {
       type="button"
       onClick={doUninstall}
       title={uninstall_this_module.value}
-      className="mt-3 inline-flex items-center rounded bg-red-500 px-3 py-1.5 font-medium text-white text-xs transition-colors duration-200 hover:bg-red-700 dark:bg-red-700 dark:hover:bg-red-800"
+      className="mt-3 inline-flex items-center rounded bg-destructive px-3 py-1.5 font-medium text-primary text-xs transition-colors duration-200 hover:bg-red-700 dark:bg-red-700 dark:hover:bg-red-800"
     >
       {uninstall}
     </button>
   );
-}
-
-function findReleaseThatSatisfiesInstalledJaspVersion(
-  releases: Release[],
-  installed_version: string,
-): Release | undefined {
-  return releases.find((release) =>
-    satisfies(installed_version, release.jaspVersionRange ?? ''),
-  );
-}
-
-interface ReleaseStats {
-  latestRelease?: Release;
-  latestPreRelease?: Release;
-  latestAnyRelease?: Release;
-  asset?: Asset;
-  installedVersion?: string;
-  latestVersionInstalled: boolean;
-  canInstall: boolean;
-  canUpdate: boolean;
-}
-
-function useRelease(repo: Repository, allowPreRelease: boolean): ReleaseStats {
-  const { info } = useInfo();
-  return getReleaseInfo(
-    repo,
-    info.version,
-    allowPreRelease,
-    info.arch,
-    info.installedModules,
-  );
-}
-
-function getReleaseInfo(
-  repo: Repository,
-  installedJaspVersion: string,
-  allowPreRelease: boolean,
-  arch: string,
-  installedModules: { [x: string]: string },
-): ReleaseStats {
-  const latestRelease = findReleaseThatSatisfiesInstalledJaspVersion(
-    repo.releases,
-    installedJaspVersion,
-  );
-  const latestPreRelease = findReleaseThatSatisfiesInstalledJaspVersion(
-    repo.preReleases,
-    installedJaspVersion,
-  );
-  const latestAnyRelease =
-    allowPreRelease && latestPreRelease ? latestPreRelease : latestRelease;
-  const asset = latestAnyRelease?.assets.find((a) => a.architecture === arch);
-  const installedVersion = installedModules[repo.name];
-  const latestVersionInstalled =
-    installedVersion !== undefined &&
-    installedVersion === latestAnyRelease?.version;
-  const canInstall = !installedVersion || !latestVersionInstalled;
-  // tagName (d5d503cf_R-4-5-1) is not a semantic version, so we cannot
-  // tell if it can be updated or downgraded
-  // For now assume installed version can be updated
-  // TODO once tag name contains semantic version use semver to
-  // detect whether installed module can be upgraded/downgraded or is already latest
-  const canUpdate = !!installedVersion && !latestVersionInstalled;
-
-  return {
-    latestRelease,
-    latestPreRelease,
-    latestAnyRelease,
-    asset,
-    installedVersion,
-    latestVersionInstalled,
-    canInstall,
-    canUpdate,
-  };
 }
 
 function ReleaseAction({
@@ -326,62 +230,69 @@ function ReleaseAction({
   asset,
   canUpdate,
   canInstall,
+  canUninstall,
   allowPreRelease,
   latestPreRelease,
   latestVersionInstalled,
+  translations,
 }: {
   moduleName: string;
   asset: Asset;
   canUpdate: boolean;
   canInstall: boolean;
+  canUninstall: boolean;
   allowPreRelease: boolean;
   latestPreRelease?: Release;
   latestVersionInstalled: boolean;
+  translations: AppTranslations;
 }) {
-  const { pre_release, latest_version_installed, installed } =
-    useIntlayer('app');
+  const { pre_release, latest_version_installed, installed } = translations;
   return (
     <div className="flex flex-col">
-      {canUpdate && <UpdateButton asset={asset} />}
-      {canInstall && !canUpdate && <InstallButton asset={asset} />}
+      {canUpdate && <UpdateButton asset={asset} translations={translations} />}
+      {canInstall && !canUpdate && (
+        <InstallButton asset={asset} translations={translations} />
+      )}
       {allowPreRelease && latestPreRelease && (
-        <span className="text-gray-500 text-xs dark:text-gray-400">
-          {pre_release}
+        <span className="text-muted-foreground text-xs">
+          {pre_release.value}
         </span>
       )}
-      {insideQt && (canUpdate || latestVersionInstalled) && (
-        <UninstallButton moduleName={moduleName} />
+      {insideQt && canUninstall && (canUpdate || latestVersionInstalled) && (
+        <UninstallButton moduleName={moduleName} translations={translations} />
       )}
       {latestVersionInstalled && (
         <span
           title={latest_version_installed.value}
-          className="px-2 py-1.5 text-gray-500 text-xs dark:text-gray-400"
+          className="px-2 py-1.5 text-muted-foreground text-xs"
         >
-          {installed}
+          {installed.value}
         </span>
       )}
     </div>
   );
 }
 
-function ReleaseStats({
+export function ReleaseStats({
   installedVersion,
   latestVersion,
   latestPublishedAt,
   maintainer,
   downloads,
+  translations,
 }: {
   installedVersion?: string;
   latestVersion: string;
   latestPublishedAt: string;
   maintainer: string;
   downloads: number;
+  translations: AppTranslations;
 }) {
   const { release_stats_installed, release_stats_notinstalled, by_maintainer } =
-    useIntlayer('app');
+    translations;
   const publishedAt = new Date(latestPublishedAt).toLocaleDateString();
   return (
-    <div className="flex flex-row justify-between text-gray-500 text-xs dark:text-gray-400">
+    <div className="flex flex-row justify-between text-muted-foreground text-xs">
       <div>
         {installedVersion
           ? release_stats_installed({
@@ -401,8 +312,14 @@ function ReleaseStats({
   );
 }
 
-function RepositoryLinks({ homepageUrl }: { homepageUrl?: string }) {
-  const { go_to_home_page_of_module } = useIntlayer('app');
+function RepositoryLinks({
+  homepageUrl,
+  translations,
+}: {
+  homepageUrl?: string;
+  translations: AppTranslations;
+}) {
+  const { go_to_home_page_of_module } = translations;
   if (!homepageUrl) {
     return null;
   }
@@ -413,13 +330,19 @@ function RepositoryLinks({ homepageUrl }: { homepageUrl?: string }) {
       rel="noopener noreferrer"
       href={homepageUrl}
     >
-      <House size={12} />
+      <House size={12} className="text-foreground" />
     </a>
   );
 }
 
-function RepositoryChannels({ channels }: { channels: string[] }) {
-  const { channel: channelText } = useIntlayer('app');
+function RepositoryChannels({
+  channels,
+  translations,
+}: {
+  channels: string[];
+  translations: AppTranslations;
+}) {
+  const { channel: channelText } = translations;
   if (!channels || channels.length === 0) {
     return null;
   }
@@ -428,7 +351,10 @@ function RepositoryChannels({ channels }: { channels: string[] }) {
       {channels.map((channel) => (
         <span
           key={channel}
-          className="rounded-md bg-gray-50 px-2 py-0.5 text-gray-700 text-xs dark:bg-gray-900 dark:text-gray-400"
+          className={cn(
+            'inline-flex w-fit shrink-0 items-center justify-center gap-1 overflow-hidden whitespace-nowrap rounded-full border px-2 py-0.5 font-medium text-xs transition-[color,box-shadow] focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 aria-invalid:border-destructive aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 [&>svg]:pointer-events-none [&>svg]:size-3',
+            'border-transparent bg-secondary text-secondary-foreground [a&]:hover:bg-secondary/90',
+          )}
           title={channelText.value}
         >
           {channel}
@@ -437,12 +363,15 @@ function RepositoryChannels({ channels }: { channels: string[] }) {
     </div>
   );
 }
+
 function RepositoryCard({
   repo,
   allowPreRelease,
+  translations,
 }: {
   repo: Repository;
   allowPreRelease: boolean;
+  translations: AppTranslations;
 }) {
   const {
     latestPreRelease,
@@ -452,35 +381,50 @@ function RepositoryCard({
     latestVersionInstalled,
     canInstall,
     canUpdate,
+    canUninstall,
   } = useRelease(repo, allowPreRelease);
 
+  const cardId = `repo-card-${repo.name}`;
   return (
-    <div className="flex flex-col gap-2 rounded-lg border border-gray-200 bg-white p-3 shadow-sm transition-shadow duration-200 hover:shadow-md dark:border-gray-700 dark:bg-gray-800 dark:hover:shadow-lg">
+    <li
+      aria-labelledby={cardId}
+      className="flex flex-col gap-2 rounded-lg border border-border bg-card p-3 text-card-foreground shadow-sm transition-shadow duration-200 hover:shadow-md dark:hover:shadow-lg"
+    >
       <div className="flex items-start justify-between gap-2">
         <div className="flex flex-col gap-2">
-          <h3 className="font-semibold text-gray-900 text-lg dark:text-gray-100">
+          <h3 id={cardId} className="font-semibold text-lg">
             {repo.name}
           </h3>
           {repo.shortDescriptionHTML && (
-            <div className="prose prose-sm text-gray-600 text-sm dark:text-gray-300">
+            <div className="prose prose-sm text-sm">
               {repo.shortDescriptionHTML}
             </div>
           )}
           <div className="flex items-center gap-2">
-            <RepositoryLinks homepageUrl={repo.homepageUrl} />
-            <RepositoryChannels channels={repo.channels} />
+            <RepositoryLinks
+              homepageUrl={repo.homepageUrl}
+              translations={translations}
+            />
+            <RepositoryChannels
+              channels={repo.channels}
+              translations={translations}
+            />
           </div>
         </div>
-        {asset && (
+        {asset ? (
           <ReleaseAction
             moduleName={repo.name}
             asset={asset}
             canUpdate={canUpdate}
             canInstall={canInstall}
+            canUninstall={canUninstall}
             allowPreRelease={allowPreRelease}
             latestPreRelease={latestPreRelease}
             latestVersionInstalled={latestVersionInstalled}
+            translations={translations}
           />
+        ) : (
+          <span>No compatible asset found</span>
         )}
       </div>
       {latestAnyRelease && asset && (
@@ -490,9 +434,10 @@ function RepositoryCard({
           latestPublishedAt={latestAnyRelease.publishedAt}
           maintainer={repo.organization}
           downloads={asset.downloadCount}
+          translations={translations}
         />
       )}
-    </div>
+    </li>
   );
 }
 
@@ -507,15 +452,19 @@ function filterOnInstallableRepositories(
       repo.releases,
       installedJaspVersion,
     );
-    if (!latestRelease) {
-      // No compatible release found, trying pre-release
-      latestRelease = findReleaseThatSatisfiesInstalledJaspVersion(
+    if (allowPreRelease) {
+      // Assume pre-releases are newer than regular releases
+      // so use pre-release as latest
+      const latestPreRelease = findReleaseThatSatisfiesInstalledJaspVersion(
         repo.preReleases,
         installedJaspVersion,
       );
-      if (!allowPreRelease || !latestRelease) {
-        return false;
+      if (latestPreRelease) {
+        latestRelease = latestPreRelease;
       }
+    }
+    if (!latestRelease) {
+      return false;
     }
     const hasArch = latestRelease.assets.some(
       (a) => a.architecture === architecture,
@@ -569,6 +518,17 @@ function useDarkTheme(): boolean {
   return false;
 }
 
+function useTheme() {
+  const isDarkTheme = useDarkTheme();
+
+  useEffect(() => {
+    const root = window.document.documentElement;
+    root.classList.remove('light', 'dark');
+    const theme = isDarkTheme ? 'dark' : 'light';
+    root.classList.add(theme);
+  }, [isDarkTheme]);
+}
+
 function uniqueChannels(repositories: Repository[]): string[] {
   const channels = new Set<string>();
   for (const repo of repositories) {
@@ -588,56 +548,6 @@ function filterOnChannels(
   return repositories.filter((repo) =>
     repo.channels.some((ch) => selectedChannelsSet.has(ch)),
   );
-}
-
-function useInfo() {
-  // if app is running inside JASP, then
-  // info from Qt webchannel is used otherwise
-  // info from search params is used.
-  const infoFromSearchParams = useInfoFromSearchParams();
-  const { data: jasp, isFetched, error } = useJaspQtObject();
-
-  // Subscribe to environmentInfoChanged signal to update info
-  const queryClient = useQueryClient();
-  useEffect(() => {
-    if (!jasp?.environmentInfoChanged) return;
-    const callback = (data: Info) => {
-      queryClient.setQueryData(['jaspInfo'], data);
-    };
-    jasp.environmentInfoChanged.connect(callback);
-    return () => {
-      jasp.environmentInfoChanged.disconnect(callback);
-    };
-  }, [jasp, queryClient]);
-
-  // Fetch info
-  const {
-    data: info,
-    isFetched: isInfoFetched,
-    error: infoError,
-  } = useQuery({
-    queryKey: ['jaspInfo'],
-    queryFn: () => jasp?.info(),
-    enabled: insideQt && !!jasp && isFetched,
-  });
-
-  const { setLocale } = useLocale();
-  useEffect(() => {
-    const lang = info?.language || infoFromSearchParams.language;
-    setLocale(lang);
-    if (document) {
-      document.documentElement.lang = lang;
-      document.documentElement.dir = getHTMLTextDir(lang);
-    }
-  }, [info?.language, infoFromSearchParams.language, setLocale]);
-
-  if (!insideQt) {
-    return { info: infoFromSearchParams, isInfoFetched: true, error: null };
-  }
-  if (info === undefined) {
-    return { info: infoFromSearchParams, isInfoFetched: true, error: null };
-  }
-  return { info, isInfoFetched, error: error || infoError };
 }
 
 function sanitizeFontName(name: string | null): string | null {
@@ -680,26 +590,44 @@ function useFont() {
   }, [info.font]);
 }
 
+function JASPScrollBar({ children }: { children: ReactNode }) {
+  return (
+    <div className="border-jasp-gray-darker border-r-1">
+      <div className="scrollbar-thin scrollbar-thumb-ring scrollbar-hover:scrollbar-thumb-thumb-hover scrollbar-track-popover h-screen overflow-y-auto border-popover border-r-1">
+        <div className="min-h-screen border-popover border-r-1">
+          <div className="min-h-screen border-jasp-gray-darker border-r-1">
+            {children}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 export function App() {
+  const translations = useIntlayer<'app'>('app');
   const {
     show_prereleases,
     allow_prereleases_checkbox_description,
     search_for_a_module,
     no_modules_found,
-  } = useIntlayer('app');
+  } = translations;
   const { info, error, isInfoFetched } = useInfo();
-  const [catalogUrl] = useQueryState('c', { defaultValue: defaultCatalog });
+  const [catalogUrl] = useQueryState('c', {
+    defaultValue: defaultCatalog,
+  });
   const {
     data: repositories,
     isFetched: isRepositoriesFetched,
     error: repositoriesError,
   } = useQuery(catalogQueryOptions(catalogUrl));
-  const isDarkTheme = useDarkTheme();
+  useTheme();
   useFont();
   const [selectedChannels, setSelectedChannels] = useState<string[]>([
     defaultChannel,
   ]);
   const [searchTerm, setSearchTerm] = useState<string>('');
+  const [debouncedSearchTerm] = useDebounceValue(searchTerm, 100);
   const [allowPreRelease, setAllowPreRelease] = useState<boolean>(
     info.developerMode,
   );
@@ -717,7 +645,10 @@ export function App() {
     allowPreRelease,
     info.arch,
   );
-  const filteredRepos = filterReposBySearchTerm(installableRepos, searchTerm);
+  const filteredRepos = filterReposBySearchTerm(
+    installableRepos,
+    debouncedSearchTerm,
+  );
 
   if (error) {
     return <div>Error fetching environment info: {String(error)}</div>;
@@ -725,19 +656,14 @@ export function App() {
   if (repositoriesError) {
     return <div>Error fetching catalog: {String(repositoriesError)}</div>;
   }
-  if (!isInfoFetched && !isRepositoriesFetched) {
+  if (!isInfoFetched || !isRepositoriesFetched) {
     return <Loading />;
   }
 
   return (
-    <main
-      className={cn(
-        'min-h-screen bg-gray-50 py-4 text-gray-900 dark:bg-gray-900 dark:text-gray-100',
-        isDarkTheme && 'dark',
-      )}
-    >
-      <div className="w-full px-2">
-        <div className="mb-4 rounded-lg border border-gray-200 bg-white p-3 shadow-sm dark:border-gray-700 dark:bg-gray-800">
+    <JASPScrollBar>
+      <main className="px-4 py-4">
+        <div className="mb-4 rounded-lg border border-border bg-card p-3 text-card-foreground shadow-sm">
           <div className="flex flex-col gap-3">
             <div className="flex flex-row gap-3">
               <ChannelSelector
@@ -754,33 +680,34 @@ export function App() {
               />
             </div>
             <div>
-              <label className="mb-1 block font-medium text-gray-700 text-xs dark:text-gray-300">
+              <label className="mb-1 block font-medium text-xs">
                 {search_for_a_module}:
                 <input
                   type="search"
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
-                  className="w-full rounded border border-gray-300 px-2 py-1.5 text-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 dark:placeholder-gray-400 dark:focus:border-blue-400"
+                  className={cn(
+                    'h-9 w-full min-w-0 rounded-md border border-input bg-popover px-3 py-1 text-base shadow-xs outline-none transition-[color,box-shadow] selection:bg-primary selection:text-primary-foreground file:inline-flex file:h-7 file:border-0 file:bg-transparent file:font-medium file:text-foreground file:text-sm placeholder:text-muted-foreground disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50 md:text-sm dark:bg-input/30',
+                    'focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50',
+                    'aria-invalid:border-destructive aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40',
+                  )}
                 />
               </label>
             </div>
           </div>
         </div>
-        <div className="space-y-3">
+        <ul className="space-y-3">
           {filteredRepos.map((repo) => (
             <RepositoryCard
               key={`${repo.organization}/${repo.name}`}
               repo={repo}
               allowPreRelease={allowPreRelease}
+              translations={translations}
             />
           ))}
-          {filteredRepos.length === 0 && (
-            <div className="text-gray-500 dark:text-gray-400">
-              {no_modules_found}
-            </div>
-          )}
-        </div>
-      </div>
-    </main>
+          {filteredRepos.length === 0 && <div>{no_modules_found}</div>}
+        </ul>
+      </main>
+    </JASPScrollBar>
   );
 }

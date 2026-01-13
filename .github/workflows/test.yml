@@ -1,4 +1,4 @@
-name: Unit tests
+name: Tests
 
 on:
   push:
@@ -12,26 +12,144 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
+permissions:
+  contents: write # Needed to commit coverage badges
+  pull-requests: write  # Needed to write coverage report to PR comment
+
 jobs:
   test:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
+      - name: 📥 Checkout repository
+        uses: actions/checkout@v6
 
-      - name: Install pnpm
+      - name: 📦 Install pnpm
         uses: pnpm/action-setup@v4
         with:
           version: 10
 
-      - name: Use Node.js
-        uses: actions/setup-node@v4
+      - name: 🟢 Use Node.js
+        uses: actions/setup-node@v6
         with:
           node-version: '22.18.0'
           cache: "pnpm"
 
-      - name: Install dependencies
+      - name: ⬇️ Install dependencies
         run: pnpm install
 
-      - name: Run tests
-        run: pnpm test
+      - name: 🧪 Run unit tests with coverage
+        run: pnpm test --coverage
+
+      - name: '📊 Report Coverage'
+        if: always() 
+        uses: davelosert/vitest-coverage-report-action@v2
+        with:
+          name: 'Unit test coverage'
+
+      - name: 💾 Upload unit coverage data
+        uses: actions/upload-artifact@v6
+        with:
+          name: unit-coverage
+          path: coverage/coverage-summary.json
+
+  browser-tests:
+    runs-on: ubuntu-latest
+    container:
+      image: mcr.microsoft.com/playwright:v1.57.0-noble
+      options: --user 1001
+    steps:
+      - name: 📥 Checkout repository
+        uses: actions/checkout@v6
+
+      - name: 📦 Install pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10
+
+      - name: 🟢 Use Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: '22.18.0'
+          cache: "pnpm"
+
+      - name: ⬇️ Install dependencies
+        run: pnpm install
+    
+      - name: 🧪 Run browser tests with coverage
+        run: pnpm test:browser run --coverage
+
+      - name: '📊 Report Coverage'
+        if: always() 
+        uses: davelosert/vitest-coverage-report-action@v2
+        with:
+          name: 'Browser test coverage'
+
+      - name: 💾 Upload browser coverage data
+        uses: actions/upload-artifact@v6
+        with:
+          name: browser-coverage
+          path: coverage/coverage-summary.json
+
+  badges:
+    name: 'Generate and commit coverage badges'
+    if: github.ref == 'refs/heads/main'
+    needs: [test, browser-tests]
+    runs-on: ubuntu-latest
+    steps:
+      - name: 📥 Checkout repository
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - name: 📂 Download unit coverage data
+        uses: actions/download-artifact@v7
+        with:
+          name: unit-coverage
+          path: coverage/unit/
+
+      - name: 📂 Download browser coverage data
+        uses: actions/download-artifact@v7
+        with:
+          name: browser-coverage
+          path: coverage/browser/
+
+      - name: 📦 Install pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10
+
+      - name: 🟢 Use Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: '22.18.0'
+          cache: "pnpm"
+
+      - name: 🎖️ Generating unit test coverage badges
+        uses: jpb06/coverage-badges-action@v1.4.6
+        with:
+          no-commit: true
+          branches: main
+          badges-icon: vitest
+          output-folder: .github/badges/unit
+          badges-labels-prefix: Test coverage (unit)
+          coverage-summary-path: coverage/unit/coverage-summary.json
+
+      - name: 🎖️ Generating browser test coverage badges
+        uses: jpb06/coverage-badges-action@v1.4.6
+        with:
+          no-commit: true
+          branches: main
+          badges-icon: vitest
+          output-folder: .github/badges/browser
+          badges-labels-prefix: Test coverage (browser)
+          coverage-summary-path: coverage/browser/coverage-summary.json
+
+      - name: 📝 Create PR with badges
+        uses: peter-evans/create-pull-request@v8
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          commit-message: 'Updating coverage badges'
+          branch: coverage-badges-${{ github.run_id }}
+          title: 'Update coverage badges'
+          body: 'Automated update of coverage badges (unit & browser).'
+          labels: coverage
