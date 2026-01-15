@@ -352,10 +352,15 @@ function associateChannelsWithRepositories(
 export function latestReleasePerJaspVersionRange(
   releases: GqlRelease[],
 ): GqlRelease[] {
+
+  const sortedReleases = [...releases].sort((a, b) => 
+    b.publishedAt.localeCompare(a.publishedAt)
+  );
+  
   const latest: GqlRelease[] = [];
   const seen: Set<string> = new Set();
 
-  for (const release of releases) {
+  for (const release of sortedReleases) {
     if (!release.description) {
       console.log('Release description is missing');
       continue;
