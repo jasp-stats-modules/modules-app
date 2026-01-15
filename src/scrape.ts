@@ -352,7 +352,6 @@ function associateChannelsWithRepositories(
 export function latestReleasePerJaspVersionRange(
   releases: GqlRelease[],
 ): GqlRelease[] {
-
   const sortedReleases = [...releases].sort((a, b) =>
     b.publishedAt.localeCompare(a.publishedAt),
   );
