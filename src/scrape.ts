@@ -353,10 +353,7 @@ export function latestReleasePerJaspVersionRange(
   releases: GqlRelease[],
 ): GqlRelease[] {
 
-  const sortedReleases = [...releases].sort((a, b) => 
-    b.publishedAt.localeCompare(a.publishedAt)
-  );
-  
+  const sortedReleases = [...releases].sort((a, b) => b.publishedAt.localeCompare(a.publishedAt));
   const latest: GqlRelease[] = [];
   const seen: Set<string> = new Set();
 
