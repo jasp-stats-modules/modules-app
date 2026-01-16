@@ -37,7 +37,7 @@
         ]
       }
     ],
-    "channels": ["jasp-modules"]
+    "channels": ["Official"]
   },
   {
     "name": "jaspBayesian",
@@ -59,7 +59,7 @@
       }
     ],
     "preReleases": [],
-    "channels": ["jasp-modules"]
+    "channels": ["Official"]
   },
   {
     "name": "jaspDescriptives",
@@ -81,7 +81,7 @@
       }
     ],
     "preReleases": [],
-    "channels": ["jasp-modules"]
+    "channels": ["Official"]
   },
   {
     "name": "jaspRegression",
@@ -103,7 +103,7 @@
       }
     ],
     "preReleases": [],
-    "channels": ["jasp-modules"]
+    "channels": ["Official"]
   },
   {
     "name": "jaspRapid",
