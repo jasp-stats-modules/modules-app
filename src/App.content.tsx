@@ -154,8 +154,8 @@ const appContent = {
       'zh-Hant': '解除安裝',
     }),
     pre_release: t({
-      en: 'Pre release',
-      nl: 'Pre-release',
+      en: 'Beta',
+      nl: 'Beta',
       fr: 'Pré-version',
       de: 'Vorabversion',
       es: 'Prelanzamiento',
