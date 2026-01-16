@@ -91,7 +91,7 @@ describe('App component', () => {
     describe('Show pre-releases checkbox', () => {
       test('displays pre-release text when checkbox is checked', async () => {
         // Check the "Show pre-releases" checkbox
-        const checkbox = screen.getByLabelText('Show pre-releases');
+        const checkbox = screen.getByLabelText('Show Betas');
         await checkbox.click();
 
         // Search for jaspAnova to filter results
@@ -100,7 +100,7 @@ describe('App component', () => {
 
         // Assert that the pre-release text appears
         await expect
-          .element(screen.getByText('Pre release'))
+          .element(screen.getByText('Beta'))
           .toBeInTheDocument();
       });
     });
