@@ -100,7 +100,7 @@ describe('App component', () => {
 
         // Assert that the pre-release text appears
         await expect
-          .element(screen.getByText('Beta'))
+          .element(screen.getByText('Beta', { exact: true }))
           .toBeInTheDocument();
       });
     });
