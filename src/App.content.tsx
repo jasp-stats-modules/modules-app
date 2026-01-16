@@ -154,8 +154,8 @@ const appContent = {
       'zh-Hant': '解除安裝',
     }),
     pre_release: t({
-      en: 'Pre release',
-      nl: 'Pre-release',
+      en: 'Beta',
+      nl: 'Beta',
       fr: 'Pré-version',
       de: 'Vorabversion',
       es: 'Prelanzamiento',
@@ -304,8 +304,8 @@ const appContent = {
       'zh-Hant': '頻道',
     }),
     show_prereleases: t({
-      en: 'Show pre-releases',
-      nl: 'Toon pre-releases',
+      en: 'Show Betas',
+      nl: 'Toon Betas',
       fr: 'Afficher les pré-versions',
       de: 'Vorabversionen anzeigen',
       es: 'Mostrar pre-lanzamientos',
@@ -329,8 +329,8 @@ const appContent = {
       'zh-Hant': '顯示預發布版本',
     }),
     allow_prereleases_checkbox_description: t({
-      en: 'When checked shows pre-releases. Pre-releases are releases that a module developer has not yet marked as stable.',
-      nl: 'Indien aangevinkt worden pre-releases getoond. Pre-releases zijn versies die een moduleontwikkelaar nog niet als stabiel heeft gemarkeerd.',
+      en: 'When checked shows Betas. Betas are releases that a module developer has not yet marked as stable.',
+      nl: 'Indien aangevinkt worden Betas getoond. Betas zijn versies die een moduleontwikkelaar nog niet als stabiel heeft gemarkeerd.',
       fr: 'Si coché, affiche les pré-versions. Les pré-versions sont des versions qu’un développeur de module n’a pas encore marquées comme stables.',
       de: 'Wenn aktiviert, werden Vorabversionen angezeigt. Vorabversionen sind Versionen, die ein Modul-Entwickler noch nicht als stabil markiert hat.',
       es: 'Si está marcado, muestra pre-lanzamientos. Los pre-lanzamientos son versiones que el desarrollador del módulo aún no ha marcado como estables.',
