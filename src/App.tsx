@@ -16,7 +16,7 @@ import {
 
 type AppTranslations = ReturnType<typeof useIntlayer<'app'>>;
 
-const defaultChannel = 'jasp-modules';
+const defaultChannel = 'Official';
 const defaultCatalog = 'index.json';
 
 async function getCatalog(
