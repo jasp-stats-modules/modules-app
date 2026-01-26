@@ -432,7 +432,7 @@ async function releaseAssets(
   octokit: InstanceType<typeof MyOctokit>,
 ): Promise<Omit<Repository, 'channels'>[]> {
   const allRepos = Array.from(repos);
-  const CHUNK_SIZE = 15; // 15 repos per request is safe for GitHub's complexity limit
+  const CHUNK_SIZE = 3;
   const finalResults: Omit<Repository, 'channels'>[] = [];
 
   // Loop through repositories in chunks
