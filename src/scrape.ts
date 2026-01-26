@@ -431,12 +431,19 @@ async function releaseAssets(
   firstAssets = 20,
   octokit: InstanceType<typeof MyOctokit>,
 ): Promise<Omit<Repository, 'channels'>[]> {
-  const queries = Array.from(repos)
-    .map((nameWithOwner, i) => {
-      const [owner, repo] = nameWithOwner.split('/');
-      // Any change to query also needs to be reflected in GqlAssetsResult interface
-      return dedent`
-        repo${i}: repository(owner: "${owner}", name: "${repo}") {
+  const allRepos = Array.from(repos);
+  const CHUNK_SIZE = 15; // 15 repos per request is safe for GitHub's complexity limit
+  const finalResults: Omit<Repository, 'channels'>[] = [];
+
+  // Loop through repositories in chunks
+  for (let i = 0; i < allRepos.length; i += CHUNK_SIZE) {
+    const chunk = allRepos.slice(i, i + CHUNK_SIZE);
+
+    const queries = chunk
+      .map((nameWithOwner, index) => {
+        const [owner, repo] = nameWithOwner.split('/');
+        return dedent`
+        repo${index}: repository(owner: "${owner}", name: "${repo}") {
           name
           nameWithOwner
           shortDescriptionHTML
@@ -463,53 +470,68 @@ async function releaseAssets(
           }
         }
       `;
-    })
-    .join('\n');
+      })
+      .join('\n');
 
-  const fullQuery = `query {\n${queries}\n}`;
+    const fullQuery = `query {\n${queries}\n}`;
 
-  const result = await octokit.graphql<GqlAssetsResult>(fullQuery);
+    try {
+      const result = await octokit.graphql<GqlAssetsResult>(fullQuery);
+      const processedChunk = Object.values(result)
+        // Filter out nulls (if a repo wasn't found)
+        .filter((r): r is NonNullable<typeof r> => r !== null)
+        .filter((repo) => {
+          if (repo.releases.nodes.length === 0) {
+            console.log(
+              `No releases found for ${repo.nameWithOwner}. Skipping.`,
+            );
+            return false;
+          }
+          return true;
+        })
+        .map((repo) => {
+          const {
+            nameWithOwner,
+            parent: _,
+            releases,
+            homepageUrl,
+            ...restRepo
+          } = repo;
 
-  return Object.values(result)
-    .filter((repo) => {
-      if (repo.releases.nodes.length === 0) {
-        console.log(`No releases found for ${repo.nameWithOwner}. Skipping.`);
-        return false;
-      }
-      return true;
-    })
-    .map((repo) => {
-      const {
-        nameWithOwner,
-        parent: _,
-        releases,
-        homepageUrl,
-        ...restRepo
-      } = repo;
-      const productionReleases = releases.nodes.filter(
-        (r) => !r.isDraft && !r.isPrerelease,
-      );
-      const preReleases = releases.nodes.filter(
-        (r) => !r.isDraft && r.isPrerelease,
-      );
-      const newRepo: Omit<Repository, 'channels'> = {
-        ...restRepo,
-        releaseSource: nameWithOwner,
-        organization: repo.parent?.owner.login ?? 'unknown_org',
-        releases: latestReleasePerJaspVersionRange(productionReleases).map(
-          (r) => {
-            return transformRelease(r, nameWithOwner);
-          },
-        ),
-        preReleases: latestReleasePerJaspVersionRange(preReleases).map((r) => {
-          return transformRelease(r, nameWithOwner);
-        }),
-      };
-      if (homepageUrl) {
-        newRepo.homepageUrl = homepageUrl;
-      }
-      return newRepo;
-    });
+          const productionReleases = releases.nodes.filter(
+            (r) => !r.isDraft && !r.isPrerelease,
+          );
+          const preReleases = releases.nodes.filter(
+            (r) => !r.isDraft && r.isPrerelease,
+          );
+
+          const newRepo: Omit<Repository, 'channels'> = {
+            ...restRepo,
+            releaseSource: nameWithOwner,
+            organization: repo.parent?.owner.login ?? 'unknown_org',
+            releases: latestReleasePerJaspVersionRange(productionReleases).map(
+              (r) => transformRelease(r, nameWithOwner),
+            ),
+            preReleases: latestReleasePerJaspVersionRange(preReleases).map(
+              (r) => transformRelease(r, nameWithOwner),
+            ),
+          };
+
+          if (homepageUrl) {
+            newRepo.homepageUrl = homepageUrl;
+          }
+          return newRepo;
+        });
+
+      finalResults.push(...processedChunk);
+    } catch (error) {
+      console.error(`Error fetching chunk starting at index ${i}:`, error);
+      // Optional: throw error here if you want the whole process to fail
+      // otherwise, it logs and continues to the next chunk.
+    }
+  }
+
+  return finalResults;
 }
 
 export function logReleaseStatistics(repositories: Repository[]): string {
