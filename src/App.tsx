@@ -671,13 +671,15 @@ export function App() {
                 setSelectedChannels={setSelectedChannels}
                 channels={availableChannels}
               />
-              <Checkbox
-                checked={allowPreRelease}
-                onChange={setAllowPreRelease}
-                label={show_prereleases.value}
-                name="allowPreReleases"
-                description={allow_prereleases_checkbox_description.value}
-              />
+              <div className="flex items-center pt-5">
+                <Checkbox
+                  checked={allowPreRelease}
+                  onChange={setAllowPreRelease}
+                  label={show_prereleases.value}
+                  name="allowPreReleases"
+                  description={allow_prereleases_checkbox_description.value}
+                />
+              </div>
             </div>
             <div>
               <label className="mb-1 block font-medium text-sm">
