@@ -8,6 +8,7 @@ import chalk from 'chalk';
 import dedent from 'dedent';
 import matter from 'gray-matter';
 import ProgressBar from 'progress';
+import * as v from 'valibot';
 import type { Asset, Release, Repository } from './types';
 
 const MyOctokit = Octokit.plugin(paginateGraphQL);
@@ -197,14 +198,24 @@ export function extractArchitectureFromUrl(url: string): string {
   throw new Error(`Unknown architecture in filename: ${filename}`);
 }
 
+const ReleaseFrontMatter = v.object({
+  jasp: v.optional(v.string()),
+  name: v.optional(v.string()),
+  description: v.optional(v.string()),
+});
+type ReleaseFrontMatter = v.InferOutput<typeof ReleaseFrontMatter>;
+
 /**
  * Given description like:
  * ```
  * ---
  * jasp: >=0.95.0
+ * name: My Module
+ * description: This is my module.
  * ---
  * ```
- * extracts the JASP version range string ('>=0.95.0').
+ * extracts the frontmatter as an object
+ * where jasp is the version range that is supported by this release.
  *
  * The version range string should be in format that semver package understands.
  * See https://semver.npmjs.com/ for more details.
@@ -212,20 +223,55 @@ export function extractArchitectureFromUrl(url: string): string {
  * @param description
  * @returns
  */
-export function jaspVersionRangeFromDescription(
+export function parseReleaseFrontMatter(
   description: string,
-): string | undefined {
-  const parsed = matter(addQuotesInDescription(description));
-  if (parsed.data && typeof parsed.data.jasp === 'string') {
-    return parsed.data.jasp;
-  }
-  return undefined;
+): ReleaseFrontMatter {
+  const raw = matter(addQuotesInDescription(description));
+  return v.parse(ReleaseFrontMatter, raw.data);
 }
 
 // TODO remove once all release descriptions fetched have valid yaml in frontmatter
 export function addQuotesInDescription(input: string): string {
   const regex = /^(.*?): (>.*)$/m;
   return input.replace(regex, (_, p1, p2) => `${p1}: "${p2}"`);
+}
+
+/**
+ * The name of a repo is the GitHub repo name by default,
+ * a release frontmatter can override this.
+ * The shortDescriptionHTML aka the text on GH page in about sidebar
+ * can also be overridden by release frontmatter.
+ *
+ * @param repo
+ * @param releasesFrontMatters
+ * @param preReleasesFrontMatters
+ * @returns
+ */
+function updateNameAndDescriptionFromFrontMatter(
+  repo: Omit<Repository, 'channels'>,
+  releasesFrontMatters: ReleaseFrontMatter[],
+  preReleasesFrontMatters: ReleaseFrontMatter[],
+) {
+  if (releasesFrontMatters.length > 0) {
+    const firstReleaseFM = releasesFrontMatters[0];
+    if (firstReleaseFM.name) {
+      repo.name = firstReleaseFM.name;
+    }
+    if (firstReleaseFM.description) {
+      repo.shortDescriptionHTML = firstReleaseFM.description;
+    }
+    return;
+  }
+  // If modules does not have any releases, try pre-releases
+  if (preReleasesFrontMatters.length > 0) {
+    const firstPreReleaseFM = preReleasesFrontMatters[0];
+    if (firstPreReleaseFM.name) {
+      repo.name = firstPreReleaseFM.name;
+    }
+    if (firstPreReleaseFM.description) {
+      repo.shortDescriptionHTML = firstPreReleaseFM.description;
+    }
+  }
 }
 
 export function batchedArray<T>(array: T[], size: number): T[][] {
@@ -363,9 +409,7 @@ export function latestReleasePerJaspVersionRange(
       console.log('Release description is missing');
       continue;
     }
-    const jaspVersionRange = jaspVersionRangeFromDescription(
-      release.description,
-    );
+    const jaspVersionRange = parseReleaseFrontMatter(release.description).jasp;
     if (!jaspVersionRange) {
       console.log(
         'Could not extract JASP version range from release description',
@@ -390,7 +434,7 @@ export function versionFromTagName(tagName: string): string {
 export function transformRelease(
   release: GqlRelease,
   nameWithOwner: string,
-): Release {
+): [Release, ReleaseFrontMatter] {
   const {
     tagName,
     releaseAssets,
@@ -399,7 +443,8 @@ export function transformRelease(
     isPrerelease: __,
     ...restRelease
   } = release;
-  let jaspVersionRange = jaspVersionRangeFromDescription(description ?? '');
+  const frontmatter = parseReleaseFrontMatter(description ?? '');
+  let jaspVersionRange = frontmatter.jasp;
   if (!jaspVersionRange) {
     jaspVersionRange = '>=0.95.0';
     console.warn(
@@ -422,7 +467,7 @@ export function transformRelease(
       })
       .sort((a, b) => a.architecture.localeCompare(b.architecture, 'en')),
   };
-  return newRelease;
+  return [newRelease, frontmatter];
 }
 
 async function releaseAssets(
@@ -505,17 +550,26 @@ async function releaseAssets(
             (r) => !r.isDraft && r.isPrerelease,
           );
 
+          const newReleases = latestReleasePerJaspVersionRange(
+            productionReleases,
+          ).map((r) => transformRelease(r, nameWithOwner));
+          const newPreReleases = latestReleasePerJaspVersionRange(
+            preReleases,
+          ).map((r) => transformRelease(r, nameWithOwner));
+
           const newRepo: Omit<Repository, 'channels'> = {
             ...restRepo,
             releaseSource: nameWithOwner,
             organization: repo.parent?.owner.login ?? 'unknown_org',
-            releases: latestReleasePerJaspVersionRange(productionReleases).map(
-              (r) => transformRelease(r, nameWithOwner),
-            ),
-            preReleases: latestReleasePerJaspVersionRange(preReleases).map(
-              (r) => transformRelease(r, nameWithOwner),
-            ),
+            releases: newReleases.map(([release, _]) => release),
+            preReleases: newPreReleases.map(([release, _]) => release),
           };
+
+          updateNameAndDescriptionFromFrontMatter(
+            newRepo,
+            newReleases.map(([_, fm]) => fm),
+            newPreReleases.map(([_, fm]) => fm),
+          );
 
           if (homepageUrl) {
             newRepo.homepageUrl = homepageUrl;
