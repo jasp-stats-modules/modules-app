@@ -536,7 +536,14 @@ function uniqueChannels(repositories: Repository[]): string[] {
       channels.add(ch);
     }
   }
-  return Array.from(channels).sort();
+  const arr = Array.from(channels).sort();
+  // Make sure default channel is first
+  const idx = arr.indexOf(defaultChannel);
+  if (idx > 0) {
+    arr.splice(idx, 1);
+    arr.unshift(defaultChannel);
+  }
+  return arr;
 }
 
 function filterOnChannels(
