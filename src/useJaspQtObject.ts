@@ -26,6 +26,7 @@ interface JaspObject {
   uninstall: (module: string) => Promise<void>;
   info: () => Promise<Info>;
   environmentInfoChanged: EnvironmentInfoChanged;
+  installMany: (asset_urls: string[]) => Promise<void>;
 }
 
 // Interface as provided by Qt
@@ -34,6 +35,7 @@ interface JaspQtObject {
   uninstall: (module: string, callback: () => void) => void;
   info: (callback: (info: Info) => void) => void;
   environmentInfoChanged: EnvironmentInfoChanged;
+  installMany: (asset_urls: string[], callback: () => void) => void;
 }
 
 interface JaspQWebChannel {
@@ -76,6 +78,17 @@ export async function jaspQtObject(): Promise<JaspObject | null> {
       });
     },
     environmentInfoChanged: moduleStoreApi.environmentInfoChanged,
+    installMany: (asset_urls: string[]) => {
+      return new Promise<void>((resolve, reject) => {
+        try {
+          moduleStoreApi.installMany(asset_urls, () => {
+            resolve();
+          });
+        } catch (error) {
+          reject(error);
+        }
+      });
+    },
   };
 }
 
