@@ -74,7 +74,7 @@ function ChannelSelector({
     <fieldset
       className={cn('mb-1 block rounded border border-border p-2', className)}
     >
-      <legend className="mb-1 block font-medium text-xs">
+      <legend className="mb-1 block font-medium text-sm">
         {select_channel}:
       </legend>
       <div className="flex flex-wrap gap-3">
@@ -123,7 +123,7 @@ function Checkbox({
   return (
     <label
       className={cn(
-        'flex items-center font-medium text-jasp-muted text-xs',
+        'flex items-center font-medium text-jasp-muted text-sm',
         className,
       )}
       title={description}
@@ -171,7 +171,7 @@ function InstallButton({
   return (
     <a
       href={asset.downloadUrl}
-      className="inline-flex items-center justify-center whitespace-nowrap rounded bg-jasp-green px-3 py-1.5 font-medium text-primary text-xs transition-colors duration-200 hover:bg-green-600 dark:hover:bg-green-800"
+      className="inline-flex items-center justify-center whitespace-nowrap rounded bg-jasp-green px-3 py-1.5 font-medium text-primary text-sm transition-colors duration-200 hover:bg-green-600 dark:hover:bg-green-800"
     >
       {install}
     </a>
@@ -192,7 +192,7 @@ function UpdateButton({
   return (
     <a
       href={asset.downloadUrl}
-      className="inline-flex items-center justify-center whitespace-nowrap rounded bg-jasp-blue px-3 py-1.5 font-medium text-primary text-xs transition-colors duration-200 hover:bg-blue-700 dark:bg-blue-700 dark:hover:bg-blue-800"
+      className="inline-flex items-center justify-center whitespace-nowrap rounded bg-jasp-blue px-3 py-1.5 font-medium text-primary text-sm transition-colors duration-200 hover:bg-blue-700 dark:bg-blue-700 dark:hover:bg-blue-800"
     >
       {update}
     </a>
@@ -218,7 +218,7 @@ function UninstallButton({
       type="button"
       onClick={doUninstall}
       title={uninstall_this_module.value}
-      className="mt-3 inline-flex items-center justify-center whitespace-nowrap rounded bg-destructive px-3 py-1.5 font-medium text-primary text-xs transition-colors duration-200 hover:bg-red-700 dark:bg-red-700 dark:hover:bg-red-800"
+      className="mt-3 inline-flex items-center justify-center whitespace-nowrap rounded bg-destructive px-3 py-1.5 font-medium text-primary text-sm transition-colors duration-200 hover:bg-red-700 dark:bg-red-700 dark:hover:bg-red-800"
     >
       {uninstall}
     </button>
@@ -254,7 +254,7 @@ function ReleaseAction({
         <InstallButton asset={asset} translations={translations} />
       )}
       {allowPreRelease && latestPreRelease && (
-        <span className="justify-center whitespace-nowrap text-muted-foreground text-xs">
+        <span className="justify-center whitespace-nowrap text-muted-foreground text-sm">
           {pre_release.value}
         </span>
       )}
@@ -264,7 +264,7 @@ function ReleaseAction({
       {latestVersionInstalled && (
         <span
           title={latest_version_installed.value}
-          className="px-2 py-1.5 text-muted-foreground text-xs"
+          className="px-2 py-1.5 text-muted-foreground text-sm"
         >
           {installed.value}
         </span>
@@ -292,7 +292,7 @@ export function ReleaseStats({
     translations;
   const publishedAt = new Date(latestPublishedAt).toLocaleDateString();
   return (
-    <div className="flex flex-row justify-between text-muted-foreground text-xs">
+    <div className="flex flex-row justify-between text-base text-muted-foreground">
       <div>
         {installedVersion
           ? release_stats_installed({
@@ -352,8 +352,8 @@ function RepositoryChannels({
         <span
           key={channel}
           className={cn(
-            'inline-flex w-fit shrink-0 items-center justify-center gap-1 overflow-hidden whitespace-nowrap rounded-full border px-2 py-0.5 font-medium text-xs transition-[color,box-shadow] focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 aria-invalid:border-destructive aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 [&>svg]:pointer-events-none [&>svg]:size-3',
-            'border-transparent bg-secondary text-secondary-foreground [a&]:hover:bg-secondary/90',
+            'inline-flex w-fit shrink-0 items-center justify-center gap-1 overflow-hidden whitespace-nowrap rounded-full border px-2 py-0.5 font-medium text-sm transition-[color,box-shadow] focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 aria-invalid:border-destructive aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 [&>svg]:pointer-events-none [&>svg]:size-3',
+            'border-transparent bg-background text-secondary-foreground [a&]:hover:bg-background/90',
           )}
           title={channelText.value}
         >
@@ -392,11 +392,11 @@ function RepositoryCard({
     >
       <div className="flex items-start justify-between gap-2">
         <div className="flex flex-col gap-2">
-          <h3 id={cardId} className="font-semibold text-lg">
+          <h3 id={cardId} className="font-semibold text-xl">
             {repo.name}
           </h3>
           {repo.shortDescriptionHTML && (
-            <div className="prose prose-sm text-sm">
+            <div className="prose prose-sm text-base">
               {repo.shortDescriptionHTML}
             </div>
           )}
@@ -662,7 +662,7 @@ export function App() {
 
   return (
     <JASPScrollBar>
-      <main className="px-4 py-4">
+      <main className="px-2 py-2">
         <div className="mb-4 rounded-lg border border-border bg-card p-3 text-card-foreground shadow-sm">
           <div className="flex flex-col gap-3">
             <div className="flex flex-row gap-3">
@@ -680,7 +680,7 @@ export function App() {
               />
             </div>
             <div>
-              <label className="mb-1 block font-medium text-xs">
+              <label className="mb-1 block font-medium text-sm">
                 {search_for_a_module}:
                 <input
                   type="search"
