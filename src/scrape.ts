@@ -498,7 +498,7 @@ async function releaseAssets(
               login
             }
           }
-          releases(first: ${firstReleases}) {
+          releases(first: ${firstReleases}, orderBy: { field: CREATED_AT, direction: DESC }) {
             nodes {
               tagName
               publishedAt
