@@ -637,6 +637,8 @@ function getUpdateableAssets(
   allowPreRelease: boolean,
 ) {
   if (!insideQt) {
+    // Uncomment for testing outside Qt
+    // return { showUpdateAllButton: true, updateableAssets: ['https://example.com', 'https://example2.com'] };
     return { showUpdateAllButton: false, updateableAssets: [] };
   }
   const updateableAssets = installableRepos
@@ -653,7 +655,7 @@ function getUpdateableAssets(
     })
     .filter(Boolean)
     .map((url) => url as string);
-  const showUpdateAllButton = updateableAssets.length > 0 && insideQt;
+  const showUpdateAllButton = updateableAssets.length > 1 && insideQt;
   return { showUpdateAllButton, updateableAssets };
 }
 
