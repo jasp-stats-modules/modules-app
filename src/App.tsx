@@ -199,6 +199,37 @@ function UpdateButton({
   );
 }
 
+/**
+ * Button to downgrade a beta to a stable release
+ */
+function DowngradeButton({
+  asset,
+  translations,
+}: {
+  asset?: Asset;
+  translations: AppTranslations;
+}) {
+  const { downgrade, downgrade_tooltip } = translations;
+  if (!asset) {
+    return null;
+  }
+  // TODO pass correct versions to tooltip
+  const tooltip = downgrade_tooltip({
+    stable_version: '1.0.0',
+    beta_version: '1.1.0-beta',
+  });
+  console.log('Downgrade tooltip:', tooltip);
+  return (
+    <a
+      href={asset.downloadUrl}
+      className="inline-flex items-center justify-center whitespace-nowrap rounded bg-jasp-blue px-3 py-1.5 font-medium text-primary text-sm transition-colors duration-200 hover:bg-blue-700 dark:bg-blue-700 dark:hover:bg-blue-800"
+      title={tooltip}
+    >
+      {downgrade}
+    </a>
+  );
+}
+
 function UninstallButton({
   moduleName,
   translations,
@@ -246,10 +277,27 @@ function ReleaseAction({
   latestVersionInstalled: boolean;
   translations: AppTranslations;
 }) {
+  // if (moduleName === 'jaspAnova') {
+  //   console.log({
+  //       moduleName,
+  //   asset,
+  //   canUpdate,
+  //   canInstall,
+  //   canUninstall,
+  //   allowPreRelease,
+  //   latestPreRelease,
+  //   latestVersionInstalled,
+  //   // translations,
+  //   })
+  // }
   const { pre_release, latest_version_installed, installed } = translations;
+  const canDowngrade = false; // TODO implement downgrade logic
   return (
     <div className="flex flex-col">
       {canUpdate && <UpdateButton asset={asset} translations={translations} />}
+      {canDowngrade && (
+        <DowngradeButton asset={asset} translations={translations} />
+      )}
       {canInstall && !canUpdate && (
         <InstallButton asset={asset} translations={translations} />
       )}

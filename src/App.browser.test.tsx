@@ -186,6 +186,71 @@ describe('App component', () => {
     });
   });
 
+  describe('Given test catalog and module is uninstallable and hidden betas and when beta is installed', () => {
+    beforeEach(async () => {
+      screen = await render(
+        <NuqslessWrapper>
+          <App />
+        </NuqslessWrapper>,
+        {
+          wrapper: withNuqsTestingAdapter({
+            searchParams: {
+              c: 'test.json',
+              a: 'MacOS_arm64',
+              i: '{"jaspAnova":"0.96.0-beta.1"}',
+              p: 'false',
+              u: '["jaspAnova"]',
+            },
+          }),
+        },
+      );
+    });
+
+    test('Should not show update button', async () => {
+      const jaspAnovaCard = screen.getByRole('listitem', { name: 'jaspAnova' });
+      await expect.element(jaspAnovaCard).toBeInTheDocument();
+
+      await expect
+        .element(jaspAnovaCard.getByRole('link', { name: 'Update' }))
+        .not.toBeInTheDocument();
+    });
+
+    test('Should not show uninstall button', async () => {
+      const jaspAnovaCard = screen.getByRole('listitem', { name: 'jaspAnova' });
+      await expect.element(jaspAnovaCard).toBeInTheDocument();
+
+      await expect
+        .element(jaspAnovaCard.getByRole('link', { name: 'Uninstall' }))
+        .toBeInTheDocument();
+    });
+
+    test('Should not say installed', async () => {
+      // When uninstall button is show, the "Installed" text is repetitive
+      const jaspAnovaCard = screen.getByRole('listitem', { name: 'jaspAnova' });
+      await expect.element(jaspAnovaCard).toBeInTheDocument();
+
+      await expect
+        .element(jaspAnovaCard.getByText('Installed', { exact: true }))
+        .not.toBeInTheDocument();
+    });
+
+    test('Should show downgrade button with link to latest stable', async () => {
+      const jaspAnovaCard = screen.getByRole('listitem', { name: 'jaspAnova' });
+      await expect.element(jaspAnovaCard).toBeInTheDocument();
+
+      const downgradeButton = jaspAnovaCard.getByRole('link', {
+        name: 'Downgrade',
+      });
+      await expect.element(downgradeButton).toBeInTheDocument();
+      await expect
+        .element(downgradeButton)
+        .toHaveAttribute(
+          'href',
+          'https://github.com/test/test/releases/download/v0.95.5/test1_MacOS_arm64.JASPModule',
+        );
+    });
+  });
+
   describe('Given theme search param', () => {
     beforeEach(() => {
       document.documentElement.className = '';

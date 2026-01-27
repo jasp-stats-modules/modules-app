@@ -547,6 +547,102 @@ const appContent = {
         '最新 {{latestVersion}} 於 {{publishedAt}}，下載次數 {{downloads}}',
       ),
     }),
+    downgrade: t({
+      en: 'Downgrade',
+      nl: 'Terugdraaien',
+      fr: 'Rétrograder',
+      de: 'Herabstufen',
+      es: 'Revertir',
+      it: 'Esegui il downgrade',
+      ar: 'تخفيض الإصدار',
+      cs: 'Vrátit verzi zpět',
+      et: 'Tagasi kerima',
+      eu: 'Jaitsi bertsioa',
+      gl: 'Reverter',
+      hu: 'Visszalépés korábbi verzióra',
+      id: 'Turunkan versi',
+      ja: 'ダウングレード',
+      lt: 'Sumažinti versiją',
+      pl: 'Cofnij aktualizację',
+      pt: 'Reverter atualização',
+      ru: 'Откатить обновление',
+      sq: 'Zvogëlo versionin',
+      sr: 'Vrati na prethodnu verziju',
+      tr: 'Sürüm düşürme',
+      'zh-Hans': '降级',
+      'zh-Hant': '降級',
+    }),
+    downgrade_tooltip: t({
+      en: insert(
+        'Downgrade installed beta version {{beta_version}} to stable version {{stable_version}}',
+      ),
+      nl: insert(
+        'Draai de geïnstalleerde beta-versie {{beta_version}} terug naar de stabiele versie {{stable_version}}',
+      ),
+      fr: insert(
+        'Rétrogradez la version bêta installée {{beta_version}} vers la version stable {{stable_version}}',
+      ),
+      de: insert(
+        'Stufen Sie die installierte Beta-Version {{beta_version}} auf die stabile Version {{stable_version}} herab',
+      ),
+      es: insert(
+        'Revierta la versión beta instalada {{beta_version}} a la versión estable {{stable_version}}',
+      ),
+      it: insert(
+        'Esegui il downgrade della versione beta installata {{beta_version}} alla versione stabile {{stable_version}}',
+      ),
+      ar: insert(
+        'قم بتخفيض إصدار بيتا المثبت {{beta_version}} إلى الإصدار المستقر {{stable_version}}',
+      ),
+      cs: insert(
+        'Vrátit nainstalovanou beta verzi {{beta_version}} na stabilní verzi {{stable_version}}',
+      ),
+      et: insert(
+        'Kerige alla paigaldatud beetaversioon {{beta_version}} stabiilsele versioonile {{stable_version}}',
+      ),
+      eu: insert(
+        'Jaitsi instalatutako beta bertsioa {{beta_version}} bertsio egonkorrera {{stable_version}}',
+      ),
+      gl: insert(
+        'Reverte a versión beta instalada {{beta_version}} á versión estable {{stable_version}}',
+      ),
+      hu: insert(
+        'Léptesse vissza a telepített béta verziót {{beta_version}} a stabil verzióra {{stable_version}}',
+      ),
+      id: insert(
+        'Turunkan versi beta terpasang {{beta_version}} ke versi stabil {{stable_version}}',
+      ),
+      ja: insert(
+        'インストールされているベータ版 {{beta_version}} を安定版 {{stable_version}} にダウングレードします',
+      ),
+      lt: insert(
+        'Sumažinkite įdiegtą beta versiją {{beta_version}} į stabilią versiją {{stable_version}}',
+      ),
+      pl: insert(
+        'Cofnij zainstalowaną wersję beta {{beta_version}} do stabilnej wersji {{stable_version}}',
+      ),
+      pt: insert(
+        'Reverta a versão beta instalada {{beta_version}} para a versão estável {{stable_version}}',
+      ),
+      ru: insert(
+        'Откатите установленную бета-версию {{beta_version}} до стабильной версии {{stable_version}}',
+      ),
+      sq: insert(
+        'Zvogëlo versionin beta të instaluar {{beta_version}} në versionin e qëndrueshëm {{stable_version}}',
+      ),
+      sr: insert(
+        'Vrati instaliranu beta verziju {{beta_version}} na stabilnu verziju {{stable_version}}',
+      ),
+      tr: insert(
+        "Yüklü beta sürümü {{beta_version}} kararlı sürüm {{stable_version}}'e düşürün",
+      ),
+      'zh-Hans': insert(
+        '将已安装的测试版 {{beta_version}} 降级到稳定版 {{stable_version}}',
+      ),
+      'zh-Hant': insert(
+        '將已安裝的測試版 {{beta_version}} 降級到穩定版 {{stable_version}}',
+      ),
+    }),
     by_maintainer: t({
       en: insert('by {{maintainer}}'),
       nl: insert('door {{maintainer}}'),
