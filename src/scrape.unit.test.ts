@@ -30,6 +30,7 @@ import {
   versionFromTagName,
 } from './scrape';
 import type { Repository } from './types';
+import { description } from 'valibot';
 
 // Tests for branch-specific submodule fetching
 describe('downloadSubmodulesFromBranch', () => {
@@ -328,7 +329,7 @@ describe('transformRelease', () => {
       isPrerelease: false,
       publishedAt: '2025-01-01T00:00:00Z',
       tagName: '0.95.0_2cbd8a6d_R-4-5-1',
-      description: '---\njasp: >=0.95.0\n---\n',
+      description: '---\njasp: >=0.95.0\nname: My module\ndescription: A description of my module\n---\n',
       releaseAssets: {
         nodes: [
           {
@@ -349,7 +350,8 @@ describe('transformRelease', () => {
       },
     };
 
-    const result = transformRelease(input, 'owner/repo');
+    const [result, frontmatter] = transformRelease(input, 'owner/repo');
+
 
     expect(result.version).toBe('0.95.0');
     expect(result.jaspVersionRange).toBe('>=0.95.0');
@@ -357,6 +359,11 @@ describe('transformRelease', () => {
     expect(result.assets).toHaveLength(2);
     expect(result.assets[0].architecture).toBe('MacOS_x86_64');
     expect(result.assets[1].architecture).toBe('Windows_x86-64');
+    expect(frontmatter).toStrictEqual({
+      jasp: '>=0.95.0',
+      name: 'My module',
+      description: 'A description of my module'
+    })
   });
 
   test('falls back to default JASP version for malformed description', () => {
@@ -369,7 +376,7 @@ describe('transformRelease', () => {
       releaseAssets: { nodes: [] },
     };
 
-    const result = transformRelease(input, 'owner/repo');
+    const [result] = transformRelease(input, 'owner/repo');
     expect(result.jaspVersionRange).toBe('>=0.95.0');
   });
 
@@ -394,7 +401,7 @@ describe('transformRelease', () => {
       },
     };
 
-    const result = transformRelease(input, 'owner/repo');
+    const [result, _frontmatter] = transformRelease(input, 'owner/repo');
     expect(result.assets).toHaveLength(1);
     expect(result.assets[0].downloadUrl).toContain('.JASPModule');
   });
@@ -424,7 +431,7 @@ describe('transformRelease', () => {
       },
     };
 
-    const result = transformRelease(input, 'owner/repo');
+    const [result, _frontmatter] = transformRelease(input, 'owner/repo');
     expect(result.assets[0].architecture).toBe('Flatpak_x86_64');
     expect(result.assets[1].architecture).toBe('MacOS_arm64');
     expect(result.assets[2].architecture).toBe('Windows_x86-64');
