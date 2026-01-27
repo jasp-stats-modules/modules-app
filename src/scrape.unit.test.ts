@@ -30,7 +30,6 @@ import {
   versionFromTagName,
 } from './scrape';
 import type { Repository } from './types';
-import { description } from 'valibot';
 
 // Tests for branch-specific submodule fetching
 describe('downloadSubmodulesFromBranch', () => {
@@ -329,7 +328,8 @@ describe('transformRelease', () => {
       isPrerelease: false,
       publishedAt: '2025-01-01T00:00:00Z',
       tagName: '0.95.0_2cbd8a6d_R-4-5-1',
-      description: '---\njasp: >=0.95.0\nname: My module\ndescription: A description of my module\n---\n',
+      description:
+        '---\njasp: >=0.95.0\nname: My module\ndescription: A description of my module\n---\n',
       releaseAssets: {
         nodes: [
           {
@@ -352,7 +352,6 @@ describe('transformRelease', () => {
 
     const [result, frontmatter] = transformRelease(input, 'owner/repo');
 
-
     expect(result.version).toBe('0.95.0');
     expect(result.jaspVersionRange).toBe('>=0.95.0');
     expect(result.publishedAt).toBe('2025-01-01T00:00:00Z');
@@ -362,8 +361,8 @@ describe('transformRelease', () => {
     expect(frontmatter).toStrictEqual({
       jasp: '>=0.95.0',
       name: 'My module',
-      description: 'A description of my module'
-    })
+      description: 'A description of my module',
+    });
   });
 
   test('falls back to default JASP version for malformed description', () => {
