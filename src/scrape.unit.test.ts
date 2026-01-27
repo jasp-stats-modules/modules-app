@@ -14,15 +14,14 @@ import {
 } from 'vitest';
 import type { GqlRelease } from './scrape';
 import {
-  addQuotesInDescription,
   batchedArray,
   downloadSubmodules,
   downloadSubmodulesFromBranch,
   extractArchitectureFromUrl,
-  jaspVersionRangeFromDescription,
   latestReleasePerJaspVersionRange,
   logChannelStats,
   logReleaseStatistics,
+  parseReleaseFrontMatter,
   path2channel,
   releaseAssetsPaged,
   transformRelease,
@@ -176,44 +175,40 @@ describe('versionFromTagName', () => {
   });
 });
 
-describe('addQuotesInDescription', () => {
-  test('adds quotes to unquoted version range', () => {
-    const input = '---\njasp: >=0.95.0\n---\n';
-    const result = addQuotesInDescription(input);
-    expect(result).toContain('jasp: ">=0.95.0"');
+describe('parseReleaseFrontMatter', () => {
+  test('extracts version range, description and name', () => {
+    const description = `---\njasp: ">=0.95.0"\nname: My Module\ndescription: This is a test module.\n---\n`;
+    const result = parseReleaseFrontMatter(description);
+    expect(result).toEqual({
+      jasp: '>=0.95.0',
+      name: 'My Module',
+      description: 'This is a test module.',
+    });
   });
 
-  test('leaves already quoted strings unchanged', () => {
-    const input = '---\njasp: ">=0.95.0"\n---\n';
-    const result = addQuotesInDescription(input);
-    expect(result).toBe(input);
-  });
-});
-
-describe('jaspVersionRangeFromDescription', () => {
   test('extracts single quoted version range', () => {
     const description = "---\njasp: '>=0.95.1'\n---\n";
-    expect(jaspVersionRangeFromDescription(description)).toBe('>=0.95.1');
+    expect(parseReleaseFrontMatter(description)).toEqual({ jasp: '>=0.95.1' });
   });
 
   test('extracts double quoted version range', () => {
     const description = '---\njasp: ">=0.95.1"\n---\n';
-    expect(jaspVersionRangeFromDescription(description)).toBe('>=0.95.1');
+    expect(parseReleaseFrontMatter(description).jasp).toBe('>=0.95.1');
   });
 
   test('extracts unquoted version range', () => {
     const description = '---\njasp: >=0.95.1\n---\n';
-    expect(jaspVersionRangeFromDescription(description)).toBe('>=0.95.1');
+    expect(parseReleaseFrontMatter(description).jasp).toBe('>=0.95.1');
   });
 
   test('returns undefined for missing frontmatter', () => {
     const description = 'Just a regular description';
-    expect(jaspVersionRangeFromDescription(description)).toBeUndefined();
+    expect(parseReleaseFrontMatter(description).jasp).toBeUndefined();
   });
 
   test('returns undefined for missing jasp field', () => {
     const description = '---\nother: value\n---\n';
-    expect(jaspVersionRangeFromDescription(description)).toBeUndefined();
+    expect(parseReleaseFrontMatter(description).jasp).toBeUndefined();
   });
 });
 

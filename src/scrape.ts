@@ -223,9 +223,17 @@ type ReleaseFrontMatter = v.InferOutput<typeof ReleaseFrontMatter>;
  * @param description
  * @returns
  */
-function parseReleaseFrontMatter(description: string): ReleaseFrontMatter {
+export function parseReleaseFrontMatter(
+  description: string,
+): ReleaseFrontMatter {
   const raw = matter(addQuotesInDescription(description));
   return v.parse(ReleaseFrontMatter, raw.data);
+}
+
+// TODO remove once all release descriptions fetched have valid yaml in frontmatter
+export function addQuotesInDescription(input: string): string {
+  const regex = /^(.*?): (>.*)$/m;
+  return input.replace(regex, (_, p1, p2) => `${p1}: "${p2}"`);
 }
 
 /**
@@ -264,37 +272,6 @@ function updateNameAndDescriptionFromFrontMatter(
       repo.shortDescriptionHTML = firstPreReleaseFM.description;
     }
   }
-}
-
-/**
- * Given description like:
- * ```
- * ---
- * jasp: >=0.95.0
- * ---
- * ```
- * extracts the JASP version range string ('>=0.95.0').
- *
- * The version range string should be in format that semver package understands.
- * See https://semver.npmjs.com/ for more details.
- *
- * @param description
- * @returns
- */
-export function jaspVersionRangeFromDescription(
-  description: string,
-): string | undefined {
-  const parsed = matter(addQuotesInDescription(description));
-  if (parsed.data && typeof parsed.data.jasp === 'string') {
-    return parsed.data.jasp;
-  }
-  return undefined;
-}
-
-// TODO remove once all release descriptions fetched have valid yaml in frontmatter
-export function addQuotesInDescription(input: string): string {
-  const regex = /^(.*?): (>.*)$/m;
-  return input.replace(regex, (_, p1, p2) => `${p1}: "${p2}"`);
 }
 
 export function batchedArray<T>(array: T[], size: number): T[][] {
@@ -432,9 +409,7 @@ export function latestReleasePerJaspVersionRange(
       console.log('Release description is missing');
       continue;
     }
-    const jaspVersionRange = jaspVersionRangeFromDescription(
-      release.description,
-    );
+    const jaspVersionRange = parseReleaseFrontMatter(release.description).jasp;
     if (!jaspVersionRange) {
       console.log(
         'Could not extract JASP version range from release description',
