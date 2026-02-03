@@ -186,7 +186,7 @@ describe('App component', () => {
     });
   });
 
-  describe('Given test catalog and module is uninstallable and hidden betas and when beta is installed', () => {
+  describe('Given test catalog and module is removable and unchecked betas checkbox and when beta is installed', () => {
     beforeEach(async () => {
       screen = await render(
         <NuqslessWrapper>
@@ -221,7 +221,7 @@ describe('App component', () => {
 
       await expect
         .element(jaspAnovaCard.getByRole('link', { name: 'Uninstall' }))
-        .toBeInTheDocument();
+        .not.toBeInTheDocument();
     });
 
     test('Should not say installed', async () => {

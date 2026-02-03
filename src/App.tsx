@@ -6,7 +6,7 @@ import { useEffect, useState } from 'react';
 import { useIntlayer } from 'react-intlayer';
 import { useDebounceValue } from 'usehooks-ts';
 import { cn } from '@/lib/utils';
-import type { Asset, Release, Repository } from '@/types';
+import type { Asset, Repository } from '@/types';
 import { insideQt, useJaspQtObject } from '@/useJaspQtObject';
 import { useInfo } from './useInfo';
 import {
@@ -199,37 +199,6 @@ function UpdateButton({
   );
 }
 
-/**
- * Button to downgrade a beta to a stable release
- */
-function DowngradeButton({
-  asset,
-  translations,
-}: {
-  asset?: Asset;
-  translations: AppTranslations;
-}) {
-  const { downgrade, downgrade_tooltip } = translations;
-  if (!asset) {
-    return null;
-  }
-  // TODO pass correct versions to tooltip
-  const tooltip = downgrade_tooltip({
-    stable_version: '1.0.0',
-    beta_version: '1.1.0-beta',
-  });
-  console.log('Downgrade tooltip:', tooltip);
-  return (
-    <a
-      href={asset.downloadUrl}
-      className="inline-flex items-center justify-center whitespace-nowrap rounded bg-jasp-blue px-3 py-1.5 font-medium text-primary text-sm transition-colors duration-200 hover:bg-blue-700 dark:bg-blue-700 dark:hover:bg-blue-800"
-      title={tooltip}
-    >
-      {downgrade}
-    </a>
-  );
-}
-
 function UninstallButton({
   moduleName,
   translations,
@@ -258,58 +227,54 @@ function UninstallButton({
 
 function ReleaseAction({
   moduleName,
-  asset,
-  canUpdate,
-  canInstall,
-  canUninstall,
+  stableAsset,
+  preReleaseAsset,
+  primaryAction,
+  secondaryAction,
   allowPreRelease,
-  latestPreRelease,
-  latestVersionInstalled,
+  latestPreReleaseVersion,
+  latestVersionIs,
   translations,
 }: {
   moduleName: string;
-  asset: Asset;
-  canUpdate: boolean;
-  canInstall: boolean;
-  canUninstall: boolean;
+  stableAsset?: Asset;
+  preReleaseAsset?: Asset;
+  primaryAction?: 'install-stable' | 'update-stable';
+  secondaryAction?:
+    | 'install-pre-release'
+    | 'update-pre-release'
+    | 'uninstall';
   allowPreRelease: boolean;
-  latestPreRelease?: Release;
-  latestVersionInstalled: boolean;
+  latestPreReleaseVersion?: string;
+  latestVersionIs: 'stable' | 'pre-release' | 'installed';
   translations: AppTranslations;
 }) {
-  // if (moduleName === 'jaspAnova') {
-  //   console.log({
-  //       moduleName,
-  //   asset,
-  //   canUpdate,
-  //   canInstall,
-  //   canUninstall,
-  //   allowPreRelease,
-  //   latestPreRelease,
-  //   latestVersionInstalled,
-  //   // translations,
-  //   })
-  // }
   const { pre_release, latest_version_installed, installed } = translations;
-  const canDowngrade = false; // TODO implement downgrade logic
+  const showInstalledBadge = latestVersionIs === 'installed';
+  const showPreReleaseLabel = allowPreRelease && !!latestPreReleaseVersion;
   return (
     <div className="flex flex-col">
-      {canUpdate && <UpdateButton asset={asset} translations={translations} />}
-      {canDowngrade && (
-        <DowngradeButton asset={asset} translations={translations} />
+      {primaryAction === 'install-stable' && (
+        <InstallButton asset={stableAsset} translations={translations} />
       )}
-      {canInstall && !canUpdate && (
-        <InstallButton asset={asset} translations={translations} />
+      {primaryAction === 'update-stable' && (
+        <UpdateButton asset={stableAsset} translations={translations} />
       )}
-      {allowPreRelease && latestPreRelease && (
+      {secondaryAction === 'install-pre-release' && (
+        <InstallButton asset={preReleaseAsset} translations={translations} />
+      )}
+      {secondaryAction === 'update-pre-release' && (
+        <UpdateButton asset={preReleaseAsset} translations={translations} />
+      )}
+      {secondaryAction === 'uninstall' && insideQt && (
+        <UninstallButton moduleName={moduleName} translations={translations} />
+      )}
+      {showPreReleaseLabel && (
         <span className="justify-center whitespace-nowrap text-muted-foreground text-sm">
           {pre_release.value}
         </span>
       )}
-      {insideQt && canUninstall && (canUpdate || latestVersionInstalled) && (
-        <UninstallButton moduleName={moduleName} translations={translations} />
-      )}
-      {latestVersionInstalled && (
+      {showInstalledBadge && (
         <span
           title={latest_version_installed.value}
           className="px-2 py-1.5 text-muted-foreground text-sm"
@@ -422,15 +387,31 @@ function RepositoryCard({
   translations: AppTranslations;
 }) {
   const {
-    latestPreRelease,
-    latestAnyRelease,
-    asset,
+    latestPreReleaseVersion,
+    asset: stableAsset,
     installedVersion,
-    latestVersionInstalled,
-    canInstall,
-    canUpdate,
-    canUninstall,
+    latestVersionIs,
+    primaryAction,
+    secondaryAction,
   } = useRelease(repo, allowPreRelease);
+  const { info } = useInfo();
+  const latestStableRelease = findReleaseThatSatisfiesInstalledJaspVersion(
+    repo.releases,
+    info.version,
+  );
+  const latestPreRelease = findReleaseThatSatisfiesInstalledJaspVersion(
+    repo.preReleases,
+    info.version,
+  );
+  const latestReleaseForStats =
+    allowPreRelease && latestPreRelease ? latestPreRelease : latestStableRelease;
+  const preReleaseAsset = latestPreRelease?.assets.find(
+    (a) => a.architecture === info.arch,
+  );
+  const statsAsset =
+    latestReleaseForStats?.assets.find(
+      (a) => a.architecture === info.arch,
+    ) ?? stableAsset;
 
   const cardId = `repo-card-${repo.name}`;
   return (
@@ -459,29 +440,29 @@ function RepositoryCard({
             />
           </div>
         </div>
-        {asset ? (
+        {stableAsset || preReleaseAsset ? (
           <ReleaseAction
             moduleName={repo.name}
-            asset={asset}
-            canUpdate={canUpdate}
-            canInstall={canInstall}
-            canUninstall={canUninstall}
+            stableAsset={stableAsset}
+            preReleaseAsset={preReleaseAsset}
+            primaryAction={primaryAction}
+            secondaryAction={secondaryAction}
             allowPreRelease={allowPreRelease}
-            latestPreRelease={latestPreRelease}
-            latestVersionInstalled={latestVersionInstalled}
+            latestPreReleaseVersion={latestPreReleaseVersion}
+            latestVersionIs={latestVersionIs}
             translations={translations}
           />
         ) : (
           <span>No compatible asset found</span>
         )}
       </div>
-      {latestAnyRelease && asset && (
+      {latestReleaseForStats && statsAsset && (
         <ReleaseStats
           installedVersion={installedVersion}
-          latestVersion={latestAnyRelease.version}
-          latestPublishedAt={latestAnyRelease.publishedAt}
+          latestVersion={latestReleaseForStats.version}
+          latestPublishedAt={latestReleaseForStats.publishedAt}
           maintainer={repo.organization}
-          downloads={asset.downloadCount}
+          downloads={statsAsset.downloadCount}
           translations={translations}
         />
       )}

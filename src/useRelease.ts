@@ -1,4 +1,4 @@
-import { satisfies } from 'semver';
+import { satisfies, lt } from 'semver';
 import type { Asset, Release, Repository } from '@/types';
 import { useInfo } from './useInfo';
 
@@ -12,15 +12,21 @@ export function findReleaseThatSatisfiesInstalledJaspVersion(
 }
 
 export interface ReleaseStats {
-  latestRelease?: Release;
-  latestPreRelease?: Release;
-  latestAnyRelease?: Release;
-  asset?: Asset;
+  latestStableReleaseVersion?: string;
+  latestPreReleaseVersion?: string;
   installedVersion?: string;
-  latestVersionInstalled: boolean;
-  canInstall: boolean;
-  canUpdate: boolean;
-  canUninstall: boolean;
+  asset?: Asset;
+  latestVersionIs: 'stable' | 'pre-release' | 'installed';
+  // The *-pre-release actions are only possible when allowPreRelease=true
+  primaryAction?: 'install-stable' | 'update-stable';
+  secondaryAction?: 'install-pre-release' | 'update-pre-release' | 'uninstall';
+}
+function isNewerVersion(currentVersion: string, candidateVersion: string): boolean {
+  try {
+    return lt(currentVersion, candidateVersion);
+  } catch {
+    return currentVersion !== candidateVersion;
+  }
 }
 
 export function getReleaseInfo(
@@ -31,7 +37,7 @@ export function getReleaseInfo(
   installedModules: { [x: string]: string },
   uninstallableModules: string[],
 ): ReleaseStats {
-  const latestRelease = findReleaseThatSatisfiesInstalledJaspVersion(
+  const latestStableRelease = findReleaseThatSatisfiesInstalledJaspVersion(
     repo.releases,
     installedJaspVersion,
   );
@@ -39,35 +45,70 @@ export function getReleaseInfo(
     repo.preReleases,
     installedJaspVersion,
   );
-  const latestAnyRelease =
-    allowPreRelease && latestPreRelease ? latestPreRelease : latestRelease;
-  let asset = latestAnyRelease?.assets.find((a) => a.architecture === arch);
-  if (!asset) {
-    asset = latestRelease?.assets.find((a) => a.architecture === arch);
-  }
-  const installedVersion = installedModules[repo.name];
-  const latestVersionInstalled =
+  const latestStableReleaseVersion = latestStableRelease?.version;
+  const latestPreReleaseVersion = latestPreRelease?.version;
+  const stableAsset = latestStableRelease?.assets.find(
+    (a) => a.architecture === arch,
+  );
+  const preReleaseAsset = latestPreRelease?.assets.find(
+    (a) => a.architecture === arch,
+  );
+  const asset = stableAsset ?? preReleaseAsset;
+  const installedVersion: string | undefined = installedModules[repo.name];
+  const latestPreReleaseIsNewerThanStable =
+    allowPreRelease &&
+    latestPreReleaseVersion !== undefined &&
+    (latestStableReleaseVersion === undefined ||
+      isNewerVersion(latestStableReleaseVersion, latestPreReleaseVersion));
+  const latestVersionType: ReleaseStats['latestVersionIs'] =
+    latestPreReleaseIsNewerThanStable ? 'pre-release' : 'stable';
+  const latestVersionIs: ReleaseStats['latestVersionIs'] =
+    installedVersion &&
+    ((latestVersionType === 'stable' &&
+      installedVersion === latestStableReleaseVersion) ||
+      (latestVersionType === 'pre-release' &&
+        installedVersion === latestPreReleaseVersion))
+      ? 'installed'
+      : latestVersionType;
+  const canUpdateToStable =
     installedVersion !== undefined &&
-    installedVersion === latestAnyRelease?.version;
-  const canInstall = !installedVersion || !latestVersionInstalled;
-  // tagName (d5d503cf_R-4-5-1) is not a semantic version, so we cannot
-  // tell if it can be updated or downgraded
-  // For now assume installed version can be updated
-  // TODO once tag name contains semantic version use semver to
-  // detect whether installed module can be upgraded/downgraded or is already latest
-  const canUpdate = !!installedVersion && !latestVersionInstalled;
-
-  const canUninstall = uninstallableModules.includes(repo.name);
+    latestStableReleaseVersion !== undefined &&
+    isNewerVersion(installedVersion, latestStableReleaseVersion);
+  const canUpdateToPreRelease =
+    installedVersion !== undefined &&
+    latestPreReleaseVersion !== undefined &&
+    isNewerVersion(installedVersion, latestPreReleaseVersion);
+  let primaryAction: ReleaseStats['primaryAction'];
+  if (stableAsset && latestStableReleaseVersion) {
+    if (!installedVersion) {
+      primaryAction = 'install-stable';
+    } else if (canUpdateToStable) {
+      primaryAction = 'update-stable';
+    }
+  }
+  let secondaryAction: ReleaseStats['secondaryAction'];
+  if (allowPreRelease && preReleaseAsset && latestPreReleaseVersion) {
+    if (!installedVersion) {
+      secondaryAction = 'install-pre-release';
+    } else if (canUpdateToPreRelease) {
+      secondaryAction = 'update-pre-release';
+    }
+  }
+  if (
+    !secondaryAction &&
+    installedVersion &&
+    uninstallableModules.includes(repo.name)
+  ) {
+    secondaryAction = 'uninstall';
+  }
   return {
-    latestRelease,
-    latestPreRelease,
-    latestAnyRelease,
+    latestStableReleaseVersion,
+    latestPreReleaseVersion,
     asset,
     installedVersion,
-    latestVersionInstalled,
-    canInstall,
-    canUpdate,
-    canUninstall,
+    latestVersionIs,
+    primaryAction,
+    secondaryAction,
   };
 }
 

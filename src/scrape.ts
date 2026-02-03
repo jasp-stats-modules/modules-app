@@ -427,7 +427,7 @@ export function latestReleasePerJaspVersionRange(
 
 export function versionFromTagName(tagName: string): string {
   // Expects the tagName to be in following format `<version>_<last-commit-of-tag>_R-<r-version-seperated-by-minus>`
-  // For example for `0.95.0_2cbd8a6d_R-4-5-1` the version is `0.95.0`
+  // For example for `0.95.0_2cbd8a6d_R-4-5-1_Release` the version is `0.95.0`
   return tagName.slice(0, tagName.indexOf('_'));
 }
 
