@@ -11,7 +11,7 @@
     "start": "vite --port 3000",
     "build": "vite build",
     "serve": "vite preview",
-    "test": "vitest run --project unit",
+    "test": "vitest --project unit",
     "test:browser": "vitest --project browser",
     "scrape": "node src/scrape.ts",
     "pretypecheck": "intlayer build",
