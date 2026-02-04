@@ -184,6 +184,9 @@ describe('App component', () => {
         .element(jaspAnovaCard.getByRole('link', { name: 'Update' }))
         .not.toBeInTheDocument();
     });
+
+    // TODO add test for  release is on GitHub that does not work on installed JASP version
+    // try out with ?v=0.94.0 should show releasejaspAnova v0.94.0
   });
 
   describe('Given test catalog and module is removable and unchecked betas checkbox and when beta is installed', () => {
