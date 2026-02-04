@@ -305,7 +305,7 @@ export function ReleaseStats({
     translations;
   const publishedAt = new Date(latestPublishedAt).toLocaleDateString();
   return (
-    <div className="flex flex-row justify-between text-base text-muted-foreground">
+    <div className="flex flex-row justify-between text-muted-foreground text-sm">
       <div>
         {installedVersion
           ? release_stats_installed({
