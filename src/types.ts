@@ -15,7 +15,8 @@ export interface Release {
 }
 
 export interface Repository {
-  name: string;
+  id: string; // GitHub repo name
+  name: string; // Human readable name from frontmatter from GH release description, fallback id
   shortDescriptionHTML: string;
   homepageUrl?: string;
   releases: Release[];

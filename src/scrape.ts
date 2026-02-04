@@ -311,46 +311,6 @@ export async function releaseAssetsPaged(
     results.push(...batchResults);
     bar.tick();
   }
-
-  // TODO remove once a release is on GitHub that does not work on installed JASP version
-  console.log('Inserting dummy old release for jaspAnova');
-  // For now we insert a dummy release,
-  // try out with ?v=0.95.0 should show release below and not one with 2cbd8a6d as version
-  results
-    .sort((a, b) => a.releaseSource.localeCompare(b.releaseSource, 'en'))
-    .find((repo) => repo.releaseSource === 'jasp-stats-modules/jaspAnova')
-    ?.releases.push({
-      version: '0.94.0',
-      publishedAt: '2025-05-07T21:56:13Z',
-      jaspVersionRange: '>=0.94.0',
-      assets: [
-        {
-          downloadUrl:
-            'https://github.com/jasp-stats-modules/jaspAnova/releases/download/2cbd8a3e_R-4-4-1/jaspAnova_0.95.0_Flatpak_x86_64_R-4-5-1.JASPModule',
-          downloadCount: 0,
-          architecture: 'Flatpak_x86_64',
-        },
-        {
-          downloadUrl:
-            'https://github.com/jasp-stats-modules/jaspAnova/releases/download/2cbd8a3e_R-4-4-1/jaspAnova_0.95.0_MacOS_x86_64_R-4-5-1.JASPModule',
-          downloadCount: 0,
-          architecture: 'MacOS_x86_64',
-        },
-        {
-          downloadUrl:
-            'https://github.com/jasp-stats-modules/jaspAnova/releases/download/2cbd8a3e_R-4-4-1/jaspAnova_0.95.0_MacOS_arm64_R-4-5-1.JASPModule',
-          downloadCount: 0,
-          architecture: 'MacOS_arm64',
-        },
-        {
-          downloadUrl:
-            'https://github.com/jasp-stats-modules/jaspAnova/releases/download/2cbd8a3e_R-4-4-1/jaspAnova_0.95.0_Windows_x86-64_R-4-5-1.JASPModule',
-          downloadCount: 0,
-          architecture: 'Windows_x86-64',
-        },
-      ],
-    });
-
   return results;
 }
 
@@ -427,7 +387,7 @@ export function latestReleasePerJaspVersionRange(
 
 export function versionFromTagName(tagName: string): string {
   // Expects the tagName to be in following format `<version>_<last-commit-of-tag>_R-<r-version-seperated-by-minus>`
-  // For example for `0.95.0_2cbd8a6d_R-4-5-1` the version is `0.95.0`
+  // For example for `0.95.0_2cbd8a6d_R-4-5-1_Release` the version is `0.95.0`
   return tagName.slice(0, tagName.indexOf('_'));
 }
 
@@ -559,6 +519,7 @@ async function releaseAssets(
 
           const newRepo: Omit<Repository, 'channels'> = {
             ...restRepo,
+            id: restRepo.name,
             releaseSource: nameWithOwner,
             organization: repo.parent?.owner.login ?? 'unknown_org',
             releases: newReleases.map(([release, _]) => release),

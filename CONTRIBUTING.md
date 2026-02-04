@@ -95,6 +95,9 @@ pnpm test:browser run --coverage --coverage.reportsDirectory=./coverage/browser
 
 To keep track of code coverage over time the [.github/badges/](.github/badges/) directory is updated on each run on the main branch in the [GitHub Actions test workflow](.github/workflows/test.yml).
 
+The browser tests use a [public/test.json](public/test.json) as catalog file which can also be used in browser with
+[http://localhost:3000/?c=test.json](http://localhost:3000/?c=test.json&a=MacOS_arm64).
+
 ## Linting and Formatting
 
 Can be typechecked with:
