@@ -2,6 +2,7 @@
   {
     "name": "Acceptance Sampling",
     "shortDescriptionHTML": "Sampling for acceptance",
+    "id": "jaspAcceptanceSampling",
     "releaseSource": "jasp-stats-modules/jaspAcceptanceSampling",
     "organization": "jasp-stats",
     "releases": [
@@ -54,6 +55,7 @@
   {
     "name": "ANOVA",
     "shortDescriptionHTML": "Evaluate the difference between multiple means",
+    "id": "jaspAnova",
     "releaseSource": "jasp-stats-modules/jaspAnova",
     "organization": "jasp-stats",
     "releases": [
@@ -106,6 +108,7 @@
   {
     "name": "Audit",
     "shortDescriptionHTML": "Statistical methods for auditing",
+    "id": "jaspAudit",
     "releaseSource": "jasp-stats-modules/jaspAudit",
     "organization": "jasp-stats",
     "releases": [
@@ -174,6 +177,7 @@
   {
     "name": "Bayes Factor Functions",
     "shortDescriptionHTML": "This module offers Bayes factor functions.",
+    "id": "jaspBFF",
     "releaseSource": "jasp-stats-modules/jaspBFF",
     "organization": "jasp-stats",
     "releases": [
@@ -241,6 +245,7 @@
   {
     "name": "Bain",
     "shortDescriptionHTML": "A module for computing approximated adjusted fractional Bayes factors for equality, inequality, and about equality constrained hypotheses.",
+    "id": "jaspBain",
     "releaseSource": "jasp-stats-modules/jaspBain",
     "organization": "jasp-stats",
     "releases": [
@@ -308,6 +313,7 @@
   {
     "name": "BFpack",
     "shortDescriptionHTML": "A module for computing Bayes factors for equality, inequality, and order constrained hypotheses.",
+    "id": "jaspBfpack",
     "releaseSource": "jasp-stats-modules/jaspBfpack",
     "organization": "jasp-stats",
     "releases": [
@@ -375,6 +381,7 @@
   {
     "name": "BSTS",
     "shortDescriptionHTML": "This module offers a Bayesian take on linear Gaussian state space models suitable for   time series analysis.",
+    "id": "jaspBsts",
     "releaseSource": "jasp-stats-modules/jaspBsts",
     "organization": "jasp-stats",
     "releases": [
@@ -442,6 +449,7 @@
   {
     "name": "Circular Statistics",
     "shortDescriptionHTML": "This module offers basic methods for directional data",
+    "id": "jaspCircular",
     "releaseSource": "jasp-stats-modules/jaspCircular",
     "organization": "jasp-stats",
     "releases": [
@@ -509,6 +517,7 @@
   {
     "name": "Cochrane Meta-Analyses",
     "shortDescriptionHTML": "This module allows to analyze Cochrane medical datasets.",
+    "id": "jaspCochrane",
     "releaseSource": "jasp-stats-modules/jaspCochrane",
     "organization": "jasp-stats",
     "releases": [
@@ -576,6 +585,7 @@
   {
     "name": "Descriptives",
     "shortDescriptionHTML": "Explore the data with tables and plots",
+    "id": "jaspDescriptives",
     "releaseSource": "jasp-stats-modules/jaspDescriptives",
     "organization": "jasp-stats",
     "releases": [
@@ -643,6 +653,7 @@
   {
     "name": "Distributions",
     "shortDescriptionHTML": "Visualize distributions and fit them to data",
+    "id": "jaspDistributions",
     "releaseSource": "jasp-stats-modules/jaspDistributions",
     "organization": "jasp-stats",
     "releases": [
@@ -710,6 +721,7 @@
   {
     "name": "Equivalence T-Tests",
     "shortDescriptionHTML": "Test the difference between two means with an interval-null hypothesis",
+    "id": "jaspEquivalenceTTests",
     "releaseSource": "jasp-stats-modules/jaspEquivalenceTTests",
     "organization": "jasp-stats",
     "releases": [
@@ -777,6 +789,7 @@
   {
     "name": "ESCI",
     "shortDescriptionHTML": "ESCI in JASP",
+    "id": "jaspEsci",
     "releaseSource": "jasp-stats-modules/jaspEsci",
     "organization": "jasp-stats",
     "releases": [
@@ -844,6 +857,7 @@
   {
     "name": "Factor",
     "shortDescriptionHTML": "Explore hidden structure in the data",
+    "id": "jaspFactor",
     "releaseSource": "jasp-stats-modules/jaspFactor",
     "organization": "jasp-stats",
     "releases": [
@@ -911,6 +925,7 @@
   {
     "name": "Frequencies",
     "shortDescriptionHTML": "Analyses for count data",
+    "id": "jaspFrequencies",
     "releaseSource": "jasp-stats-modules/jaspFrequencies",
     "organization": "jasp-stats",
     "releases": [
@@ -978,6 +993,7 @@
   {
     "name": "JAGS",
     "shortDescriptionHTML": "Implement Bayesian graphical models with Martyn Plummer’s JAGS program for Markov chain Monte Carlo",
+    "id": "jaspJags",
     "releaseSource": "jasp-stats-modules/jaspJags",
     "organization": "jasp-stats",
     "releases": [
@@ -1045,6 +1061,7 @@
   {
     "name": "Learn Bayes",
     "shortDescriptionHTML": "Learn Bayesian statistics with simple examples and supporting text",
+    "id": "jaspLearnBayes",
     "releaseSource": "jasp-stats-modules/jaspLearnBayes",
     "organization": "jasp-stats",
     "releases": [
@@ -1112,6 +1129,7 @@
   {
     "name": "Learn Stats",
     "shortDescriptionHTML": "Learn classical statistics with simple examples and supporting text",
+    "id": "jaspLearnStats",
     "releaseSource": "jasp-stats-modules/jaspLearnStats",
     "organization": "jasp-stats",
     "releases": [
@@ -1179,6 +1197,7 @@
   {
     "name": "Machine Learning",
     "shortDescriptionHTML": "Explore the relation between variables using data-driven methods for regression, classification, and clustering",
+    "id": "jaspMachineLearning",
     "releaseSource": "jasp-stats-modules/jaspMachineLearning",
     "organization": "jasp-stats",
     "releases": [
@@ -1246,6 +1265,7 @@
   {
     "name": "Meta-Analysis",
     "shortDescriptionHTML": "Synthesize evidence across multiple studies",
+    "id": "jaspMetaAnalysis",
     "releaseSource": "jasp-stats-modules/jaspMetaAnalysis",
     "organization": "jasp-stats",
     "releases": [
@@ -1313,6 +1333,7 @@
   {
     "name": "Mixed Models",
     "shortDescriptionHTML": "Evaluate the difference between multiple means with random effects",
+    "id": "jaspMixedModels",
     "releaseSource": "jasp-stats-modules/jaspMixedModels",
     "organization": "jasp-stats",
     "releases": [
@@ -1380,6 +1401,7 @@
   {
     "name": "Network",
     "shortDescriptionHTML": "Explore the connections between variables organized as a network",
+    "id": "jaspNetwork",
     "releaseSource": "jasp-stats-modules/jaspNetwork",
     "organization": "jasp-stats",
     "releases": [
@@ -1447,6 +1469,7 @@
   {
     "name": "Power",
     "shortDescriptionHTML": "This module allows you to conduct power analyses.",
+    "id": "jaspPower",
     "releaseSource": "jasp-stats-modules/jaspPower",
     "organization": "jasp-stats",
     "releases": [
@@ -1514,6 +1537,7 @@
   {
     "name": "Predictive Analytics",
     "shortDescriptionHTML": "This module offers time series predictions and combines them with quality control concepts. That way one can predict whether a process will exeed a specified boundary in the future.",
+    "id": "jaspPredictiveAnalytics",
     "releaseSource": "jasp-stats-modules/jaspPredictiveAnalytics",
     "organization": "jasp-stats",
     "releases": [
@@ -1581,6 +1605,7 @@
   {
     "name": "Process",
     "shortDescriptionHTML": "Test and compare causal and conditional process models.",
+    "id": "jaspProcess",
     "releaseSource": "jasp-stats-modules/jaspProcess",
     "organization": "jasp-stats",
     "releases": [
@@ -1648,6 +1673,7 @@
   {
     "name": "Prophet",
     "shortDescriptionHTML": "This module offers a simple model for time series prediction.",
+    "id": "jaspProphet",
     "releaseSource": "jasp-stats-modules/jaspProphet",
     "organization": "jasp-stats",
     "releases": [
@@ -1715,6 +1741,7 @@
   {
     "name": "Quality Control",
     "shortDescriptionHTML": "Investigate if a manufactured product adheres to a defined set of quality criteria",
+    "id": "jaspQualityControl",
     "releaseSource": "jasp-stats-modules/jaspQualityControl",
     "organization": "jasp-stats",
     "releases": [
@@ -1782,6 +1809,7 @@
   {
     "name": "Regression",
     "shortDescriptionHTML": "Evaluate the association between variables",
+    "id": "jaspRegression",
     "releaseSource": "jasp-stats-modules/jaspRegression",
     "organization": "jasp-stats",
     "releases": [
@@ -1849,6 +1877,7 @@
   {
     "name": "Reliability",
     "shortDescriptionHTML": "Quantify the reliability of test scores",
+    "id": "jaspReliability",
     "releaseSource": "jasp-stats-modules/jaspReliability",
     "organization": "jasp-stats",
     "releases": [
@@ -1916,6 +1945,7 @@
   {
     "name": "SEM",
     "shortDescriptionHTML": "Evaluate latent data structures with Yves Rosseel’s lavaan program",
+    "id": "jaspSem",
     "releaseSource": "jasp-stats-modules/jaspSem",
     "organization": "jasp-stats",
     "releases": [
@@ -1983,6 +2013,7 @@
   {
     "name": "Summary Statistics",
     "shortDescriptionHTML": "Apply common Bayesian tests from sufficient statistics",
+    "id": "jaspSummaryStatistics",
     "releaseSource": "jasp-stats-modules/jaspSummaryStatistics",
     "organization": "jasp-stats",
     "releases": [
@@ -1998,7 +2029,7 @@
           },
           {
             "downloadUrl": "https://github.com/jasp-stats-modules/jaspSummaryStatistics/releases/download/0.95.5_de257b55_R-4-5-2_Release/jaspSummaryStatistics_0.95.5_MacOS_arm64_R-4-5-2.JASPModule",
-            "downloadCount": 7,
+            "downloadCount": 8,
             "architecture": "MacOS_arm64"
           },
           {
@@ -2050,6 +2081,7 @@
   {
     "name": "Survival",
     "shortDescriptionHTML": "Perform analyses of censored time to event data.",
+    "id": "jaspSurvival",
     "releaseSource": "jasp-stats-modules/jaspSurvival",
     "organization": "jasp-stats",
     "releases": [
@@ -2117,6 +2149,7 @@
   {
     "name": "T-Tests",
     "shortDescriptionHTML": "Evaluate the difference between two means",
+    "id": "jaspTTests",
     "releaseSource": "jasp-stats-modules/jaspTTests",
     "organization": "jasp-stats",
     "releases": [
@@ -2184,6 +2217,7 @@
   {
     "name": "Wait for it...",
     "shortDescriptionHTML": "A module to test stuff with.",
+    "id": "jaspTestModule",
     "releaseSource": "jasp-stats-modules/jaspTestModule",
     "organization": "jasp-stats",
     "releases": [
@@ -2236,6 +2270,7 @@
   {
     "name": "Visual Modeling",
     "shortDescriptionHTML": "Graphically explore the dependencies between variables",
+    "id": "jaspVisualModeling",
     "releaseSource": "jasp-stats-modules/jaspVisualModeling",
     "organization": "jasp-stats",
     "releases": [
@@ -2303,6 +2338,7 @@
   {
     "name": "Time Series",
     "shortDescriptionHTML": "This module offers time series analyses.",
+    "id": "jaspTimeSeries",
     "releaseSource": "jasp-stats-modules/jaspTimeSeries",
     "organization": "jasp-stats",
     "releases": [
@@ -2370,6 +2406,7 @@
   {
     "name": "Robust T-Tests",
     "shortDescriptionHTML": "Robustly evaluate the difference between two means",
+    "id": "jaspRobustTTests",
     "releaseSource": "jasp-stats-modules/jaspRobustTTests",
     "organization": "jasp-stats",
     "releases": [
@@ -2437,6 +2474,7 @@
   {
     "name": "Dyads",
     "shortDescriptionHTML": "This module offers dyadic network analyses.",
+    "id": "jaspDyads",
     "releaseSource": "jasp-stats-modules/jaspDyads",
     "organization": "pankajrsingla",
     "releases": [

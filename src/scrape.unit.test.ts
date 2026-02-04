@@ -1178,6 +1178,7 @@ describe('logReleaseStatistics', () => {
   test('returns correct counts and integer average', () => {
     const repositories: Repository[] = [
       {
+        id: 'repoA',
         name: 'repoA',
         shortDescriptionHTML: '<p>A</p>',
         organization: 'org',
@@ -1216,6 +1217,7 @@ describe('logReleaseStatistics', () => {
         ],
       },
       {
+        id: 'repoB',
         name: 'repoB',
         shortDescriptionHTML: '<p>B</p>',
         organization: 'org',
@@ -1256,6 +1258,7 @@ describe('logReleaseStatistics', () => {
   test('returns red formatted average for non-integer average', () => {
     const repositories: Repository[] = [
       {
+        id: 'repoA',
         name: 'repoA',
         shortDescriptionHTML: '<p>A</p>',
         organization: 'org',
@@ -1282,6 +1285,7 @@ describe('logReleaseStatistics', () => {
         preReleases: [],
       },
       {
+        id: 'repoB',
         name: 'repoB',
         shortDescriptionHTML: '<p>B</p>',
         organization: 'org',

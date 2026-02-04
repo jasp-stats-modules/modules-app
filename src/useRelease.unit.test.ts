@@ -10,14 +10,14 @@ import {
 describe('isNewerVersion', () => {
   test.for<[string, string, boolean]>([
     ['1.0.0', '1.0.1', true],
-    ['1.0.1', '1.0.0', false],
+    ['2.0.0', '1.0.0', false],
     ['1.0.0', '1.0.0', false],
     ['1.0.0', '1.0.0.1', false],
     ['1.0.0.1', '1.0.0', true],
     ['1.0.0.1', '1.0.0.2', true],
     ['1.0.0.2', '1.0.0.1', false],
-    ['1.0.0.0', '1.0.0.2', true],
-    ['1.0.0.2', '1.0.0.0', false],
+    ['1.0.0.0', '1.0.0.2', false], // in semver 1.0.0 and 1.0.0-beta.2
+    ['1.0.0.2', '1.0.0.0', true],
     ['2.0.0', '10.0.0', true],
     ['10.0.0', '2.0.0', false],
     ['1.0.0-alpha', '1.0.0', true],
@@ -98,6 +98,24 @@ describe('getReleaseInfo', () => {
       {
         primaryAction: undefined,
         secondaryAction: undefined,
+        latestVersionIs: 'installed',
+        asset: undefined,
+        installedVersion: '1.0.0',
+        latestPreRelease: undefined,
+        latestStableRelease: undefined,
+      },
+    ],
+    [
+      {
+        installed: '1.0.0',
+        stableRelease: undefined,
+        preRelease: undefined,
+        allowPreRelease: false,
+        removeable: true,
+      },
+      {
+        primaryAction: undefined,
+        secondaryAction: 'uninstall',
         latestVersionIs: 'installed',
         asset: undefined,
         installedVersion: '1.0.0',
@@ -485,6 +503,7 @@ describe('getReleaseInfo', () => {
     ],
   ])('given %o => %o', ([given, expected]) => {
     const repo: Repository = {
+      id: 'jaspAcceptanceSampling',
       name: 'jaspAcceptanceSampling',
       shortDescriptionHTML: 'Acceptance Sampling Module for JASP',
       releases: given.stableRelease

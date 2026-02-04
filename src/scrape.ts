@@ -519,6 +519,7 @@ async function releaseAssets(
 
           const newRepo: Omit<Repository, 'channels'> = {
             ...restRepo,
+            id: restRepo.name,
             releaseSource: nameWithOwner,
             organization: repo.parent?.owner.login ?? 'unknown_org',
             releases: newReleases.map(([release, _]) => release),

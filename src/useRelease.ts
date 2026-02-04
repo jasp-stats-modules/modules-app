@@ -23,6 +23,10 @@ export interface ReleaseStats {
 }
 
 function jaspVersionToSemver(version: string): string {
+  if (isJaspStableReleaseVersion(version)) {
+    // make semantic version out of 1.2.3.0 by removing the trailing .0
+    return version.replace(/\.0$/, '');
+  }
   // Convert 1.2.3.4 to 1.2.3-beta.4 for semver comparison
   if (isJaspBetaVersion(version)) {
     return version.replace(/^(\d+\.\d+\.\d+)\.(\d+)$/, '$1-beta.$2');
@@ -32,6 +36,11 @@ function jaspVersionToSemver(version: string): string {
 
 function isJaspBetaVersion(version: string): boolean {
   return /\d+\.\d+\.\d+\.\d+/.test(version);
+}
+
+function isJaspStableReleaseVersion(version: string): boolean {
+  // installing jaspAnova_0.95.5_Flatpak_x86_64_R-4-5-2.JASPModule is reported by JASP as version 0.95.5.0
+  return /^\d+\.\d+\.\d+\.0$/.test(version);
 }
 
 export function isPreRelease(version: string): boolean {
@@ -76,7 +85,7 @@ export function getReleaseInfo(
   const preReleaseAsset = latestPreRelease?.assets.find(
     (a) => a.architecture === arch,
   );
-  const installedVersion: string | undefined = installedModules[repo.name];
+  const installedVersion: string | undefined = installedModules[repo.id];
   const latestPreReleaseIsNewerThanStable =
     allowPreRelease &&
     latestPreReleaseVersion !== undefined &&
@@ -105,7 +114,7 @@ export function getReleaseInfo(
   } else {
     if (latestPreReleaseIsNewerThanStable) {
       latestVersionIs = 'pre-release';
-    } else {
+    } else if (latestStableRelease !== undefined) {
       latestVersionIs = 'stable';
     }
   }
@@ -142,7 +151,7 @@ export function getReleaseInfo(
   if (
     !secondaryAction &&
     installedVersion &&
-    uninstallableModules.includes(repo.name) &&
+    uninstallableModules.includes(repo.id) &&
     !installedIsPreRelease
   ) {
     secondaryAction = 'uninstall';
@@ -151,7 +160,7 @@ export function getReleaseInfo(
     !primaryAction &&
     allowPreRelease &&
     installedVersion &&
-    uninstallableModules.includes(repo.name) &&
+    uninstallableModules.includes(repo.id) &&
     installedIsPreRelease
   ) {
     primaryAction = 'uninstall-pre-release';

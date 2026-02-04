@@ -27,8 +27,8 @@ In a standalone web application you can tell the web application which version/a
 
 - v: the version of the JASP desktop application for example `0.95.0`
 - a: the architecture of the JASP desktop application for example `Windows_x86-64`
-- i: installed modules. A JSON object with the module names as keys and their versions as values. The object has to be [URL encoded](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/encodeURIComponent). For example, `{"Equivalence T-Tests":"0.95.0","T-Tests":"0.94.0"}` becomes `%7B%22Equivalence%20T-Tests%22%3A%220.95.0%22%2C%22T-Tests%22%3A%220.94.0%22%7D`.
-- u: List of modules that can be uninstalled. As a JSON array, it has to be [URL encoded](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/encodeURIComponent). For example, `["T-Tests","Regression"]` becomes `%5B%22T-Tests%22%2C%22Regression%22%5D`.
+- i: installed modules. A JSON object with the module id (repository name) as keys and their versions as values. The object has to be [URL encoded](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/encodeURIComponent). For example, `{"jaspEquivalenceTTests":"0.95.0","jaspTTests":"0.94.0"}` becomes `%7B%22EjaspEquivalenceTTests%22%3A%220.95.0%22%2C%22T-Tests%22%3A%220.94.0%22%7D`.
+- u: List of modules that can be uninstalled. As a JSON array, it has to be [URL encoded](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/encodeURIComponent). For example, `["jaspTTests","jaspRegression"]` becomes `%5B%22jaspTTests%22%2C%22jaspRegression%22%5D`.
 - p: show pre-releases initially. Use `true` to show pre-releases and use `false` to hide them initially.
 - c: URL for the list of modules aka index.json. 
    When not set uses `index.json` (`public/index.json` in local development or on deployed site uses `https://jasp-stats-modules.github.io/modules-app/index.json`).
@@ -37,7 +37,8 @@ In a standalone web application you can tell the web application which version/a
 - l: Language. Use `en` for English (default). For example use `nl` for Dutch.
 - f: Font name. Use the name of a font installed on your system. For example use `SansSerif`. Besides OS fonts also `FreeSans`, `Fira Code` and `Fira Code Retina` fonts are available.
 
-A full URL could look like [https://jasp-stats-modules.github.io/modules-app/?a=Windows_x86-64&v=0.95.0&i=%7B%22Equivalence%20T-Tests%22%3A%220.95.0%22%2C%22T-Tests%22%3A%220.94.0%22%7D&p=0](https://jasp-stats-modules.github.io/modules-app/?a=Windows_x86-64&v=0.95.0&i=%7B%22Equivalence%20T-Tests%22%3A%220.95.0%22%2C%22T-Tests%22%3A%220.94.0%22%7D&p=0&t=dark&l=nl).
+A full URL could look like [https://jasp-stats-modules.github.io/modules-app/?a=Windows_x86-64&v=0.95.0&i=%5B%22jaspTTests%22%2C%22jaspRegression%22%5D&p=0](https://jasp-stats-modules.github.io/modules-app/?a=Windows_x86-64&v=0.95.0&i=%5B%22jaspTTests%22%2C%22jaspRegression%22%5D&p=0&t=dark&l=nl).
+
 ## Update list of modules
 
 The [list of modules](public/index.json) that the web application knows about can be updated by running the GitHub workflow at https://github.com/jasp-stats-modules/modules-app/actions/workflows/deploy.yml .
