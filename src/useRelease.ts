@@ -1,4 +1,4 @@
-import { satisfies, lt } from 'semver';
+import { lt, satisfies } from 'semver';
 import type { Asset, Release, Repository } from '@/types';
 import { useInfo } from './useInfo';
 
@@ -12,16 +12,34 @@ export function findReleaseThatSatisfiesInstalledJaspVersion(
 }
 
 export interface ReleaseStats {
-  latestStableReleaseVersion?: string;
-  latestPreReleaseVersion?: string;
+  latestStableRelease?: Release;
+  latestPreRelease?: Release;
   installedVersion?: string;
   asset?: Asset;
-  latestVersionIs: 'stable' | 'pre-release' | 'installed';
+  latestVersionIs?: 'stable' | 'pre-release' | 'installed';
   // The *-pre-release actions are only possible when allowPreRelease=true
-  primaryAction?: 'install-stable' | 'update-stable';
+  primaryAction?: 'install-stable' | 'update-stable' | 'uninstall-pre-release';
   secondaryAction?: 'install-pre-release' | 'update-pre-release' | 'uninstall';
 }
-function isNewerVersion(currentVersion: string, candidateVersion: string): boolean {
+
+function jaspVersionToSemver(version: string): string {
+  // Convert 1.2.3.4 to 1.2.3-beta.4 for semver comparison
+  if (isPreRelease(version)) {
+    return version.replace(/^(\d+\.\d+\.\d+)\.(\d+)$/, '$1-beta.$2');
+  }
+  return version;
+}
+
+function isPreRelease(version: string): boolean {
+  return version.split('.').length === 4;
+}
+
+export function isNewerVersion(
+  currentVersion: string,
+  candidateVersion: string,
+): boolean {
+  currentVersion = jaspVersionToSemver(currentVersion);
+  candidateVersion = jaspVersionToSemver(candidateVersion);
   try {
     return lt(currentVersion, candidateVersion);
   } catch {
@@ -53,33 +71,50 @@ export function getReleaseInfo(
   const preReleaseAsset = latestPreRelease?.assets.find(
     (a) => a.architecture === arch,
   );
-  const asset = stableAsset ?? preReleaseAsset;
   const installedVersion: string | undefined = installedModules[repo.name];
   const latestPreReleaseIsNewerThanStable =
     allowPreRelease &&
     latestPreReleaseVersion !== undefined &&
     (latestStableReleaseVersion === undefined ||
       isNewerVersion(latestStableReleaseVersion, latestPreReleaseVersion));
-  const latestVersionType: ReleaseStats['latestVersionIs'] =
-    latestPreReleaseIsNewerThanStable ? 'pre-release' : 'stable';
-  const latestVersionIs: ReleaseStats['latestVersionIs'] =
-    installedVersion &&
-    ((latestVersionType === 'stable' &&
-      installedVersion === latestStableReleaseVersion) ||
-      (latestVersionType === 'pre-release' &&
-        installedVersion === latestPreReleaseVersion))
-      ? 'installed'
-      : latestVersionType;
   const canUpdateToStable =
     installedVersion !== undefined &&
     latestStableReleaseVersion !== undefined &&
     isNewerVersion(installedVersion, latestStableReleaseVersion);
   const canUpdateToPreRelease =
+    allowPreRelease &&
     installedVersion !== undefined &&
     latestPreReleaseVersion !== undefined &&
     isNewerVersion(installedVersion, latestPreReleaseVersion);
+  const installedIsPreRelease =
+    installedVersion && isPreRelease(installedVersion);
+  let latestVersionIs: ReleaseStats['latestVersionIs'];
+  let asset: Asset | undefined;
+  if (installedVersion) {
+    latestVersionIs = 'installed';
+    if (canUpdateToStable && !latestPreReleaseIsNewerThanStable) {
+      latestVersionIs = 'stable';
+    } else if (canUpdateToPreRelease) {
+      latestVersionIs = 'pre-release';
+    }
+  } else {
+    if (latestPreReleaseIsNewerThanStable) {
+      latestVersionIs = 'pre-release';
+    } else {
+      latestVersionIs = 'stable';
+    }
+  }
+  if (latestVersionIs === 'stable' && stableAsset) {
+    asset = stableAsset;
+  } else if (latestVersionIs === 'pre-release' && preReleaseAsset) {
+    asset = preReleaseAsset;
+  }
   let primaryAction: ReleaseStats['primaryAction'];
-  if (stableAsset && latestStableReleaseVersion) {
+  if (
+    stableAsset &&
+    latestStableReleaseVersion &&
+    !latestPreReleaseIsNewerThanStable
+  ) {
     if (!installedVersion) {
       primaryAction = 'install-stable';
     } else if (canUpdateToStable) {
@@ -87,7 +122,12 @@ export function getReleaseInfo(
     }
   }
   let secondaryAction: ReleaseStats['secondaryAction'];
-  if (allowPreRelease && preReleaseAsset && latestPreReleaseVersion) {
+  if (
+    allowPreRelease &&
+    preReleaseAsset &&
+    latestPreReleaseVersion &&
+    latestPreReleaseIsNewerThanStable
+  ) {
     if (!installedVersion) {
       secondaryAction = 'install-pre-release';
     } else if (canUpdateToPreRelease) {
@@ -97,13 +137,23 @@ export function getReleaseInfo(
   if (
     !secondaryAction &&
     installedVersion &&
-    uninstallableModules.includes(repo.name)
+    uninstallableModules.includes(repo.name) &&
+    !installedIsPreRelease
   ) {
     secondaryAction = 'uninstall';
   }
+  if (
+    !primaryAction &&
+    allowPreRelease &&
+    installedVersion &&
+    uninstallableModules.includes(repo.name) &&
+    installedIsPreRelease
+  ) {
+    primaryAction = 'uninstall-pre-release';
+  }
   return {
-    latestStableReleaseVersion,
-    latestPreReleaseVersion,
+    latestStableRelease,
+    latestPreRelease: allowPreRelease ? latestPreRelease : undefined,
     asset,
     installedVersion,
     latestVersionIs,

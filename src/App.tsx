@@ -3,14 +3,17 @@ import { House } from 'lucide-react';
 import { useQueryState } from 'nuqs';
 import type { Dispatch, ReactNode, SetStateAction } from 'react';
 import { useEffect, useState } from 'react';
+import { ErrorBoundary } from 'react-error-boundary';
 import { useIntlayer } from 'react-intlayer';
 import { useDebounceValue } from 'usehooks-ts';
 import { cn } from '@/lib/utils';
-import type { Asset, Repository } from '@/types';
+import type { Asset, Release, Repository } from '@/types';
 import { insideQt, useJaspQtObject } from '@/useJaspQtObject';
 import { useInfo } from './useInfo';
 import {
   findReleaseThatSatisfiesInstalledJaspVersion,
+  isNewerVersion,
+  type ReleaseStats,
   useRelease,
 } from './useRelease';
 
@@ -178,6 +181,27 @@ function InstallButton({
   );
 }
 
+function InstallPreReleaseButton({
+  asset,
+  translations,
+}: {
+  asset?: Asset;
+  translations: AppTranslations;
+}) {
+  const { install, pre_release } = translations;
+  if (!asset) {
+    return null;
+  }
+  return (
+    <a
+      href={asset.downloadUrl}
+      className="inline-flex items-center justify-center whitespace-nowrap rounded bg-jasp-green px-3 py-1.5 font-medium text-primary text-sm transition-colors duration-200 hover:bg-green-600 dark:hover:bg-green-800"
+    >
+      {install} {pre_release}
+    </a>
+  );
+}
+
 function UpdateButton({
   asset,
   translations,
@@ -195,6 +219,27 @@ function UpdateButton({
       className="inline-flex items-center justify-center whitespace-nowrap rounded bg-jasp-blue px-3 py-1.5 font-medium text-primary text-sm transition-colors duration-200 hover:bg-blue-700 dark:bg-blue-700 dark:hover:bg-blue-800"
     >
       {update}
+    </a>
+  );
+}
+
+function UpdatePreReleaseButton({
+  asset,
+  translations,
+}: {
+  asset?: Asset;
+  translations: AppTranslations;
+}) {
+  const { update, pre_release } = translations;
+  if (!asset) {
+    return null;
+  }
+  return (
+    <a
+      href={asset.downloadUrl}
+      className="inline-flex items-center justify-center whitespace-nowrap rounded bg-jasp-blue px-3 py-1.5 font-medium text-primary text-sm transition-colors duration-200 hover:bg-blue-700 dark:bg-blue-700 dark:hover:bg-blue-800"
+    >
+      {update} {pre_release}
     </a>
   );
 }
@@ -225,55 +270,115 @@ function UninstallButton({
   );
 }
 
-function ReleaseAction({
+function UninstallPreReleaseButton({
   moduleName,
-  stableAsset,
-  preReleaseAsset,
-  primaryAction,
-  secondaryAction,
-  allowPreRelease,
-  latestPreReleaseVersion,
-  latestVersionIs,
   translations,
 }: {
   moduleName: string;
-  stableAsset?: Asset;
-  preReleaseAsset?: Asset;
-  primaryAction?: 'install-stable' | 'update-stable';
-  secondaryAction?:
-    | 'install-pre-release'
-    | 'update-pre-release'
-    | 'uninstall';
-  allowPreRelease: boolean;
-  latestPreReleaseVersion?: string;
-  latestVersionIs: 'stable' | 'pre-release' | 'installed';
   translations: AppTranslations;
 }) {
-  const { pre_release, latest_version_installed, installed } = translations;
-  const showInstalledBadge = latestVersionIs === 'installed';
-  const showPreReleaseLabel = allowPreRelease && !!latestPreReleaseVersion;
+  const { uninstall, uninstall_this_module, pre_release } = translations;
+  const { data: jasp } = useJaspQtObject();
+
+  async function doUninstall() {
+    await jasp?.uninstall(moduleName);
+  }
+
   return (
-    <div className="flex flex-col">
-      {primaryAction === 'install-stable' && (
-        <InstallButton asset={stableAsset} translations={translations} />
-      )}
-      {primaryAction === 'update-stable' && (
-        <UpdateButton asset={stableAsset} translations={translations} />
-      )}
-      {secondaryAction === 'install-pre-release' && (
-        <InstallButton asset={preReleaseAsset} translations={translations} />
-      )}
-      {secondaryAction === 'update-pre-release' && (
-        <UpdateButton asset={preReleaseAsset} translations={translations} />
-      )}
-      {secondaryAction === 'uninstall' && insideQt && (
-        <UninstallButton moduleName={moduleName} translations={translations} />
-      )}
-      {showPreReleaseLabel && (
-        <span className="justify-center whitespace-nowrap text-muted-foreground text-sm">
-          {pre_release.value}
-        </span>
-      )}
+    <button
+      type="button"
+      onClick={doUninstall}
+      title={uninstall_this_module.value}
+      className="mt-3 inline-flex items-center justify-center whitespace-nowrap rounded bg-destructive px-3 py-1.5 font-medium text-primary text-sm transition-colors duration-200 hover:bg-red-700 dark:bg-red-700 dark:hover:bg-red-800"
+    >
+      {uninstall} {pre_release}
+    </button>
+  );
+}
+
+function ReleaseAction({
+  moduleName,
+  asset,
+  primaryAction,
+  secondaryAction,
+  translations,
+  latestInstalled,
+}: {
+  moduleName: string;
+  asset?: Asset;
+  primaryAction?: ReleaseStats['primaryAction'];
+  secondaryAction?: ReleaseStats['secondaryAction'];
+  translations: AppTranslations;
+  latestInstalled: boolean;
+}) {
+  const { latest_version_installed, installed } = translations;
+  // Only show installed text when there is no button
+  const showInstalledBadge =
+    latestInstalled &&
+    !(
+      insideQt &&
+      (primaryAction === 'uninstall-pre-release' ||
+        secondaryAction === 'uninstall')
+    );
+  const actions: React.ReactNode[] = [];
+  if (secondaryAction === 'update-pre-release') {
+    actions.push(
+      <UpdatePreReleaseButton
+        key="update-pre-release"
+        asset={asset}
+        translations={translations}
+      />,
+    );
+  }
+  if (primaryAction === 'install-stable') {
+    actions.push(
+      <InstallButton
+        key="install-stable"
+        asset={asset}
+        translations={translations}
+      />,
+    );
+  }
+  if (primaryAction === 'update-stable') {
+    actions.push(
+      <UpdateButton
+        key="update-stable"
+        asset={asset}
+        translations={translations}
+      />,
+    );
+  }
+  if (secondaryAction === 'install-pre-release') {
+    actions.push(
+      <InstallPreReleaseButton
+        key="install-pre-release"
+        asset={asset}
+        translations={translations}
+      />,
+    );
+  }
+  if (primaryAction === 'uninstall-pre-release' && insideQt) {
+    actions.push(
+      <UninstallPreReleaseButton
+        key="uninstall-pre-release"
+        moduleName={moduleName}
+        translations={translations}
+      />,
+    );
+  }
+  if (secondaryAction === 'uninstall' && insideQt) {
+    actions.push(
+      <UninstallButton
+        key="uninstall"
+        moduleName={moduleName}
+        translations={translations}
+      />,
+    );
+  }
+  return (
+    <div className="flex flex-col gap-2">
+      {actions}
+
       {showInstalledBadge && (
         <span
           title={latest_version_installed.value}
@@ -286,39 +391,106 @@ function ReleaseAction({
   );
 }
 
-export function ReleaseStats({
+export function ReleaseStatsLine({
   installedVersion,
-  latestVersion,
-  latestPublishedAt,
+  latestStableRelease,
+  latestPreRelease,
   maintainer,
+  latestVersionIs,
   downloads,
   translations,
 }: {
   installedVersion?: string;
-  latestVersion: string;
-  latestPublishedAt: string;
+  latestStableRelease?: Release;
+  latestPreRelease?: Release;
   maintainer: string;
-  downloads: number;
+  latestVersionIs?: ReleaseStats['latestVersionIs'];
+  downloads?: number;
   translations: AppTranslations;
 }) {
-  const { release_stats_installed, release_stats_notinstalled, by_maintainer } =
-    translations;
-  const publishedAt = new Date(latestPublishedAt).toLocaleDateString();
+  const {
+    by_maintainer,
+    installed_version,
+    latest_installed_version,
+    latest_version_on_with_downloads,
+    latest_beta_version_on_with_downloads,
+    latest_stable_with_download_and_beta,
+    latest_stable_and_beta_with_downloads,
+  } = translations;
   return (
     <div className="flex flex-row justify-between text-muted-foreground text-sm">
       <div>
-        {installedVersion
-          ? release_stats_installed({
-              installedVersion,
-              latestVersion,
-              publishedAt,
-              downloads,
-            })
-          : release_stats_notinstalled({
-              latestVersion,
-              publishedAt,
-              downloads,
-            })}
+        {latestVersionIs &&
+          latestVersionIs !== 'installed' &&
+          installedVersion && (
+            <span>{installed_version({ version: installedVersion })}, </span>
+          )}
+        {latestVersionIs === 'installed' && installedVersion && (
+          <span>
+            {latest_installed_version({ version: installedVersion })}{' '}
+          </span>
+        )}
+        {latestVersionIs === 'stable' &&
+          latestStableRelease &&
+          !latestPreRelease && (
+            <span>
+              {latest_version_on_with_downloads({
+                latestVersion: latestStableRelease.version,
+                publishedAt: new Date(
+                  latestStableRelease.publishedAt,
+                ).toLocaleDateString(),
+                downloads: downloads ?? 0,
+              })}
+            </span>
+          )}
+        {latestVersionIs === 'pre-release' &&
+          !latestStableRelease &&
+          latestPreRelease && (
+            <span>
+              {latest_beta_version_on_with_downloads({
+                latestVersion: latestPreRelease.version,
+                publishedAt: new Date(
+                  latestPreRelease.publishedAt,
+                ).toLocaleDateString(),
+                downloads: downloads ?? 0,
+              })}
+            </span>
+          )}
+        {latestStableRelease &&
+          latestPreRelease &&
+          latestVersionIs === 'stable' && (
+            <span>
+              {latest_stable_with_download_and_beta({
+                latestVersion: latestStableRelease.version,
+                publishedAt: new Date(
+                  latestStableRelease.publishedAt,
+                ).toLocaleDateString(),
+                downloads: downloads ?? 0,
+                latestBetaVersion: latestPreRelease.version,
+                latestBetaPublishedAt: new Date(
+                  latestPreRelease.publishedAt,
+                ).toLocaleDateString(),
+                latestBetaDownloads: downloads ?? 0,
+              })}
+            </span>
+          )}
+        {latestStableRelease &&
+          latestPreRelease &&
+          latestVersionIs === 'pre-release' && (
+            <span>
+              {latest_stable_and_beta_with_downloads({
+                latestVersion: latestStableRelease.version,
+                publishedAt: new Date(
+                  latestStableRelease.publishedAt,
+                ).toLocaleDateString(),
+                latestBetaVersion: latestPreRelease.version,
+                latestBetaPublishedAt: new Date(
+                  latestPreRelease.publishedAt,
+                ).toLocaleDateString(),
+                downloads: downloads ?? 0,
+              })}
+            </span>
+          )}
       </div>
       <div>{by_maintainer({ maintainer })}</div>
     </div>
@@ -387,31 +559,14 @@ function RepositoryCard({
   translations: AppTranslations;
 }) {
   const {
-    latestPreReleaseVersion,
-    asset: stableAsset,
+    latestPreRelease,
+    latestStableRelease,
+    asset,
     installedVersion,
     latestVersionIs,
     primaryAction,
     secondaryAction,
   } = useRelease(repo, allowPreRelease);
-  const { info } = useInfo();
-  const latestStableRelease = findReleaseThatSatisfiesInstalledJaspVersion(
-    repo.releases,
-    info.version,
-  );
-  const latestPreRelease = findReleaseThatSatisfiesInstalledJaspVersion(
-    repo.preReleases,
-    info.version,
-  );
-  const latestReleaseForStats =
-    allowPreRelease && latestPreRelease ? latestPreRelease : latestStableRelease;
-  const preReleaseAsset = latestPreRelease?.assets.find(
-    (a) => a.architecture === info.arch,
-  );
-  const statsAsset =
-    latestReleaseForStats?.assets.find(
-      (a) => a.architecture === info.arch,
-    ) ?? stableAsset;
 
   const cardId = `repo-card-${repo.name}`;
   return (
@@ -440,32 +595,24 @@ function RepositoryCard({
             />
           </div>
         </div>
-        {stableAsset || preReleaseAsset ? (
-          <ReleaseAction
-            moduleName={repo.name}
-            stableAsset={stableAsset}
-            preReleaseAsset={preReleaseAsset}
-            primaryAction={primaryAction}
-            secondaryAction={secondaryAction}
-            allowPreRelease={allowPreRelease}
-            latestPreReleaseVersion={latestPreReleaseVersion}
-            latestVersionIs={latestVersionIs}
-            translations={translations}
-          />
-        ) : (
-          <span>No compatible asset found</span>
-        )}
+        <ReleaseAction
+          moduleName={repo.name}
+          asset={asset}
+          primaryAction={primaryAction}
+          secondaryAction={secondaryAction}
+          translations={translations}
+          latestInstalled={latestVersionIs === 'installed'}
+        />
       </div>
-      {latestReleaseForStats && statsAsset && (
-        <ReleaseStats
+        <ReleaseStatsLine
           installedVersion={installedVersion}
-          latestVersion={latestReleaseForStats.version}
-          latestPublishedAt={latestReleaseForStats.publishedAt}
+          latestPreRelease={latestPreRelease}
+          latestStableRelease={latestStableRelease}
+          latestVersionIs={latestVersionIs}
           maintainer={repo.organization}
-          downloads={statsAsset.downloadCount}
+          downloads={asset?.downloadCount}
           translations={translations}
         />
-      )}
     </li>
   );
 }
@@ -482,13 +629,16 @@ function filterOnInstallableRepositories(
       installedJaspVersion,
     );
     if (allowPreRelease) {
-      // Assume pre-releases are newer than regular releases
-      // so use pre-release as latest
       const latestPreRelease = findReleaseThatSatisfiesInstalledJaspVersion(
         repo.preReleases,
         installedJaspVersion,
       );
-      if (latestPreRelease) {
+      if (
+        (latestPreRelease &&
+          latestRelease &&
+          isNewerVersion(latestRelease.version, latestPreRelease.version)) ||
+        (!latestRelease && latestPreRelease)
+      ) {
         latestRelease = latestPreRelease;
       }
     }

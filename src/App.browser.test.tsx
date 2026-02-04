@@ -88,19 +88,15 @@ describe('App component', () => {
       });
     });
 
-    describe('Show pre-releases checkbox', () => {
-      test('displays pre-release text when checkbox is checked', async () => {
-        // Check the "Show pre-releases" checkbox
+    describe('Show betas checkbox', () => {
+      test('displays betas text when checkbox is checked', async () => {
+        // Check the "Show betas" checkbox
         const checkbox = screen.getByLabelText('Show Betas');
         await checkbox.click();
 
-        // Search for jaspAnova to filter results
-        const input = screen.getByLabelText('Search for a module');
-        await input.fill('jaspAnova');
-
-        // Assert that the pre-release text appears
+        // Assert that the latest beta text appears
         await expect
-          .element(screen.getByText('Beta', { exact: true }))
+          .element(screen.getByText('latest beta'))
           .toBeInTheDocument();
       });
     });
@@ -124,18 +120,25 @@ describe('App component', () => {
       );
     });
 
-    test('shows Update button and release stats for older installed version', async () => {
+    test('shows Update button', async () => {
       const input = screen.getByLabelText('Search for a module');
       await input.fill('jaspAnova');
 
       await expect.element(screen.getByText('Update')).toBeInTheDocument();
+    });
+
+    test('release stats for older installed version', async () => {
+      const input = screen.getByLabelText('Search for a module');
+      await input.fill('jaspAnova');
+
       await expect
-        .element(screen.getByText(/Installed 0\.95\.4, latest 0\.95\.5/i))
+        .element(screen.getByText(/Installed 0\.95\.4, Latest 0\.95\.5/i))
         .toBeInTheDocument();
     });
   });
 
   describe('Given test catalog and when the latest module version is installed', () => {
+    let jaspAnovaCard: Locator;
     beforeEach(async () => {
       screen = await render(
         <NuqslessWrapper>
@@ -151,29 +154,33 @@ describe('App component', () => {
           }),
         },
       );
+      jaspAnovaCard = screen.getByRole('listitem', { name: 'jaspAnova' });
+      await expect.element(jaspAnovaCard).toBeInTheDocument();
     });
 
-    test('shows installed release stats and no action buttons', async () => {
-      const jaspAnovaCard = screen.getByRole('listitem', { name: 'jaspAnova' });
-      await expect.element(jaspAnovaCard).toBeInTheDocument();
-
-      const releaseStats = jaspAnovaCard.getByText(
-        /Installed 0\.95\.5, latest 0\.95\.5 on .* with 10 downloads/i,
-      );
-      await expect.element(releaseStats).toBeInTheDocument();
-
-      const installedStatus = jaspAnovaCard.getByTitle(
-        /latest version is installed/i,
-      );
-      await expect.element(installedStatus).toBeInTheDocument();
-
+    test('say installed', async () => {
       const installedText = jaspAnovaCard.getByText('Installed', {
         exact: true,
       });
       await expect.element(installedText).toBeInTheDocument();
 
-      // Verify action buttons/links don't render when latest version is installed
-      // Instead, the "Installed" status label replaces them
+      const installedStatus = jaspAnovaCard.getByTitle(
+        'latest version is installed',
+      );
+      await expect.element(installedStatus).toBeInTheDocument();
+    });
+
+    test('shows installed release stats ', async () => {
+      const releaseStats = jaspAnovaCard.getByText('Latest installed 0.95.5');
+      await expect.element(releaseStats).toBeInTheDocument();
+    });
+
+    test('no action buttons', async () => {
+      const installedText = jaspAnovaCard.getByText('Installed', {
+        exact: true,
+      });
+      await expect.element(installedText).toBeInTheDocument();
+
       await expect
         .element(jaspAnovaCard.getByRole('button'))
         .not.toBeInTheDocument();
@@ -227,30 +234,13 @@ describe('App component', () => {
         .not.toBeInTheDocument();
     });
 
-    test('Should not say installed', async () => {
-      // When uninstall button is show, the "Installed" text is repetitive
+    test('Should say installed outside qt', async () => {
       const jaspAnovaCard = screen.getByRole('listitem', { name: 'jaspAnova' });
       await expect.element(jaspAnovaCard).toBeInTheDocument();
 
       await expect
         .element(jaspAnovaCard.getByText('Installed', { exact: true }))
-        .not.toBeInTheDocument();
-    });
-
-    test('Should show downgrade button with link to latest stable', async () => {
-      const jaspAnovaCard = screen.getByRole('listitem', { name: 'jaspAnova' });
-      await expect.element(jaspAnovaCard).toBeInTheDocument();
-
-      const downgradeButton = jaspAnovaCard.getByRole('link', {
-        name: 'Downgrade',
-      });
-      await expect.element(downgradeButton).toBeInTheDocument();
-      await expect
-        .element(downgradeButton)
-        .toHaveAttribute(
-          'href',
-          'https://github.com/test/test/releases/download/v0.95.5/test1_MacOS_arm64.JASPModule',
-        );
+        .toBeInTheDocument();
     });
   });
 
