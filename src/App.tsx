@@ -3,7 +3,6 @@ import { House } from 'lucide-react';
 import { useQueryState } from 'nuqs';
 import type { Dispatch, ReactNode, SetStateAction } from 'react';
 import { useEffect, useState } from 'react';
-import { ErrorBoundary } from 'react-error-boundary';
 import { useIntlayer } from 'react-intlayer';
 import { useDebounceValue } from 'usehooks-ts';
 import { cn } from '@/lib/utils';
@@ -604,15 +603,15 @@ function RepositoryCard({
           latestInstalled={latestVersionIs === 'installed'}
         />
       </div>
-        <ReleaseStatsLine
-          installedVersion={installedVersion}
-          latestPreRelease={latestPreRelease}
-          latestStableRelease={latestStableRelease}
-          latestVersionIs={latestVersionIs}
-          maintainer={repo.organization}
-          downloads={asset?.downloadCount}
-          translations={translations}
-        />
+      <ReleaseStatsLine
+        installedVersion={installedVersion}
+        latestPreRelease={latestPreRelease}
+        latestStableRelease={latestStableRelease}
+        latestVersionIs={latestVersionIs}
+        maintainer={repo.organization}
+        downloads={asset?.downloadCount}
+        translations={translations}
+      />
     </li>
   );
 }
