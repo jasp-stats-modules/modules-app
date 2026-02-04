@@ -469,7 +469,6 @@ export function ReleaseStatsLine({
                 latestBetaPublishedAt: new Date(
                   latestPreRelease.publishedAt,
                 ).toLocaleDateString(),
-                latestBetaDownloads: downloads ?? 0,
               })}
             </span>
           )}

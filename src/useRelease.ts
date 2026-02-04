@@ -1,4 +1,4 @@
-import { lt, satisfies } from 'semver';
+import { lt, prerelease, satisfies } from 'semver';
 import type { Asset, Release, Repository } from '@/types';
 import { useInfo } from './useInfo';
 
@@ -24,14 +24,19 @@ export interface ReleaseStats {
 
 function jaspVersionToSemver(version: string): string {
   // Convert 1.2.3.4 to 1.2.3-beta.4 for semver comparison
-  if (isPreRelease(version)) {
+  if (isJaspBetaVersion(version)) {
     return version.replace(/^(\d+\.\d+\.\d+)\.(\d+)$/, '$1-beta.$2');
   }
   return version;
 }
 
-function isPreRelease(version: string): boolean {
-  return version.split('.').length === 4;
+function isJaspBetaVersion(version: string): boolean {
+  return /\d+\.\d+\.\d+\.\d+/.test(version);
+}
+
+export function isPreRelease(version: string): boolean {
+  const semver = jaspVersionToSemver(version);
+  return prerelease(semver) !== null;
 }
 
 export function isNewerVersion(

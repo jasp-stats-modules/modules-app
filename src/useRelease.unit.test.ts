@@ -3,6 +3,7 @@ import type { Asset, Repository } from './types';
 import {
   getReleaseInfo,
   isNewerVersion,
+  isPreRelease,
   type ReleaseStats,
 } from './useRelease';
 
@@ -30,6 +31,17 @@ describe('isNewerVersion', () => {
       expect(result).toBe(expected);
     },
   );
+});
+
+describe('isPreRelease', () => {
+  test.for<[string, boolean]>([
+    ['1.0.0', false],
+    ['1.0.0-beta.1', true],
+    ['1.0.0.1', true],
+  ])('isPreRelease(%s) should be %s', ([version, expected]) => {
+    const result = isPreRelease(version);
+    expect(result).toBe(expected);
+  });
 });
 
 describe('getReleaseInfo', () => {
