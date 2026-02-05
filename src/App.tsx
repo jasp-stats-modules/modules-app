@@ -828,7 +828,7 @@ function InfoButton({ translations }: { translations: AppTranslations }) {
       <div
         popover="auto"
         id="infoPopover"
-        className="relative m-8 mx-auto max-w-sm gap-2 self-center p-4 rounded-lg border border-border bg-card"
+        className="relative m-8 mx-auto max-w-sm gap-2 self-center rounded-lg border border-border bg-card p-4"
       >
         <button
           popoverTarget="infoPopover"

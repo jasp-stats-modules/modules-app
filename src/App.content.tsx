@@ -1065,7 +1065,7 @@ Bu panel [JASP-MOD projesinin](https://research-software-directory.org/projects/
 
 此面板是 [JASP-MOD 專案](https://research-software-directory.org/projects/jasp-mod) 的一部分。`),
     }),
-  information: t({
+    information: t({
       en: 'Information',
       nl: 'Informatie',
       fr: 'Informations',
@@ -1089,7 +1089,7 @@ Bu panel [JASP-MOD projesinin](https://research-software-directory.org/projects/
       tr: 'Bilgi',
       'zh-Hans': '信息',
       'zh-Hant': '資訊',
-  })
+    }),
   },
 } satisfies Dictionary;
 
