@@ -788,6 +788,25 @@ function JASPScrollBar({ children }: { children: ReactNode }) {
   );
 }
 
+function InfoButton({ translations }: { translations: AppTranslations }) {
+  return (
+    <>
+      <button popoverTarget="infoPopover" popoverTargetAction='toggle' className="rounded-full border border-border w-4 h-4 hover:bg-background ml-auto">?</button>
+      <div popover="auto" id="infoPopover" className="self-center m-8 p-4">
+        <h1>Module library</h1>
+        <p>Use it to browse and install/update/uninstall JASP modules.</p>
+        <p>The modules are divided into channels</p>
+        <ul>
+          <li><b>Official</b></li>
+          <li><b>Community</b></li>
+        </ul>
+        <p>A module can have a beta version of it. This is useful for testing new modules or new features in existing modules before they are officially released.</p>
+        <p>This web application was made as part of the JASP-MOD project of the NLeSC and JASP team.</p>
+      </div>
+    </>
+  )
+}
+
 export function App() {
   const translations = useIntlayer<'app'>('app');
   const {
@@ -847,7 +866,7 @@ export function App() {
   return (
     <JASPScrollBar>
       <main className="px-2 py-2">
-        <div className="mb-4 rounded-lg border border-border bg-card p-3 text-card-foreground shadow-sm">
+        <header className="mb-4 rounded-lg border border-border bg-card p-3 text-card-foreground shadow-sm">
           <div className="flex flex-col gap-3">
             <div className="flex flex-row gap-3">
               <ChannelSelector
@@ -864,6 +883,7 @@ export function App() {
                   description={allow_prereleases_checkbox_description.value}
                 />
               </div>
+              <InfoButton translations={translations} />
             </div>
             <div>
               <label className="mb-1 block font-medium text-sm">
@@ -880,8 +900,9 @@ export function App() {
                 />
               </label>
             </div>
+            
           </div>
-        </div>
+        </header>
         <ul className="space-y-3">
           {filteredRepos.map((repo) => (
             <RepositoryCard
