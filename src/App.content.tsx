@@ -1065,6 +1065,31 @@ Bu panel [JASP-MOD projesinin](https://research-software-directory.org/projects/
 
 此面板是 [JASP-MOD 專案](https://research-software-directory.org/projects/jasp-mod) 的一部分。`),
     }),
+  information: t({
+      en: 'Information',
+      nl: 'Informatie',
+      fr: 'Informations',
+      de: 'Informationen',
+      es: 'Información',
+      it: 'Informazioni',
+      ar: 'معلومات',
+      cs: 'Informace',
+      et: 'Teave',
+      eu: 'Informazioa',
+      gl: 'Información',
+      hu: 'Információ',
+      id: 'Informasi',
+      ja: '情報',
+      lt: 'Informacija',
+      pl: 'Informacje',
+      pt: 'Informações',
+      ru: 'Информация',
+      sq: 'Informacion',
+      sr: 'Информације',
+      tr: 'Bilgi',
+      'zh-Hans': '信息',
+      'zh-Hant': '資訊',
+  })
   },
 } satisfies Dictionary;
 

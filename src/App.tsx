@@ -821,14 +821,14 @@ function InfoButton({ translations }: { translations: AppTranslations }) {
         popoverTargetAction="toggle"
         type="button"
         className="ml-auto h-6 w-6 rounded-full border border-border hover:bg-background"
-        title="Information"
+        title={translations.information.value}
       >
         ?
       </button>
       <div
         popover="auto"
         id="infoPopover"
-        className="relative m-8 mx-auto max-w-3xl gap-2 self-center p-4"
+        className="relative m-8 mx-auto max-w-sm gap-2 self-center p-4 rounded-lg border border-border bg-card"
       >
         <button
           popoverTarget="infoPopover"
