@@ -3,7 +3,7 @@ import { House } from 'lucide-react';
 import { useQueryState } from 'nuqs';
 import type { Dispatch, ReactNode, SetStateAction } from 'react';
 import { useEffect, useState } from 'react';
-import { useIntlayer } from 'react-intlayer';
+import { useIntlayer, useMarkdownRenderer } from 'react-intlayer';
 import { useDebounceValue } from 'usehooks-ts';
 import { cn } from '@/lib/utils';
 import type { Asset, Release, Repository } from '@/types';
@@ -789,22 +789,59 @@ function JASPScrollBar({ children }: { children: ReactNode }) {
 }
 
 function InfoButton({ translations }: { translations: AppTranslations }) {
+  const infoMarkdown = translations.information_panel;
+  const renderMarkdown = useMarkdownRenderer({
+    forceBlock: true,
+    components: {
+      h1: ({ children }) => (
+        <h3 className="font-semibold text-lg">{children}</h3>
+      ),
+      h3: ({ children }) => (
+        <h3 className="font-semibold text-lg">{children}</h3>
+      ),
+      a: ({ href, children }) => (
+        <a
+          href={href}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-jasp-blue hover:underline"
+        >
+          {children}
+        </a>
+      ),
+      p: ({ children }) => <p className="mt-2">{children}</p>,
+      li: ({ children }) => <li className="ml-4 list-disc">{children}</li>,
+    },
+  });
+
   return (
     <>
-      <button popoverTarget="infoPopover" popoverTargetAction='toggle' className="rounded-full border border-border w-4 h-4 hover:bg-background ml-auto">?</button>
-      <div popover="auto" id="infoPopover" className="self-center m-8 p-4">
-        <h1>Module library</h1>
-        <p>Use it to browse and install/update/uninstall JASP modules.</p>
-        <p>The modules are divided into channels</p>
-        <ul>
-          <li><b>Official</b></li>
-          <li><b>Community</b></li>
-        </ul>
-        <p>A module can have a beta version of it. This is useful for testing new modules or new features in existing modules before they are officially released.</p>
-        <p>This web application was made as part of the JASP-MOD project of the NLeSC and JASP team.</p>
+      <button
+        popoverTarget="infoPopover"
+        popoverTargetAction="toggle"
+        type="button"
+        className="ml-auto h-6 w-6 rounded-full border border-border hover:bg-background"
+        title="Information"
+      >
+        ?
+      </button>
+      <div
+        popover="auto"
+        id="infoPopover"
+        className="relative m-8 mx-auto max-w-3xl gap-2 self-center p-4"
+      >
+        <button
+          popoverTarget="infoPopover"
+          popoverTargetAction="hide"
+          type="button"
+          className="absolute top-2 right-2 h-6 w-6 rounded hover:bg-background"
+        >
+          ×
+        </button>
+        {renderMarkdown(infoMarkdown.value)}
       </div>
     </>
-  )
+  );
 }
 
 export function App() {
@@ -900,7 +937,6 @@ export function App() {
                 />
               </label>
             </div>
-            
           </div>
         </header>
         <ul className="space-y-3">
