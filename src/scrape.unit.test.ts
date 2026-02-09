@@ -834,7 +834,7 @@ describe('logReleaseStatistics', () => {
       {
         id: 'repoA',
         name: 'repoA',
-        shortDescriptionHTML: '<p>A</p>',
+        description: '<p>A</p>',
         organization: 'org',
         releaseSource: 'org/repoA',
         channels: [],
@@ -873,7 +873,7 @@ describe('logReleaseStatistics', () => {
       {
         id: 'repoB',
         name: 'repoB',
-        shortDescriptionHTML: '<p>B</p>',
+        description: '<p>B</p>',
         organization: 'org',
         releaseSource: 'org/repoB',
         channels: [],
@@ -914,7 +914,7 @@ describe('logReleaseStatistics', () => {
       {
         id: 'repoA',
         name: 'repoA',
-        shortDescriptionHTML: '<p>A</p>',
+        description: '<p>A</p>',
         organization: 'org',
         releaseSource: 'org/repoA',
         channels: [],
@@ -941,7 +941,7 @@ describe('logReleaseStatistics', () => {
       {
         id: 'repoB',
         name: 'repoB',
-        shortDescriptionHTML: '<p>B</p>',
+        description: '<p>B</p>',
         organization: 'org',
         releaseSource: 'org/repoB',
         channels: [],

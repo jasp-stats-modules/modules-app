@@ -330,7 +330,7 @@ export async function nameAndDescriptionFromSubmodule(
     repo.name = title;
   }
   if (description) {
-    repo.shortDescriptionHTML = description;
+    repo.description = description;
   }
 }
 
@@ -564,6 +564,7 @@ async function releaseAssets(
           parent: _,
           releases,
           homepageUrl,
+          shortDescriptionHTML: description,
           ...restRepo
         } = repo;
 
@@ -584,6 +585,7 @@ async function releaseAssets(
         const newRepo: Omit<Repository, 'channels'> = {
           ...restRepo,
           id: restRepo.name,
+          description,
           releaseSource: nameWithOwner,
           organization: repo.parent?.owner.login ?? 'unknown_org',
           releases: newReleases.map(([release, _]) => release),

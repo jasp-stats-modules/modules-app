@@ -577,9 +577,9 @@ function RepositoryCard({
           <h3 id={cardId} className="font-semibold text-xl">
             {repo.name}
           </h3>
-          {repo.shortDescriptionHTML && (
+          {repo.description && (
             <div className="prose prose-sm text-base">
-              {repo.shortDescriptionHTML}
+              {repo.description}
             </div>
           )}
           <div className="flex items-center gap-2">
@@ -667,7 +667,7 @@ function filterReposBySearchTerm(
 
     // Strip HTML tags from description for search
     const plainDescription =
-      repo.shortDescriptionHTML?.replace(/<[^>]*>/g, '') || '';
+      repo.description?.replace(/<[^>]*>/g, '') || '';
     const descriptionMatches = plainDescription
       .toLowerCase()
       .includes(searchLower);

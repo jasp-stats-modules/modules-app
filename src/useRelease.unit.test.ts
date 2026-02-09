@@ -505,7 +505,7 @@ describe('getReleaseInfo', () => {
     const repo: Repository = {
       id: 'jaspAcceptanceSampling',
       name: 'jaspAcceptanceSampling',
-      shortDescriptionHTML: 'Acceptance Sampling Module for JASP',
+      description: 'Acceptance Sampling Module for JASP',
       releases: given.stableRelease
         ? [release(given.stableRelease, 'stable')]
         : [],
