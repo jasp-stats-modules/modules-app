@@ -551,10 +551,12 @@ function RepositoryCard({
   repo,
   allowPreRelease,
   translations,
+  language,
 }: {
   repo: Repository;
   allowPreRelease: boolean;
   translations: AppTranslations;
+  language: string;
 }) {
   const {
     latestPreRelease,
@@ -567,6 +569,9 @@ function RepositoryCard({
   } = useRelease(repo, allowPreRelease);
 
   const cardId = `repo-card-${repo.name}`;
+  const name = repo.translations[language]?.name || repo.name;
+  const description =
+    repo.translations[language]?.description || repo.description;
   return (
     <li
       aria-labelledby={cardId}
@@ -575,12 +580,10 @@ function RepositoryCard({
       <div className="flex items-start justify-between gap-2">
         <div className="flex flex-col gap-2">
           <h3 id={cardId} className="font-semibold text-xl">
-            {repo.name}
+            {name}
           </h3>
-          {repo.description && (
-            <div className="prose prose-sm text-base">
-              {repo.description}
-            </div>
+          {description && (
+            <div className="prose prose-sm text-base">{description}</div>
           )}
           <div className="flex items-center gap-2">
             <RepositoryLinks
@@ -666,8 +669,7 @@ function filterReposBySearchTerm(
     const nameMatches = repo.name.toLowerCase().includes(searchLower);
 
     // Strip HTML tags from description for search
-    const plainDescription =
-      repo.description?.replace(/<[^>]*>/g, '') || '';
+    const plainDescription = repo.description?.replace(/<[^>]*>/g, '') || '';
     const descriptionMatches = plainDescription
       .toLowerCase()
       .includes(searchLower);
@@ -889,6 +891,7 @@ export function App() {
               repo={repo}
               allowPreRelease={allowPreRelease}
               translations={translations}
+              language={info.language}
             />
           ))}
           {filteredRepos.length === 0 && <div>{no_modules_found}</div>}

@@ -514,6 +514,7 @@ describe('getReleaseInfo', () => {
         : [],
       releaseSource: 'jasp-stats-modules/jaspAcceptanceSampling',
       organization: 'jasp-stats',
+      translations: {},
       channels: ['jasp-modules'],
     };
 

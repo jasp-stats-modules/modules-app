@@ -14,10 +14,18 @@ export interface Release {
   assets: Asset[];
 }
 
-export interface Repository {
-  id: string; // GitHub repo name
-  name: string; // Human readable name from frontmatter from GH release description, fallback id
+export type Lang = string; // ISO 639-1 code, e.g. 'en', 'fr', 'de', etc.
+export interface Translation {
+  name: string;
   description: string;
+}
+export type Translations = Record<Lang, Translation>;
+
+export interface Repository {
+  translations: Translations;
+  id: string; // GitHub repo name
+  name: string; // Human readable name from Description.qml
+  description: string; // description from Description.qml
   homepageUrl?: string;
   releases: Release[];
   preReleases: Release[];
@@ -28,4 +36,12 @@ export interface Repository {
   releaseSource: string;
   // directories in which the submodule are located
   channels: string[];
+}
+
+export interface Submodule {
+  git_url: string;
+  path: string;
+  name: string;
+  description: string;
+  translations: Translations;
 }

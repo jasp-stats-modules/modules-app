@@ -1,66 +1,33 @@
 import fs from 'node:fs/promises';
-import path from 'node:path';
+import { join as pathJoin, resolve } from 'node:path';
 import { Octokit } from '@octokit/core';
 import { paginateGraphQL } from '@octokit/plugin-paginate-graphql';
 import chalk from 'chalk';
 import dedent from 'dedent';
+import * as gettextParser from 'gettext-parser';
 import matter from 'gray-matter';
 import ProgressBar from 'progress';
-import { type SimpleGit, simpleGit } from 'simple-git';
+import { type SimpleGitProgressEvent, simpleGit } from 'simple-git';
 import * as v from 'valibot';
-import type { Asset, Release, Repository } from './types';
+import type {
+  Asset,
+  Lang,
+  Release,
+  Repository,
+  Submodule,
+  Translation,
+  Translations,
+} from './types';
 
 // Directory where the modules-registry repo will be cloned/updated
-export const REGISTRY_DIR = path.resolve('registry');
+export const REGISTRY_DIR = resolve('registry');
 
 // Helper: get a simple-git instance pointing at the registry directory
 function gitInstance() {
-  return simpleGit({ baseDir: REGISTRY_DIR });
-}
-
-async function updateSubmodules(git: SimpleGit) {
-  // Determine which submodule paths are defined in the top‑level .gitmodules file
-  let submodulePaths: string[] = [];
-  try {
-    const gitmodulesPath = path.join(REGISTRY_DIR, '.gitmodules');
-    const gitmodulesContent = await fs.readFile(gitmodulesPath, 'utf8');
-    const submodules = parseSubModulesFile(gitmodulesContent);
-    submodulePaths = submodules.map((s) => s.path);
-  } catch (_e) {
-    // If the file does not exist or cannot be read, we simply have no submodules to handle
-    submodulePaths = [];
-  }
-
-  if (submodulePaths.length === 0) {
-    // No submodules defined – nothing to initialise or update
-    return;
-  }
-
-  try {
-    // Initialise the listed submodules shallowly (depth 1)
-    await git.submoduleUpdate([
-      '--init',
-      '--depth',
-      '1',
-      '--',
-      ...submodulePaths,
-    ]);
-  } catch (e) {
-    console.warn('Failed to init submodules (might be none or path issue):', e);
-  }
-
-  try {
-    // Update the submodules to the latest commit on their remote, still shallow
-    await git.submoduleUpdate([
-      '--remote',
-      '--depth',
-      '1',
-      '--',
-      ...submodulePaths,
-    ]);
-  } catch (e) {
-    console.warn('Failed to update submodules to remote:', e);
-  }
+  const progress = ({ method, stage, progress }: SimpleGitProgressEvent) => {
+    console.log(`git.${method} ${stage} stage ${progress}% complete`);
+  };
+  return simpleGit({ baseDir: REGISTRY_DIR, progress });
 }
 
 /**
@@ -68,7 +35,10 @@ async function updateSubmodules(git: SimpleGit) {
  * If the directory does not exist, it will be cloned. If it exists, it will be fetched & fast‑forwarded.
  * Additionally, top‑level submodules defined in .gitmodules are initialised/updated shallowly.
  */
-async function ensureRegistry(repoUrl: string, branch: string): Promise<void> {
+async function pullAndScrapeRegistry(
+  repoUrl: string,
+  branch: string,
+): Promise<Submodule[]> {
   const exists = await fs
     .access(REGISTRY_DIR)
     .then(() => true)
@@ -79,40 +49,102 @@ async function ensureRegistry(repoUrl: string, branch: string): Promise<void> {
     await simpleGit().clone(repoUrl, REGISTRY_DIR, [
       '--depth',
       '1',
+      '--recurse-submodules',
       '--branch',
       branch,
     ]);
     // Initialise submodules after fresh clone
-    await updateSubmodules(gitInstance());
-    return;
+    const bare_submodules = await extractBareSubmodules(REGISTRY_DIR);
+    return await nameAndDescriptionFromSubmodules(bare_submodules);
   }
 
+  console.log('Fetching latest changes in existing registry');
   const git = gitInstance();
   console.info(`Fetching latest ${branch} in existing registry`);
   await git.fetch(['origin', branch, '--depth', '1']);
 
-  // Checkout the branch (creates it if needed)
-  try {
-    await git.checkout(branch);
-  } catch {
-    await git.checkout(['-b', branch, `origin/${branch}`]);
-  }
+  console.info(`Checking out ${branch} in existing registry`);
+  await git.checkout(branch);
 
+  console.log(
+    'Pulling latest changes with fast-forward only and recursive submodule update',
+  );
   // Pull latest (fast‑forward only)
-  await git.pull('origin', branch, { '--ff-only': null });
+  await git.pull('origin', branch, {
+    '--depth': '1',
+    '--ff-only': null,
+    '--recurse-submodules': null,
+    '--progress': null,
+  });
 
   // Update submodules after pulling latest changes
-  await updateSubmodules(git);
+  console.log('Listing submodules in registry');
+  const bare_submodules = await extractBareSubmodules(REGISTRY_DIR);
+  console.log('Extracting submodule information');
+  const submodules = await nameAndDescriptionFromSubmodules(bare_submodules);
+  console.log('Finished loading submodules');
+  return submodules;
 }
 
-/**
- * Load and parse .gitmodules from the cloned registry.
- */
-async function loadSubmodules(): Promise<Repo2Channels> {
-  const gitmodulesPath = path.join(REGISTRY_DIR, '.gitmodules');
-  const text = await fs.readFile(gitmodulesPath, 'utf8');
-  const submodules = parseSubModulesFile(text);
-  return submodulesToRepo2Channels(submodules);
+function logSubmoduleStats(submodules: Submodule[]): string {
+  const total = submodules.length;
+  const translationCounts = submodules.map(
+    (s) => Object.keys(s.translations).length,
+  );
+  const reduced = translationCounts.reduce((acc, count) => acc + count, 0);
+  const avgTranslations = total > 0 ? reduced / total : 0;
+  const lines = [
+    `Found ${total} submodules`,
+    `Average number of translations per submodule: ${avgTranslations}`,
+  ];
+  return lines.join('\n');
+}
+
+async function extractBareSubmodules(registry_dir: string) {
+  const gitmodulesPath = pathJoin(registry_dir, '.gitmodules');
+  const gitmodulesContent = await fs.readFile(gitmodulesPath, 'utf8');
+
+  const bare_submodules = parseSubModulesFile(gitmodulesContent);
+
+  return bare_submodules.map((bare) => {
+    return {
+      path: pathJoin(registry_dir, bare.path),
+      gitUrl: bare.gitUrl,
+    };
+  });
+}
+
+export async function nameAndDescriptionFromSubmodules(
+  bare_submodules: BareSubmodule[],
+): Promise<Submodule[]> {
+  return Promise.all(
+    bare_submodules.map((bare_submodule) =>
+      nameAndDescriptionFromSubmodule(bare_submodule),
+    ),
+  );
+}
+
+export async function nameAndDescriptionFromSubmodule(
+  bare_submodule: BareSubmodule,
+) {
+  const { path, gitUrl } = bare_submodule;
+  const qmlDescriptionPath = pathJoin(path, 'inst', 'Description.qml');
+  const qmlDescriptionContent = await fs.readFile(qmlDescriptionPath, 'utf8');
+  const { title, description } = parseDescriptionQml(qmlDescriptionContent);
+  const translations = await extractTranslationsFromPoFiles(
+    path,
+    title,
+    description,
+  );
+
+  const submoduleDetails: Submodule = {
+    git_url: gitUrl,
+    path,
+    name: title,
+    description,
+    translations,
+  };
+  return submoduleDetails;
 }
 
 const MyOctokit = Octokit.plugin(paginateGraphQL);
@@ -127,11 +159,11 @@ export function url2nameWithOwner(url: string): string {
 
 export function path2channel(path: string): string {
   // For example
-  // "jasp-modules/jaspAnova" -> "jasp-modules"
-  return path.split('/')[0];
+  // ".../Official/jaspAnova" -> "Official"
+  return path.split('/').reverse()[1];
 }
 
-interface GqlSubModule {
+interface BareSubmodule {
   gitUrl: string;
   path: string;
 }
@@ -139,8 +171,8 @@ interface GqlSubModule {
 /**
  * Parse the content of a .gitmodules file and return array of submodule entries
  */
-export function parseSubModulesFile(text: string): GqlSubModule[] {
-  const result: GqlSubModule[] = [];
+export function parseSubModulesFile(text: string): BareSubmodule[] {
+  const result: BareSubmodule[] = [];
 
   let currentPath = '';
   let currentUrl = '';
@@ -188,11 +220,11 @@ export function parseSubModulesFile(text: string): GqlSubModule[] {
   return result;
 }
 
-function submodulesToRepo2Channels(submodules: GqlSubModule[]): Repo2Channels {
+function submodulesToRepo2Channels(submodules: Submodule[]): Repo2Channels {
   const repo2channels: Repo2Channels = {};
   for (const submodule of submodules) {
     const channel = path2channel(submodule.path);
-    const nameWithOwner = url2nameWithOwner(submodule.gitUrl);
+    const nameWithOwner = url2nameWithOwner(submodule.git_url);
     if (!repo2channels[nameWithOwner]) {
       repo2channels[nameWithOwner] = [];
     }
@@ -289,49 +321,73 @@ export function addQuotesInDescription(input: string): string {
  * Returns undefined for missing fields.
  */
 export function parseDescriptionQml(content: string): {
-  title?: string;
-  description?: string;
+  title: string;
+  description: string;
 } {
   const titleMatch = /title\s*:\s*[^q]*?qsTr\("([^"]+)"\)/s.exec(content);
   const descriptionMatch = /description\s*:\s*[^q]*?qsTr\("([^"]+)"\)/s.exec(
     content,
   );
+  if (!titleMatch || !descriptionMatch) {
+    throw new Error(
+      'Failed to parse name and description from Description.qml content',
+    );
+  }
   return {
-    title: titleMatch?.[1],
-    description: descriptionMatch?.[1],
+    title: titleMatch[1],
+    description: descriptionMatch[1],
   };
 }
 
-/**
- * Populate the repository object's name and shortDescriptionHTML from its Description.qml file.
- * If the file cannot be read or the fields are missing, the properties are left unchanged.
- */
-export async function nameAndDescriptionFromSubmodule(
-  repo: Omit<Repository, 'channels'>,
-  channel: string,
-): Promise<void> {
-  const qmlPath = path.join(
-    'registry',
-    channel,
-    repo.id,
-    'inst',
-    'Description.qml',
-  );
-  let content: string;
+export async function extractNameAndDescriptionFromPoFile(
+  poPath: string,
+  title: string,
+  description: string,
+  context: string = 'Description|',
+): Promise<[Lang, Translation] | undefined> {
+  const match = poPath.match(/QML-([a-z]{2})\.po$/i);
+  if (!match) return undefined;
+  const lang = match[1];
   try {
-    content = await fs.readFile(qmlPath, 'utf8');
+    const raw = await fs.readFile(poPath);
+    const parsed = gettextParser.po.parse(raw);
+    const nameTrans = parsed.translations[context]?.[title]?.msgstr?.[0];
+    const descTrans = parsed.translations[context]?.[description]?.msgstr?.[0];
+    if (!(nameTrans && descTrans)) {
+      // TODO use log package to only log with --verbose flag, otherwise keep it silent
+      // console.debug(`Missing translation for "${title}" and/or "${description}" in ${poPath} with context "${context}". Skipping this translation.`);
+      return undefined;
+    }
+    return [lang, { name: nameTrans, description: descTrans }];
+  } catch (e) {
+    // If parsing fails, skip this file
+    console.warn(`Failed to parse PO file ${poPath}:`, e);
+  }
+  return undefined;
+}
+
+async function extractTranslationsFromPoFiles(
+  repoDir: string,
+  title: string,
+  description: string,
+): Promise<Translations> {
+  const poDir = pathJoin(repoDir, 'po');
+  let poFiles: string[] = [];
+  try {
+    poFiles = await fs.readdir(poDir);
   } catch (_e) {
-    // File missing – do nothing per fallback rule "b"
-    return;
+    // No po directory – keep translations empty
+    return {};
   }
-  const { title, description } = parseDescriptionQml(content);
-  console.log([qmlPath, title, description]);
-  if (title) {
-    repo.name = title;
-  }
-  if (description) {
-    repo.description = description;
-  }
+  const translationEntries = await Promise.all(
+    poFiles.map((poFile) => {
+      const poPath = pathJoin(poDir, poFile);
+      return extractNameAndDescriptionFromPoFile(poPath, title, description);
+    }),
+  );
+  return Object.fromEntries(
+    translationEntries.filter((entry) => entry !== undefined),
+  );
 }
 
 export function batchedArray<T>(array: T[], size: number): T[][] {
@@ -343,12 +399,12 @@ export function batchedArray<T>(array: T[], size: number): T[][] {
 }
 
 export async function releaseAssetsPaged(
-  repo2channels: Repo2Channels,
+  submodules: Submodule[],
   pageSize = 10,
   octokit: InstanceType<typeof MyOctokit>,
 ): Promise<Repository[]> {
-  const repositoriesWithOwners = Object.keys(repo2channels);
-  const batches = batchedArray(repositoriesWithOwners, pageSize);
+  const repo2channels = submodulesToRepo2Channels(submodules);
+  const batches = batchedArray(submodules, pageSize);
   const results: Repository[] = [];
 
   const totalBatches = batches.length;
@@ -363,13 +419,9 @@ export async function releaseAssetsPaged(
   );
   for (let i = 0; i < totalBatches; i++) {
     const batch = batches[i];
-    const rawBatchResults = await releaseAssets(
-      batch,
-      20,
-      20,
-      octokit,
-      repo2channels,
-    );
+    const rawBatchResults = await releaseAssets(batch, 20, 20, octokit);
+
+    // TODO do associateChannelsWithRepositories in nameAndDescriptionFromSubmodules
     const batchResults = associateChannelsWithRepositories(
       rawBatchResults,
       repo2channels,
@@ -398,7 +450,6 @@ interface GqlAssetsResult {
   [key: string]: {
     name: string;
     nameWithOwner: string;
-    shortDescriptionHTML: string;
     homepageUrl?: string;
     parent?: {
       owner: {
@@ -497,11 +548,10 @@ export function transformRelease(
 }
 
 async function releaseAssets(
-  repos: Iterable<string>,
+  repos: Submodule[],
   firstReleases = 20,
   firstAssets = 20,
   octokit: InstanceType<typeof MyOctokit>,
-  repo2channels: Repo2Channels,
 ): Promise<Omit<Repository, 'channels'>[]> {
   const allRepos = Array.from(repos);
   const CHUNK_SIZE = 3;
@@ -512,13 +562,13 @@ async function releaseAssets(
     const chunk = allRepos.slice(i, i + CHUNK_SIZE);
 
     const queries = chunk
-      .map((nameWithOwner, index) => {
+      .map((submodule, index) => {
+        const nameWithOwner = url2nameWithOwner(submodule.git_url);
         const [owner, repo] = nameWithOwner.split('/');
         return dedent`
         repo${index}: repository(owner: "${owner}", name: "${repo}") {
-          name
+          name,
           nameWithOwner
-          shortDescriptionHTML
           homepageUrl
           parent {
             owner {
@@ -560,13 +610,21 @@ async function releaseAssets(
           continue;
         }
         const {
+          name,
           nameWithOwner,
           parent: _,
           releases,
           homepageUrl,
-          shortDescriptionHTML: description,
           ...restRepo
         } = repo;
+        const submodule = chunk.find(
+          (s) => url2nameWithOwner(s.git_url) === nameWithOwner,
+        );
+        if (!submodule) {
+          throw new Error(
+            `Received data for repo ${rawRepo.nameWithOwner} which was not in the original query batch`,
+          );
+        }
 
         const productionReleases = releases.nodes.filter(
           (r) => !r.isDraft && !r.isPrerelease,
@@ -584,20 +642,15 @@ async function releaseAssets(
 
         const newRepo: Omit<Repository, 'channels'> = {
           ...restRepo,
-          id: restRepo.name,
-          description,
+          id: name,
+          name: submodule.name,
+          description: submodule.description,
+          translations: submodule.translations,
           releaseSource: nameWithOwner,
           organization: repo.parent?.owner.login ?? 'unknown_org',
           releases: newReleases.map(([release, _]) => release),
           preReleases: newPreReleases.map(([release, _]) => release),
-          // TODO put channels here
         };
-
-        // Determine the channel for this repo (pick first if multiple)
-        const channels = repo2channels[nameWithOwner] ?? [];
-        const channel = channels[0] ?? '';
-        await nameAndDescriptionFromSubmodule(newRepo, channel);
-
         if (homepageUrl) {
           newRepo.homepageUrl = homepageUrl;
         }
@@ -689,14 +742,11 @@ async function scrape(
 
   console.info('Fetching submodules from', `${owner}/${repo}`);
   const repoUrl = `https://github.com/${owner}/${repo}.git`;
-  await ensureRegistry(repoUrl, branch);
-  const repo2channels = await loadSubmodules();
-  console.info(logChannelStats(repo2channels));
+  const submodules = await pullAndScrapeRegistry(repoUrl, branch);
+  console.log(logSubmoduleStats(submodules));
   console.info('Fetching release assets');
-  const repositories = await releaseAssetsPaged(repo2channels, 10, octokit);
-
+  const repositories = await releaseAssetsPaged(submodules, 10, octokit);
   console.info(logReleaseStatistics(repositories));
-
   const body = JSON.stringify(repositories, null, 2);
   await fs.writeFile(output, body);
   console.log('Wrote', output);
