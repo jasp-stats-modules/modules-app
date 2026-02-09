@@ -9,7 +9,7 @@ import chalk from 'chalk';
 import dedent from 'dedent';
 import matter from 'gray-matter';
 import ProgressBar from 'progress';
-import simpleGit from 'simple-git';
+import { type SimpleGit, simpleGit } from 'simple-git';
 import * as v from 'valibot';
 import type { Asset, Release, Repository } from './types';
 
@@ -21,9 +21,55 @@ function gitInstance() {
   return simpleGit({ baseDir: REGISTRY_DIR });
 }
 
+async function updateSubmodules(git: SimpleGit) {
+  // Determine which submodule paths are defined in the top‑level .gitmodules file
+  let submodulePaths: string[] = [];
+  try {
+    const gitmodulesPath = path.join(REGISTRY_DIR, '.gitmodules');
+    const gitmodulesContent = await fs.readFile(gitmodulesPath, 'utf8');
+    const submodules = parseSubModulesFile(gitmodulesContent);
+    submodulePaths = submodules.map((s) => s.path);
+  } catch (e) {
+    // If the file does not exist or cannot be read, we simply have no submodules to handle
+    submodulePaths = [];
+  }
+
+  if (submodulePaths.length === 0) {
+    // No submodules defined – nothing to initialise or update
+    return;
+  }
+
+  try {
+    // Initialise the listed submodules shallowly (depth 1)
+    await git.submoduleUpdate([
+      '--init',
+      '--depth',
+      '1',
+      '--',
+      ...submodulePaths,
+    ]);
+  } catch (e) {
+    console.warn('Failed to init submodules (might be none or path issue):', e);
+  }
+
+  try {
+    // Update the submodules to the latest commit on their remote, still shallow
+    await git.submoduleUpdate([
+      '--remote',
+      '--depth',
+      '1',
+      '--',
+      ...submodulePaths,
+    ]);
+  } catch (e) {
+    console.warn('Failed to update submodules to remote:', e);
+  }
+}
+
 /**
  * Ensure the registry directory contains a shallow clone of the given repo at the requested branch.
  * If the directory does not exist, it will be cloned. If it exists, it will be fetched & fast‑forwarded.
+ * Additionally, top‑level submodules defined in .gitmodules are initialised/updated shallowly.
  */
 async function ensureRegistry(repoUrl: string, branch: string): Promise<void> {
   const exists = await fs
@@ -39,6 +85,8 @@ async function ensureRegistry(repoUrl: string, branch: string): Promise<void> {
       '--branch',
       branch,
     ]);
+    // Initialise submodules after fresh clone
+    await updateSubmodules(gitInstance());
     return;
   }
 
@@ -55,6 +103,9 @@ async function ensureRegistry(repoUrl: string, branch: string): Promise<void> {
 
   // Pull latest (fast‑forward only)
   await git.pull('origin', branch, { '--ff-only': null });
+
+  // Update submodules after pulling latest changes
+  await updateSubmodules(git);
 }
 
 /**
