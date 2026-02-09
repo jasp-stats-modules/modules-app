@@ -13,7 +13,7 @@
     "serve": "vite preview",
     "test": "vitest --project unit",
     "test:browser": "vitest --project browser",
-    "scrape": "node src/scrape.ts",
+    "scrape": "node --env-file-if-exists=.env src/scrape.ts",
     "pretypecheck": "intlayer build",
     "typecheck": "tsc",
     "check": "biome check --write --unsafe"
