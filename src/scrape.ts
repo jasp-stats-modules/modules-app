@@ -1,10 +1,7 @@
 import fs from 'node:fs/promises';
 import path from 'node:path';
 import { Octokit } from '@octokit/core';
-import {
-  type PageInfoForward,
-  paginateGraphQL,
-} from '@octokit/plugin-paginate-graphql';
+import { paginateGraphQL } from '@octokit/plugin-paginate-graphql';
 import chalk from 'chalk';
 import dedent from 'dedent';
 import matter from 'gray-matter';
@@ -29,7 +26,7 @@ async function updateSubmodules(git: SimpleGit) {
     const gitmodulesContent = await fs.readFile(gitmodulesPath, 'utf8');
     const submodules = parseSubModulesFile(gitmodulesContent);
     submodulePaths = submodules.map((s) => s.path);
-  } catch (e) {
+  } catch (_e) {
     // If the file does not exist or cannot be read, we simply have no submodules to handle
     submodulePaths = [];
   }
@@ -204,82 +201,10 @@ function submodulesToRepo2Channels(submodules: GqlSubModule[]): Repo2Channels {
   return repo2channels;
 }
 
-export async function downloadSubmodulesFromBranch(
-  owner: string,
-  repo: string,
-  branch: string,
-  octokit: InstanceType<typeof MyOctokit>,
-): Promise<Repo2Channels> {
-  interface Gql {
-    repository: {
-      object: {
-        text: string;
-      };
-    };
-  }
-
-  const query = dedent`
-    query getGitmodules($owner: String!, $repo: String!, $expression: String!) {
-      repository(owner: $owner, name: $repo) {
-        object(expression: $expression) {
-          ... on Blob { text }
-        }
-      }
-    }
-  `;
-
-  const expression = `${branch}:.gitmodules`;
-  const result = await octokit.graphql<Gql>(query, {
-    owner,
-    repo,
-    expression,
-  });
-  const text = result.repository.object.text;
-  const submodules = parseSubModulesFile(text);
-  return submodulesToRepo2Channels(submodules);
-}
-
 /**
  * Key is repository name with owner, value is array of channels
  */
 export type Repo2Channels = Record<string, string[]>;
-
-export async function downloadSubmodules(
-  owner: string = 'jasp-stats-modules',
-  repo: string = 'modules-registry',
-  octokit: InstanceType<typeof MyOctokit>,
-): Promise<Repo2Channels> {
-  interface Gql {
-    repository: {
-      submodules: {
-        nodes: GqlSubModule[];
-        pageInfo: PageInfoForward;
-      };
-    };
-  }
-  const query = dedent`
-    query paginate($owner: String!, $repo: String!, $cursor: String) {
-      repository(owner: $owner, name: $repo) {
-        submodules(first: 100, after: $cursor) {
-          nodes {
-            gitUrl
-            path
-          }
-          pageInfo {
-            hasNextPage
-            endCursor
-          }
-        }
-      }
-    }
-  `;
-  const result = await octokit.graphql.paginate<Gql>(query, {
-    owner,
-    repo,
-  });
-  const submodules = result.repository.submodules.nodes;
-  return submodulesToRepo2Channels(submodules);
-}
 
 export function extractArchitectureFromUrl(url: string): string {
   const filename = url.split('/').pop();
@@ -354,30 +279,58 @@ export function addQuotesInDescription(input: string): string {
  * @param preReleasesFrontMatters
  * @returns
  */
-function updateNameAndDescriptionFromFrontMatter(
+// New function: read name and description from Description.qml in the submodule
+// The QML file looks like:
+// Description { title: qsTr("ANOVA") description: qsTr("Evaluate the difference between multiple means") }
+// This function extracts the first qsTr strings for title and description.
+
+/**
+ * Parse the raw content of Description.qml and return the extracted title and description.
+ * Returns undefined for missing fields.
+ */
+export function parseDescriptionQml(content: string): {
+  title?: string;
+  description?: string;
+} {
+  const titleMatch = /title\s*:\s*[^q]*?qsTr\("([^"]+)"\)/s.exec(content);
+  const descriptionMatch = /description\s*:\s*[^q]*?qsTr\("([^"]+)"\)/s.exec(
+    content,
+  );
+  return {
+    title: titleMatch?.[1],
+    description: descriptionMatch?.[1],
+  };
+}
+
+/**
+ * Populate the repository object's name and shortDescriptionHTML from its Description.qml file.
+ * If the file cannot be read or the fields are missing, the properties are left unchanged.
+ */
+export async function nameAndDescriptionFromSubmodule(
   repo: Omit<Repository, 'channels'>,
-  releasesFrontMatters: ReleaseFrontMatter[],
-  preReleasesFrontMatters: ReleaseFrontMatter[],
-) {
-  if (releasesFrontMatters.length > 0) {
-    const firstReleaseFM = releasesFrontMatters[0];
-    if (firstReleaseFM.name) {
-      repo.name = firstReleaseFM.name;
-    }
-    if (firstReleaseFM.description) {
-      repo.shortDescriptionHTML = firstReleaseFM.description;
-    }
+  channel: string,
+): Promise<void> {
+  const qmlPath = path.join(
+    'registry',
+    channel,
+    repo.id,
+    'inst',
+    'Description.qml',
+  );
+  let content: string;
+  try {
+    content = await fs.readFile(qmlPath, 'utf8');
+  } catch (_e) {
+    // File missing – do nothing per fallback rule "b"
     return;
   }
-  // If modules does not have any releases, try pre-releases
-  if (preReleasesFrontMatters.length > 0) {
-    const firstPreReleaseFM = preReleasesFrontMatters[0];
-    if (firstPreReleaseFM.name) {
-      repo.name = firstPreReleaseFM.name;
-    }
-    if (firstPreReleaseFM.description) {
-      repo.shortDescriptionHTML = firstPreReleaseFM.description;
-    }
+  const { title, description } = parseDescriptionQml(content);
+  console.log([qmlPath, title, description]);
+  if (title) {
+    repo.name = title;
+  }
+  if (description) {
+    repo.shortDescriptionHTML = description;
   }
 }
 
@@ -410,7 +363,13 @@ export async function releaseAssetsPaged(
   );
   for (let i = 0; i < totalBatches; i++) {
     const batch = batches[i];
-    const rawBatchResults = await releaseAssets(batch, 20, 20, octokit);
+    const rawBatchResults = await releaseAssets(
+      batch,
+      20,
+      20,
+      octokit,
+      repo2channels,
+    );
     const batchResults = associateChannelsWithRepositories(
       rawBatchResults,
       repo2channels,
@@ -542,6 +501,7 @@ async function releaseAssets(
   firstReleases = 20,
   firstAssets = 20,
   octokit: InstanceType<typeof MyOctokit>,
+  repo2channels: Repo2Channels,
 ): Promise<Omit<Repository, 'channels'>[]> {
   const allRepos = Array.from(repos);
   const CHUNK_SIZE = 3;
@@ -589,61 +549,58 @@ async function releaseAssets(
 
     try {
       const result = await octokit.graphql<GqlAssetsResult>(fullQuery);
-      const processedChunk = Object.values(result)
+      const processedChunk: Omit<Repository, 'channels'>[] = [];
+      // Process each repo individually to allow async name extraction
+      for (const rawRepo of Object.values(result)) {
         // Filter out nulls (if a repo wasn't found)
-        .filter((r): r is NonNullable<typeof r> => r !== null)
-        .filter((repo) => {
-          if (repo.releases.nodes.length === 0) {
-            console.log(
-              `No releases found for ${repo.nameWithOwner}. Skipping.`,
-            );
-            return false;
-          }
-          return true;
-        })
-        .map((repo) => {
-          const {
-            nameWithOwner,
-            parent: _,
-            releases,
-            homepageUrl,
-            ...restRepo
-          } = repo;
+        if (rawRepo === null) continue;
+        const repo = rawRepo;
+        if (repo.releases.nodes.length === 0) {
+          console.log(`No releases found for ${repo.nameWithOwner}. Skipping.`);
+          continue;
+        }
+        const {
+          nameWithOwner,
+          parent: _,
+          releases,
+          homepageUrl,
+          ...restRepo
+        } = repo;
 
-          const productionReleases = releases.nodes.filter(
-            (r) => !r.isDraft && !r.isPrerelease,
-          );
-          const preReleases = releases.nodes.filter(
-            (r) => !r.isDraft && r.isPrerelease,
-          );
+        const productionReleases = releases.nodes.filter(
+          (r) => !r.isDraft && !r.isPrerelease,
+        );
+        const preReleases = releases.nodes.filter(
+          (r) => !r.isDraft && r.isPrerelease,
+        );
 
-          const newReleases = latestReleasePerJaspVersionRange(
-            productionReleases,
-          ).map((r) => transformRelease(r, nameWithOwner));
-          const newPreReleases = latestReleasePerJaspVersionRange(
-            preReleases,
-          ).map((r) => transformRelease(r, nameWithOwner));
+        const newReleases = latestReleasePerJaspVersionRange(
+          productionReleases,
+        ).map((r) => transformRelease(r, nameWithOwner));
+        const newPreReleases = latestReleasePerJaspVersionRange(
+          preReleases,
+        ).map((r) => transformRelease(r, nameWithOwner));
 
-          const newRepo: Omit<Repository, 'channels'> = {
-            ...restRepo,
-            id: restRepo.name,
-            releaseSource: nameWithOwner,
-            organization: repo.parent?.owner.login ?? 'unknown_org',
-            releases: newReleases.map(([release, _]) => release),
-            preReleases: newPreReleases.map(([release, _]) => release),
-          };
+        const newRepo: Omit<Repository, 'channels'> = {
+          ...restRepo,
+          id: restRepo.name,
+          releaseSource: nameWithOwner,
+          organization: repo.parent?.owner.login ?? 'unknown_org',
+          releases: newReleases.map(([release, _]) => release),
+          preReleases: newPreReleases.map(([release, _]) => release),
+          // TODO put channels here
+        };
 
-          updateNameAndDescriptionFromFrontMatter(
-            newRepo,
-            newReleases.map(([_, fm]) => fm),
-            newPreReleases.map(([_, fm]) => fm),
-          );
+        // Determine the channel for this repo (pick first if multiple)
+        const channels = repo2channels[nameWithOwner] ?? [];
+        const channel = channels[0] ?? '';
+        await nameAndDescriptionFromSubmodule(newRepo, channel);
 
-          if (homepageUrl) {
-            newRepo.homepageUrl = homepageUrl;
-          }
-          return newRepo;
-        });
+        if (homepageUrl) {
+          newRepo.homepageUrl = homepageUrl;
+        }
+        processedChunk.push(newRepo);
+      }
 
       finalResults.push(...processedChunk);
     } catch (error) {
@@ -729,10 +686,9 @@ async function scrape(
   const octokit = new MyOctokit({ auth: process.env.GITHUB_TOKEN });
 
   console.info('Fetching submodules from', `${owner}/${repo}`);
-  let repo2channels: Repo2Channels;
   const repoUrl = `https://github.com/${owner}/${repo}.git`;
   await ensureRegistry(repoUrl, branch);
-  repo2channels = await loadSubmodules();
+  const repo2channels = await loadSubmodules();
   console.info(logChannelStats(repo2channels));
   console.info('Fetching release assets');
   const repositories = await releaseAssetsPaged(repo2channels, 10, octokit);
