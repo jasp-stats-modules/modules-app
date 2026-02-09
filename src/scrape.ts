@@ -1,4 +1,5 @@
 import fs from 'node:fs/promises';
+import path from 'node:path';
 import { Octokit } from '@octokit/core';
 import {
   type PageInfoForward,
@@ -8,8 +9,63 @@ import chalk from 'chalk';
 import dedent from 'dedent';
 import matter from 'gray-matter';
 import ProgressBar from 'progress';
+import simpleGit from 'simple-git';
 import * as v from 'valibot';
 import type { Asset, Release, Repository } from './types';
+
+// Directory where the modules-registry repo will be cloned/updated
+export const REGISTRY_DIR = path.resolve('registry');
+
+// Helper: get a simple-git instance pointing at the registry directory
+function gitInstance() {
+  return simpleGit({ baseDir: REGISTRY_DIR });
+}
+
+/**
+ * Ensure the registry directory contains a shallow clone of the given repo at the requested branch.
+ * If the directory does not exist, it will be cloned. If it exists, it will be fetched & fast‑forwarded.
+ */
+async function ensureRegistry(repoUrl: string, branch: string): Promise<void> {
+  const exists = await fs
+    .access(REGISTRY_DIR)
+    .then(() => true)
+    .catch(() => false);
+
+  if (!exists) {
+    console.info(`Cloning ${repoUrl} (branch ${branch}) into ${REGISTRY_DIR}`);
+    await simpleGit().clone(repoUrl, REGISTRY_DIR, [
+      '--depth',
+      '1',
+      '--branch',
+      branch,
+    ]);
+    return;
+  }
+
+  const git = gitInstance();
+  console.info(`Fetching latest ${branch} in existing registry`);
+  await git.fetch(['origin', branch, '--depth', '1']);
+
+  // Checkout the branch (creates it if needed)
+  try {
+    await git.checkout(branch);
+  } catch {
+    await git.checkout(['-b', branch, `origin/${branch}`]);
+  }
+
+  // Pull latest (fast‑forward only)
+  await git.pull('origin', branch, { '--ff-only': null });
+}
+
+/**
+ * Load and parse .gitmodules from the cloned registry.
+ */
+async function loadSubmodules(): Promise<Repo2Channels> {
+  const gitmodulesPath = path.join(REGISTRY_DIR, '.gitmodules');
+  const text = await fs.readFile(gitmodulesPath, 'utf8');
+  const submodules = parseSubModulesFile(text);
+  return submodulesToRepo2Channels(submodules);
+}
 
 const MyOctokit = Octokit.plugin(paginateGraphQL);
 
@@ -623,16 +679,9 @@ async function scrape(
 
   console.info('Fetching submodules from', `${owner}/${repo}`);
   let repo2channels: Repo2Channels;
-  if (branch !== 'main') {
-    repo2channels = await downloadSubmodulesFromBranch(
-      owner,
-      repo,
-      branch,
-      octokit,
-    );
-  } else {
-    repo2channels = await downloadSubmodules(owner, repo, octokit);
-  }
+  const repoUrl = `https://github.com/${owner}/${repo}.git`;
+  await ensureRegistry(repoUrl, branch);
+  repo2channels = await loadSubmodules();
   console.info(logChannelStats(repo2channels));
   console.info('Fetching release assets');
   const repositories = await releaseAssetsPaged(repo2channels, 10, octokit);
