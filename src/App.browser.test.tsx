@@ -360,4 +360,34 @@ describe('App component', () => {
       expect(listItemElements.length).toBe(4);
     });
   });
+
+  describe('Given test catalog with nl as language', () => {
+    beforeEach(async () => {
+      screen = await render(
+        <NuqslessWrapper>
+          <App />
+        </NuqslessWrapper>,
+        {
+          wrapper: withNuqsTestingAdapter({
+            searchParams: { c: 'test.json', a: 'MacOS_arm64', l: 'nl' },
+          }),
+        },
+      );
+    });
+
+    test('renders search label in Dutch', async () => {
+      await expect
+        .element(screen.getByText('Zoek een module'))
+        .toBeInTheDocument();
+    });
+
+    test('renders jaspAnova description in Dutch', async () => {
+      const jaspAnovaCard = screen.getByRole('listitem', { name: 'jaspAnova' });
+      await expect.element(jaspAnovaCard).toBeInTheDocument();
+
+      await expect
+        .element(jaspAnovaCard.getByText('Test Module 1 in Nederlands'))
+        .toBeInTheDocument();
+    });
+  });
 });
