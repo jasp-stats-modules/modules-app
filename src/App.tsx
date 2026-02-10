@@ -788,7 +788,13 @@ function JASPScrollBar({ children }: { children: ReactNode }) {
   );
 }
 
-function InfoButton({ translations }: { translations: AppTranslations }) {
+function InfoButton({
+  translations,
+  channels,
+}: {
+  translations: AppTranslations;
+  channels: string[];
+}) {
   const infoMarkdown = translations.information_panel;
   const renderMarkdown = useMarkdownRenderer({
     forceBlock: true,
@@ -813,6 +819,15 @@ function InfoButton({ translations }: { translations: AppTranslations }) {
       li: ({ children }) => <li className="ml-4 list-disc">{children}</li>,
     },
   });
+
+  const markdownMentionsAllChannels = channels.every((ch) =>
+    infoMarkdown.value.includes(ch),
+  );
+  if (!markdownMentionsAllChannels) {
+    console.warn(
+      'Not all channels are mentioned in the information panel. Please update text.',
+    );
+  }
 
   return (
     <>
@@ -920,7 +935,10 @@ export function App() {
                   description={allow_prereleases_checkbox_description.value}
                 />
               </div>
-              <InfoButton translations={translations} />
+              <InfoButton
+                translations={translations}
+                channels={availableChannels}
+              />
             </div>
             <div>
               <label className="mb-1 block font-medium text-sm">
