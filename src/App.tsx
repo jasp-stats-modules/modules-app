@@ -843,7 +843,7 @@ function InfoButton({
       <div
         popover="auto"
         id="infoPopover"
-        className="relative m-8 mx-auto max-w-sm gap-2 self-center rounded-lg border border-border bg-card p-4"
+        className="relative m-8 mx-auto max-w-sm gap-2 self-center rounded-lg border border-border bg-card p-4 text-foreground"
       >
         <button
           popoverTarget="infoPopover"
