@@ -14,18 +14,37 @@ export interface Release {
   assets: Asset[];
 }
 
-export interface Repository {
+export type Lang = string; // ISO 639-1 code, e.g. 'en', 'fr', 'de', etc.
+export interface Translation {
+  name: string;
+  description: string;
+}
+export type Translations = Record<Lang, Translation>;
+
+export interface ModuleTranslations {
+  name: string; // English name from Description.qml
+  description: string; // English description from Description.qml
+  translations: Translations; // Translations from QML-*.po files
+}
+
+export interface BareRepository extends ModuleTranslations {
   id: string; // GitHub repo name
-  name: string; // Human readable name from frontmatter from GH release description, fallback id
-  shortDescriptionHTML: string;
-  homepageUrl?: string;
-  releases: Release[];
-  preReleases: Release[];
-  // Parent organization from which repo was forked to https://github.com/jasp-stats-modules/
-  organization: string;
   // repo (nameWithOwner format) in https://github.com/jasp-stats-modules/modules-registry
   // where submodule is pointing to
   releaseSource: string;
   // directories in which the submodule are located
   channels: string[];
+}
+
+export interface Repository extends BareRepository {
+  // Parent organization from which repo was forked to https://github.com/jasp-stats-modules/
+  organization: string;
+  homepageUrl?: string;
+  releases: Release[];
+  preReleases: Release[];
+}
+
+export interface Submodule extends ModuleTranslations {
+  gitUrl: string;
+  path: string;
 }

@@ -1,8 +1,70 @@
 [
   {
-    "name": "Acceptance Sampling",
-    "shortDescriptionHTML": "Sampling for acceptance",
     "id": "jaspAcceptanceSampling",
+    "name": "Acceptance Sampling",
+    "description": "Sampling for acceptance",
+    "translations": {
+      "ar": {
+        "name": "أخذ عينات القبول",
+        "description": "أخذ العينات للقبول"
+      },
+      "bo": {
+        "name": "ངོས་ལེན་དཔེ་འདེམ།",
+        "description": "ངོས་ལེན་གྱི་དཔེ་འདེམ།"
+      },
+      "ca": {
+        "name": "Mostreig d'acceptació",
+        "description": "Mostreig per acceptació"
+      },
+      "de": {
+        "name": "Annahmestichprobenprüfung",
+        "description": "Stichprobenprüfung zur Annahme"
+      },
+      "es": {
+        "name": "Muestreo de Aceptación",
+        "description": "Muestreo para aceptación"
+      },
+      "fr": {
+        "name": "Echantillonage d'Acceptation",
+        "description": "Echantillonage d'acceptation"
+      },
+      "gl": {
+        "name": "Mostraxe de Aceptación",
+        "description": "Mostraxe para aceptación"
+      },
+      "ko": {
+        "name": "인수 표본 추출",
+        "description": "인수 표본 추출하기"
+      },
+      "ne": {
+        "name": "स्वीकृति नमूना",
+        "description": "स्वीकृतिको लागि नमूना"
+      },
+      "nl": {
+        "name": "Acceptatiesteekproeven",
+        "description": "Steekproeven voor acceptatie"
+      },
+      "pt": {
+        "name": "Amostragem de Aceitação",
+        "description": "Amostragem para Aceitação"
+      },
+      "ru": {
+        "name": "Контрольная выборка",
+        "description": "Выборка для контроля качества"
+      },
+      "sr": {
+        "name": "Прихватање узорака",
+        "description": "Узимање узорака за прихватање"
+      },
+      "ta": {
+        "name": "ஏற்றுக்கொள்ளும் மாதிரி",
+        "description": "ஏற்றுக்கொள்வதற்கான மாதிரி"
+      },
+      "tr": {
+        "name": "Kabul Örneklemesi",
+        "description": "Kabul örneklemesi"
+      }
+    },
     "releaseSource": "jasp-stats-modules/jaspAcceptanceSampling",
     "organization": "jasp-stats",
     "releases": [
@@ -18,12 +80,12 @@
           },
           {
             "downloadUrl": "https://github.com/jasp-stats-modules/jaspAcceptanceSampling/releases/download/0.95.5-release.0_f52d5f57_R-4-5-2_Release/jaspAcceptanceSampling_0.95.5-release.0_MacOS_arm64_R-4-5-2.JASPModule",
-            "downloadCount": 3,
+            "downloadCount": 4,
             "architecture": "MacOS_arm64"
           },
           {
             "downloadUrl": "https://github.com/jasp-stats-modules/jaspAcceptanceSampling/releases/download/0.95.5-release.0_f52d5f57_R-4-5-2_Release/jaspAcceptanceSampling_0.95.5-release.0_MacOS_x86_64_R-4-5-2.JASPModule",
-            "downloadCount": 2,
+            "downloadCount": 3,
             "architecture": "MacOS_x86_64"
           },
           {
@@ -68,9 +130,63 @@
     ]
   },
   {
-    "name": "ANOVA",
-    "shortDescriptionHTML": "Evaluate the difference between multiple means",
     "id": "jaspAnova",
+    "name": "ANOVA",
+    "description": "Evaluate the difference between multiple means",
+    "translations": {
+      "de": {
+        "name": "ANOVA",
+        "description": "Untersuche den Unterschied zwischen mehreren Mittelwerten"
+      },
+      "es": {
+        "name": "ANOVA",
+        "description": "Evaluar la diferencia entre varias medias"
+      },
+      "eu": {
+        "name": "ANOVA",
+        "description": "Batez besteko anitzen arteko aldea ebaluatu"
+      },
+      "fr": {
+        "name": "ANOVA",
+        "description": "Évaluer la différence entre plusieurs moyennes"
+      },
+      "gl": {
+        "name": "ANOVA",
+        "description": "Avaliar a diferenza entre varias medias"
+      },
+      "id": {
+        "name": "ANOVA",
+        "description": "Evaluasi perbedaan antara rerata majemuk"
+      },
+      "ja": {
+        "name": "分散分析",
+        "description": "複数の平均値差を評価する"
+      },
+      "nl": {
+        "name": "ANOVA",
+        "description": "Evalueer het verschil tussen meerdere gemiddelden"
+      },
+      "pl": {
+        "name": "ANOVA",
+        "description": "Oceń różnicę pomiędzy wieloma średnimi"
+      },
+      "pt": {
+        "name": "ANOVA",
+        "description": "Avalie a diferença entre várias médias"
+      },
+      "ru": {
+        "name": "Дисперсионный анализ",
+        "description": "Рассчитать разницу между множественными средними"
+      },
+      "sr": {
+        "name": "ANOVA",
+        "description": "Процени разлику између вишеструких средњих вредности"
+      },
+      "ta": {
+        "name": "அனோவா",
+        "description": "பல வழிகளுக்கு இடையிலான வேறுபாட்டை மதிப்பிடுங்கள்"
+      }
+    },
     "releaseSource": "jasp-stats-modules/jaspAnova",
     "organization": "jasp-stats",
     "releases": [
@@ -86,17 +202,17 @@
           },
           {
             "downloadUrl": "https://github.com/jasp-stats-modules/jaspAnova/releases/download/0.95.5-release.0_3307653d_R-4-5-2_Release/jaspAnova_0.95.5-release.0_MacOS_arm64_R-4-5-2.JASPModule",
-            "downloadCount": 3,
+            "downloadCount": 4,
             "architecture": "MacOS_arm64"
           },
           {
             "downloadUrl": "https://github.com/jasp-stats-modules/jaspAnova/releases/download/0.95.5-release.0_3307653d_R-4-5-2_Release/jaspAnova_0.95.5-release.0_MacOS_x86_64_R-4-5-2.JASPModule",
-            "downloadCount": 2,
+            "downloadCount": 3,
             "architecture": "MacOS_x86_64"
           },
           {
             "downloadUrl": "https://github.com/jasp-stats-modules/jaspAnova/releases/download/0.95.5-release.0_3307653d_R-4-5-2_Release/jaspAnova_0.95.5-release.0_Windows_x86-64_R-4-5-2.JASPModule",
-            "downloadCount": 1,
+            "downloadCount": 2,
             "architecture": "Windows_x86-64"
           }
         ]
@@ -136,9 +252,55 @@
     ]
   },
   {
-    "name": "Audit",
-    "shortDescriptionHTML": "Statistical methods for auditing",
     "id": "jaspAudit",
+    "name": "Audit",
+    "description": "Statistical methods for auditing",
+    "translations": {
+      "bo": {
+        "name": "རྩིས་ཞིབ།",
+        "description": "རྩིས་ཞིབ་ཀྱི་སྡོམ་རྩིས་ཐབས་ལམ།"
+      },
+      "de": {
+        "name": "Audit",
+        "description": "Statistische Methoden zur Wirtschaftsprüfung"
+      },
+      "es": {
+        "name": "Auditar",
+        "description": "Métodos estadísticos para la Auditoría"
+      },
+      "gl": {
+        "name": "Facer auditoría",
+        "description": "Métodos estatísticos para a Auditoría"
+      },
+      "id": {
+        "name": "Audit",
+        "description": "Metode statistik untuk audit"
+      },
+      "nl": {
+        "name": "Audit",
+        "description": "Statistische methoden voor auditing"
+      },
+      "pl": {
+        "name": "Audit",
+        "description": "Metody statystyczne do audytowania"
+      },
+      "pt": {
+        "name": "Auditar",
+        "description": "Métodos estatísticos para auditoria"
+      },
+      "ru": {
+        "name": "Аудит",
+        "description": "Статистические методы для аудита"
+      },
+      "sr": {
+        "name": "Ревизија",
+        "description": "Статистичке методе за ревизију"
+      },
+      "ta": {
+        "name": "தணிக்கை",
+        "description": "தணிக்கை செய்வதற்கான புள்ளிவிவர முறைகள்"
+      }
+    },
     "releaseSource": "jasp-stats-modules/jaspAudit",
     "organization": "jasp-stats",
     "releases": [
@@ -154,12 +316,12 @@
           },
           {
             "downloadUrl": "https://github.com/jasp-stats-modules/jaspAudit/releases/download/0.95.5-release.0_18a09404_R-4-5-2_Release/jaspAudit_0.95.5-release.0_MacOS_arm64_R-4-5-2.JASPModule",
-            "downloadCount": 3,
+            "downloadCount": 4,
             "architecture": "MacOS_arm64"
           },
           {
             "downloadUrl": "https://github.com/jasp-stats-modules/jaspAudit/releases/download/0.95.5-release.0_18a09404_R-4-5-2_Release/jaspAudit_0.95.5-release.0_MacOS_x86_64_R-4-5-2.JASPModule",
-            "downloadCount": 2,
+            "downloadCount": 3,
             "architecture": "MacOS_x86_64"
           },
           {
@@ -205,9 +367,35 @@
     ]
   },
   {
-    "name": "Bayes Factor Functions",
-    "shortDescriptionHTML": "This module offers Bayes factor functions.",
     "id": "jaspBFF",
+    "name": "Bayes Factor Functions",
+    "description": "This module offers Bayes factor functions.",
+    "translations": {
+      "de": {
+        "name": "Bayesfaktor-Funktionen",
+        "description": "Dieses Modul bietet Bayesfaktor-Funktionen."
+      },
+      "es": {
+        "name": "Funciones de los Factores de Bayes",
+        "description": "Este módulo ofrece funciones de los Factores de Bayes."
+      },
+      "gl": {
+        "name": "Funcións dos Factores de Bayes",
+        "description": "Este módulo ofrece funcións dos Factores de Bayes."
+      },
+      "pt": {
+        "name": "Funções do Fator de Bayes",
+        "description": "Esse módulo oferece funções de fator de Bayes."
+      },
+      "ta": {
+        "name": "பேயச் காரணி செயல்பாடுகள்",
+        "description": "இந்த தொகுதி பேயச் காரணி செயல்பாடுகளை வழங்குகிறது."
+      },
+      "tr": {
+        "name": "Bayes Faktörü Fonksiyonları",
+        "description": "Bu modül Bayes faktörü işlevleri sunar."
+      }
+    },
     "releaseSource": "jasp-stats-modules/jaspBFF",
     "organization": "jasp-stats",
     "releases": [
@@ -223,12 +411,12 @@
           },
           {
             "downloadUrl": "https://github.com/jasp-stats-modules/jaspBFF/releases/download/0.95.5-release.0_0b9c7097_R-4-5-2_Release/jaspBFF_0.95.5-release.0_MacOS_arm64_R-4-5-2.JASPModule",
-            "downloadCount": 3,
+            "downloadCount": 4,
             "architecture": "MacOS_arm64"
           },
           {
             "downloadUrl": "https://github.com/jasp-stats-modules/jaspBFF/releases/download/0.95.5-release.0_0b9c7097_R-4-5-2_Release/jaspBFF_0.95.5-release.0_MacOS_x86_64_R-4-5-2.JASPModule",
-            "downloadCount": 2,
+            "downloadCount": 3,
             "architecture": "MacOS_x86_64"
           },
           {
@@ -273,9 +461,59 @@
     ]
   },
   {
-    "name": "Bain",
-    "shortDescriptionHTML": "A module for computing approximated adjusted fractional Bayes factors for equality, inequality, and about equality constrained hypotheses.",
     "id": "jaspBain",
+    "name": "Bain",
+    "description": "A module for computing approximated adjusted fractional Bayes factors for equality, inequality, and about equality constrained hypotheses.",
+    "translations": {
+      "de": {
+        "name": "Bain",
+        "description": "Ein Modul zum Berechnen von approximierten bruchteil-adjustierten Bayesfaktoren für Gleichheit, Ungleichheit, und über Gleichheit definierte Hypothesen."
+      },
+      "es": {
+        "name": "BAIN",
+        "description": "Un módulo para calcular los Factores de Bayes fraccionarios ajustados aproximadamente para la igualdad, la desigualdad y sobre hipótesis con restricciones de igualdad."
+      },
+      "fr": {
+        "name": "Bain",
+        "description": "Un module pour évaluer des hypothèses d'égalité et d'inégalités à partir d'approximations des facteurs de Bayes fractionnels."
+      },
+      "gl": {
+        "name": "BAIN",
+        "description": "Un módulo para calcular os Factores de Bayes fraccionais axustados aproximadamente para a igualdade, a desigualdade e sobre hipóteses con restricións de igualdade."
+      },
+      "id": {
+        "name": "Bain",
+        "description": "Modul untuk menghitung faktor Bayes fraksional yang disesuaikan dengan perkiraan untuk kesetaraan, ketidaksetaraan, dan tentang hipotesis yang dibatasi kesetaraan."
+      },
+      "ja": {
+        "name": "Bain(ベイズ情報仮説評価)",
+        "description": "等式、不等式、および等値制約のある仮説について、近似的に調整されたフラクショナル・ベイズファクターを計算するモジュール."
+      },
+      "nl": {
+        "name": "Bain",
+        "description": "Een module voor het berekenen van benaderde aangepastte fractionele Bayes factoren voor gelijkheid, ongelijkheid, en over gelijkheids beperkte hypothesen."
+      },
+      "pl": {
+        "name": "Bain",
+        "description": "Moduł do obliczania przybliżonych skorygowanych ułamkowych współczynników Bayesa dla równości, nierówności i hipotez ograniczonych równością."
+      },
+      "pt": {
+        "name": "Bain",
+        "description": "Um módulo para calcular fatores de Bayes fracionários ajustados aproximados para hipóteses de igualdade, desigualdade e sobre igualdade restrita."
+      },
+      "sr": {
+        "name": "Bain",
+        "description": "Модул за рачунање апроксимираног прилагођеног фракционог Бејзовог фактора за хипотезе о једнакости, неједнакости и хипотезе о приближној једнакости."
+      },
+      "ta": {
+        "name": "பெயின்",
+        "description": "ஒரு நிகர், சமத்துவமின்மை மற்றும் சமத்துவக் கட்டுப்படுத்தப்பட்ட கருதுகோள்களுக்கான தோராயமான சரிசெய்யப்பட்ட பகுதியளவு பேயச் காரணிகளைக் கணக்கிடுவதற்கான ஒரு தொகுதி."
+      },
+      "tr": {
+        "name": "BAIN (Bilgilendirici Hipotezlerin Bayesyen Değerlendirilmesi)",
+        "description": "Eşitlik, eşitsizlik ve yaklaşık eşitlik kısıtlı hipotezler için düzeltilmiş kesirli Bayes faktörlerinin yaklaşıklı hesaplanmasına yönelik bir modül."
+      }
+    },
     "releaseSource": "jasp-stats-modules/jaspBain",
     "organization": "jasp-stats",
     "releases": [
@@ -291,12 +529,12 @@
           },
           {
             "downloadUrl": "https://github.com/jasp-stats-modules/jaspBain/releases/download/0.95.5-release.0_851c18e4_R-4-5-2_Release/jaspBain_0.95.5-release.0_MacOS_arm64_R-4-5-2.JASPModule",
-            "downloadCount": 3,
+            "downloadCount": 4,
             "architecture": "MacOS_arm64"
           },
           {
             "downloadUrl": "https://github.com/jasp-stats-modules/jaspBain/releases/download/0.95.5-release.0_851c18e4_R-4-5-2_Release/jaspBain_0.95.5-release.0_MacOS_x86_64_R-4-5-2.JASPModule",
-            "downloadCount": 2,
+            "downloadCount": 3,
             "architecture": "MacOS_x86_64"
           },
           {
@@ -341,9 +579,10 @@
     ]
   },
   {
-    "name": "BFpack",
-    "shortDescriptionHTML": "A module for computing Bayes factors for equality, inequality, and order constrained hypotheses.",
     "id": "jaspBfpack",
+    "name": "BFpack",
+    "description": "A module for computing Bayes factors for equality, inequality, and order constrained hypotheses.",
+    "translations": {},
     "releaseSource": "jasp-stats-modules/jaspBfpack",
     "organization": "jasp-stats",
     "releases": [
@@ -359,12 +598,12 @@
           },
           {
             "downloadUrl": "https://github.com/jasp-stats-modules/jaspBfpack/releases/download/0.95.5-release.0_e5447b15_R-4-5-2_Release/jaspBfpack_0.95.5-release.0_MacOS_arm64_R-4-5-2.JASPModule",
-            "downloadCount": 3,
+            "downloadCount": 4,
             "architecture": "MacOS_arm64"
           },
           {
             "downloadUrl": "https://github.com/jasp-stats-modules/jaspBfpack/releases/download/0.95.5-release.0_e5447b15_R-4-5-2_Release/jaspBfpack_0.95.5-release.0_MacOS_x86_64_R-4-5-2.JASPModule",
-            "downloadCount": 2,
+            "downloadCount": 3,
             "architecture": "MacOS_x86_64"
           },
           {
@@ -409,9 +648,47 @@
     ]
   },
   {
-    "name": "BSTS",
-    "shortDescriptionHTML": "This module offers a Bayesian take on linear Gaussian state space models suitable for   time series analysis.",
     "id": "jaspBsts",
+    "name": "BSTS",
+    "description": "This module offers a Bayesian take on linear Gaussian state space models suitable for   time series analysis.",
+    "translations": {
+      "de": {
+        "name": "BSTS",
+        "description": "Dieses Modul bietet eine Bayessche Sichtweise auf lineare Gaußsche Zustandsraummodelle für Zeitreihenanalyse."
+      },
+      "es": {
+        "name": "BSTS",
+        "description": "Este módulo ofrece un enfoque Bayesiano sobre modelos del Espacio de los Estados Normales Lineales adecuado para   el análisis de series temporales."
+      },
+      "fr": {
+        "name": "BSTS",
+        "description": "Ce module offre une approcha bayésienne des modèles espace-état linéaires gaussiens pour l'analyse de séries temporelles."
+      },
+      "gl": {
+        "name": "BSTS",
+        "description": "Este módulo ofrece un enfoque Baiesiano sobre modelos do Espazo dos Estados Normais Lineais axeitando para   a análise de series temporais."
+      },
+      "nl": {
+        "name": "BSTS",
+        "description": "Deze module biedt een Bayesiaanse kijk op lineaire Gaussische state space modellen die geschikt zijn voor tijdreeksanalyse."
+      },
+      "pt": {
+        "name": "STBE",
+        "description": "Este módulo oferece uma abordagem bayesiana aos modelos de espaço de estados gaussianos lineares adequados para a análise de séries temporais."
+      },
+      "sr": {
+        "name": "BSTS",
+        "description": "Овај модул нуди Бејзов приступ линеарним Гаусовим моделима простора стања погодним за   анализу временских серија."
+      },
+      "ta": {
+        "name": "பிஎச்டி",
+        "description": "இந்த தொகுதி நேரத் தொடர் பகுப்பாய்விற்கு ஏற்ற நேரியல் காசியன் மாநில விண்வெளி மாதிரிகளை பேய்சியன் எடுத்துக்கொள்வதை வழங்குகிறது."
+      },
+      "tr": {
+        "name": "BSTS (Bayesyen Yapısal Zaman Serisi)",
+        "description": "Bu modül, zaman serisi analizine uygun doğrusal Gaussian durum uzayı modellerine Bayesyen bir yaklaşım sunar."
+      }
+    },
     "releaseSource": "jasp-stats-modules/jaspBsts",
     "organization": "jasp-stats",
     "releases": [
@@ -427,12 +704,12 @@
           },
           {
             "downloadUrl": "https://github.com/jasp-stats-modules/jaspBsts/releases/download/0.95.5-release.0_699f1d90_R-4-5-2_Release/jaspBsts_0.95.5-release.0_MacOS_arm64_R-4-5-2.JASPModule",
-            "downloadCount": 3,
+            "downloadCount": 4,
             "architecture": "MacOS_arm64"
           },
           {
             "downloadUrl": "https://github.com/jasp-stats-modules/jaspBsts/releases/download/0.95.5-release.0_699f1d90_R-4-5-2_Release/jaspBsts_0.95.5-release.0_MacOS_x86_64_R-4-5-2.JASPModule",
-            "downloadCount": 2,
+            "downloadCount": 3,
             "architecture": "MacOS_x86_64"
           },
           {
@@ -477,9 +754,47 @@
     ]
   },
   {
-    "name": "Circular Statistics",
-    "shortDescriptionHTML": "This module offers basic methods for directional data",
     "id": "jaspCircular",
+    "name": "Circular Statistics",
+    "description": "This module offers basic methods for directional data",
+    "translations": {
+      "de": {
+        "name": "Zirkuläre Statistik",
+        "description": "Dieses Modul bietet grundlegende Methoden für Richtungsdaten"
+      },
+      "es": {
+        "name": "Estadísticos Circulares",
+        "description": "Este módulo ofrece métodos elementales para datos direccionales"
+      },
+      "fr": {
+        "name": "Statistiques circulaires",
+        "description": "Ce module propose des méthodes basiques pour les données directionnelles"
+      },
+      "gl": {
+        "name": "Estatísticos Circulares",
+        "description": "Este módulo ofrece métodos elementais para datos direccionais"
+      },
+      "ja": {
+        "name": "角度統計学",
+        "description": "このモジュールは、方向データの基本的な方法を提供します"
+      },
+      "nl": {
+        "name": "Circulaire Statistiek",
+        "description": "Deze module biedt basismethodes voor circulaire data"
+      },
+      "pt": {
+        "name": "Estatística Circular",
+        "description": "Esse módulo oferece métodos básicos para dados direcionais"
+      },
+      "ta": {
+        "name": "வட்ட புள்ளிவிவரங்கள்",
+        "description": "இந்த தொகுதி திசை தரவுகளுக்கான அடிப்படை முறைகளை வழங்குகிறது"
+      },
+      "tr": {
+        "name": "Dairesel İstatistikler",
+        "description": "Bu modül yönelimsel veriler için temel yöntemler sunar"
+      }
+    },
     "releaseSource": "jasp-stats-modules/jaspCircular",
     "organization": "jasp-stats",
     "releases": [
@@ -495,12 +810,12 @@
           },
           {
             "downloadUrl": "https://github.com/jasp-stats-modules/jaspCircular/releases/download/0.95.5-release.0_33f107b8_R-4-5-2_Release/jaspCircular_0.95.5-release.0_MacOS_arm64_R-4-5-2.JASPModule",
-            "downloadCount": 3,
+            "downloadCount": 4,
             "architecture": "MacOS_arm64"
           },
           {
             "downloadUrl": "https://github.com/jasp-stats-modules/jaspCircular/releases/download/0.95.5-release.0_33f107b8_R-4-5-2_Release/jaspCircular_0.95.5-release.0_MacOS_x86_64_R-4-5-2.JASPModule",
-            "downloadCount": 2,
+            "downloadCount": 3,
             "architecture": "MacOS_x86_64"
           },
           {
@@ -545,9 +860,55 @@
     ]
   },
   {
-    "name": "Cochrane Meta-Analyses",
-    "shortDescriptionHTML": "This module allows to analyze Cochrane medical datasets.",
     "id": "jaspCochrane",
+    "name": "Cochrane Meta-Analyses",
+    "description": "This module allows to analyze Cochrane medical datasets.",
+    "translations": {
+      "de": {
+        "name": "Cochrane Meta-Analysen",
+        "description": "Dieses Modul ermöglicht die Analyse medizinischer Cochrane-Datensätze."
+      },
+      "es": {
+        "name": "Meta-Análisis Cochrane",
+        "description": "Este módulo permite analizar conjuntos de datos médicos Cochrane."
+      },
+      "fr": {
+        "name": "Méta-analyses de Cochrane",
+        "description": "Ce module permet d'analyser des bases de données médicales de Cochrane."
+      },
+      "gl": {
+        "name": "Meta-Análises Cochrane",
+        "description": "Este módulo permite analizar conxuntos de datos médicos Cochrane."
+      },
+      "id": {
+        "name": "Meta Analisis Cochrane",
+        "description": "Modul ini memungkinkan untuk menganalisis kumpulan data medis Cochrane."
+      },
+      "ja": {
+        "name": "コクラン・メタ分析",
+        "description": "このモジュールでは，コクラン医学データセットの分析ができます。"
+      },
+      "nl": {
+        "name": "Cochrane Meta-Analyse",
+        "description": "Met deze module kun je de Cochrane medische gegevens analyseren."
+      },
+      "pl": {
+        "name": "Metaanalizy bazy Cochrane",
+        "description": "Ten moduł pozwala przeanalizować bazę danych medycznych Cochrane."
+      },
+      "pt": {
+        "name": "Metanálises Cochrane",
+        "description": "Este módulo permite analisar conjuntos de dados médicos Cochrane."
+      },
+      "ta": {
+        "name": "கோக்ரேன் மேவு பகுப்பாய்வுகள்",
+        "description": "இந்த தொகுதி கோக்ரேன் மருத்துவ தரவுத்தொகுப்புகளை பகுப்பாய்வு செய்ய அனுமதிக்கிறது."
+      },
+      "tr": {
+        "name": "Cochrane Meta Analizleri",
+        "description": "Bu modül, Cochrane tıbbi veri setlerini analiz etmeye olanak tanır."
+      }
+    },
     "releaseSource": "jasp-stats-modules/jaspCochrane",
     "organization": "jasp-stats",
     "releases": [
@@ -563,17 +924,17 @@
           },
           {
             "downloadUrl": "https://github.com/jasp-stats-modules/jaspCochrane/releases/download/0.95.5-release.0_37e2cc66_R-4-5-2_Release/jaspCochrane_0.95.5-release.0_MacOS_arm64_R-4-5-2.JASPModule",
-            "downloadCount": 3,
+            "downloadCount": 4,
             "architecture": "MacOS_arm64"
           },
           {
             "downloadUrl": "https://github.com/jasp-stats-modules/jaspCochrane/releases/download/0.95.5-release.0_37e2cc66_R-4-5-2_Release/jaspCochrane_0.95.5-release.0_MacOS_x86_64_R-4-5-2.JASPModule",
-            "downloadCount": 2,
+            "downloadCount": 3,
             "architecture": "MacOS_x86_64"
           },
           {
             "downloadUrl": "https://github.com/jasp-stats-modules/jaspCochrane/releases/download/0.95.5-release.0_37e2cc66_R-4-5-2_Release/jaspCochrane_0.95.5-release.0_Windows_x86-64_R-4-5-2.JASPModule",
-            "downloadCount": 1,
+            "downloadCount": 2,
             "architecture": "Windows_x86-64"
           }
         ]
@@ -613,9 +974,79 @@
     ]
   },
   {
-    "name": "Descriptives",
-    "shortDescriptionHTML": "Explore the data with tables and plots",
     "id": "jaspDescriptives",
+    "name": "Descriptives",
+    "description": "Explore the data with tables and plots",
+    "translations": {
+      "bo": {
+        "name": "འགྲེལ་བརྗོད་རང་བཞིན།",
+        "description": "རེའུ་མིག་དང་དཔེ་རིས་བེད་སྤྱད་ནས་གྲངས་གནས་ལ་ཞིབ་འཇུག་བྱེད་པ།"
+      },
+      "cs": {
+        "name": "Popisné statistiky",
+        "description": "Prozkoumejte data pomocí tabulek a grafů"
+      },
+      "de": {
+        "name": "Deskriptive Statistiken",
+        "description": "Untersuche die Daten mit Tabellen und Diagrammen"
+      },
+      "es": {
+        "name": "Descriptivos",
+        "description": "Explorar los datos con tablas y gráficos"
+      },
+      "eu": {
+        "name": "Deskribatzaileak",
+        "description": "Datuak arakatu taulekin eta grafikoekin"
+      },
+      "fr": {
+        "name": "Descriptives",
+        "description": "Explorez les données à l'aide de tableaux et de graphiques"
+      },
+      "gl": {
+        "name": "Descritivos",
+        "description": "Explorar os datos con táboas e gráficas"
+      },
+      "hu": {
+        "name": "Leíró",
+        "description": "Az adatok feltárása táblázatokkal és ábrákkal"
+      },
+      "id": {
+        "name": "Deskriptif",
+        "description": "Eksplorasi data dengan tabel dan plot"
+      },
+      "ja": {
+        "name": "記述統計量",
+        "description": "表とプロットを使用してデータを探索する"
+      },
+      "nl": {
+        "name": "Beschrijvende statistiek",
+        "description": "Verken de gegevens met tabellen en grafieken"
+      },
+      "pl": {
+        "name": "Statystyki opisowe",
+        "description": "Przeglądaj dane za pomocą tabel i wykresów"
+      },
+      "pt": {
+        "name": "Descritivos",
+        "description": "Explore dados com tabelas e gráficos"
+      },
+      "ru": {
+        "name": "Описательные статистики",
+        "description": "Исследуйте данные с помощью таблиц и графиков"
+      },
+      "sr": {
+        "name": "Дескриптивна",
+        "description": "Истражите податке помоћу табела и графикона"
+      },
+      "ta": {
+        "name": "விளக்கமான",
+        "description": "அட்டவணைகள் மற்றும் அடுக்குகளுடன் தரவை ஆராயுங்கள்"
+      },
+      "tr": {
+        "name": "Betimsel İstatistikler",
+        "description": "Tablolar ve grafiklerle verileri keşfedin"
+      }
+    },
     "releaseSource": "jasp-stats-modules/jaspDescriptives",
     "organization": "jasp-stats",
     "releases": [
@@ -626,17 +1057,17 @@
         "assets": [
           {
             "downloadUrl": "https://github.com/jasp-stats-modules/jaspDescriptives/releases/download/0.95.5-release.0_c7af6c89_R-4-5-2_Release/jaspDescriptives_0.95.5-release.0_Flatpak_x86_64_R-4-5-2.JASPModule",
-            "downloadCount": 0,
+            "downloadCount": 1,
             "architecture": "Flatpak_x86_64"
           },
           {
             "downloadUrl": "https://github.com/jasp-stats-modules/jaspDescriptives/releases/download/0.95.5-release.0_c7af6c89_R-4-5-2_Release/jaspDescriptives_0.95.5-release.0_MacOS_arm64_R-4-5-2.JASPModule",
-            "downloadCount": 3,
+            "downloadCount": 4,
             "architecture": "MacOS_arm64"
           },
           {
             "downloadUrl": "https://github.com/jasp-stats-modules/jaspDescriptives/releases/download/0.95.5-release.0_c7af6c89_R-4-5-2_Release/jaspDescriptives_0.95.5-release.0_MacOS_x86_64_R-4-5-2.JASPModule",
-            "downloadCount": 2,
+            "downloadCount": 3,
             "architecture": "MacOS_x86_64"
           },
           {
@@ -681,9 +1112,55 @@
     ]
   },
   {
-    "name": "Distributions",
-    "shortDescriptionHTML": "Visualize distributions and fit them to data",
     "id": "jaspDistributions",
+    "name": "Distributions",
+    "description": "Visualize distributions and fit them to data",
+    "translations": {
+      "de": {
+        "name": "Verteilungen",
+        "description": "Verteilungen visualisieren und an Daten anpassen"
+      },
+      "es": {
+        "name": "Distribuciones",
+        "description": "Visualizar las distribuciones y ajustarlas a los datos"
+      },
+      "eu": {
+        "name": "Banaketak",
+        "description": "Banaketak bistaratu eta datuetara egokitu"
+      },
+      "fr": {
+        "name": "Distributions",
+        "description": "Visualiser les distributions et les adapter aux données"
+      },
+      "gl": {
+        "name": "Distribucións",
+        "description": "Visualizar as distribucións e axustalas aos datos"
+      },
+      "id": {
+        "name": "Distribusi",
+        "description": "Memvisualisasikan distribusi dan menyesuaikannya dengan data"
+      },
+      "ja": {
+        "name": "分布",
+        "description": "分布の可視化とデータへの適合"
+      },
+      "nl": {
+        "name": "Verdelingen",
+        "description": "Verdelingen visualiseren en aanpassen aan data"
+      },
+      "pl": {
+        "name": "Rozkład",
+        "description": "Wizualizacja rozkładów i dopasowanie ich do danych"
+      },
+      "pt": {
+        "name": "Distribuições",
+        "description": "Visualizar distribuições e ajustá-las aos dados"
+      },
+      "ta": {
+        "name": "வழங்கல்",
+        "description": "விநியோகங்களைக் காட்சிப்படுத்தி அவற்றை தரவுக்கு பொருத்தவும்"
+      }
+    },
     "releaseSource": "jasp-stats-modules/jaspDistributions",
     "organization": "jasp-stats",
     "releases": [
@@ -699,12 +1176,12 @@
           },
           {
             "downloadUrl": "https://github.com/jasp-stats-modules/jaspDistributions/releases/download/0.95.5-release.0_da341ddb_R-4-5-2_Release/jaspDistributions_0.95.5-release.0_MacOS_arm64_R-4-5-2.JASPModule",
-            "downloadCount": 3,
+            "downloadCount": 4,
             "architecture": "MacOS_arm64"
           },
           {
             "downloadUrl": "https://github.com/jasp-stats-modules/jaspDistributions/releases/download/0.95.5-release.0_da341ddb_R-4-5-2_Release/jaspDistributions_0.95.5-release.0_MacOS_x86_64_R-4-5-2.JASPModule",
-            "downloadCount": 2,
+            "downloadCount": 3,
             "architecture": "MacOS_x86_64"
           },
           {
@@ -749,9 +1226,63 @@
     ]
   },
   {
-    "name": "Equivalence T-Tests",
-    "shortDescriptionHTML": "Test the difference between two means with an interval-null hypothesis",
     "id": "jaspEquivalenceTTests",
+    "name": "Equivalence T-Tests",
+    "description": "Test the difference between two means with an interval-null hypothesis",
+    "translations": {
+      "bo": {
+        "name": "མཚུངས་པའི་ཊི་ཚོད་ལྟ།",
+        "description": "བར་མཚམས་-མེད་པའི་ཚོད་དཔག་གིས་ཆ་སྙོམས་གཉིས་བར་གྱི་ཁྱད་པར་ཚོད་ལྟ་བྱེད་པ།"
+      },
+      "de": {
+        "name": "Äquivalenz-T-Tests",
+        "description": "Teste die Differenz zwischen zwei Mittelwerten mit einer Intervall-Nullhypothese"
+      },
+      "es": {
+        "name": "Contrastes T de Equivalencia",
+        "description": "Contrastar la diferencia entre dos medias con una hipótesis de intervalo nulo"
+      },
+      "fr": {
+        "name": "Tests T d'équivalence",
+        "description": "Teste la différence entre deux moyennes avec un test d'équivalence"
+      },
+      "gl": {
+        "name": "Probas T de Equivalencia",
+        "description": "Probar a diferenza entre dúas medias cunha hipótese de intervalo nulo"
+      },
+      "ja": {
+        "name": "同等性t検定",
+        "description": "区間帰無仮説による2つの平均値の差の検定"
+      },
+      "nl": {
+        "name": "Equivalentie T-Tests",
+        "description": "Test het verschil tussen twee gemiddelde met een interval-nul hypothese"
+      },
+      "pl": {
+        "name": "Testy równoważności",
+        "description": "Testuj różnicę między dwiema średnimi przy użyciu hipotezy zerowej przedziałowej"
+      },
+      "pt": {
+        "name": "Testes T de Equivalência",
+        "description": "Testar a diferença entre duas médias"
+      },
+      "ru": {
+        "name": "Тестирование с помощью эквивалентных классов",
+        "description": "Проверить разницу между двумя средними значениями с помощью гипотезы с нулевым интервалом"
+      },
+      "sr": {
+        "name": "Т-тестови еквиваленције",
+        "description": "Тестирати разлику између две средње вредности са интервалном нултом хипотезом"
+      },
+      "ta": {
+        "name": "சமநிலை டி-சோதனைகள்",
+        "description": "இரண்டு வழிமுறைகளுக்கு இடையிலான வேறுபாட்டை இடைவெளி-பூச்ய கருதுகோளுடன் சோதிக்கவும்"
+      },
+      "tr": {
+        "name": "Eşdeğerlik T-Testleri",
+        "description": "İki ortalama arasındaki farkı aralık-boşluk hipoteziyle test edin"
+      }
+    },
     "releaseSource": "jasp-stats-modules/jaspEquivalenceTTests",
     "organization": "jasp-stats",
     "releases": [
@@ -767,12 +1298,12 @@
           },
           {
             "downloadUrl": "https://github.com/jasp-stats-modules/jaspEquivalenceTTests/releases/download/0.95.5-release.0_b7f2ad20_R-4-5-2_Release/jaspEquivalenceTTests_0.95.5-release.0_MacOS_arm64_R-4-5-2.JASPModule",
-            "downloadCount": 3,
+            "downloadCount": 4,
             "architecture": "MacOS_arm64"
           },
           {
             "downloadUrl": "https://github.com/jasp-stats-modules/jaspEquivalenceTTests/releases/download/0.95.5-release.0_b7f2ad20_R-4-5-2_Release/jaspEquivalenceTTests_0.95.5-release.0_MacOS_x86_64_R-4-5-2.JASPModule",
-            "downloadCount": 2,
+            "downloadCount": 3,
             "architecture": "MacOS_x86_64"
           },
           {
@@ -817,9 +1348,10 @@
     ]
   },
   {
-    "name": "ESCI",
-    "shortDescriptionHTML": "ESCI in JASP",
     "id": "jaspEsci",
+    "name": "ESCI",
+    "description": "ESCI in JASP",
+    "translations": {},
     "releaseSource": "jasp-stats-modules/jaspEsci",
     "organization": "jasp-stats",
     "releases": [
@@ -835,12 +1367,12 @@
           },
           {
             "downloadUrl": "https://github.com/jasp-stats-modules/jaspEsci/releases/download/0.95.5-release.0_6b9e0322_R-4-5-2_Release/jaspEsci_0.95.5-release.0_MacOS_arm64_R-4-5-2.JASPModule",
-            "downloadCount": 3,
+            "downloadCount": 4,
             "architecture": "MacOS_arm64"
           },
           {
             "downloadUrl": "https://github.com/jasp-stats-modules/jaspEsci/releases/download/0.95.5-release.0_6b9e0322_R-4-5-2_Release/jaspEsci_0.95.5-release.0_MacOS_x86_64_R-4-5-2.JASPModule",
-            "downloadCount": 2,
+            "downloadCount": 3,
             "architecture": "MacOS_x86_64"
           },
           {
@@ -885,9 +1417,63 @@
     ]
   },
   {
-    "name": "Factor",
-    "shortDescriptionHTML": "Explore hidden structure in the data",
     "id": "jaspFactor",
+    "name": "Factor",
+    "description": "Explore hidden structure in the data",
+    "translations": {
+      "bo": {
+        "name": "བགོད་གྲངས།",
+        "description": "གཞི་གྲངས་ནང་གི་སྦས་པའི་གྲུབ་ཚུལ་འཚོལ་ཞིབ་བྱེད་པ།"
+      },
+      "de": {
+        "name": "Faktor",
+        "description": "Erforsche verborgene Struktur in den Daten"
+      },
+      "es": {
+        "name": "Factor",
+        "description": "Explorar la estructura oculta en los datos"
+      },
+      "eu": {
+        "name": "Factorea",
+        "description": "Arakatu datuetako egitura ezkutua"
+      },
+      "gl": {
+        "name": "Factor",
+        "description": "Explorar a estrutura oculta nos datos"
+      },
+      "id": {
+        "name": "Faktor",
+        "description": "Jelajahi struktur tersembunyi dalam data"
+      },
+      "ja": {
+        "name": "因子",
+        "description": "データ内の隠れた構造を調べる"
+      },
+      "nl": {
+        "name": "Factor",
+        "description": "Verken verborgen structuur in de data"
+      },
+      "pl": {
+        "name": "Czynnik",
+        "description": "Eksploruj ukrytą strukturę danych"
+      },
+      "pt": {
+        "name": "Fator",
+        "description": "Explorar a estrutura oculta nos dados"
+      },
+      "ru": {
+        "name": "Фактор",
+        "description": "Исследовать скрытую структуру в данных"
+      },
+      "ta": {
+        "name": "காரணி",
+        "description": "தரவுகளில் மறைக்கப்பட்ட கட்டமைப்பை ஆராயுங்கள்"
+      },
+      "tr": {
+        "name": "Faktör",
+        "description": "Verilerdeki gizli yapıyı keşfedin"
+      }
+    },
     "releaseSource": "jasp-stats-modules/jaspFactor",
     "organization": "jasp-stats",
     "releases": [
@@ -903,12 +1489,12 @@
           },
           {
             "downloadUrl": "https://github.com/jasp-stats-modules/jaspFactor/releases/download/0.95.5-release.0_ceea12ec_R-4-5-2_Release/jaspFactor_0.95.5-release.0_MacOS_arm64_R-4-5-2.JASPModule",
-            "downloadCount": 3,
+            "downloadCount": 4,
             "architecture": "MacOS_arm64"
           },
           {
             "downloadUrl": "https://github.com/jasp-stats-modules/jaspFactor/releases/download/0.95.5-release.0_ceea12ec_R-4-5-2_Release/jaspFactor_0.95.5-release.0_MacOS_x86_64_R-4-5-2.JASPModule",
-            "downloadCount": 2,
+            "downloadCount": 3,
             "architecture": "MacOS_x86_64"
           },
           {
@@ -953,9 +1539,67 @@
     ]
   },
   {
-    "name": "Frequencies",
-    "shortDescriptionHTML": "Analyses for count data",
     "id": "jaspFrequencies",
+    "name": "Frequencies",
+    "description": "Analyses for count data",
+    "translations": {
+      "bo": {
+        "name": "ཟློས་ཕྱོད།",
+        "description": "གྲངས་བཤེར་གཞི་གྲངས་ཀྱི་དབྱེ་ཞིབ།"
+      },
+      "de": {
+        "name": "Häufigkeiten",
+        "description": "Analysen für Zähldaten"
+      },
+      "es": {
+        "name": "Frecuencias",
+        "description": "Análisis para datos de recuento"
+      },
+      "eu": {
+        "name": "Maiztasunak",
+        "description": "Zenbaketa datuen analisiak"
+      },
+      "fr": {
+        "name": "Fréquence",
+        "description": "Analyses pour les données de comptage"
+      },
+      "gl": {
+        "name": "Frecuencias",
+        "description": "Análises para datos de reconto"
+      },
+      "id": {
+        "name": "Frekuensi",
+        "description": "Analisis hitungan data"
+      },
+      "ja": {
+        "name": "度数分布",
+        "description": "カウントデータの分析"
+      },
+      "nl": {
+        "name": "Frequenties",
+        "description": "Analyses voor teldata"
+      },
+      "pl": {
+        "name": "Częstości",
+        "description": "Analizy dla danych dyskretnych"
+      },
+      "pt": {
+        "name": "Frequências",
+        "description": "Análises para dados de contagem"
+      },
+      "ru": {
+        "name": "Частоты",
+        "description": "Анализ для рассчитанных данных"
+      },
+      "sr": {
+        "name": "Фреквенције",
+        "description": "Анализе података о броју"
+      },
+      "ta": {
+        "name": "அலைவெண்கள்",
+        "description": "எண்ணிக்கை தரவுகளுக்கான பகுப்பாய்வு"
+      }
+    },
     "releaseSource": "jasp-stats-modules/jaspFrequencies",
     "organization": "jasp-stats",
     "releases": [
@@ -971,17 +1615,17 @@
           },
           {
             "downloadUrl": "https://github.com/jasp-stats-modules/jaspFrequencies/releases/download/0.95.5-release.0_3ddf4493_R-4-5-2_Release/jaspFrequencies_0.95.5-release.0_MacOS_arm64_R-4-5-2.JASPModule",
-            "downloadCount": 3,
+            "downloadCount": 4,
             "architecture": "MacOS_arm64"
           },
           {
             "downloadUrl": "https://github.com/jasp-stats-modules/jaspFrequencies/releases/download/0.95.5-release.0_3ddf4493_R-4-5-2_Release/jaspFrequencies_0.95.5-release.0_MacOS_x86_64_R-4-5-2.JASPModule",
-            "downloadCount": 2,
+            "downloadCount": 3,
             "architecture": "MacOS_x86_64"
           },
           {
             "downloadUrl": "https://github.com/jasp-stats-modules/jaspFrequencies/releases/download/0.95.5-release.0_3ddf4493_R-4-5-2_Release/jaspFrequencies_0.95.5-release.0_Windows_x86-64_R-4-5-2.JASPModule",
-            "downloadCount": 1,
+            "downloadCount": 2,
             "architecture": "Windows_x86-64"
           }
         ]
@@ -1021,9 +1665,47 @@
     ]
   },
   {
-    "name": "JAGS",
-    "shortDescriptionHTML": "Implement Bayesian graphical models with Martyn Plummer’s JAGS program for Markov chain Monte Carlo",
     "id": "jaspJags",
+    "name": "JAGS",
+    "description": "Implement Bayesian graphical models with Martyn Plummer’s JAGS program for Markov chain Monte Carlo",
+    "translations": {
+      "de": {
+        "name": "JAGS",
+        "description": "Implementiere Bayessche grafische Modelle mit Martyn Plummers JAGS-Programm für Markow-Ketten-Monte-Carlo"
+      },
+      "es": {
+        "name": "JAGS",
+        "description": "Implementar modelos gráficos bayesianos con el programa JAGS de Martyn Plummer para Monte Carlo de cadenas de Markov"
+      },
+      "fr": {
+        "name": "JAGS",
+        "description": "Implémente des modèles graphiques bayésiens avec le module JAGS de Martyn Plummer pour les chaînes de Markov Monte Carlo"
+      },
+      "gl": {
+        "name": "JAGS",
+        "description": "Implementar modelos gráficos baiesianos co programa JAGS de Martyn Plummer para Monte Carlo de cadeas de Markov"
+      },
+      "id": {
+        "name": "JAGS",
+        "description": "Terapkan model grafis Bayesian dengan program JAGS Martyn Plummer untuk Monter Carlo rangkaian Markov"
+      },
+      "ja": {
+        "name": "JAGS",
+        "description": "マルコフ連鎖モンテカルロ法のためのMartyn PlummerのJAGSプログラムによるベイジアングラフィカルモデルの実装"
+      },
+      "nl": {
+        "name": "JAGS",
+        "description": "Implementeer Bayesiaanse grafische modellen met Martyn Plummer's JAGS-programma voor Markov-keten Monte Carlo"
+      },
+      "pt": {
+        "name": "JAGS",
+        "description": "Implementar modelos gráficos Bayesianos com o programa JAGS de Martyn Plummer para Monte Carlo de cadeias de Markov"
+      },
+      "ta": {
+        "name": "சாக்ச்",
+        "description": "மார்ட்டின் பிளம்மரின் சாக்ச் திட்டத்துடன் பேய்சியன் வரைகலை மாதிரிகளை மார்கோவ் சங்கிலி மான்டே கார்லோவுடன் செயல்படுத்தவும்"
+      }
+    },
     "releaseSource": "jasp-stats-modules/jaspJags",
     "organization": "jasp-stats",
     "releases": [
@@ -1039,17 +1721,17 @@
           },
           {
             "downloadUrl": "https://github.com/jasp-stats-modules/jaspJags/releases/download/0.95.5-release.0_9266b3d0_R-4-5-2_Release/jaspJags_0.95.5-release.0_MacOS_arm64_R-4-5-2.JASPModule",
-            "downloadCount": 3,
+            "downloadCount": 4,
             "architecture": "MacOS_arm64"
           },
           {
             "downloadUrl": "https://github.com/jasp-stats-modules/jaspJags/releases/download/0.95.5-release.0_9266b3d0_R-4-5-2_Release/jaspJags_0.95.5-release.0_MacOS_x86_64_R-4-5-2.JASPModule",
-            "downloadCount": 2,
+            "downloadCount": 3,
             "architecture": "MacOS_x86_64"
           },
           {
             "downloadUrl": "https://github.com/jasp-stats-modules/jaspJags/releases/download/0.95.5-release.0_9266b3d0_R-4-5-2_Release/jaspJags_0.95.5-release.0_Windows_x86-64_R-4-5-2.JASPModule",
-            "downloadCount": 1,
+            "downloadCount": 2,
             "architecture": "Windows_x86-64"
           }
         ]
@@ -1089,9 +1771,59 @@
     ]
   },
   {
-    "name": "Learn Bayes",
-    "shortDescriptionHTML": "Learn Bayesian statistics with simple examples and supporting text",
     "id": "jaspLearnBayes",
+    "name": "Learn Bayes",
+    "description": "Learn Bayesian statistics with simple examples and supporting text",
+    "translations": {
+      "de": {
+        "name": "Bayes lernen",
+        "description": "Lerne Bayessche Statistik mit einfachen Beispielen und unterstützendem Text"
+      },
+      "es": {
+        "name": "Aprende Bayes",
+        "description": "Aprender Estadística Bayesiana con ejemplos sencillos y texto de ayuda"
+      },
+      "eu": {
+        "name": "Ikasi Bayes",
+        "description": "Ikasi Bayesiar estatistika adibide sinpleekin eta laguntza-testuarekin"
+      },
+      "fr": {
+        "name": "Apprentissage Bayésien",
+        "description": "Apprend les statistiques bayésiennes avec des exemples simples et un texte d'accompagnement"
+      },
+      "gl": {
+        "name": "Aprender Bayes",
+        "description": "Aprender Estatística Baiesiana con exemplos sinxelos e texto de axuda"
+      },
+      "id": {
+        "name": "Pelajari Bayes",
+        "description": "Pelajari statistik Bayesian dengan contoh-contoh sederhana dan teks pendukung"
+      },
+      "ja": {
+        "name": "ベイズを学ぶ",
+        "description": "ベイズ統計学を簡単な例とサポートテキストで学ぶ"
+      },
+      "nl": {
+        "name": "Leer Bayes",
+        "description": "Leer Bayesiaanse statistiek met simpele voorbeelden en begeleidende tekst"
+      },
+      "pl": {
+        "name": "Poznaj statystyki bayesowskie",
+        "description": "Poznaj statystyki bayesowskie z prostymi przykładami i objaśnieniami"
+      },
+      "pt": {
+        "name": "Aprenda Bayes",
+        "description": "Aprenda estatística Bayesiana com exemplos simples e texto de apoio"
+      },
+      "sr": {
+        "name": "Учите Бејзову",
+        "description": "Учите Бејзову статистику са једноставним примерима и помоћним текстом"
+      },
+      "ta": {
+        "name": "பேயசைக் கற்றுக்கொள்ளுங்கள்",
+        "description": "எளிய எடுத்துக்காட்டுகள் மற்றும் துணை உரையுடன் பேய்சியன் புள்ளிவிவரங்களைக் கற்றுக்கொள்ளுங்கள்"
+      }
+    },
     "releaseSource": "jasp-stats-modules/jaspLearnBayes",
     "organization": "jasp-stats",
     "releases": [
@@ -1107,17 +1839,17 @@
           },
           {
             "downloadUrl": "https://github.com/jasp-stats-modules/jaspLearnBayes/releases/download/0.95.5-release.0_94e34089_R-4-5-2_Release/jaspLearnBayes_0.95.5-release.0_MacOS_arm64_R-4-5-2.JASPModule",
-            "downloadCount": 3,
+            "downloadCount": 4,
             "architecture": "MacOS_arm64"
           },
           {
             "downloadUrl": "https://github.com/jasp-stats-modules/jaspLearnBayes/releases/download/0.95.5-release.0_94e34089_R-4-5-2_Release/jaspLearnBayes_0.95.5-release.0_MacOS_x86_64_R-4-5-2.JASPModule",
-            "downloadCount": 2,
+            "downloadCount": 3,
             "architecture": "MacOS_x86_64"
           },
           {
             "downloadUrl": "https://github.com/jasp-stats-modules/jaspLearnBayes/releases/download/0.95.5-release.0_94e34089_R-4-5-2_Release/jaspLearnBayes_0.95.5-release.0_Windows_x86-64_R-4-5-2.JASPModule",
-            "downloadCount": 1,
+            "downloadCount": 2,
             "architecture": "Windows_x86-64"
           }
         ]
@@ -1157,9 +1889,51 @@
     ]
   },
   {
-    "name": "Learn Stats",
-    "shortDescriptionHTML": "Learn classical statistics with simple examples and supporting text",
     "id": "jaspLearnStats",
+    "name": "Learn Stats",
+    "description": "Learn classical statistics with simple examples and supporting text",
+    "translations": {
+      "de": {
+        "name": "Statistik Lernen",
+        "description": "Lernen Sie klassische Statistik mit einfachen Beispielen und unterstützendem Text"
+      },
+      "es": {
+        "name": "Aprender Stats",
+        "description": "Aprender estadística clásica con ejemplos sencillos y texto de apoyo"
+      },
+      "fr": {
+        "name": "Apprendre les Statistiques",
+        "description": "Apprendre les bases en statistique avec un guide et de simples exemples"
+      },
+      "gl": {
+        "name": "Aprender Stats",
+        "description": "Aprender estatística clásica con exemplos sinxelos e texto de apoio"
+      },
+      "id": {
+        "name": "Pelajari Statistik",
+        "description": "Pelajari statistik klasik dengan contoh sederhana dan teks pendukung"
+      },
+      "nl": {
+        "name": "Leer Statistiek",
+        "description": "Leer klassieke statistiek met eenvoudige voorbeelden en ondersteunende tekst"
+      },
+      "pl": {
+        "name": "Poznaj statystykę",
+        "description": "Poznaj klasyczne statystyki z prostymi przykładami i objaśnieniami"
+      },
+      "pt": {
+        "name": "Aprenda Estatística",
+        "description": "Aprenda estatística clássica com exemplos simples e texto de apoio"
+      },
+      "ta": {
+        "name": "புள்ளிவிவரங்களைக் கற்றுக்கொள்ளுங்கள்",
+        "description": "எளிய எடுத்துக்காட்டுகள் மற்றும் துணை உரையுடன் பாரம்பரிய புள்ளிவிவரங்களைக் கற்றுக்கொள்ளுங்கள்"
+      },
+      "tr": {
+        "name": "İstatistik Öğren",
+        "description": "Basit örnekler ve destekleyici metinlerle klasik istatistikleri öğrenin"
+      }
+    },
     "releaseSource": "jasp-stats-modules/jaspLearnStats",
     "organization": "jasp-stats",
     "releases": [
@@ -1175,17 +1949,17 @@
           },
           {
             "downloadUrl": "https://github.com/jasp-stats-modules/jaspLearnStats/releases/download/0.95.5-release.0_d6072f0a_R-4-5-2_Release/jaspLearnStats_0.95.5-release.0_MacOS_arm64_R-4-5-2.JASPModule",
-            "downloadCount": 3,
+            "downloadCount": 4,
             "architecture": "MacOS_arm64"
           },
           {
             "downloadUrl": "https://github.com/jasp-stats-modules/jaspLearnStats/releases/download/0.95.5-release.0_d6072f0a_R-4-5-2_Release/jaspLearnStats_0.95.5-release.0_MacOS_x86_64_R-4-5-2.JASPModule",
-            "downloadCount": 2,
+            "downloadCount": 3,
             "architecture": "MacOS_x86_64"
           },
           {
             "downloadUrl": "https://github.com/jasp-stats-modules/jaspLearnStats/releases/download/0.95.5-release.0_d6072f0a_R-4-5-2_Release/jaspLearnStats_0.95.5-release.0_Windows_x86-64_R-4-5-2.JASPModule",
-            "downloadCount": 1,
+            "downloadCount": 2,
             "architecture": "Windows_x86-64"
           }
         ]
@@ -1225,9 +1999,51 @@
     ]
   },
   {
-    "name": "Machine Learning",
-    "shortDescriptionHTML": "Explore the relation between variables using data-driven methods for regression, classification, and clustering",
     "id": "jaspMachineLearning",
+    "name": "Machine Learning",
+    "description": "Explore the relation between variables using data-driven methods for regression, classification, and clustering",
+    "translations": {
+      "de": {
+        "name": "Maschinelles Lernen",
+        "description": "Untersuche die Beziehung zwischen Variablen mithilfe datengesteuerter Methoden für Regression, Klassifizierung und Clustering"
+      },
+      "es": {
+        "name": "Aprendizaje de Máquina",
+        "description": "Explorar la relación entre las variables que utilizan métodos basados en datos para análisis de regresión, de clasificación y de conglomeración"
+      },
+      "fr": {
+        "name": "Apprentissage Machine",
+        "description": "Explore les relations entre variables à partir des données avec des méthodes de regression, de classification et de regroupement de données (clustering)"
+      },
+      "gl": {
+        "name": "Aprendizaxe de Máquina",
+        "description": "Analizar a relación entre as variables que utilizan métodos baseados en datos para análises de regresión, de clasificación e de conglomeración"
+      },
+      "id": {
+        "name": "Pembelajaran mesin",
+        "description": "Mengeksplorasi hubungan antar variabel menggunakan metode berbasis data untuk regresi, klasifikasi, dan pengelompokan"
+      },
+      "ja": {
+        "name": "機械学習",
+        "description": "回帰、分類、クラスタリングなどのデータドリブンな手法を用いて、変数間の関係を探る"
+      },
+      "nl": {
+        "name": "Machine Learning",
+        "description": "Onderzoek de relatie tussen variabelen met behulp van datagedreven methoden voor regressie, classificatie en clustering"
+      },
+      "pt": {
+        "name": "Aprendizado de Máquina",
+        "description": "Explorar a relação entre variáveis usando métodos baseados em dados para regressão, classificação e agrupamento"
+      },
+      "ru": {
+        "name": "Машинное обучение",
+        "description": "Исследуйте зависимости между переменными при помощи основанных на данных методов регрессии, классификации и кластеризации"
+      },
+      "ta": {
+        "name": "இயந்திர கற்றல்",
+        "description": "பின்னடைவு, வகைப்பாடு மற்றும் கிளச்டரிங் ஆகியவற்றிற்கான தரவு உந்துதல் முறைகளைப் பயன்படுத்தி மாறிகளுக்கு இடையிலான உறவை ஆராயுங்கள்"
+      }
+    },
     "releaseSource": "jasp-stats-modules/jaspMachineLearning",
     "organization": "jasp-stats",
     "releases": [
@@ -1243,17 +2059,17 @@
           },
           {
             "downloadUrl": "https://github.com/jasp-stats-modules/jaspMachineLearning/releases/download/0.95.5-release.0_f223ff3b_R-4-5-2_Release/jaspMachineLearning_0.95.5-release.0_MacOS_arm64_R-4-5-2.JASPModule",
-            "downloadCount": 3,
+            "downloadCount": 4,
             "architecture": "MacOS_arm64"
           },
           {
             "downloadUrl": "https://github.com/jasp-stats-modules/jaspMachineLearning/releases/download/0.95.5-release.0_f223ff3b_R-4-5-2_Release/jaspMachineLearning_0.95.5-release.0_MacOS_x86_64_R-4-5-2.JASPModule",
-            "downloadCount": 2,
+            "downloadCount": 3,
             "architecture": "MacOS_x86_64"
           },
           {
             "downloadUrl": "https://github.com/jasp-stats-modules/jaspMachineLearning/releases/download/0.95.5-release.0_f223ff3b_R-4-5-2_Release/jaspMachineLearning_0.95.5-release.0_Windows_x86-64_R-4-5-2.JASPModule",
-            "downloadCount": 1,
+            "downloadCount": 2,
             "architecture": "Windows_x86-64"
           }
         ]
@@ -1293,9 +2109,67 @@
     ]
   },
   {
-    "name": "Meta-Analysis",
-    "shortDescriptionHTML": "Synthesize evidence across multiple studies",
     "id": "jaspMetaAnalysis",
+    "name": "Meta-Analysis",
+    "description": "Synthesize evidence across multiple studies",
+    "translations": {
+      "de": {
+        "name": "Metaanalyse",
+        "description": "Synthese von Evidenz über mehrere Studien"
+      },
+      "es": {
+        "name": "Meta-Análisis",
+        "description": "Sintetizar la evidencia de varios estudios"
+      },
+      "eu": {
+        "name": "MetaAnalisia",
+        "description": "Hainbat ikerketatan zehar frogak sintetizatu"
+      },
+      "fr": {
+        "name": "Méta-analyse",
+        "description": "Synthétise les connaissances provenant de multiples études"
+      },
+      "gl": {
+        "name": "Meta-Análise",
+        "description": "Sintetizar a evidencia de varios estudos"
+      },
+      "id": {
+        "name": "Meta-Analisis",
+        "description": "Mensintesis bukti dari sejumlah studi"
+      },
+      "ja": {
+        "name": "メタ分析",
+        "description": "複数の研究のエビデンスを統合する"
+      },
+      "nl": {
+        "name": "Meta-Analyse",
+        "description": "Voeg bewijs samen van verschillende studies"
+      },
+      "pl": {
+        "name": "Metaanalizy",
+        "description": "Przeprowadź syntetyzę dowodów z wielu badań"
+      },
+      "pt": {
+        "name": "Meta-Análise",
+        "description": "Sintetizar evidências de vários estudos"
+      },
+      "ru": {
+        "name": "Мета-анализ",
+        "description": "Обобщение фактических данных из нескольких исследований"
+      },
+      "sr": {
+        "name": "Мета-анализе",
+        "description": "Синтетизовање доказа из више студија"
+      },
+      "ta": {
+        "name": "பிந்தைய பகுப்பாய்வு",
+        "description": "பல ஆய்வுகள் முழுவதும் ஆதாரங்களை ஒருங்கிணைக்கவும்"
+      },
+      "tr": {
+        "name": "Meta Analizi",
+        "description": "Birden fazla çalışmadan elde edilen kanıtları sentezleyin"
+      }
+    },
     "releaseSource": "jasp-stats-modules/jaspMetaAnalysis",
     "organization": "jasp-stats",
     "releases": [
@@ -1311,17 +2185,17 @@
           },
           {
             "downloadUrl": "https://github.com/jasp-stats-modules/jaspMetaAnalysis/releases/download/0.95.5-release.0_7a4d3ae5_R-4-5-2_Release/jaspMetaAnalysis_0.95.5-release.0_MacOS_arm64_R-4-5-2.JASPModule",
-            "downloadCount": 3,
+            "downloadCount": 4,
             "architecture": "MacOS_arm64"
           },
           {
             "downloadUrl": "https://github.com/jasp-stats-modules/jaspMetaAnalysis/releases/download/0.95.5-release.0_7a4d3ae5_R-4-5-2_Release/jaspMetaAnalysis_0.95.5-release.0_MacOS_x86_64_R-4-5-2.JASPModule",
-            "downloadCount": 2,
+            "downloadCount": 3,
             "architecture": "MacOS_x86_64"
           },
           {
             "downloadUrl": "https://github.com/jasp-stats-modules/jaspMetaAnalysis/releases/download/0.95.5-release.0_7a4d3ae5_R-4-5-2_Release/jaspMetaAnalysis_0.95.5-release.0_Windows_x86-64_R-4-5-2.JASPModule",
-            "downloadCount": 1,
+            "downloadCount": 2,
             "architecture": "Windows_x86-64"
           }
         ]
@@ -1361,9 +2235,59 @@
     ]
   },
   {
-    "name": "Mixed Models",
-    "shortDescriptionHTML": "Evaluate the difference between multiple means with random effects",
     "id": "jaspMixedModels",
+    "name": "Mixed Models",
+    "description": "Evaluate the difference between multiple means with random effects",
+    "translations": {
+      "de": {
+        "name": "Gemischte Modelle",
+        "description": "Untersuche den Unterschied zwischen mehreren Mittelwerten mit zufälligen Effekten"
+      },
+      "es": {
+        "name": "Modelos Mixtos",
+        "description": "Evaluar la diferencia entre múltiples medias con efectos aleatorios"
+      },
+      "eu": {
+        "name": "Eredu Mistoak",
+        "description": "Batez besteko anitzen arteko aldea ebaluatu ausazko efektuekin"
+      },
+      "fr": {
+        "name": "Modèles mixtes",
+        "description": "Évaluer la différence entre plusieurs moyennes avec des effets aléatoires"
+      },
+      "gl": {
+        "name": "Modelos Mixtos",
+        "description": "Avaliar a diferenza entre distintas medias con efectos aleatorios"
+      },
+      "ja": {
+        "name": "混合モデル",
+        "description": "ランダム効果を用いて複数の平均の違いを評価する"
+      },
+      "nl": {
+        "name": "Gemengde Modellen",
+        "description": "Onderzoek het verschil tussen meerdere gemiddelden met toevallige effecten"
+      },
+      "pl": {
+        "name": "Modele mieszane",
+        "description": "Oceń różnicę między wieloma średnimi z efektami losowymi"
+      },
+      "pt": {
+        "name": "Modelos Mistos",
+        "description": "Avaliar a diferença entre várias médias com efeitos aleatórios"
+      },
+      "sr": {
+        "name": "Мешовити модели",
+        "description": "Проценити разлику између више средњих вредности са случајним ефектима"
+      },
+      "ta": {
+        "name": "கலப்பு மாதிரிகள்",
+        "description": "சீரற்ற விளைவுகளுடன் பல வழிகளுக்கு இடையிலான வேறுபாட்டை மதிப்பிடுங்கள்"
+      },
+      "tr": {
+        "name": "Karma Modeller",
+        "description": "Rastgele etkilerle çoklu ortalamalar arasındaki farkı değerlendirin"
+      }
+    },
     "releaseSource": "jasp-stats-modules/jaspMixedModels",
     "organization": "jasp-stats",
     "releases": [
@@ -1379,17 +2303,17 @@
           },
           {
             "downloadUrl": "https://github.com/jasp-stats-modules/jaspMixedModels/releases/download/0.95.5-release.0_06870062_R-4-5-2_Release/jaspMixedModels_0.95.5-release.0_MacOS_arm64_R-4-5-2.JASPModule",
-            "downloadCount": 3,
+            "downloadCount": 4,
             "architecture": "MacOS_arm64"
           },
           {
             "downloadUrl": "https://github.com/jasp-stats-modules/jaspMixedModels/releases/download/0.95.5-release.0_06870062_R-4-5-2_Release/jaspMixedModels_0.95.5-release.0_MacOS_x86_64_R-4-5-2.JASPModule",
-            "downloadCount": 2,
+            "downloadCount": 3,
             "architecture": "MacOS_x86_64"
           },
           {
             "downloadUrl": "https://github.com/jasp-stats-modules/jaspMixedModels/releases/download/0.95.5-release.0_06870062_R-4-5-2_Release/jaspMixedModels_0.95.5-release.0_Windows_x86-64_R-4-5-2.JASPModule",
-            "downloadCount": 1,
+            "downloadCount": 2,
             "architecture": "Windows_x86-64"
           }
         ]
@@ -1429,9 +2353,55 @@
     ]
   },
   {
-    "name": "Network",
-    "shortDescriptionHTML": "Explore the connections between variables organized as a network",
     "id": "jaspNetwork",
+    "name": "Network",
+    "description": "Explore the connections between variables organized as a network",
+    "translations": {
+      "de": {
+        "name": "Netzwerk",
+        "description": "Untersuche die Verbindungen zwischen Variablen, organisiert als Netzwerk"
+      },
+      "es": {
+        "name": "Red",
+        "description": "Explore las conexiones entre variables organizadas como una red"
+      },
+      "fr": {
+        "name": "Réseau",
+        "description": "Explore les connexions entre des variables organisées en réseau"
+      },
+      "gl": {
+        "name": "Rede",
+        "description": "Explorar as conexións entre variables organizadas como unha rede"
+      },
+      "id": {
+        "name": "Jaringan",
+        "description": "Mengksplorasi kaitan antar variabel yang membentuk sebuah jejaring"
+      },
+      "ja": {
+        "name": "ネットワーク",
+        "description": "ネットワークとして組織される変数間の接続を探索する"
+      },
+      "nl": {
+        "name": "Netwerk",
+        "description": "Onderzoek de verbanden tussen variabelen die als netwerk georganiseerd zijn"
+      },
+      "pl": {
+        "name": "Sieć",
+        "description": "Eksploruj powiązania pomiędzy zmiennymi tworzącymi sieć"
+      },
+      "pt": {
+        "name": "Rede",
+        "description": "Explore conexões entre variáveis organizadas em uma rede"
+      },
+      "sr": {
+        "name": "Мрежа",
+        "description": "Истражите везе између варијабли организованих као мрежа"
+      },
+      "ta": {
+        "name": "பிணையம்",
+        "description": "நெட்வொர்க்காக ஒழுங்கமைக்கப்பட்ட மாறிகளுக்கு இடையிலான இணைப்புகளை ஆராயுங்கள்"
+      }
+    },
     "releaseSource": "jasp-stats-modules/jaspNetwork",
     "organization": "jasp-stats",
     "releases": [
@@ -1447,17 +2417,17 @@
           },
           {
             "downloadUrl": "https://github.com/jasp-stats-modules/jaspNetwork/releases/download/0.95.5-release.0_277a3c1d_R-4-5-2_Release/jaspNetwork_0.95.5-release.0_MacOS_arm64_R-4-5-2.JASPModule",
-            "downloadCount": 3,
+            "downloadCount": 4,
             "architecture": "MacOS_arm64"
           },
           {
             "downloadUrl": "https://github.com/jasp-stats-modules/jaspNetwork/releases/download/0.95.5-release.0_277a3c1d_R-4-5-2_Release/jaspNetwork_0.95.5-release.0_MacOS_x86_64_R-4-5-2.JASPModule",
-            "downloadCount": 2,
+            "downloadCount": 3,
             "architecture": "MacOS_x86_64"
           },
           {
             "downloadUrl": "https://github.com/jasp-stats-modules/jaspNetwork/releases/download/0.95.5-release.0_277a3c1d_R-4-5-2_Release/jaspNetwork_0.95.5-release.0_Windows_x86-64_R-4-5-2.JASPModule",
-            "downloadCount": 1,
+            "downloadCount": 2,
             "architecture": "Windows_x86-64"
           }
         ]
@@ -1497,9 +2467,55 @@
     ]
   },
   {
-    "name": "Power",
-    "shortDescriptionHTML": "This module allows you to conduct power analyses.",
     "id": "jaspPower",
+    "name": "Power",
+    "description": "This module allows you to conduct power analyses.",
+    "translations": {
+      "de": {
+        "name": "Teststärke",
+        "description": "Mit diesem Modul können Sie Teststärkeanalysen durchführen."
+      },
+      "es": {
+        "name": "Potencia",
+        "description": "Este módulo ayuda a realizar análisis de potencia."
+      },
+      "fr": {
+        "name": "puissance",
+        "description": "Ce module permet d'analyser la puissance des tests statistiques."
+      },
+      "gl": {
+        "name": "Potencia",
+        "description": "Este módulo axúdache a realizar análises de potencia."
+      },
+      "id": {
+        "name": "Daya",
+        "description": "Modul ini memungkinkan Anda melakukan analisis daya."
+      },
+      "ja": {
+        "name": "検出力",
+        "description": "検出力分析を行うモジュールです."
+      },
+      "nl": {
+        "name": "Power",
+        "description": "Met deze module kun je poweranalyses uitvoeren."
+      },
+      "pl": {
+        "name": "Moc",
+        "description": "Ten moduł umożliwia przeprowadzenie analizy mocy."
+      },
+      "pt": {
+        "name": "Potência",
+        "description": "Esse módulo permite que você conduza análises de potência."
+      },
+      "ta": {
+        "name": "விசை",
+        "description": "ஆற்றல் பகுப்பாய்வுகளை நடத்த இந்த தொகுதி உங்களை அனுமதிக்கிறது."
+      },
+      "tr": {
+        "name": "Güç",
+        "description": "Bu modül, güç analizleri yapmanıza olanak tanır."
+      }
+    },
     "releaseSource": "jasp-stats-modules/jaspPower",
     "organization": "jasp-stats",
     "releases": [
@@ -1515,17 +2531,17 @@
           },
           {
             "downloadUrl": "https://github.com/jasp-stats-modules/jaspPower/releases/download/0.95.5-release.0_079e0d97_R-4-5-2_Release/jaspPower_0.95.5-release.0_MacOS_arm64_R-4-5-2.JASPModule",
-            "downloadCount": 3,
+            "downloadCount": 4,
             "architecture": "MacOS_arm64"
           },
           {
             "downloadUrl": "https://github.com/jasp-stats-modules/jaspPower/releases/download/0.95.5-release.0_079e0d97_R-4-5-2_Release/jaspPower_0.95.5-release.0_MacOS_x86_64_R-4-5-2.JASPModule",
-            "downloadCount": 2,
+            "downloadCount": 3,
             "architecture": "MacOS_x86_64"
           },
           {
             "downloadUrl": "https://github.com/jasp-stats-modules/jaspPower/releases/download/0.95.5-release.0_079e0d97_R-4-5-2_Release/jaspPower_0.95.5-release.0_Windows_x86-64_R-4-5-2.JASPModule",
-            "downloadCount": 1,
+            "downloadCount": 2,
             "architecture": "Windows_x86-64"
           }
         ]
@@ -1565,9 +2581,31 @@
     ]
   },
   {
-    "name": "Predictive Analytics",
-    "shortDescriptionHTML": "This module offers time series predictions and combines them with quality control concepts. That way one can predict whether a process will exeed a specified boundary in the future.",
     "id": "jaspPredictiveAnalytics",
+    "name": "Predictive Analytics",
+    "description": "This module offers time series predictions and combines them with quality control concepts. That way one can predict whether a process will exeed a specified boundary in the future.",
+    "translations": {
+      "es": {
+        "name": "Análisis Predictivo",
+        "description": "Este módulo ofrece predicciones de series temporales y las combina con conceptos de control de calidad. De ese modo se puede predecir si un proceso va a exceder un determinado límite en el futuro."
+      },
+      "gl": {
+        "name": "Análise Preditiva",
+        "description": "Este módulo ofrece predicións de series temporais e as combina con conceptos de control de calidade. Dese xeito pódese predicir se un proceso vai exceder un determinado límite no futuro."
+      },
+      "pt": {
+        "name": "Análise Preditiva",
+        "description": "Este módulo oferece previsões de séries temporais e as combina com conceitos de controle de qualidade. Dessa forma, é possível prever se um processo excederá um limite especificado no futuro."
+      },
+      "ta": {
+        "name": "முன்கணிப்பு பகுப்பாய்வு",
+        "description": "இந்த தொகுதி நேரத் தொடர் கணிப்புகளை வழங்குகிறது மற்றும் அவற்றை தரக் கட்டுப்பாட்டு கருத்துகளுடன் இணைக்கிறது. எதிர்காலத்தில் ஒரு செயல்முறை ஒரு குறிப்பிட்ட எல்லையை எடுக்குமா என்பதை ஒருவர் கணிக்க முடியும்."
+      },
+      "tr": {
+        "name": "Tahmine Dayalı Analitik",
+        "description": "Bu modül zaman serisi tahminleri sunar ve bunları kalite kontrol kavramlarıyla birleştirir. Bu şekilde bir sürecin gelecekte belirli bir sınırı aşıp aşmayacağı tahmin edilebilir."
+      }
+    },
     "releaseSource": "jasp-stats-modules/jaspPredictiveAnalytics",
     "organization": "jasp-stats",
     "releases": [
@@ -1583,17 +2621,17 @@
           },
           {
             "downloadUrl": "https://github.com/jasp-stats-modules/jaspPredictiveAnalytics/releases/download/0.95.5-release.0_2a48941d_R-4-5-2_Release/jaspPredictiveAnalytics_0.95.5-release.0_MacOS_arm64_R-4-5-2.JASPModule",
-            "downloadCount": 3,
+            "downloadCount": 4,
             "architecture": "MacOS_arm64"
           },
           {
             "downloadUrl": "https://github.com/jasp-stats-modules/jaspPredictiveAnalytics/releases/download/0.95.5-release.0_2a48941d_R-4-5-2_Release/jaspPredictiveAnalytics_0.95.5-release.0_MacOS_x86_64_R-4-5-2.JASPModule",
-            "downloadCount": 2,
+            "downloadCount": 3,
             "architecture": "MacOS_x86_64"
           },
           {
             "downloadUrl": "https://github.com/jasp-stats-modules/jaspPredictiveAnalytics/releases/download/0.95.5-release.0_2a48941d_R-4-5-2_Release/jaspPredictiveAnalytics_0.95.5-release.0_Windows_x86-64_R-4-5-2.JASPModule",
-            "downloadCount": 1,
+            "downloadCount": 2,
             "architecture": "Windows_x86-64"
           }
         ]
@@ -1633,9 +2671,31 @@
     ]
   },
   {
-    "name": "Process",
-    "shortDescriptionHTML": "Test and compare causal and conditional process models.",
     "id": "jaspProcess",
+    "name": "Process",
+    "description": "Test and compare causal and conditional process models.",
+    "translations": {
+      "de": {
+        "name": "Prozess",
+        "description": "Testen und Vergleichen von kausalen und bedingten Prozessmodellen."
+      },
+      "es": {
+        "name": "Proceso",
+        "description": "Probar y comparar modelos de proceso causales y condicionales."
+      },
+      "gl": {
+        "name": "Proceso",
+        "description": "Probar e comparar modelos de proceso causais e condicionais."
+      },
+      "pt": {
+        "name": "Processo",
+        "description": "Teste e compare modelos de processos causais e condicionais."
+      },
+      "ta": {
+        "name": "செயல்முறை",
+        "description": "காரண மற்றும் நிபந்தனை செயல்முறை மாதிரிகளை சோதித்து ஒப்பிட்டுப் பாருங்கள்."
+      }
+    },
     "releaseSource": "jasp-stats-modules/jaspProcess",
     "organization": "jasp-stats",
     "releases": [
@@ -1651,17 +2711,17 @@
           },
           {
             "downloadUrl": "https://github.com/jasp-stats-modules/jaspProcess/releases/download/0.95.5-release.0_b0063f86_R-4-5-2_Release/jaspProcess_0.95.5-release.0_MacOS_arm64_R-4-5-2.JASPModule",
-            "downloadCount": 3,
+            "downloadCount": 4,
             "architecture": "MacOS_arm64"
           },
           {
             "downloadUrl": "https://github.com/jasp-stats-modules/jaspProcess/releases/download/0.95.5-release.0_b0063f86_R-4-5-2_Release/jaspProcess_0.95.5-release.0_MacOS_x86_64_R-4-5-2.JASPModule",
-            "downloadCount": 2,
+            "downloadCount": 3,
             "architecture": "MacOS_x86_64"
           },
           {
             "downloadUrl": "https://github.com/jasp-stats-modules/jaspProcess/releases/download/0.95.5-release.0_b0063f86_R-4-5-2_Release/jaspProcess_0.95.5-release.0_Windows_x86-64_R-4-5-2.JASPModule",
-            "downloadCount": 1,
+            "downloadCount": 2,
             "architecture": "Windows_x86-64"
           }
         ]
@@ -1701,9 +2761,51 @@
     ]
   },
   {
-    "name": "Prophet",
-    "shortDescriptionHTML": "This module offers a simple model for time series prediction.",
     "id": "jaspProphet",
+    "name": "Prophet",
+    "description": "This module offers a simple model for time series prediction.",
+    "translations": {
+      "de": {
+        "name": "Prophet",
+        "description": "Dieses Modul bietet ein einfaches Modell für die Vorhersage von Zeitreihen."
+      },
+      "es": {
+        "name": "Profeta",
+        "description": "Este módulo ofrece un modelo simple para la predicción de series de tiempo."
+      },
+      "fr": {
+        "name": "Prophet",
+        "description": "Ce module propose un modèle simple pour la prédiction de séries chronologiques."
+      },
+      "gl": {
+        "name": "Profeta",
+        "description": "Este módulo ofrece un modelo sinxelo para a predición de series temporais."
+      },
+      "ja": {
+        "name": "Prophet",
+        "description": "このモジュールは、時系列予測の単純なモデルを提供します."
+      },
+      "nl": {
+        "name": "Profeet",
+        "description": "De module biedt een simpel model voor tijdreeksvoorspellingen."
+      },
+      "pt": {
+        "name": "Profeta",
+        "description": "Este módulo oferece um modelo simples para previsão de séries temporais."
+      },
+      "sr": {
+        "name": "Посланик",
+        "description": "Овај модул нуди једноставан модел за предвиђање временских серија."
+      },
+      "ta": {
+        "name": "ஆவதறிவார்",
+        "description": "இந்த தொகுதி நேரத் தொடர் கணிப்புக்கான எளிய மாதிரியை வழங்குகிறது."
+      },
+      "tr": {
+        "name": "Prophet (Zaman Serisi Tahmin Modülü)",
+        "description": "Bu modül zaman serisi tahmini için basit bir model sunar."
+      }
+    },
     "releaseSource": "jasp-stats-modules/jaspProphet",
     "organization": "jasp-stats",
     "releases": [
@@ -1719,17 +2821,17 @@
           },
           {
             "downloadUrl": "https://github.com/jasp-stats-modules/jaspProphet/releases/download/0.95.5-release.0_a2482662_R-4-5-2_Release/jaspProphet_0.95.5-release.0_MacOS_arm64_R-4-5-2.JASPModule",
-            "downloadCount": 3,
+            "downloadCount": 4,
             "architecture": "MacOS_arm64"
           },
           {
             "downloadUrl": "https://github.com/jasp-stats-modules/jaspProphet/releases/download/0.95.5-release.0_a2482662_R-4-5-2_Release/jaspProphet_0.95.5-release.0_MacOS_x86_64_R-4-5-2.JASPModule",
-            "downloadCount": 2,
+            "downloadCount": 3,
             "architecture": "MacOS_x86_64"
           },
           {
             "downloadUrl": "https://github.com/jasp-stats-modules/jaspProphet/releases/download/0.95.5-release.0_a2482662_R-4-5-2_Release/jaspProphet_0.95.5-release.0_Windows_x86-64_R-4-5-2.JASPModule",
-            "downloadCount": 1,
+            "downloadCount": 2,
             "architecture": "Windows_x86-64"
           }
         ]
@@ -1769,9 +2871,43 @@
     ]
   },
   {
-    "name": "Quality Control",
-    "shortDescriptionHTML": "Investigate if a manufactured product adheres to a defined set of quality criteria",
     "id": "jaspQualityControl",
+    "name": "Quality Control",
+    "description": "Investigate if a manufactured product adheres to a defined set of quality criteria",
+    "translations": {
+      "de": {
+        "name": "Qualitätskontrolle",
+        "description": "Prüfen Sie, ob ein hergestelltes Produkt einer definierten Menge von Qualitätskriterien entspricht"
+      },
+      "es": {
+        "name": "Control de Calidad",
+        "description": "Investigar si un producto manufacturado se ciñe a un conjunto definido de criterios de calidad"
+      },
+      "fr": {
+        "name": "Contrôle de qualité",
+        "description": "Vérifier si un produit fabriqué respecte un ensemble défini de critères de qualité"
+      },
+      "gl": {
+        "name": "Control de Calidade",
+        "description": "Investigar se un produto manufacturado se cingue a un conxunto definido de criterios de calidade"
+      },
+      "id": {
+        "name": "Kontrol kualitas",
+        "description": "Selidiki apakah produk yang diproduksi mematuhi serangkaian kriteria kualitas yang ditetapkan"
+      },
+      "nl": {
+        "name": "Kwaliteitsbewaking",
+        "description": "Onderzoeken of een gefabriceerd product voldoet aan een gedefinieerde reeks kwaliteitscriteria"
+      },
+      "pt": {
+        "name": "Controle de Qualidade",
+        "description": "Investigar se um produto fabricado adere a um conjunto definido de critérios de qualidade"
+      },
+      "ta": {
+        "name": "தரக் கட்டுப்பாடு",
+        "description": "ஒரு தயாரிக்கப்பட்ட தயாரிப்பு வரையறுக்கப்பட்ட தர அளவுகோல்களைக் கடைப்பிடித்தால் ஆராயுங்கள்"
+      }
+    },
     "releaseSource": "jasp-stats-modules/jaspQualityControl",
     "organization": "jasp-stats",
     "releases": [
@@ -1787,17 +2923,17 @@
           },
           {
             "downloadUrl": "https://github.com/jasp-stats-modules/jaspQualityControl/releases/download/0.95.5-release.0_4791fbd1_R-4-5-2_Release/jaspQualityControl_0.95.5-release.0_MacOS_arm64_R-4-5-2.JASPModule",
-            "downloadCount": 4,
+            "downloadCount": 5,
             "architecture": "MacOS_arm64"
           },
           {
             "downloadUrl": "https://github.com/jasp-stats-modules/jaspQualityControl/releases/download/0.95.5-release.0_4791fbd1_R-4-5-2_Release/jaspQualityControl_0.95.5-release.0_MacOS_x86_64_R-4-5-2.JASPModule",
-            "downloadCount": 2,
+            "downloadCount": 3,
             "architecture": "MacOS_x86_64"
           },
           {
             "downloadUrl": "https://github.com/jasp-stats-modules/jaspQualityControl/releases/download/0.95.5-release.0_4791fbd1_R-4-5-2_Release/jaspQualityControl_0.95.5-release.0_Windows_x86-64_R-4-5-2.JASPModule",
-            "downloadCount": 1,
+            "downloadCount": 2,
             "architecture": "Windows_x86-64"
           }
         ]
@@ -1837,9 +2973,63 @@
     ]
   },
   {
-    "name": "Regression",
-    "shortDescriptionHTML": "Evaluate the association between variables",
     "id": "jaspRegression",
+    "name": "Regression",
+    "description": "Evaluate the association between variables",
+    "translations": {
+      "de": {
+        "name": "Regression",
+        "description": "Untersuche den Zusammenhang zwischen Variablen"
+      },
+      "es": {
+        "name": "Regresión",
+        "description": "Evaluar la asociación entre variables"
+      },
+      "eu": {
+        "name": "Erregresioa",
+        "description": "Aldagaien arteko lotura ebaluatu"
+      },
+      "fr": {
+        "name": "Régression",
+        "description": "Évaluer l'association entre les variables"
+      },
+      "gl": {
+        "name": "Regresión",
+        "description": "Avaliar a asociación entre as variables"
+      },
+      "ja": {
+        "name": "回帰",
+        "description": "変数間の関連を評価"
+      },
+      "nl": {
+        "name": "Regressie",
+        "description": "Onderzoek het verband tussen variabelen"
+      },
+      "pl": {
+        "name": "Regresja",
+        "description": "Oceń związek pomiędzy zmiennymi"
+      },
+      "pt": {
+        "name": "Regressão",
+        "description": "Avaliar a associação entre as variáveis"
+      },
+      "ru": {
+        "name": "Регрессия",
+        "description": "Оценить связь между переменными"
+      },
+      "sr": {
+        "name": "Регресија",
+        "description": "Проценити везу између варијабли"
+      },
+      "ta": {
+        "name": "பின்னடைவு",
+        "description": "மாறிகள் இடையேயான தொடர்பை மதிப்பீடு செய்யுங்கள்"
+      },
+      "tr": {
+        "name": "Regresyon",
+        "description": "Değişkenler arasındaki ilişkiyi değerlendir"
+      }
+    },
     "releaseSource": "jasp-stats-modules/jaspRegression",
     "organization": "jasp-stats",
     "releases": [
@@ -1855,17 +3045,17 @@
           },
           {
             "downloadUrl": "https://github.com/jasp-stats-modules/jaspRegression/releases/download/0.95.5-release.0_ead42d7c_R-4-5-2_Release/jaspRegression_0.95.5-release.0_MacOS_arm64_R-4-5-2.JASPModule",
-            "downloadCount": 3,
+            "downloadCount": 4,
             "architecture": "MacOS_arm64"
           },
           {
             "downloadUrl": "https://github.com/jasp-stats-modules/jaspRegression/releases/download/0.95.5-release.0_ead42d7c_R-4-5-2_Release/jaspRegression_0.95.5-release.0_MacOS_x86_64_R-4-5-2.JASPModule",
-            "downloadCount": 2,
+            "downloadCount": 3,
             "architecture": "MacOS_x86_64"
           },
           {
             "downloadUrl": "https://github.com/jasp-stats-modules/jaspRegression/releases/download/0.95.5-release.0_ead42d7c_R-4-5-2_Release/jaspRegression_0.95.5-release.0_Windows_x86-64_R-4-5-2.JASPModule",
-            "downloadCount": 1,
+            "downloadCount": 2,
             "architecture": "Windows_x86-64"
           }
         ]
@@ -1905,9 +3095,55 @@
     ]
   },
   {
-    "name": "Reliability",
-    "shortDescriptionHTML": "Quantify the reliability of test scores",
     "id": "jaspReliability",
+    "name": "Reliability",
+    "description": "Quantify the reliability of test scores",
+    "translations": {
+      "de": {
+        "name": "Reliabilität",
+        "description": "Quantifiziere die Reliabilität von Test-Scores"
+      },
+      "es": {
+        "name": "Fiabilidad",
+        "description": "Cuantificar la fiabilidad de las puntuaciones de los tests"
+      },
+      "fr": {
+        "name": "Fiabilité",
+        "description": "Quantifier la fiabilité des scores de test"
+      },
+      "gl": {
+        "name": "Fiabilidade",
+        "description": "Cuantificar a fiabilidade das puntuacións das probas"
+      },
+      "ja": {
+        "name": "信頼性",
+        "description": "テストの点数の信頼性を定量化"
+      },
+      "nl": {
+        "name": "Betrouwbaarheid",
+        "description": "Kwantificeer de betrouwbaarheid van de testscores"
+      },
+      "pl": {
+        "name": "Rzetelność",
+        "description": "Ocena rzetelności wyników testu"
+      },
+      "pt": {
+        "name": "Confiabilidade",
+        "description": "Quantificar a confiabilidade dos escores"
+      },
+      "ru": {
+        "name": "Надежность",
+        "description": "Оценка надежности результатов теста"
+      },
+      "ta": {
+        "name": "நம்பகத்தன்மை",
+        "description": "சோதனை மதிப்பெண்களின் நம்பகத்தன்மையை அளவிடவும்"
+      },
+      "tr": {
+        "name": "Güvenilirlik",
+        "description": "Test puanlarının güvenilirliğini ölçün"
+      }
+    },
     "releaseSource": "jasp-stats-modules/jaspReliability",
     "organization": "jasp-stats",
     "releases": [
@@ -1923,17 +3159,17 @@
           },
           {
             "downloadUrl": "https://github.com/jasp-stats-modules/jaspReliability/releases/download/0.95.5-release.0_c2a37d79_R-4-5-2_Release/jaspReliability_0.95.5-release.0_MacOS_arm64_R-4-5-2.JASPModule",
-            "downloadCount": 3,
+            "downloadCount": 4,
             "architecture": "MacOS_arm64"
           },
           {
             "downloadUrl": "https://github.com/jasp-stats-modules/jaspReliability/releases/download/0.95.5-release.0_c2a37d79_R-4-5-2_Release/jaspReliability_0.95.5-release.0_MacOS_x86_64_R-4-5-2.JASPModule",
-            "downloadCount": 2,
+            "downloadCount": 3,
             "architecture": "MacOS_x86_64"
           },
           {
             "downloadUrl": "https://github.com/jasp-stats-modules/jaspReliability/releases/download/0.95.5-release.0_c2a37d79_R-4-5-2_Release/jaspReliability_0.95.5-release.0_Windows_x86-64_R-4-5-2.JASPModule",
-            "downloadCount": 1,
+            "downloadCount": 2,
             "architecture": "Windows_x86-64"
           }
         ]
@@ -1973,9 +3209,47 @@
     ]
   },
   {
-    "name": "SEM",
-    "shortDescriptionHTML": "Evaluate latent data structures with Yves Rosseel’s lavaan program",
     "id": "jaspSem",
+    "name": "SEM",
+    "description": "Evaluate latent data structures with Yves Rosseel’s lavaan program",
+    "translations": {
+      "de": {
+        "name": "SGM",
+        "description": "Untersuche latente Datenstrukturen mit dem Programm lavaan von Yves Rosseel"
+      },
+      "es": {
+        "name": "M.E.S.",
+        "description": "Evaluar estructuras de datos latentes con el programa Lavaan de Yves Rosseel"
+      },
+      "fr": {
+        "name": "MES",
+        "description": "Évalue les structures de données latentes avec le module lavaan (analyse des variables latentes, LAtent Variable ANalysis en anglais) d'Yves Rosseel"
+      },
+      "gl": {
+        "name": "M.E.S.",
+        "description": "Avaliar estruturas de datos latentes co programa Lavaan de Yves Rosseel"
+      },
+      "ja": {
+        "name": "SEM",
+        "description": "Yves Rosseelのlavaanプログラムによる潜在的なデータ構造の評価"
+      },
+      "nl": {
+        "name": "SEM",
+        "description": "Evalueer latente data structuren met Yves Rosseel’s lavaan programma"
+      },
+      "pl": {
+        "name": "SEM",
+        "description": "Wyszukaj ukryte struktury danych za pomocą programu lavaan Yvesa Rosseela"
+      },
+      "pt": {
+        "name": "MEE",
+        "description": "Avalie estruturas de dados latentes com o programa lavaan de Yves Rosseel"
+      },
+      "ta": {
+        "name": "இது",
+        "description": "மறைந்திருக்கும் தரவு கட்டமைப்பு வெள்ளை யவ்ச் ரோசல்சலின் லா திட்டத்தை மதிப்பீடு செய்யுங்கள்"
+      }
+    },
     "releaseSource": "jasp-stats-modules/jaspSem",
     "organization": "jasp-stats",
     "releases": [
@@ -1991,17 +3265,17 @@
           },
           {
             "downloadUrl": "https://github.com/jasp-stats-modules/jaspSem/releases/download/0.95.5-release.0_e0fa2766_R-4-5-2_Release/jaspSem_0.95.5-release.0_MacOS_arm64_R-4-5-2.JASPModule",
-            "downloadCount": 3,
+            "downloadCount": 4,
             "architecture": "MacOS_arm64"
           },
           {
             "downloadUrl": "https://github.com/jasp-stats-modules/jaspSem/releases/download/0.95.5-release.0_e0fa2766_R-4-5-2_Release/jaspSem_0.95.5-release.0_MacOS_x86_64_R-4-5-2.JASPModule",
-            "downloadCount": 2,
+            "downloadCount": 3,
             "architecture": "MacOS_x86_64"
           },
           {
             "downloadUrl": "https://github.com/jasp-stats-modules/jaspSem/releases/download/0.95.5-release.0_e0fa2766_R-4-5-2_Release/jaspSem_0.95.5-release.0_Windows_x86-64_R-4-5-2.JASPModule",
-            "downloadCount": 1,
+            "downloadCount": 2,
             "architecture": "Windows_x86-64"
           }
         ]
@@ -2041,9 +3315,55 @@
     ]
   },
   {
-    "name": "Summary Statistics",
-    "shortDescriptionHTML": "Apply common Bayesian tests from sufficient statistics",
     "id": "jaspSummaryStatistics",
+    "name": "Summary Statistics",
+    "description": "Apply common Bayesian tests from sufficient statistics",
+    "translations": {
+      "bo": {
+        "name": "སྡོམ་རྩིས་སྙིང་བསྡུས།",
+        "description": "འདང་ངེས་སྡོམ་རྩིས་ནས་རྒྱུན་སྤྱོད་ཀྱི་བྷེ་ཡེ་སིའི་ཚོད་ལྟ་སྤྱོད་པ།"
+      },
+      "de": {
+        "name": "Zusammenfassende Statistiken",
+        "description": "Anwendung gängiger Bayessche Tests anhand suffizienter Statistiken"
+      },
+      "es": {
+        "name": "Estadísticos de Resumen",
+        "description": "Aplicar el test habitual de Bayes desde estadísticos suficientes"
+      },
+      "fr": {
+        "name": "Résumé Statistiques",
+        "description": "Applique les tests bayésiens usuels à partir de statistiques exhaustives"
+      },
+      "gl": {
+        "name": "Estatísticos de Resumo",
+        "description": "Aplicar as probas baiesianas habituais a partir de estatísticos suficientes"
+      },
+      "ja": {
+        "name": "要約統計量",
+        "description": "十分統計量から一般的なベイジアン検定を適用する"
+      },
+      "nl": {
+        "name": "Samenvattende Statistieken",
+        "description": "Pas gebruikelijke Bayesiaanse toetsen toe van voldoende statistieken"
+      },
+      "pl": {
+        "name": "Statystyki bayesowskie",
+        "description": "Wykonaj testy bayesowskie dla dostarczonych statystyk"
+      },
+      "pt": {
+        "name": "Resumo Estatístico",
+        "description": "Aplicar testes Bayesianos comuns a partir de estatísticas suficientes"
+      },
+      "ta": {
+        "name": "சுருக்கம் புள்ளிவிவரங்கள்",
+        "description": "போதுமான புள்ளிவிவரங்களிலிருந்து பொதுவான பேய்சியன் சோதனைகளைப் பயன்படுத்துங்கள்"
+      },
+      "tr": {
+        "name": "Özet İstatistikler",
+        "description": "Yeterli istatistiklerden yaygın Bayes testlerini uygulayın"
+      }
+    },
     "releaseSource": "jasp-stats-modules/jaspSummaryStatistics",
     "organization": "jasp-stats",
     "releases": [
@@ -2059,17 +3379,17 @@
           },
           {
             "downloadUrl": "https://github.com/jasp-stats-modules/jaspSummaryStatistics/releases/download/0.95.5-release.0_de257b55_R-4-5-2_Release/jaspSummaryStatistics_0.95.5-release.0_MacOS_arm64_R-4-5-2.JASPModule",
-            "downloadCount": 3,
+            "downloadCount": 4,
             "architecture": "MacOS_arm64"
           },
           {
             "downloadUrl": "https://github.com/jasp-stats-modules/jaspSummaryStatistics/releases/download/0.95.5-release.0_de257b55_R-4-5-2_Release/jaspSummaryStatistics_0.95.5-release.0_MacOS_x86_64_R-4-5-2.JASPModule",
-            "downloadCount": 2,
+            "downloadCount": 3,
             "architecture": "MacOS_x86_64"
           },
           {
             "downloadUrl": "https://github.com/jasp-stats-modules/jaspSummaryStatistics/releases/download/0.95.5-release.0_de257b55_R-4-5-2_Release/jaspSummaryStatistics_0.95.5-release.0_Windows_x86-64_R-4-5-2.JASPModule",
-            "downloadCount": 1,
+            "downloadCount": 2,
             "architecture": "Windows_x86-64"
           }
         ]
@@ -2109,9 +3429,10 @@
     ]
   },
   {
-    "name": "Survival",
-    "shortDescriptionHTML": "Perform analyses of censored time to event data.",
     "id": "jaspSurvival",
+    "name": "Survival",
+    "description": "Perform analyses of censored time to event data.",
+    "translations": {},
     "releaseSource": "jasp-stats-modules/jaspSurvival",
     "organization": "jasp-stats",
     "releases": [
@@ -2127,17 +3448,17 @@
           },
           {
             "downloadUrl": "https://github.com/jasp-stats-modules/jaspSurvival/releases/download/0.95.5-release.0_69dc1db1_R-4-5-2_Release/jaspSurvival_0.95.5-release.0_MacOS_arm64_R-4-5-2.JASPModule",
-            "downloadCount": 3,
+            "downloadCount": 4,
             "architecture": "MacOS_arm64"
           },
           {
             "downloadUrl": "https://github.com/jasp-stats-modules/jaspSurvival/releases/download/0.95.5-release.0_69dc1db1_R-4-5-2_Release/jaspSurvival_0.95.5-release.0_MacOS_x86_64_R-4-5-2.JASPModule",
-            "downloadCount": 2,
+            "downloadCount": 3,
             "architecture": "MacOS_x86_64"
           },
           {
             "downloadUrl": "https://github.com/jasp-stats-modules/jaspSurvival/releases/download/0.95.5-release.0_69dc1db1_R-4-5-2_Release/jaspSurvival_0.95.5-release.0_Windows_x86-64_R-4-5-2.JASPModule",
-            "downloadCount": 1,
+            "downloadCount": 2,
             "architecture": "Windows_x86-64"
           }
         ]
@@ -2177,9 +3498,71 @@
     ]
   },
   {
-    "name": "T-Tests",
-    "shortDescriptionHTML": "Evaluate the difference between two means",
     "id": "jaspTTests",
+    "name": "T-Tests",
+    "description": "Evaluate the difference between two means",
+    "translations": {
+      "bo": {
+        "name": "ཊི་ཚོད་ལྟ།",
+        "description": "ཆ་སྙོམས་གཉིས་ཀྱི་ཁྱད་པར་ལ་དཔྱད་པ།"
+      },
+      "de": {
+        "name": "T-Tests",
+        "description": "Untersuche die Differenz zwischen zwei Mittelwerten"
+      },
+      "es": {
+        "name": "Contrastes t",
+        "description": "Evaluar la diferencia entre dos medias"
+      },
+      "eu": {
+        "name": "T-Probak",
+        "description": "Bi batez bestekoen arteko aldea ebaluatu"
+      },
+      "fr": {
+        "name": "T-Tests",
+        "description": "Évaluer la différence entre deux moyennes"
+      },
+      "gl": {
+        "name": "Probas T",
+        "description": "Avaliar a diferenza entre dúas medias"
+      },
+      "id": {
+        "name": "Uji-T",
+        "description": "Evaluasi perbedaan antara dua rata-rata"
+      },
+      "ja": {
+        "name": "t検定",
+        "description": "2つの平均の差を評価する"
+      },
+      "nl": {
+        "name": "T-Toetsen",
+        "description": "Onderzoek het verschil tussen twee gemiddelden"
+      },
+      "pl": {
+        "name": "Testy t",
+        "description": "Oceń różnicę między dwiema średnimi"
+      },
+      "pt": {
+        "name": "Teste t",
+        "description": "Avaliar a diferença entre duas médias"
+      },
+      "ru": {
+        "name": "Сравнение групп",
+        "description": "Оценить разницу между двумя средними"
+      },
+      "sr": {
+        "name": "T-тестови",
+        "description": "Процена разлике између две средине"
+      },
+      "ta": {
+        "name": "டி-சோதனைகள்",
+        "description": "இரண்டு வழிமுறைகளுக்கு இடையிலான வித்தியாசத்தை மதிப்பிடுங்கள்"
+      },
+      "tr": {
+        "name": "T-Testleri",
+        "description": "İki ortalama arasındaki farkı değerlendirin"
+      }
+    },
     "releaseSource": "jasp-stats-modules/jaspTTests",
     "organization": "jasp-stats",
     "releases": [
@@ -2195,17 +3578,17 @@
           },
           {
             "downloadUrl": "https://github.com/jasp-stats-modules/jaspTTests/releases/download/0.95.5-release.0_6662bf37_R-4-5-2_Release/jaspTTests_0.95.5-release.0_MacOS_arm64_R-4-5-2.JASPModule",
-            "downloadCount": 3,
+            "downloadCount": 4,
             "architecture": "MacOS_arm64"
           },
           {
             "downloadUrl": "https://github.com/jasp-stats-modules/jaspTTests/releases/download/0.95.5-release.0_6662bf37_R-4-5-2_Release/jaspTTests_0.95.5-release.0_MacOS_x86_64_R-4-5-2.JASPModule",
-            "downloadCount": 2,
+            "downloadCount": 3,
             "architecture": "MacOS_x86_64"
           },
           {
             "downloadUrl": "https://github.com/jasp-stats-modules/jaspTTests/releases/download/0.95.5-release.0_6662bf37_R-4-5-2_Release/jaspTTests_0.95.5-release.0_Windows_x86-64_R-4-5-2.JASPModule",
-            "downloadCount": 1,
+            "downloadCount": 2,
             "architecture": "Windows_x86-64"
           }
         ]
@@ -2245,9 +3628,19 @@
     ]
   },
   {
-    "name": "Wait for it...",
-    "shortDescriptionHTML": "A module to test stuff with.",
     "id": "jaspTestModule",
+    "name": "Wait for it...",
+    "description": "A module to test stuff with.",
+    "translations": {
+      "gl": {
+        "name": "Agarda por isto...",
+        "description": "Un módulo co que comprobar cousas."
+      },
+      "nl": {
+        "name": "Wacht nog even...",
+        "description": "Een module om dingen te testen."
+      }
+    },
     "releaseSource": "jasp-stats-modules/jaspTestModule",
     "organization": "jasp-stats",
     "releases": [
@@ -2313,9 +3706,51 @@
     ]
   },
   {
-    "name": "Visual Modeling",
-    "shortDescriptionHTML": "Graphically explore the dependencies between variables",
     "id": "jaspVisualModeling",
+    "name": "Visual Modeling",
+    "description": "Graphically explore the dependencies between variables",
+    "translations": {
+      "de": {
+        "name": "Visuelles Modellieren",
+        "description": "Grafische Untersuchung der Abhängigkeiten zwischen Variablen"
+      },
+      "es": {
+        "name": "Modelado visual",
+        "description": "Explorar gráficamente las dependencias entre variables"
+      },
+      "fr": {
+        "name": "Modélisation visuelle",
+        "description": "Explorer graphiquement les dépendances entre des variables"
+      },
+      "gl": {
+        "name": "Modelado visual",
+        "description": "Explorar graficamente as dependencias entre variables"
+      },
+      "id": {
+        "name": "Modeling Visual",
+        "description": "Jelajahi dependensi antar variabel secara grafis"
+      },
+      "ja": {
+        "name": "ビジュアルモデリング",
+        "description": "変数間の依存関係をグラフィカルに表示"
+      },
+      "nl": {
+        "name": "Visueel modelleren",
+        "description": "Grafische verkenning van de afhankelijkheid tussen variabelen"
+      },
+      "pl": {
+        "name": "Modelowanie wizualne",
+        "description": "Graficzna analiza zależności między zmiennymi"
+      },
+      "pt": {
+        "name": "Modelagem visual",
+        "description": "Explorar graficamente as dependências entre variáveis"
+      },
+      "ta": {
+        "name": "காட்சி மாடலிங்",
+        "description": "மாறிகள் இடையிலான சார்புகளை வரைபடமாக ஆராயுங்கள்"
+      }
+    },
     "releaseSource": "jasp-stats-modules/jaspVisualModeling",
     "organization": "jasp-stats",
     "releases": [
@@ -2331,17 +3766,17 @@
           },
           {
             "downloadUrl": "https://github.com/jasp-stats-modules/jaspVisualModeling/releases/download/0.95.5-release.0_b2447e6e_R-4-5-2_Release/jaspVisualModeling_0.95.5-release.0_MacOS_arm64_R-4-5-2.JASPModule",
-            "downloadCount": 3,
+            "downloadCount": 4,
             "architecture": "MacOS_arm64"
           },
           {
             "downloadUrl": "https://github.com/jasp-stats-modules/jaspVisualModeling/releases/download/0.95.5-release.0_b2447e6e_R-4-5-2_Release/jaspVisualModeling_0.95.5-release.0_MacOS_x86_64_R-4-5-2.JASPModule",
-            "downloadCount": 2,
+            "downloadCount": 3,
             "architecture": "MacOS_x86_64"
           },
           {
             "downloadUrl": "https://github.com/jasp-stats-modules/jaspVisualModeling/releases/download/0.95.5-release.0_b2447e6e_R-4-5-2_Release/jaspVisualModeling_0.95.5-release.0_Windows_x86-64_R-4-5-2.JASPModule",
-            "downloadCount": 1,
+            "downloadCount": 2,
             "architecture": "Windows_x86-64"
           }
         ]
@@ -2381,9 +3816,39 @@
     ]
   },
   {
-    "name": "Time Series",
-    "shortDescriptionHTML": "This module offers time series analyses.",
     "id": "jaspTimeSeries",
+    "name": "Time Series",
+    "description": "This module offers time series analyses.",
+    "translations": {
+      "de": {
+        "name": "Zeitreihen",
+        "description": "Dieses Modul bietet Zeitreihenanalysen."
+      },
+      "es": {
+        "name": "Series Temporales",
+        "description": "Este módulo ofrece el análisis de series temporales."
+      },
+      "gl": {
+        "name": "Series Temporais",
+        "description": "Este módulo ofrece a análise de series temporais."
+      },
+      "nl": {
+        "name": "Tijdsreeksen",
+        "description": "Deze module biedt tijdreeksanalyses."
+      },
+      "pt": {
+        "name": "Séries Temporais",
+        "description": "Esse módulo oferece análises de séries temporais."
+      },
+      "sr": {
+        "name": "Временске серије",
+        "description": "Овај модул нуди анализу временских серија."
+      },
+      "ta": {
+        "name": "காலத்தொடர்",
+        "description": "இந்த தொகுதி நேரத் தொடர் பகுப்பாய்வுகளை வழங்குகிறது."
+      }
+    },
     "releaseSource": "jasp-stats-modules/jaspTimeSeries",
     "organization": "jasp-stats",
     "releases": [
@@ -2399,17 +3864,17 @@
           },
           {
             "downloadUrl": "https://github.com/jasp-stats-modules/jaspTimeSeries/releases/download/0.95.0-release.0_e72386bc_R-4-5-2_Release/jaspTimeSeries_0.95.0-release.0_MacOS_arm64_R-4-5-2.JASPModule",
-            "downloadCount": 3,
+            "downloadCount": 4,
             "architecture": "MacOS_arm64"
           },
           {
             "downloadUrl": "https://github.com/jasp-stats-modules/jaspTimeSeries/releases/download/0.95.0-release.0_e72386bc_R-4-5-2_Release/jaspTimeSeries_0.95.0-release.0_MacOS_x86_64_R-4-5-2.JASPModule",
-            "downloadCount": 2,
+            "downloadCount": 3,
             "architecture": "MacOS_x86_64"
           },
           {
             "downloadUrl": "https://github.com/jasp-stats-modules/jaspTimeSeries/releases/download/0.95.0-release.0_e72386bc_R-4-5-2_Release/jaspTimeSeries_0.95.0-release.0_Windows_x86-64_R-4-5-2.JASPModule",
-            "downloadCount": 1,
+            "downloadCount": 2,
             "architecture": "Windows_x86-64"
           }
         ]
@@ -2449,9 +3914,43 @@
     ]
   },
   {
-    "name": "Robust T-Tests",
-    "shortDescriptionHTML": "Robustly evaluate the difference between two means",
     "id": "jaspRobustTTests",
+    "name": "Robust T-Tests",
+    "description": "Robustly evaluate the difference between two means",
+    "translations": {
+      "bo": {
+        "name": "བརྟན་པོའི་ཊི་ཚོད་ལྟ།",
+        "description": "ཆ་སྙོམས་གཉིས་ཀྱི་ཁྱད་པར་ལ་བརྟན་པོའི་སྒོ་ནས་དཔྱད་པ།"
+      },
+      "de": {
+        "name": "Robuste T-Tests",
+        "description": "Robuste Bestimmung der Differenz zwischen zwei Mittelwerten"
+      },
+      "es": {
+        "name": "Contrastes T robustos",
+        "description": "Evaluar de modo robusto la diferencia entre dos medias"
+      },
+      "gl": {
+        "name": "Probas T robustas",
+        "description": "Avaliar de xeito robusto a diferenza entre dúas medias"
+      },
+      "pt": {
+        "name": "Teste t robusto",
+        "description": "Avalie com robustez a diferença entre duas médias"
+      },
+      "sr": {
+        "name": "Робусни T-тестови",
+        "description": "Робусна процена разлике између две средине"
+      },
+      "ta": {
+        "name": "வலுவான டி-சோதனைகள்",
+        "description": "இரண்டு வழிமுறைகளுக்கு இடையிலான வேறுபாட்டை வலுவாக மதிப்பிடுங்கள்"
+      },
+      "tr": {
+        "name": "Robust (Sağlam) T-Testleri",
+        "description": "İki ortalama arasındaki farkı sağlam bir şekilde değerlendirin"
+      }
+    },
     "releaseSource": "jasp-stats-modules/jaspRobustTTests",
     "organization": "jasp-stats",
     "releases": [
@@ -2467,17 +3966,17 @@
           },
           {
             "downloadUrl": "https://github.com/jasp-stats-modules/jaspRobustTTests/releases/download/0.95.0-release.0_c1fe26b4_R-4-5-2_Release/jaspRobustTTests_0.95.0-release.0_MacOS_arm64_R-4-5-2.JASPModule",
-            "downloadCount": 3,
+            "downloadCount": 4,
             "architecture": "MacOS_arm64"
           },
           {
             "downloadUrl": "https://github.com/jasp-stats-modules/jaspRobustTTests/releases/download/0.95.0-release.0_c1fe26b4_R-4-5-2_Release/jaspRobustTTests_0.95.0-release.0_MacOS_x86_64_R-4-5-2.JASPModule",
-            "downloadCount": 2,
+            "downloadCount": 3,
             "architecture": "MacOS_x86_64"
           },
           {
             "downloadUrl": "https://github.com/jasp-stats-modules/jaspRobustTTests/releases/download/0.95.0-release.0_c1fe26b4_R-4-5-2_Release/jaspRobustTTests_0.95.0-release.0_Windows_x86-64_R-4-5-2.JASPModule",
-            "downloadCount": 1,
+            "downloadCount": 2,
             "architecture": "Windows_x86-64"
           }
         ]
@@ -2517,9 +4016,10 @@
     ]
   },
   {
-    "name": "Dyads",
-    "shortDescriptionHTML": "This module offers dyadic network analyses.",
     "id": "jaspDyads",
+    "name": "Dyads",
+    "description": "This module offers dyadic network analyses.",
+    "translations": {},
     "releaseSource": "jasp-stats-modules/jaspDyads",
     "organization": "pankajrsingla",
     "releases": [

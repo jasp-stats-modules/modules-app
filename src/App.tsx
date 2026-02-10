@@ -244,17 +244,17 @@ function UpdatePreReleaseButton({
 }
 
 function UninstallButton({
-  moduleName,
+  moduleId,
   translations,
 }: {
-  moduleName: string;
+  moduleId: string;
   translations: AppTranslations;
 }) {
   const { uninstall, uninstall_this_module } = translations;
   const { data: jasp } = useJaspQtObject();
 
   async function doUninstall() {
-    await jasp?.uninstall(moduleName);
+    await jasp?.uninstall(moduleId);
   }
 
   return (
@@ -270,17 +270,17 @@ function UninstallButton({
 }
 
 function UninstallPreReleaseButton({
-  moduleName,
+  moduleId,
   translations,
 }: {
-  moduleName: string;
+  moduleId: string;
   translations: AppTranslations;
 }) {
   const { uninstall, uninstall_this_module, pre_release } = translations;
   const { data: jasp } = useJaspQtObject();
 
   async function doUninstall() {
-    await jasp?.uninstall(moduleName);
+    await jasp?.uninstall(moduleId);
   }
 
   return (
@@ -296,14 +296,14 @@ function UninstallPreReleaseButton({
 }
 
 function ReleaseAction({
-  moduleName,
+  moduleId,
   asset,
   primaryAction,
   secondaryAction,
   translations,
   latestInstalled,
 }: {
-  moduleName: string;
+  moduleId: string;
   asset?: Asset;
   primaryAction?: ReleaseStats['primaryAction'];
   secondaryAction?: ReleaseStats['secondaryAction'];
@@ -360,7 +360,7 @@ function ReleaseAction({
     actions.push(
       <UninstallPreReleaseButton
         key="uninstall-pre-release"
-        moduleName={moduleName}
+        moduleId={moduleId}
         translations={translations}
       />,
     );
@@ -369,7 +369,7 @@ function ReleaseAction({
     actions.push(
       <UninstallButton
         key="uninstall"
-        moduleName={moduleName}
+        moduleId={moduleId}
         translations={translations}
       />,
     );
@@ -551,10 +551,12 @@ function RepositoryCard({
   repo,
   allowPreRelease,
   translations,
+  language,
 }: {
   repo: Repository;
   allowPreRelease: boolean;
   translations: AppTranslations;
+  language: string;
 }) {
   const {
     latestPreRelease,
@@ -567,6 +569,9 @@ function RepositoryCard({
   } = useRelease(repo, allowPreRelease);
 
   const cardId = `repo-card-${repo.name}`;
+  const name = repo.translations[language]?.name || repo.name;
+  const description =
+    repo.translations[language]?.description || repo.description;
   return (
     <li
       aria-labelledby={cardId}
@@ -575,12 +580,10 @@ function RepositoryCard({
       <div className="flex items-start justify-between gap-2">
         <div className="flex flex-col gap-2">
           <h3 id={cardId} className="font-semibold text-xl">
-            {repo.name}
+            {name}
           </h3>
-          {repo.shortDescriptionHTML && (
-            <div className="prose prose-sm text-base">
-              {repo.shortDescriptionHTML}
-            </div>
+          {description && (
+            <div className="prose prose-sm text-base">{description}</div>
           )}
           <div className="flex items-center gap-2">
             <RepositoryLinks
@@ -594,7 +597,7 @@ function RepositoryCard({
           </div>
         </div>
         <ReleaseAction
-          moduleName={repo.name}
+          moduleId={repo.id}
           asset={asset}
           primaryAction={primaryAction}
           secondaryAction={secondaryAction}
@@ -666,8 +669,7 @@ function filterReposBySearchTerm(
     const nameMatches = repo.name.toLowerCase().includes(searchLower);
 
     // Strip HTML tags from description for search
-    const plainDescription =
-      repo.shortDescriptionHTML?.replace(/<[^>]*>/g, '') || '';
+    const plainDescription = repo.description?.replace(/<[^>]*>/g, '') || '';
     const descriptionMatches = plainDescription
       .toLowerCase()
       .includes(searchLower);
@@ -964,6 +966,7 @@ export function App() {
               repo={repo}
               allowPreRelease={allowPreRelease}
               translations={translations}
+              language={info.language}
             />
           ))}
           {filteredRepos.length === 0 && <div>{no_modules_found}</div>}
