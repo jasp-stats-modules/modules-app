@@ -25,9 +25,9 @@ The JASP desktop application tells the web application which version/architectur
 
 In a standalone web application you can tell the web application which version/architecture it is and which modules are installed by using search parameters (`?key=val`) in the URL.
 
-- v: the version of the JASP desktop application for example `0.95.0`
+- v: the version of the JASP desktop application for example `0.95.0-release.0`
 - a: the architecture of the JASP desktop application for example `Windows_x86-64`
-- i: installed modules. A JSON object with the module id (repository name) as keys and their versions as values. The object has to be [URL encoded](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/encodeURIComponent). For example, `{"jaspEquivalenceTTests":"0.95.0","jaspTTests":"0.94.0"}` becomes `%7B%22EjaspEquivalenceTTests%22%3A%220.95.0%22%2C%22T-Tests%22%3A%220.94.0%22%7D`.
+- i: installed modules. A JSON object with the module id (repository name) as keys and their versions as values. The object has to be [URL encoded](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/encodeURIComponent). For example, `{"jaspEquivalenceTTests":"0.95.0-release.0","jaspTTests":"0.94.0-release.0"}` becomes `%7B%22EjaspEquivalenceTTests%22%3A%220.95.0-release.0%22%2C%22T-Tests%22%3A%220.94.0-release.0%22%7D`.
 - u: List of modules that can be uninstalled. As a JSON array, it has to be [URL encoded](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/encodeURIComponent). For example, `["jaspTTests","jaspRegression"]` becomes `%5B%22jaspTTests%22%2C%22jaspRegression%22%5D`.
 - p: show pre-releases initially. Use `true` to show pre-releases and use `false` to hide them initially.
 - c: URL for the list of modules aka index.json. 
@@ -37,7 +37,7 @@ In a standalone web application you can tell the web application which version/a
 - l: Language. Use `en` for English (default). For example use `nl` for Dutch.
 - f: Font name. Use the name of a font installed on your system. For example use `SansSerif`. Besides OS fonts also `FreeSans`, `Fira Code` and `Fira Code Retina` fonts are available.
 
-A full URL could look like [https://jasp-stats-modules.github.io/modules-app/?a=Windows_x86-64&v=0.95.0&i=%5B%22jaspTTests%22%2C%22jaspRegression%22%5D&p=0](https://jasp-stats-modules.github.io/modules-app/?a=Windows_x86-64&v=0.95.0&i=%5B%22jaspTTests%22%2C%22jaspRegression%22%5D&p=0&t=dark&l=nl).
+A full URL could look like [https://jasp-stats-modules.github.io/modules-app/?a=Windows_x86-64&v=0.95.0-release.0&i=%5B%22jaspTTests%22%2C%22jaspRegression%22%5D&p=0](https://jasp-stats-modules.github.io/modules-app/?a=Windows_x86-64&v=0.95.0-release.0&i=%5B%22jaspTTests%22%2C%22jaspRegression%22%5D&p=0&t=dark&l=nl).
 
 ## Update list of modules
 
@@ -59,7 +59,7 @@ To get a list of available JASP modules, it does the following with the help of 
    3. Looks in release description for the module name+description and JASP version range the module is compatible with. The [version range](https://semver.npmjs.com/), name and description are specified in [front matter header](https://www.markdownlang.com/advanced/frontmatter.html) as for example:
       ```markdown
       ---
-      jasp: '>=0.95.0'
+      jasp: '>=0.95.0-release.0'
       name: My module
       description: A description of my module
       ---

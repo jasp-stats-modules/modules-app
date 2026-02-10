@@ -245,17 +245,17 @@ function UpdatePreReleaseButton({
 }
 
 function UninstallButton({
-  moduleName,
+  moduleId,
   translations,
 }: {
-  moduleName: string;
+  moduleId: string;
   translations: AppTranslations;
 }) {
   const { uninstall, uninstall_this_module } = translations;
   const { data: jasp } = useJaspQtObject();
 
   async function doUninstall() {
-    await jasp?.uninstall(moduleName);
+    await jasp?.uninstall(moduleId);
   }
 
   return (
@@ -271,17 +271,17 @@ function UninstallButton({
 }
 
 function UninstallPreReleaseButton({
-  moduleName,
+  moduleId,
   translations,
 }: {
-  moduleName: string;
+  moduleId: string;
   translations: AppTranslations;
 }) {
   const { uninstall, uninstall_this_module, pre_release } = translations;
   const { data: jasp } = useJaspQtObject();
 
   async function doUninstall() {
-    await jasp?.uninstall(moduleName);
+    await jasp?.uninstall(moduleId);
   }
 
   return (
@@ -297,14 +297,14 @@ function UninstallPreReleaseButton({
 }
 
 function ReleaseAction({
-  moduleName,
+  moduleId,
   asset,
   primaryAction,
   secondaryAction,
   translations,
   latestInstalled,
 }: {
-  moduleName: string;
+  moduleId: string;
   asset?: Asset;
   primaryAction?: ReleaseStats['primaryAction'];
   secondaryAction?: ReleaseStats['secondaryAction'];
@@ -361,7 +361,7 @@ function ReleaseAction({
     actions.push(
       <UninstallPreReleaseButton
         key="uninstall-pre-release"
-        moduleName={moduleName}
+        moduleId={moduleId}
         translations={translations}
       />,
     );
@@ -370,7 +370,7 @@ function ReleaseAction({
     actions.push(
       <UninstallButton
         key="uninstall"
-        moduleName={moduleName}
+        moduleId={moduleId}
         translations={translations}
       />,
     );
@@ -598,7 +598,7 @@ function RepositoryCard({
           </div>
         </div>
         <ReleaseAction
-          moduleName={repo.name}
+          moduleId={repo.id}
           asset={asset}
           primaryAction={primaryAction}
           secondaryAction={secondaryAction}
