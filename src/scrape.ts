@@ -93,7 +93,9 @@ export function groupByChannel(submodules: Submodule[]): BareRepository[] {
   for (const submodule of submodules) {
     const channel = path2channel(submodule.path);
     const nameWithOwner = url2nameWithOwner(submodule.gitUrl);
-    const existingRepo = repositories.find((r) => r.id === nameWithOwner);
+    const existingRepo = repositories.find(
+      (r) => r.releaseSource === nameWithOwner,
+    );
     if (existingRepo) {
       existingRepo.channels.push(channel);
     } else {
@@ -329,7 +331,6 @@ export function addQuotesInDescription(input: string): string {
 
 /**
  * Parse the raw content of Description.qml and return the extracted title and description.
- * Returns undefined for missing fields.
  */
 export function parseDescriptionQml(content: string): {
   title: string;

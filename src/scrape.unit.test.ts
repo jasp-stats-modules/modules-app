@@ -1271,13 +1271,63 @@ Description {
     expect(result).toEqual(expected);
   });
 
-  test('groupByChannel', () => {
+  describe('groupByChannel', () => {
+    test('given one submodule', () => {
+      const submodules: Submodule[] = [
+        {
+          description: 'Repeated Measures ANOVA',
+          gitUrl: 'https://github.com/jasp-stats-modules/jaspAnova.git',
+          name: 'Classical',
+          path: join(tempDir.name, 'Official', 'jaspAnova'),
+          translations: {
+            nl: {
+              description: 'Herhaalde Metingen ANOVA',
+              name: 'Klassiek',
+            },
+          },
+        },
+      ];
+
+      const bareRepos = groupByChannel(submodules);
+
+      const expected: BareRepository[] = [
+        {
+          id: 'jaspAnova',
+          releaseSource: 'jasp-stats-modules/jaspAnova',
+          channels: ['Official'],
+          description: 'Repeated Measures ANOVA',
+          name: 'Classical',
+          translations: {
+            nl: {
+              description: 'Herhaalde Metingen ANOVA',
+              name: 'Klassiek',
+            },
+          },
+        },
+      ];
+      expect(bareRepos).toEqual(expected);
+    });
+  });
+
+  test('given 1 submodules pointing to same repo', () => {
     const submodules: Submodule[] = [
       {
         description: 'Repeated Measures ANOVA',
         gitUrl: 'https://github.com/jasp-stats-modules/jaspAnova.git',
         name: 'Classical',
         path: join(tempDir.name, 'Official', 'jaspAnova'),
+        translations: {
+          nl: {
+            description: 'Herhaalde Metingen ANOVA',
+            name: 'Klassiek',
+          },
+        },
+      },
+      {
+        description: 'Repeated Measures ANOVA',
+        gitUrl: 'https://github.com/jasp-stats-modules/jaspAnova.git',
+        name: 'Classical',
+        path: join(tempDir.name, 'Community', 'jaspAnova'),
         translations: {
           nl: {
             description: 'Herhaalde Metingen ANOVA',
@@ -1293,7 +1343,7 @@ Description {
       {
         id: 'jaspAnova',
         releaseSource: 'jasp-stats-modules/jaspAnova',
-        channels: ['Official'],
+        channels: ['Official', 'Community'],
         description: 'Repeated Measures ANOVA',
         name: 'Classical',
         translations: {
