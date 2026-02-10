@@ -244,12 +244,12 @@ describe('latestReleasePerJaspVersionRange', () => {
         isPrerelease: false,
         publishedAt: '2024-12-01T00:00:00Z',
         releaseAssets: { nodes: [] },
-        tagName: 'v1.0.0',
+        tagName: '0.95.5-release.1_3307653d_R-4-5-2_Release',
         description: '---\njasp: >=0.95.0\n---\n',
       },
     ];
 
-    const result = latestReleasePerJaspVersionRange(input);
+    const result = latestReleasePerJaspVersionRange(input, 0);
     expect(result).toEqual([input[0], input[2]]);
   });
 
@@ -260,12 +260,12 @@ describe('latestReleasePerJaspVersionRange', () => {
         isPrerelease: false,
         publishedAt: '2025-01-01T00:00:00Z',
         releaseAssets: { nodes: [] },
-        tagName: 'v1.0.0',
+        tagName: '0.95.5-release.1_3307653d_R-4-5-2_Release',
         description: undefined,
       },
     ];
 
-    const result = latestReleasePerJaspVersionRange(input);
+    const result = latestReleasePerJaspVersionRange(input, 0);
     expect(result).toEqual([]);
   });
 
@@ -276,12 +276,28 @@ describe('latestReleasePerJaspVersionRange', () => {
         isPrerelease: false,
         publishedAt: '2025-01-01T00:00:00Z',
         releaseAssets: { nodes: [] },
-        tagName: 'v1.0.0',
+        tagName: '0.95.5-release.1_3307653d_R-4-5-2_Release',
         description: 'No frontmatter here',
       },
     ];
 
-    const result = latestReleasePerJaspVersionRange(input);
+    const result = latestReleasePerJaspVersionRange(input, 0);
+    expect(result).toEqual([]);
+  });
+
+  test('skips releases with not enough assets', () => {
+    const input: GqlRelease[] = [
+      {
+        isDraft: false,
+        isPrerelease: false,
+        publishedAt: '2025-01-01T00:00:00Z',
+        releaseAssets: { nodes: [] },
+        tagName: '0.95.5-release.1_3307653d_R-4-5-2_Release',
+        description: '---\njasp: >=0.95.0\n---\n',
+      },
+    ];
+
+    const result = latestReleasePerJaspVersionRange(input, 1);
     expect(result).toEqual([]);
   });
 });
@@ -729,7 +745,7 @@ describe('releaseAssetsPaged', () => {
       'jasp-stats-modules/jaspAnova': ['jasp-modules'],
     };
 
-    const result = await releaseAssetsPaged(repo2channels, 10, octokit);
+    const result = await releaseAssetsPaged(repo2channels, 1, 10, octokit);
 
     expect(result).toEqual(
       expect.arrayContaining([
@@ -791,7 +807,7 @@ describe('releaseAssetsPaged', () => {
       'jasp-stats-modules/jaspAnova': ['jasp-modules'],
     };
 
-    const result = await releaseAssetsPaged(repo2channels, 10, octokit);
+    const result = await releaseAssetsPaged(repo2channels, 1, 10, octokit);
 
     expect(result).toHaveLength(0);
   });
@@ -860,7 +876,7 @@ describe('releaseAssetsPaged', () => {
       'jasp-stats-modules/jaspAnova': ['jasp-modules'],
     };
 
-    const result = await releaseAssetsPaged(repo2channels, 10, octokit);
+    const result = await releaseAssetsPaged(repo2channels, 1, 10, octokit);
 
     expect(result).toEqual(
       expect.arrayContaining([
@@ -954,7 +970,7 @@ describe('releaseAssetsPaged', () => {
       'jasp-stats-modules/jaspAnova': ['jasp-modules'],
     };
 
-    const result = await releaseAssetsPaged(repo2channels, 10, octokit);
+    const result = await releaseAssetsPaged(repo2channels, 1, 10, octokit);
 
     expect(result).toEqual(
       expect.arrayContaining([
@@ -1022,7 +1038,7 @@ describe('releaseAssetsPaged', () => {
       'jasp-stats-modules/jaspAnova': ['jasp-modules'],
     };
 
-    const result = await releaseAssetsPaged(repo2channels, 10, octokit);
+    const result = await releaseAssetsPaged(repo2channels, 1, 10, octokit);
 
     expect(result).toEqual(
       expect.arrayContaining([
@@ -1135,7 +1151,7 @@ describe('releaseAssetsPaged', () => {
       'jasp-stats-modules/jaspBain': ['jasp-modules'],
     };
 
-    const result = await releaseAssetsPaged(repo2channels, 1, octokit);
+    const result = await releaseAssetsPaged(repo2channels, 1, 1, octokit);
 
     expect(result).toEqual(
       expect.arrayContaining([
