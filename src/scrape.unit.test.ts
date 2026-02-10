@@ -51,7 +51,7 @@ describe('path2channel', () => {
   });
 
   test('handles single segment path', () => {
-    expect(path2channel('standalone')).toBe('standalone');
+    expect(path2channel('standalone')).toBe(undefined);
   });
 });
 
@@ -151,12 +151,12 @@ describe('latestReleasePerJaspVersionRange', () => {
         isPrerelease: false,
         publishedAt: '2024-12-01T00:00:00Z',
         releaseAssets: { nodes: [] },
-        tagName: 'v1.0.0',
+        tagName: '0.95.5-release.1_3307653d_R-4-5-2_Release',
         description: '---\njasp: >=0.95.0\n---\n',
       },
     ];
 
-    const result = latestReleasePerJaspVersionRange(input);
+    const result = latestReleasePerJaspVersionRange(input, 0);
     expect(result).toEqual([input[0], input[2]]);
   });
 
@@ -167,12 +167,12 @@ describe('latestReleasePerJaspVersionRange', () => {
         isPrerelease: false,
         publishedAt: '2025-01-01T00:00:00Z',
         releaseAssets: { nodes: [] },
-        tagName: 'v1.0.0',
+        tagName: '0.95.5-release.1_3307653d_R-4-5-2_Release',
         description: undefined,
       },
     ];
 
-    const result = latestReleasePerJaspVersionRange(input);
+    const result = latestReleasePerJaspVersionRange(input, 0);
     expect(result).toEqual([]);
   });
 
@@ -183,12 +183,28 @@ describe('latestReleasePerJaspVersionRange', () => {
         isPrerelease: false,
         publishedAt: '2025-01-01T00:00:00Z',
         releaseAssets: { nodes: [] },
-        tagName: 'v1.0.0',
+        tagName: '0.95.5-release.1_3307653d_R-4-5-2_Release',
         description: 'No frontmatter here',
       },
     ];
 
-    const result = latestReleasePerJaspVersionRange(input);
+    const result = latestReleasePerJaspVersionRange(input, 0);
+    expect(result).toEqual([]);
+  });
+
+  test('skips releases with not enough assets', () => {
+    const input: GqlRelease[] = [
+      {
+        isDraft: false,
+        isPrerelease: false,
+        publishedAt: '2025-01-01T00:00:00Z',
+        releaseAssets: { nodes: [] },
+        tagName: '0.95.5-release.1_3307653d_R-4-5-2_Release',
+        description: '---\njasp: >=0.95.0\n---\n',
+      },
+    ];
+
+    const result = latestReleasePerJaspVersionRange(input, 1);
     expect(result).toEqual([]);
   });
 });
@@ -401,7 +417,7 @@ describe('releaseAssetsPaged', () => {
       },
     ];
 
-    const result = await releaseAssetsPaged(submodules, 10, octokit);
+    const result = await releaseAssetsPaged(submodules, 1, 10, octokit);
 
     expect(result).toEqual(
       expect.arrayContaining([
@@ -470,7 +486,7 @@ describe('releaseAssetsPaged', () => {
       },
     ] as Submodule[]; // Minimal submodule to trigger the query
 
-    const result = await releaseAssetsPaged(submodules, 10, octokit);
+    const result = await releaseAssetsPaged(submodules, 1, 10, octokit);
 
     expect(result).toHaveLength(0);
   });
@@ -544,7 +560,7 @@ describe('releaseAssetsPaged', () => {
       },
     ];
 
-    const result = await releaseAssetsPaged(submodules, 10, octokit);
+    const result = await releaseAssetsPaged(submodules, 1, 10, octokit);
 
     expect(result).toEqual(
       expect.arrayContaining([
@@ -645,7 +661,7 @@ describe('releaseAssetsPaged', () => {
       },
     ];
 
-    const result = await releaseAssetsPaged(submodules, 10, octokit);
+    const result = await releaseAssetsPaged(submodules, 1, 10, octokit);
 
     expect(result).toEqual(
       expect.arrayContaining([
@@ -720,7 +736,7 @@ describe('releaseAssetsPaged', () => {
       },
     ];
 
-    const result = await releaseAssetsPaged(submodules, 10, octokit);
+    const result = await releaseAssetsPaged(submodules, 1, 10, octokit);
 
     expect(result).toEqual(
       expect.arrayContaining([
@@ -847,7 +863,7 @@ describe('releaseAssetsPaged', () => {
       },
     ];
 
-    const result = await releaseAssetsPaged(submodules, 1, octokit);
+    const result = await releaseAssetsPaged(submodules, 1, 1, octokit);
 
     expect(result).toEqual(
       expect.arrayContaining([
@@ -1148,8 +1164,10 @@ Description {
 
   test('returns undefined for missing fields', () => {
     const qml = `Description {}`;
-    const result = parseDescriptionQml(qml);
-    expect(result.title).toBeUndefined();
-    expect(result.description).toBeUndefined();
+    expect(() => {
+      parseDescriptionQml(qml);
+    }).toThrowError(
+      'Failed to parse name and description from Description.qml content',
+    );
   });
 });
