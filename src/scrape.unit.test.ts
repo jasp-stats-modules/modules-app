@@ -425,25 +425,25 @@ describe('releaseAssetsPaged', () => {
           id: 'jaspAnova',
           name: 'jaspAnova',
           releaseSource: 'jasp-stats-modules/jaspAnova',
-          channels: ['jasp-modules'],
+          channels: ['Official'],
           description: 'Anova module',
           organization: 'jasp-stats-modules',
           translations: {},
-          releases: expect.arrayContaining([
-            expect.objectContaining({
+          releases: [
+            {
               version: '0.95.0',
               jaspVersionRange: '>=0.95.0',
               publishedAt: '2025-01-01T00:00:00Z',
-              assets: expect.arrayContaining([
-                expect.objectContaining({
+              assets: [
+                {
                   downloadUrl:
                     'https://example.com/jaspAnova_0.95.0_MacOS_x86_64_R-4-5-1.JASPModule',
                   architecture: 'MacOS_x86_64',
                   downloadCount: 100,
-                }),
-              ]),
-            }),
-          ]),
+                },
+              ],
+            },
+          ],
           preReleases: [],
         }),
       ]),
@@ -741,11 +741,13 @@ describe('releaseAssetsPaged', () => {
     expect(result).toEqual(
       expect.arrayContaining([
         expect.objectContaining({
+          id: 'jaspAnova',
           name: 'jaspAnova',
           releaseSource: 'jasp-stats-modules/jaspAnova',
-          channels: ['jasp-modules'],
+          channels: ['Official'],
           description: 'Anova module',
           organization: 'unknown_org',
+          translations: {},
           releases: expect.arrayContaining([
             expect.objectContaining({
               version: '0.95.0',
@@ -772,8 +774,8 @@ describe('releaseAssetsPaged', () => {
 
     server.use(
       graphql.operation(({ query }) => {
-        if (query.includes('repo0:')) {
-          callCount++;
+        callCount++;
+        if (query.includes('jaspAnova')) {
           return HttpResponse.json({
             data: {
               repo0: {
@@ -787,7 +789,7 @@ describe('releaseAssetsPaged', () => {
                 releases: {
                   nodes: [
                     {
-                      tagName: '0.95.0_2cbd8a6d_R-4-5-1',
+                      tagName: '0.95.0-release.0_2cbd8a6d_R-4-5-1',
                       publishedAt: '2025-01-01T00:00:00Z',
                       description: '---\njasp: >=0.95.0\n---\n',
                       isDraft: false,
@@ -805,7 +807,12 @@ describe('releaseAssetsPaged', () => {
                   ],
                 },
               },
-              repo1: {
+            },
+          });
+        } else if (query.includes('jaspBain')) {
+          return HttpResponse.json({
+            data: {
+              repo0: {
                 name: 'jaspBain',
                 nameWithOwner: 'jasp-stats-modules/jaspBain',
                 parent: {
@@ -816,7 +823,7 @@ describe('releaseAssetsPaged', () => {
                 releases: {
                   nodes: [
                     {
-                      tagName: '0.95.0_xyz789_R-4-5-1',
+                      tagName: '0.95.0-release.0_xyz789_R-4-5-1',
                       publishedAt: '2025-01-02T00:00:00Z',
                       description: '---\njasp: >=0.95.0\n---\n',
                       isDraft: false,
@@ -842,10 +849,6 @@ describe('releaseAssetsPaged', () => {
     );
 
     const octokit = new MyOctokit({ auth: 'fake-token' });
-    // const repo2channels = {
-    //   'jasp-stats-modules/jaspAnova': ['jasp-modules'],
-    //   'jasp-stats-modules/jaspBain': ['jasp-modules'],
-    // };
     const submodules: Submodule[] = [
       {
         git_url: 'https://github.com/jasp-stats-modules/jaspAnova.git',
@@ -868,6 +871,7 @@ describe('releaseAssetsPaged', () => {
     expect(result).toEqual(
       expect.arrayContaining([
         expect.objectContaining({
+          id: 'jaspAnova',
           name: 'jaspAnova',
           releaseSource: 'jasp-stats-modules/jaspAnova',
           channels: ['Official'],
@@ -876,13 +880,14 @@ describe('releaseAssetsPaged', () => {
           translations: {},
           releases: expect.arrayContaining([
             expect.objectContaining({
-              version: '0.95.0',
+              version: '0.95.0-release.0',
               publishedAt: '2025-01-01T00:00:00Z',
             }),
           ]),
           preReleases: [],
         }),
         expect.objectContaining({
+          id: 'jaspBain',
           name: 'jaspBain',
           releaseSource: 'jasp-stats-modules/jaspBain',
           channels: ['Official'],
@@ -891,7 +896,7 @@ describe('releaseAssetsPaged', () => {
           translations: {},
           releases: expect.arrayContaining([
             expect.objectContaining({
-              version: '0.95.0',
+              version: '0.95.0-release.0',
               publishedAt: '2025-01-02T00:00:00Z',
             }),
           ]),

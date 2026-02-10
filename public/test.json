@@ -5,6 +5,12 @@
     "shortDescriptionHTML": "Test Module 1",
     "releaseSource": "jasp-stats-modules/jaspAnova",
     "organization": "jasp-stats",
+    "translations": {
+      "nl": {
+        "name": "jaspAnova",
+        "shortDescriptionHTML": "Test Module 1 in Dutch"
+      }
+    },
     "releases": [
       {
         "publishedAt": "2025-01-01T00:00:00Z",
@@ -98,6 +104,7 @@
     "shortDescriptionHTML": "Test Module 2",
     "releaseSource": "jasp-stats-modules/jaspBayesian",
     "organization": "jasp-stats",
+    "translations": {},
     "releases": [
       {
         "publishedAt": "2025-01-01T00:00:00Z",
@@ -131,10 +138,12 @@
     "channels": ["Official"]
   },
   {
+    "id": "jaspDescriptives",
     "name": "jaspDescriptives",
     "shortDescriptionHTML": "Test Module 3",
     "releaseSource": "jasp-stats-modules/jaspDescriptives",
     "organization": "jasp-stats",
+    "translations": {},
     "releases": [
       {
         "publishedAt": "2025-01-01T00:00:00Z",
@@ -173,6 +182,7 @@
     "shortDescriptionHTML": "Test Module 4",
     "releaseSource": "jasp-stats-modules/jaspRegression",
     "organization": "jasp-stats",
+    "translations": {},
     "releases": [
       {
         "publishedAt": "2025-01-01T00:00:00Z",
@@ -212,6 +222,7 @@
     "releaseSource": "nlesc/jaspRapid",
     "organization": "nlesc",
     "homepageUrl": "https://github.com/nlesc/jaspRapid",
+    "translations": {},
     "releases": [
       {
         "publishedAt": "2025-01-05T00:00:00Z",
