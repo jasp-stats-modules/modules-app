@@ -12,7 +12,7 @@ import * as v from 'valibot';
 import type { Asset, Release, Repository } from './types';
 
 const MyOctokit = Octokit.plugin(paginateGraphQL);
-const REQUIRED_NUMBER_OF_ASSETS_PER_RELEASE = 4;
+const DEFAULT_REQUIRED_NUMBER_OF_ASSETS_PER_RELEASE = 4;
 
 export function url2nameWithOwner(url: string): string {
   // For example
@@ -285,6 +285,7 @@ export function batchedArray<T>(array: T[], size: number): T[][] {
 
 export async function releaseAssetsPaged(
   repo2channels: Repo2Channels,
+  required_nr_assets: number = DEFAULT_REQUIRED_NUMBER_OF_ASSETS_PER_RELEASE,
   pageSize = 10,
   octokit: InstanceType<typeof MyOctokit>,
 ): Promise<Repository[]> {
@@ -304,7 +305,13 @@ export async function releaseAssetsPaged(
   );
   for (let i = 0; i < totalBatches; i++) {
     const batch = batches[i];
-    const rawBatchResults = await releaseAssets(batch, 20, 20, octokit);
+    const rawBatchResults = await releaseAssets(
+      batch,
+      required_nr_assets,
+      20,
+      20,
+      octokit,
+    );
     const batchResults = associateChannelsWithRepositories(
       rawBatchResults,
       repo2channels,
@@ -358,6 +365,7 @@ function associateChannelsWithRepositories(
 
 export function latestReleasePerJaspVersionRange(
   releases: GqlRelease[],
+  required_nr_assets: number,
 ): GqlRelease[] {
   const sortedReleases = [...releases].sort((a, b) =>
     b.publishedAt.localeCompare(a.publishedAt),
@@ -378,9 +386,9 @@ export function latestReleasePerJaspVersionRange(
       continue;
     }
     const nrOfAssets = release.releaseAssets.nodes.length;
-    if (nrOfAssets !== REQUIRED_NUMBER_OF_ASSETS_PER_RELEASE) {
+    if (nrOfAssets < required_nr_assets) {
       console.log(
-        `Release ${release.tagName} does not have ${REQUIRED_NUMBER_OF_ASSETS_PER_RELEASE} assets, it has ${nrOfAssets} . Skipping.`,
+        `Release ${release.tagName} does not have ${required_nr_assets} or more assets, it has ${nrOfAssets} . Skipping.`,
       );
       continue;
     }
@@ -440,6 +448,7 @@ export function transformRelease(
 
 async function releaseAssets(
   repos: Iterable<string>,
+  required_nr_assets: number,
   firstReleases = 20,
   firstAssets = 20,
   octokit: InstanceType<typeof MyOctokit>,
@@ -520,9 +529,11 @@ async function releaseAssets(
 
           const newReleases = latestReleasePerJaspVersionRange(
             productionReleases,
+            required_nr_assets,
           ).map((r) => transformRelease(r, nameWithOwner));
           const newPreReleases = latestReleasePerJaspVersionRange(
             preReleases,
+            required_nr_assets,
           ).map((r) => transformRelease(r, nameWithOwner));
 
           const newRepo: Omit<Repository, 'channels'> = {
@@ -643,7 +654,12 @@ async function scrape(
   }
   console.info(logChannelStats(repo2channels));
   console.info('Fetching release assets');
-  const repositories = await releaseAssetsPaged(repo2channels, 10, octokit);
+  const repositories = await releaseAssetsPaged(
+    repo2channels,
+    DEFAULT_REQUIRED_NUMBER_OF_ASSETS_PER_RELEASE,
+    10,
+    octokit,
+  );
 
   console.info(logReleaseStatistics(repositories));
 
