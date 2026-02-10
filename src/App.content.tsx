@@ -1,4 +1,4 @@
-import { type Dictionary, insert, t } from 'intlayer';
+import { type Dictionary, insert, md, t } from 'intlayer';
 
 const appContent = {
   key: 'app',
@@ -405,78 +405,57 @@ const appContent = {
       'zh-Hans': '未找到模块',
       'zh-Hant': '找不到模組',
     }),
-    release_stats_installed: t({
-      en: insert(
-        'Installed {{installedVersion}}, latest {{latestVersion}} on {{publishedAt}} with {{downloads}} downloads',
-      ),
-      nl: insert(
-        'Geïnstalleerd {{installedVersion}}, laatste {{latestVersion}} op {{publishedAt}} met {{downloads}} downloads',
-      ),
-      fr: insert(
-        'Installé {{installedVersion}}, dernière {{latestVersion}} le {{publishedAt}} avec {{downloads}} téléchargements',
-      ),
-      de: insert(
-        'Installiert {{installedVersion}}, neueste {{latestVersion}} am {{publishedAt}} mit {{downloads}} Downloads',
-      ),
-      es: insert(
-        'Instalado {{installedVersion}}, última {{latestVersion}} el {{publishedAt}} con {{downloads}} descargas',
-      ),
-      it: insert(
-        'Installato {{installedVersion}}, ultima {{latestVersion}} il {{publishedAt}} con {{downloads}} download',
-      ),
-      ar: insert(
-        'تم التثبيت {{installedVersion}}، الأحدث {{latestVersion}} في {{publishedAt}} مع {{downloads}} تنزيلات',
-      ),
-      cs: insert(
-        'Nainstalováno {{installedVersion}}, nejnovější {{latestVersion}} dne {{publishedAt}} s {{downloads}} staženími',
-      ),
-      et: insert(
-        'Paigaldatud {{installedVersion}}, viimane {{latestVersion}} kuupäeval {{publishedAt}} koos {{downloads}} allalaadimisega',
-      ),
-      eu: insert(
-        'Instalatuta {{installedVersion}}, azkena {{latestVersion}} {{publishedAt}}an {{downloads}} deskarga',
-      ),
-      gl: insert(
-        'Instalado {{installedVersion}}, última {{latestVersion}} o {{publishedAt}} con {{downloads}} descargas',
-      ),
-      hu: insert(
-        'Telepítve: {{installedVersion}}, legújabb: {{latestVersion}} ekkor: {{publishedAt}}, letöltések száma: {{downloads}}',
-      ),
-      id: insert(
-        'Terpasang {{installedVersion}}, terbaru {{latestVersion}} pada {{publishedAt}} dengan {{downloads}} unduhan',
-      ),
-      ja: insert(
-        'インストール済み {{installedVersion}}、最新 {{latestVersion}}（{{publishedAt}}、{{downloads}} ダウンロード）',
-      ),
-      lt: insert(
-        'Įdiegta {{installedVersion}}, naujausia {{latestVersion}} {{publishedAt}} su {{downloads}} atsisiuntimų',
-      ),
-      pl: insert(
-        'Zainstalowano {{installedVersion}}, najnowsza {{latestVersion}} w dniu {{publishedAt}} z {{downloads}} pobrań',
-      ),
-      pt: insert(
-        'Instalado {{installedVersion}}, última {{latestVersion}} em {{publishedAt}} com {{downloads}} downloads',
-      ),
-      ru: insert(
-        'Установлено {{installedVersion}}, последняя {{latestVersion}} от {{publishedAt}}, {{downloads}} загрузок',
-      ),
-      sq: insert(
-        'Instaluar {{installedVersion}}, më e fundit {{latestVersion}} më {{publishedAt}} me {{downloads}} shkarkime',
-      ),
-      sr: insert(
-        'Instalirano {{installedVersion}}, najnovije {{latestVersion}} dana {{publishedAt}} sa {{downloads}} preuzimanja',
-      ),
-      tr: insert(
-        'Yüklendi {{installedVersion}}, en son {{latestVersion}} {{publishedAt}} tarihinde {{downloads}} indirme ile',
-      ),
-      'zh-Hans': insert(
-        '已安装 {{installedVersion}}，最新 {{latestVersion}} 于 {{publishedAt}}，下载量 {{downloads}}',
-      ),
-      'zh-Hant': insert(
-        '已安裝 {{installedVersion}}，最新 {{latestVersion}} 於 {{publishedAt}}，下載次數 {{downloads}}',
-      ),
+    installed_version: t({
+      en: insert('Installed {{version}}'),
+      nl: insert('Geïnstalleerd {{version}}'),
+      fr: insert('Installé {{version}}'),
+      de: insert('Installiert {{version}}'),
+      es: insert('Instalado {{version}}'),
+      it: insert('Installato {{version}}'),
+      ar: insert('تم التثبيت {{version}}'),
+      cs: insert('Nainstalováno {{version}}'),
+      et: insert('Paigaldatud {{version}}'),
+      eu: insert('Instalatuta {{version}}'),
+      gl: insert('Instalado {{version}}'),
+      hu: insert('Telepítve {{version}}'),
+      id: insert('Terpasang {{version}}'),
+      ja: insert('インストール済み {{version}}'),
+      lt: insert('Įdiegta {{version}}'),
+      pl: insert('Zainstalowano {{version}}'),
+      pt: insert('Instalado {{version}}'),
+      ru: insert('Установлено {{version}}'),
+      sq: insert('Instaluar {{version}}'),
+      sr: insert('Instalirano {{version}}'),
+      tr: insert('Yüklendi {{version}}'),
+      'zh-Hans': insert('已安装 {{version}}'),
+      'zh-Hant': insert('已安裝 {{version}}'),
     }),
-    release_stats_notinstalled: t({
+    latest_installed_version: t({
+      en: insert('Latest installed {{version}}'),
+      nl: insert('Nieuwste geïnstalleerde {{version}}'),
+      fr: insert('Dernière version installée {{version}}'),
+      de: insert('Neueste installierte {{version}}'),
+      es: insert('Última instalada {{version}}'),
+      it: insert('Ultima installata {{version}}'),
+      ar: insert('أحدث إصدار مثبت {{version}}'),
+      cs: insert('Nejnovější nainstalovaná {{version}}'),
+      et: insert('Viimane paigaldatud {{version}}'),
+      eu: insert('Instalatuta azkena {{version}}'),
+      gl: insert('Última instalada {{version}}'),
+      hu: insert('Legutóbb telepített {{version}}'),
+      id: insert('Terbaru terpasang {{version}}'),
+      ja: insert('最新インストール済み {{version}}'),
+      lt: insert('Naujausia įdiegta {{version}}'),
+      pl: insert('Najnowsza zainstalowana {{version}}'),
+      pt: insert('Mais recente instalada {{version}}'),
+      ru: insert('Последняя установленная {{version}}'),
+      sq: insert('Versioni më i fundit i instaluar {{version}}'),
+      sr: insert('Najnovije instalirano {{version}}'),
+      tr: insert('En son yüklenen {{version}}'),
+      'zh-Hans': insert('最新已安装 {{version}}'),
+      'zh-Hant': insert('最新已安裝 {{version}}'),
+    }),
+    latest_version_on_with_downloads: t({
       en: insert(
         'Latest {{latestVersion}} on {{publishedAt}} with {{downloads}} downloads',
       ),
@@ -547,6 +526,219 @@ const appContent = {
         '最新 {{latestVersion}} 於 {{publishedAt}}，下載次數 {{downloads}}',
       ),
     }),
+    latest_beta_version_on_with_downloads: t({
+      en: insert(
+        'Latest beta {{latestVersion}} on {{publishedAt}} with {{downloads}} downloads',
+      ),
+      nl: insert(
+        'Laatste beta {{latestVersion}} op {{publishedAt}} met {{downloads}} downloads',
+      ),
+      fr: insert(
+        'Dernière bêta {{latestVersion}} le {{publishedAt}} avec {{downloads}} téléchargements',
+      ),
+      de: insert(
+        'Neueste Beta {{latestVersion}} am {{publishedAt}} mit {{downloads}} Downloads',
+      ),
+      es: insert(
+        'Última beta {{latestVersion}} el {{publishedAt}} con {{downloads}} descargas',
+      ),
+      it: insert(
+        'Ultima beta {{latestVersion}} il {{publishedAt}} con {{downloads}} download',
+      ),
+      ar: insert(
+        'أحدث إصدار تجريبي {{latestVersion}} في {{publishedAt}} مع {{downloads}} تنزيلات',
+      ),
+      cs: insert(
+        'Nejnovější beta {{latestVersion}} dne {{publishedAt}} s {{downloads}} staženími',
+      ),
+      et: insert(
+        'Viimane beetaversioon {{latestVersion}} kuupäeval {{publishedAt}} koos {{downloads}} allalaadimisega',
+      ),
+      eu: insert(
+        'Azken beta {{latestVersion}} {{publishedAt}}an {{downloads}} deskarga',
+      ),
+      gl: insert(
+        'Última beta {{latestVersion}} o {{publishedAt}} con {{downloads}} descargas',
+      ),
+      hu: insert(
+        'Legújabb béta: {{latestVersion}} ekkor: {{publishedAt}}, letöltések száma: {{downloads}}',
+      ),
+      id: insert(
+        'Beta terbaru {{latestVersion}} pada {{publishedAt}} dengan {{downloads}} unduhan',
+      ),
+      ja: insert(
+        '最新ベータ {{latestVersion}}（{{publishedAt}}、{{downloads}} ダウンロード）',
+      ),
+      lt: insert(
+        'Naujausia beta {{latestVersion}} {{publishedAt}} su {{downloads}} atsisiuntimų',
+      ),
+      pl: insert(
+        'Najnowsza beta {{latestVersion}} w dniu {{publishedAt}} z {{downloads}} pobrań',
+      ),
+      pt: insert(
+        'Última beta {{latestVersion}} em {{publishedAt}} com {{downloads}} downloads',
+      ),
+      ru: insert(
+        'Последняя бета {{latestVersion}} от {{publishedAt}}, {{downloads}} загрузок',
+      ),
+      sq: insert(
+        'Beta më e fundit {{latestVersion}} më {{publishedAt}} me {{downloads}} shkarkime',
+      ),
+      sr: insert(
+        'Najnovija beta {{latestVersion}} dana {{publishedAt}} sa {{downloads}} preuzimanja',
+      ),
+      tr: insert(
+        'En son beta {{latestVersion}} {{publishedAt}} tarihinde {{downloads}} indirme ile',
+      ),
+      'zh-Hans': insert(
+        '最新测试版 {{latestVersion}} 于 {{publishedAt}}，下载量 {{downloads}}',
+      ),
+      'zh-Hant': insert(
+        '最新測試版 {{latestVersion}} 於 {{publishedAt}}，下載次數 {{downloads}}',
+      ),
+    }),
+    latest_stable_with_download_and_beta: t({
+      en: insert(
+        'Latest stable {{latestVersion}} on {{publishedAt}} with {{downloads}} downloads, latest beta {{latestBetaVersion}} on {{latestBetaPublishedAt}}',
+      ),
+      nl: insert(
+        'Laatste stable {{latestVersion}} op {{publishedAt}} met {{downloads}} downloads, laatste beta {{latestBetaVersion}} op {{latestBetaPublishedAt}}',
+      ),
+      fr: insert(
+        'Dernière stable {{latestVersion}} le {{publishedAt}} avec {{downloads}} téléchargements, dernière bêta {{latestBetaVersion}} le {{latestBetaPublishedAt}}',
+      ),
+      de: insert(
+        'Neueste stabile {{latestVersion}} am {{publishedAt}} mit {{downloads}} Downloads, neueste Beta {{latestBetaVersion}} am {{latestBetaPublishedAt}}',
+      ),
+      es: insert(
+        'Última estable {{latestVersion}} el {{publishedAt}} con {{downloads}} descargas, última beta {{latestBetaVersion}} el {{latestBetaPublishedAt}}',
+      ),
+      it: insert(
+        'Ultima stabile {{latestVersion}} il {{publishedAt}} con {{downloads}} download, ultima beta {{latestBetaVersion}} il {{latestBetaPublishedAt}}',
+      ),
+      ar: insert(
+        'أحدث إصدار مستقر {{latestVersion}} في {{publishedAt}} مع {{downloads}} تنزيلات، أحدث إصدار تجريبي {{latestBetaVersion}} في {{latestBetaPublishedAt}}',
+      ),
+      cs: insert(
+        'Nejnovější stabilní {{latestVersion}} dne {{publishedAt}} s {{downloads}} staženími, nejnovější beta {{latestBetaVersion}} dne {{latestBetaPublishedAt}}',
+      ),
+      et: insert(
+        'Viimane stabiilne {{latestVersion}} kuupäeval {{publishedAt}} koos {{downloads}} allalaadimisega, viimane beetaversioon {{latestBetaVersion}} kuupäeval {{latestBetaPublishedAt}}',
+      ),
+      eu: insert(
+        'Azken egonkorra {{latestVersion}} {{publishedAt}}an {{downloads}} deskargarekin, azken beta {{latestBetaVersion}} {{latestBetaPublishedAt}}',
+      ),
+      gl: insert(
+        'Última estable {{latestVersion}} o {{publishedAt}} con {{downloads}} descargas, última beta {{latestBetaVersion}} o {{latestBetaPublishedAt}}',
+      ),
+      hu: insert(
+        'Legújabb stabil: {{latestVersion}} ekkor: {{publishedAt}}, letöltések: {{downloads}}; legújabb béta: {{latestBetaVersion}} ekkor: {{latestBetaPublishedAt}}',
+      ),
+      id: insert(
+        'Stabil terbaru {{latestVersion}} pada {{publishedAt}} dengan {{downloads}} unduhan, beta terbaru {{latestBetaVersion}} pada {{latestBetaPublishedAt}}',
+      ),
+      ja: insert(
+        '最新安定版 {{latestVersion}}（{{publishedAt}}、{{downloads}} ダウンロード）、最新ベータ {{latestBetaVersion}}（{{latestBetaPublishedAt}}）',
+      ),
+      lt: insert(
+        'Naujausia stabili {{latestVersion}} {{publishedAt}} su {{downloads}} atsisiuntimų, naujausia beta {{latestBetaVersion}} {{latestBetaPublishedAt}}',
+      ),
+      pl: insert(
+        'Najnowsza stabilna {{latestVersion}} w dniu {{publishedAt}} z {{downloads}} pobrań, najnowsza beta {{latestBetaVersion}} w dniu {{latestBetaPublishedAt}}',
+      ),
+      pt: insert(
+        'Última estável {{latestVersion}} em {{publishedAt}} com {{downloads}} downloads, última beta {{latestBetaVersion}} em {{latestBetaPublishedAt}}',
+      ),
+      ru: insert(
+        'Последняя стабильная {{latestVersion}} от {{publishedAt}}, {{downloads}} загрузок, последняя бета {{latestBetaVersion}} от {{latestBetaPublishedAt}}',
+      ),
+      sq: insert(
+        'Stabile më e fundit {{latestVersion}} më {{publishedAt}} me {{downloads}} shkarkime, beta më e fundit {{latestBetaVersion}} më {{latestBetaPublishedAt}}',
+      ),
+      sr: insert(
+        'Najnovija stabilna {{latestVersion}} dana {{publishedAt}} sa {{downloads}} preuzimanja, najnovija beta {{latestBetaVersion}} dana {{latestBetaPublishedAt}}',
+      ),
+      tr: insert(
+        'En son kararlı {{latestVersion}} {{publishedAt}} tarihinde {{downloads}} indirme ile, en son beta {{latestBetaVersion}} {{latestBetaPublishedAt}}',
+      ),
+      'zh-Hans': insert(
+        '最新稳定版 {{latestVersion}} 于 {{publishedAt}}，下载量 {{downloads}}，最新测试版 {{latestBetaVersion}} 于 {{latestBetaPublishedAt}}',
+      ),
+      'zh-Hant': insert(
+        '最新穩定版 {{latestVersion}} 於 {{publishedAt}}，下載次數 {{downloads}}，最新測試版 {{latestBetaVersion}} 於 {{latestBetaPublishedAt}}',
+      ),
+    }),
+    latest_stable_and_beta_with_downloads: t({
+      en: insert(
+        'Latest stable {{latestVersion}} on {{publishedAt}}, latest beta {{latestBetaVersion}} on {{latestBetaPublishedAt}} with {{downloads}} downloads',
+      ),
+      nl: insert(
+        'Laatste stable {{latestVersion}} op {{publishedAt}}, laatste beta {{latestBetaVersion}} op {{latestBetaPublishedAt}} met {{downloads}} downloads',
+      ),
+      fr: insert(
+        'Dernière stable {{latestVersion}} le {{publishedAt}}, dernière bêta {{latestBetaVersion}} le {{latestBetaPublishedAt}} avec {{downloads}} téléchargements',
+      ),
+      de: insert(
+        'Neueste stabile {{latestVersion}} am {{publishedAt}}, neueste Beta {{latestBetaVersion}} am {{latestBetaPublishedAt}} mit {{downloads}} Downloads',
+      ),
+      es: insert(
+        'Última estable {{latestVersion}} el {{publishedAt}}, última beta {{latestBetaVersion}} el {{latestBetaPublishedAt}} con {{downloads}} descargas',
+      ),
+      it: insert(
+        'Ultima stabile {{latestVersion}} il {{publishedAt}}, ultima beta {{latestBetaVersion}} il {{latestBetaPublishedAt}} con {{downloads}} download',
+      ),
+      ar: insert(
+        'أحدث إصدار مستقر {{latestVersion}} في {{publishedAt}}، أحدث إصدار تجريبي {{latestBetaVersion}} في {{latestBetaPublishedAt}} مع {{downloads}} تنزيلات',
+      ),
+      cs: insert(
+        'Nejnovější stabilní {{latestVersion}} dne {{publishedAt}}, nejnovější beta {{latestBetaVersion}} dne {{latestBetaPublishedAt}} s {{downloads}} staženími',
+      ),
+      et: insert(
+        'Viimane stabiilne {{latestVersion}} kuupäeval {{publishedAt}}, viimane beetaversioon {{latestBetaVersion}} kuupäeval {{latestBetaPublishedAt}} koos {{downloads}} allalaadimisega',
+      ),
+      eu: insert(
+        'Azken egonkorra {{latestVersion}} {{publishedAt}}an, azken beta {{latestBetaVersion}} {{latestBetaPublishedAt}}an {{downloads}} deskargarekin',
+      ),
+      gl: insert(
+        'Última estable {{latestVersion}} o {{publishedAt}}, última beta {{latestBetaVersion}} o {{latestBetaPublishedAt}} con {{downloads}} descargas',
+      ),
+      hu: insert(
+        'Legújabb stabil: {{latestVersion}} ekkor: {{publishedAt}}, legújabb béta: {{latestBetaVersion}} ekkor: {{latestBetaPublishedAt}}, letöltések: {{downloads}}',
+      ),
+      id: insert(
+        'Stabil terbaru {{latestVersion}} pada {{publishedAt}}, beta terbaru {{latestBetaVersion}} pada {{latestBetaPublishedAt}} dengan {{downloads}} unduhan',
+      ),
+      ja: insert(
+        '最新安定版 {{latestVersion}}（{{publishedAt}}）、最新ベータ {{latestBetaVersion}}（{{latestBetaPublishedAt}}、{{downloads}} ダウンロード）',
+      ),
+      lt: insert(
+        'Naujausia stabili {{latestVersion}} {{publishedAt}}, naujausia beta {{latestBetaVersion}} {{latestBetaPublishedAt}} su {{downloads}} atsisiuntimų',
+      ),
+      pl: insert(
+        'Najnowsza stabilna {{latestVersion}} w dniu {{publishedAt}}, najnowsza beta {{latestBetaVersion}} w dniu {{latestBetaPublishedAt}} z {{downloads}} pobrań',
+      ),
+      pt: insert(
+        'Última estável {{latestVersion}} em {{publishedAt}}, última beta {{latestBetaVersion}} em {{latestBetaPublishedAt}} com {{downloads}} downloads',
+      ),
+      ru: insert(
+        'Последняя стабильная {{latestVersion}} от {{publishedAt}}, последняя бета {{latestBetaVersion}} от {{latestBetaPublishedAt}}, {{downloads}} загрузок',
+      ),
+      sq: insert(
+        'Stabile më e fundit {{latestVersion}} më {{publishedAt}}, beta më e fundit {{latestBetaVersion}} më {{latestBetaPublishedAt}} me {{downloads}} shkarkime',
+      ),
+      sr: insert(
+        'Najnovija stabilna {{latestVersion}} dana {{publishedAt}}, najnovija beta {{latestBetaVersion}} dana {{latestBetaPublishedAt}} sa {{downloads}} preuzimanja',
+      ),
+      tr: insert(
+        'En son kararlı {{latestVersion}} {{publishedAt}} tarihinde, en son beta {{latestBetaVersion}} {{latestBetaPublishedAt}} tarihinde {{downloads}} indirme ile',
+      ),
+      'zh-Hans': insert(
+        '最新稳定版 {{latestVersion}} 于 {{publishedAt}}，最新测试版 {{latestBetaVersion}} 于 {{latestBetaPublishedAt}}，下载量 {{downloads}}',
+      ),
+      'zh-Hant': insert(
+        '最新穩定版 {{latestVersion}} 於 {{publishedAt}}，最新測試版 {{latestBetaVersion}} 於 {{latestBetaPublishedAt}}，下載次數 {{downloads}}',
+      ),
+    }),
     by_maintainer: t({
       en: insert('by {{maintainer}}'),
       nl: insert('door {{maintainer}}'),
@@ -596,6 +788,354 @@ const appContent = {
       tr: 'Tümünü güncelle',
       'zh-Hans': '全部更新',
       'zh-Hant': '全部更新',
+    }),
+    information_panel: t({
+      en: md(`### Information on the module library panel
+
+Use it to browse and search for available JASP modules and to install, update, uninstall JASP modules.
+
+The modules are divided into channels:
+
+- **Official** - Modules officially supported by the JASP team
+- **Community** - Modules contributed by the JASP community
+
+A module can have a beta version of it. A beta version is used for testing new modules or new features in existing modules before they are released as a stable version.
+Use the "Show betas" checkbox to show or hide beta versions. A beta version may contain unresolved issues and bugs, so use it with caution.
+
+This panel was made as part of the [JASP-MOD project](https://research-software-directory.org/projects/jasp-mod).`),
+      nl: md(`### Informatie over het modulebibliotheekpaneel
+  
+Gebruik het om beschikbare JASP-modules te bekijken en te zoeken en om JASP-modules te installeren, bij te werken en te verwijderen.
+
+De modules zijn verdeeld in kanalen:
+
+- **Officieel** - Modules die officieel door het JASP-team worden ondersteund
+- **Community** - Modules die door de JASP-community worden bijgedragen
+
+Een module kan een bètaversie hebben. Een bètaversie wordt gebruikt om nieuwe modules of nieuwe functies in bestaande modules te testen voordat ze als stabiele versie worden uitgebracht.
+Gebruik het selectievakje "Toon Betas" om bètaversies te tonen of te verbergen.
+Een bètaversie kan onopgeloste problemen en bugs bevatten, dus gebruik deze met voorzichtigheid.
+
+Dit paneel is gemaakt als onderdeel van het [JASP-MOD project](https://research-software-directory.org/projects/jasp-mod).`),
+      fr: md(`### Informations sur le panneau de bibliothèque de modules
+
+Utilisez-le pour parcourir et rechercher les modules JASP disponibles et pour installer, mettre à jour et désinstaller les modules JASP.
+
+Les modules sont répartis en canaux :
+
+- **Officiel** - Modules officiellement pris en charge par l’équipe JASP
+- **Communauté** - Modules contribué par la communauté JASP
+
+Un module peut avoir une version bêta. Une version bêta est utilisée pour tester de nouveaux modules ou de nouvelles fonctionnalités dans des modules existants avant leur sortie en version stable.
+Utilisez la case « Afficher les pré-versions » pour afficher ou masquer les versions bêta.
+Une version bêta peut contenir des problèmes et des bugs non résolus, utilisez-la donc avec prudence.
+
+Ce panneau a été réalisé dans le cadre du [projet JASP-MOD](https://research-software-directory.org/projects/jasp-mod).`),
+      de: md(`### Informationen zum Modulbibliothek-Panel
+
+Verwenden Sie es, um verfügbare JASP-Module zu durchsuchen und zu suchen sowie JASP-Module zu installieren, zu aktualisieren und zu deinstallieren.
+
+Die Module sind in Kanäle unterteilt:
+
+- **Offiziell** - Module, die vom JASP-Team offiziell unterstützt werden
+- **Community** - Module, die von der JASP-Community beigesteuert werden
+
+Ein Modul kann eine Beta-Version haben. Eine Beta-Version wird verwendet, um neue Module oder neue Funktionen in bestehenden Modulen zu testen, bevor sie als stabile Version veröffentlicht werden.
+Verwenden Sie das Kontrollkästchen „Vorabversionen anzeigen“, um Beta-Versionen ein- oder auszublenden.
+Eine Beta-Version kann ungelöste Probleme und Fehler enthalten, verwenden Sie sie daher mit Vorsicht.
+
+Dieses Panel wurde im Rahmen des [JASP-MOD-Projekts](https://research-software-directory.org/projects/jasp-mod) erstellt.`),
+      es: md(`### Información sobre el panel de la biblioteca de módulos
+
+Úselo para explorar y buscar módulos JASP disponibles y para instalar, actualizar y desinstalar módulos JASP.
+
+Los módulos se dividen en canales:
+
+- **Oficial** - Módulos oficialmente respaldados por el equipo de JASP
+- **Comunidad** - Módulos aportados por la comunidad de JASP
+
+Un módulo puede tener una versión beta. Una versión beta se usa para probar nuevos módulos o nuevas funciones en módulos existentes antes de que se publiquen como versión estable.
+Use la casilla "Mostrar pre-lanzamientos" para mostrar u ocultar las versiones beta.
+Una versión beta puede contener problemas y errores sin resolver, así que úsela con precaución.
+
+Este panel se creó como parte del [proyecto JASP-MOD](https://research-software-directory.org/projects/jasp-mod).`),
+      it: md(`### Informazioni sul pannello della libreria dei moduli
+
+Usalo per sfogliare e cercare i moduli JASP disponibili e per installare, aggiornare e disinstallare i moduli JASP.
+
+I moduli sono divisi in canali:
+
+- **Ufficiale** - Moduli ufficialmente supportati dal team JASP
+- **Community** - Moduli contribuiti dalla community JASP
+
+Un modulo può avere una versione beta. Una versione beta viene usata per testare nuovi moduli o nuove funzionalità in moduli esistenti prima che vengano rilasciati come versione stabile.
+Usa la casella "Mostra pre-release" per mostrare o nascondere le versioni beta.
+Una versione beta può contenere problemi e bug irrisolti, quindi usala con cautela.
+
+Questo pannello è stato realizzato come parte del [progetto JASP-MOD](https://research-software-directory.org/projects/jasp-mod).`),
+      ar: md(`### معلومات حول لوحة مكتبة الوحدات
+
+استخدمها لاستعراض وحدات JASP المتاحة والبحث عنها ولتثبيت وحدات JASP وتحديثها وإلغاء تثبيتها.
+
+تنقسم الوحدات إلى قنوات:
+
+- **رسمي** - وحدات مدعومة رسميًا من فريق JASP
+- **مجتمعي** - وحدات ساهمت بها مجتمع JASP
+
+يمكن أن تمتلك الوحدة إصدارًا تجريبيًا. يُستخدم الإصدار التجريبي لاختبار وحدات جديدة أو ميزات جديدة في وحدات موجودة قبل إصدارها كنسخة مستقرة.
+استخدم مربع الاختيار "إظهار الإصدارات التجريبية" لإظهار أو إخفاء الإصدارات التجريبية.
+قد يحتوي الإصدار التجريبي على مشكلات وأخطاء غير محلولة، لذا استخدمه بحذر.
+
+تم إنشاء هذه اللوحة كجزء من [مشروع JASP-MOD](https://research-software-directory.org/projects/jasp-mod).`),
+      cs: md(`### Informace o panelu knihovny modulů
+
+Použijte jej k procházení a vyhledávání dostupných modulů JASP a k instalaci, aktualizaci a odinstalaci modulů JASP.
+
+Moduly jsou rozděleny do kanálů:
+
+- **Oficiální** - Moduly oficiálně podporované týmem JASP
+- **Community** - Moduly přispěné komunitou JASP
+
+Modul může mít beta verzi. Beta verze slouží k testování nových modulů nebo nových funkcí ve stávajících modulech před jejich vydáním jako stabilní verze.
+Použijte zaškrtávací políčko „Zobrazit předběžná vydání“ k zobrazení nebo skrytí beta verzí.
+Beta verze může obsahovat nevyřešené problémy a chyby, proto ji používejte opatrně.
+
+Tento panel byl vytvořen jako součást [projektu JASP-MOD](https://research-software-directory.org/projects/jasp-mod).`),
+      et: md(`### Teave mooduliteekogu paneeli kohta
+
+Kasutage seda saadaolevate JASP-moodulite sirvimiseks ja otsimiseks ning JASP-moodulite installimiseks, värskendamiseks ja eemaldamiseks.
+
+Moodulid on jaotatud kanalitesse:
+
+- **Ametlik** - JASP-tiimi poolt ametlikult toetatud moodulid
+- **Community** - JASP-kogukonna panustatud moodulid
+
+Moodulil võib olla beetaversioon. Beetaversiooni kasutatakse uute moodulite või uute funktsioonide testimiseks olemasolevates moodulites enne nende väljaandmist stabiilse versioonina.
+Kasutage märkeruutu "Kuva eeltõmmised", et kuvada või peita beetaversioonid.
+Beetaversioon võib sisaldada lahendamata probleeme ja vigu, seega kasutage seda ettevaatlikult.
+
+See paneel loodi [JASP-MOD projekti](https://research-software-directory.org/projects/jasp-mod) osana.`),
+      eu: md(`### Moduluen liburutegi panelari buruzko informazioa
+
+Erabili eskuragarri dauden JASP moduluak arakatzeko eta bilatzeko, eta JASP moduluak instalatzeko, eguneratzeko eta desinstalatzeko.
+
+Moduluak kanaletan banatuta daude:
+
+- **Ofiziala** - JASP taldeak ofizialki babestutako moduluak
+- **Community** - JASP komunitateak ekarritako moduluak
+
+Modulu batek beta bertsioa izan dezake. Beta bertsioa modulu berriak edo lehendik dauden moduluetako funtzio berriak probatzeko erabiltzen da, bertsio egonkor gisa argitaratu aurretik.
+Erabili "Erakutsi aurre-bertsioak" kontrol-laukia beta bertsioak erakusteko edo ezkutatzeko.
+Beta bertsioak konpondu gabeko arazoak eta akatsak izan ditzake; erabili kontuz.
+
+Panel hau [JASP-MOD proiektuaren](https://research-software-directory.org/projects/jasp-mod) barruan egin da.`),
+      gl: md(`### Información sobre o panel da biblioteca de módulos
+
+Úsao para explorar e buscar módulos JASP dispoñibles e para instalar, actualizar e desinstalar módulos JASP.
+
+Os módulos divídense en canles:
+
+- **Oficial** - Módulos oficialmente apoiados polo equipo de JASP
+- **Community** - Módulos contribuídos pola comunidade de JASP
+
+Un módulo pode ter unha versión beta. Unha versión beta úsase para probar novos módulos ou novas funcións en módulos existentes antes de que se publiquen como versión estable.
+Usa a caixa "Mostrar pre-lanzamentos" para mostrar ou ocultar as versións beta.
+Unha versión beta pode conter problemas e erros sen resolver, así que úsaa con precaución.
+
+Este panel fíxose como parte do [proxecto JASP-MOD](https://research-software-directory.org/projects/jasp-mod).`),
+      hu: md(`### Információ a modulkönyvtár panelről
+
+Használja az elérhető JASP modulok böngészésére és keresésére, valamint a JASP modulok telepítésére, frissítésére és eltávolítására.
+
+A modulok csatornákra vannak osztva:
+
+- **Hivatalos** - A JASP csapata által hivatalosan támogatott modulok
+- **Közösségi** - A JASP közösség által hozzájárult modulok
+
+Egy modulnak lehet béta verziója. A béta verziót új modulok vagy meglévő modulok új funkcióinak tesztelésére használják, mielőtt stabil verzióként megjelennének.
+Az "Előzetes kiadások megjelenítése" jelölőnégyzettel jelenítheti meg vagy rejtheti el a béta verziókat.
+Egy béta verzió tartalmazhat megoldatlan problémákat és hibákat, ezért óvatosan használd.
+
+Ez a panel a [JASP-MOD projekt](https://research-software-directory.org/projects/jasp-mod) részeként készült.`),
+      id: md(`### Informasi tentang panel pustaka modul
+
+Gunakan panel ini untuk menelusuri dan mencari modul JASP yang tersedia serta untuk memasang, memperbarui, dan menghapus pemasangan modul JASP.
+
+Modul dibagi ke dalam saluran:
+
+- **Resmi** - Modul yang didukung secara resmi oleh tim JASP
+- **Community** - Modul yang disumbangkan oleh komunitas JASP
+
+Sebuah modul dapat memiliki versi beta. Versi beta digunakan untuk menguji modul baru atau fitur baru pada modul yang ada sebelum dirilis sebagai versi stabil.
+Gunakan kotak centang "Tampilkan pra-rilis" untuk menampilkan atau menyembunyikan versi beta.
+Versi beta dapat berisi masalah dan bug yang belum terselesaikan, jadi gunakan dengan hati-hati.
+
+Panel ini dibuat sebagai bagian dari [proyek JASP-MOD](https://research-software-directory.org/projects/jasp-mod).`),
+      ja: md(`### モジュールライブラリパネルについて
+
+利用可能なJASPモジュールを閲覧・検索し、JASPモジュールのインストール、更新、アンインストールを行うために使用します。
+
+モジュールはチャネルに分かれています：
+
+- **Official** - JASPチームが公式にサポートするモジュール
+- **Community** - JASPコミュニティが提供するモジュール
+
+モジュールにはベータ版がある場合があります。ベータ版は、新しいモジュールや既存モジュールの新機能を、安定版としてリリースする前にテストするために使われます。
+「プレリリースを表示」のチェックボックスでベータ版の表示/非表示を切り替えます。
+ベータ版には未解決の問題やバグが含まれる場合があるため、注意して使用してください。
+
+このパネルは[JASP-MODプロジェクト](https://research-software-directory.org/projects/jasp-mod)の一環として作成されました。`),
+      lt: md(`### Informacija apie modulių bibliotekos skydelį
+
+Naudokite jį norėdami naršyti ir ieškoti prieinamų JASP modulių bei diegti, atnaujinti ir pašalinti JASP modulius.
+
+Moduliai skirstomi į kanalus:
+
+- **Oficialūs** - Oficialiai JASP komandos palaikomi moduliai
+- **Community** - JASP bendruomenės pateikti moduliai
+
+Modulis gali turėti beta versiją. Beta versija naudojama naujiems moduliams ar naujoms funkcijoms esamuose moduliuose testuoti prieš išleidžiant kaip stabilią versiją.
+Naudokite žymimąjį langelį „Rodyti priešleidimus“, kad rodytumėte arba paslėptumėte beta versijas.
+Beta versija gali turėti neišspręstų problemų ir klaidų, todėl naudokite ją atsargiai.
+
+Šis skydelis buvo sukurtas kaip [JASP-MOD projekto](https://research-software-directory.org/projects/jasp-mod) dalis.`),
+      pl: md(`### Informacje o panelu biblioteki modułów
+
+Użyj go do przeglądania i wyszukiwania dostępnych modułów JASP oraz do instalowania, aktualizowania i odinstalowywania modułów JASP.
+
+Moduły są podzielone na kanały:
+
+- **Oficjalne** - Moduły oficjalnie wspierane przez zespół JASP
+- **Społeczność** - Moduły wniesione przez społeczność JASP
+
+Moduł może mieć wersję beta. Wersja beta służy do testowania nowych modułów lub nowych funkcji w istniejących modułach przed wydaniem jako wersja stabilna.
+Użyj pola wyboru „Pokaż wersje przedpremierowe”, aby pokazać lub ukryć wersje beta.
+Wersja beta może zawierać nierozwiązane problemy i błędy, dlatego używaj jej ostrożnie.
+
+Ten panel został utworzony jako część [projektu JASP-MOD](https://research-software-directory.org/projects/jasp-mod).`),
+      pt: md(`### Informações sobre o painel da biblioteca de módulos
+
+Use-o para navegar e procurar módulos JASP disponíveis e para instalar, atualizar e desinstalar módulos JASP.
+
+Os módulos são divididos em canais:
+
+- **Oficial** - Módulos oficialmente suportados pela equipe JASP
+- **Community** - Módulos contribuídos pela comunidade JASP
+
+Um módulo pode ter uma versão beta. Uma versão beta é usada para testar novos módulos ou novos recursos em módulos existentes antes de serem lançados como versão estável.
+Use a caixa de seleção "Mostrar pré-lançamentos" para mostrar ou ocultar versões beta.
+Uma versão beta pode conter problemas e bugs não resolvidos, portanto use-a com cautela.
+
+Este painel foi feito como parte do [projeto JASP-MOD](https://research-software-directory.org/projects/jasp-mod).`),
+      ru: md(`### Информация о панели библиотеки модулей
+
+Используйте её для просмотра и поиска доступных модулей JASP, а также для установки, обновления и удаления модулей JASP.
+
+Модули разделены на каналы:
+
+- **Официальные** - Модули, официально поддерживаемые командой JASP
+- **Community** - Модули, внесённые сообществом JASP
+
+Модуль может иметь бета-версию. Бета-версия используется для тестирования новых модулей или новых функций в существующих модулях перед выпуском в стабильной версии.
+Используйте флажок «Показать предрелизы», чтобы показывать или скрывать бета-версии.
+Бета-версия может содержать нерешённые проблемы и ошибки, поэтому используйте её с осторожностью.
+
+Эта панель создана в рамках [проекта JASP-MOD](https://research-software-directory.org/projects/jasp-mod).`),
+      sq: md(`### Informacion mbi panelin e bibliotekës së moduleve
+
+Përdoreni për të shfletuar dhe kërkuar modulet JASP të disponueshme dhe për të instaluar, përditësuar dhe çinstaluar modulet JASP.
+
+Modulet ndahen në kanale:
+
+- **Zyrtar** - Module të mbështetura zyrtarisht nga ekipi i JASP
+- **Community** - Module të kontribuara nga komuniteti i JASP
+
+Një modul mund të ketë një version beta. Versioni beta përdoret për të testuar module të reja ose veçori të reja në module ekzistuese para se të publikohen si version i qëndrueshëm.
+Përdorni kutinë e zgjedhjes "Shfaq parapublikimet" për të shfaqur ose fshehur versionet beta.
+Një version beta mund të përmbajë probleme dhe gabime të pazgjidhura, prandaj përdoreni me kujdes.
+
+Ky panel u krijua si pjesë e [projektit JASP-MOD](https://research-software-directory.org/projects/jasp-mod).`),
+      sr: md(`### Информације о панелу библиотеке модула
+
+Користите га за преглед и претрагу доступних JASP модула и за инсталацију, ажурирање и деинсталацију JASP модула.
+
+Модули су подељени у канале:
+
+- **Званични** - Модули које званично подржава JASP тим
+- **Community** - Модули које је допринела JASP заједница
+
+Модул може имати бета верзију. Бета верзија се користи за тестирање нових модула или нових функција у постојећим модулима пре него што буду објављени као стабилна верзија.
+Користите поље за потврду „Прикажи претходна издања“ да бисте приказали или сакрили бета верзије.
+Бета верзија може да садржи нерешене проблеме и грешке, па је користите опрезно.
+
+Овај панел је направљен као део [пројекта JASP-MOD](https://research-software-directory.org/projects/jasp-mod).`),
+      tr: md(`### Modül kitaplığı paneli hakkında bilgi
+
+Mevcut JASP modüllerini göz atmak ve aramak, ayrıca JASP modüllerini yüklemek, güncellemek ve kaldırmak için kullanın.
+
+Modüller kanallara ayrılmıştır:
+
+- **Resmî** - JASP ekibi tarafından resmî olarak desteklenen modüller
+- **Community** - JASP topluluğu tarafından katkıda bulunulan modüller
+
+Bir modülün beta sürümü olabilir. Beta sürümü, yeni modülleri veya mevcut modüllerdeki yeni özellikleri kararlı sürüm olarak yayımlanmadan önce test etmek için kullanılır.
+Beta sürümlerini göstermek veya gizlemek için "Ön sürümleri göster" onay kutusunu kullanın.
+Beta sürümü çözümlenmemiş sorunlar ve hatalar içerebilir; bu yüzden dikkatli kullanın.
+
+Bu panel [JASP-MOD projesinin](https://research-software-directory.org/projects/jasp-mod) bir parçası olarak yapılmıştır.`),
+      'zh-Hans': md(`### 关于模块库面板的信息
+
+使用它来浏览和搜索可用的 JASP 模块，并安装、更新或卸载 JASP 模块。
+
+模块分为以下渠道：
+
+- **官方** - 由 JASP 团队官方支持的模块
+- **社区** - 由 JASP 社区贡献的模块
+
+模块中可能包含测试版。测试版用于在稳定版发布之前测试新模块或新功能，测试版可能有还未解决的错误。
+使用“显示预发布版本”复选框来显示或隐藏测试版信息。
+测试版可能包含未解决的问题和缺陷，请谨慎使用。
+
+此面板是 [JASP-MOD 项目](https://research-software-directory.org/projects/jasp-mod) 的一部分。`),
+      'zh-Hant': md(`### 關於模組庫面板的資訊
+
+使用它來瀏覽和搜尋可用的 JASP 模組，並安裝、更新或解除安裝 JASP 模組。
+
+模組分為以下頻道：
+
+- **官方** - 由 JASP 團隊官方支援的模組
+- **社群** - 由 JASP 社群貢獻的模組
+
+模組可能有測試版。測試版用於在作為穩定版發佈前測試新模組或現有模組的新功能。
+使用「顯示預發布版本」核取方塊來顯示或隱藏測試版。
+測試版可能包含未解決的問題和缺陷，請謹慎使用。
+
+此面板是 [JASP-MOD 專案](https://research-software-directory.org/projects/jasp-mod) 的一部分。`),
+    }),
+    information: t({
+      en: 'Information',
+      nl: 'Informatie',
+      fr: 'Informations',
+      de: 'Informationen',
+      es: 'Información',
+      it: 'Informazioni',
+      ar: 'معلومات',
+      cs: 'Informace',
+      et: 'Teave',
+      eu: 'Informazioa',
+      gl: 'Información',
+      hu: 'Információ',
+      id: 'Informasi',
+      ja: '情報',
+      lt: 'Informacija',
+      pl: 'Informacje',
+      pt: 'Informações',
+      ru: 'Информация',
+      sq: 'Informacion',
+      sr: 'Информације',
+      tr: 'Bilgi',
+      'zh-Hans': '信息',
+      'zh-Hant': '資訊',
     }),
   },
 } satisfies Dictionary;

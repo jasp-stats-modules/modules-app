@@ -3,7 +3,7 @@ import { House } from 'lucide-react';
 import { useQueryState } from 'nuqs';
 import type { Dispatch, ReactNode, SetStateAction } from 'react';
 import { useEffect, useState } from 'react';
-import { useIntlayer } from 'react-intlayer';
+import { useIntlayer, useMarkdownRenderer } from 'react-intlayer';
 import { useDebounceValue } from 'usehooks-ts';
 import { cn } from '@/lib/utils';
 import type { Asset, Release, Repository } from '@/types';
@@ -12,6 +12,8 @@ import { useInfo } from './useInfo';
 import {
   findReleaseThatSatisfiesInstalledJaspVersion,
   getReleaseInfo,
+  isNewerVersion,
+  type ReleaseStats,
   useRelease,
 } from './useRelease';
 
@@ -179,6 +181,27 @@ function InstallButton({
   );
 }
 
+function InstallPreReleaseButton({
+  asset,
+  translations,
+}: {
+  asset?: Asset;
+  translations: AppTranslations;
+}) {
+  const { install, pre_release } = translations;
+  if (!asset) {
+    return null;
+  }
+  return (
+    <a
+      href={asset.downloadUrl}
+      className="inline-flex items-center justify-center whitespace-nowrap rounded bg-jasp-green px-3 py-1.5 font-medium text-primary text-sm transition-colors duration-200 hover:bg-green-600 dark:hover:bg-green-800"
+    >
+      {install} {pre_release}
+    </a>
+  );
+}
+
 function UpdateButton({
   asset,
   translations,
@@ -196,6 +219,27 @@ function UpdateButton({
       className="inline-flex items-center justify-center whitespace-nowrap rounded bg-jasp-blue px-3 py-1.5 font-medium text-primary text-sm transition-colors duration-200 hover:bg-blue-700 dark:bg-blue-700 dark:hover:bg-blue-800"
     >
       {update}
+    </a>
+  );
+}
+
+function UpdatePreReleaseButton({
+  asset,
+  translations,
+}: {
+  asset?: Asset;
+  translations: AppTranslations;
+}) {
+  const { update, pre_release } = translations;
+  if (!asset) {
+    return null;
+  }
+  return (
+    <a
+      href={asset.downloadUrl}
+      className="inline-flex items-center justify-center whitespace-nowrap rounded bg-jasp-blue px-3 py-1.5 font-medium text-primary text-sm transition-colors duration-200 hover:bg-blue-700 dark:bg-blue-700 dark:hover:bg-blue-800"
+    >
+      {update} {pre_release}
     </a>
   );
 }
@@ -226,43 +270,116 @@ function UninstallButton({
   );
 }
 
-function ReleaseAction({
+function UninstallPreReleaseButton({
   moduleName,
-  asset,
-  canUpdate,
-  canInstall,
-  canUninstall,
-  allowPreRelease,
-  latestPreRelease,
-  latestVersionInstalled,
   translations,
 }: {
   moduleName: string;
-  asset: Asset;
-  canUpdate: boolean;
-  canInstall: boolean;
-  canUninstall: boolean;
-  allowPreRelease: boolean;
-  latestPreRelease?: Release;
-  latestVersionInstalled: boolean;
   translations: AppTranslations;
 }) {
-  const { pre_release, latest_version_installed, installed } = translations;
+  const { uninstall, uninstall_this_module, pre_release } = translations;
+  const { data: jasp } = useJaspQtObject();
+
+  async function doUninstall() {
+    await jasp?.uninstall(moduleName);
+  }
+
   return (
-    <div className="flex flex-col">
-      {canUpdate && <UpdateButton asset={asset} translations={translations} />}
-      {canInstall && !canUpdate && (
-        <InstallButton asset={asset} translations={translations} />
-      )}
-      {allowPreRelease && latestPreRelease && (
-        <span className="justify-center whitespace-nowrap text-muted-foreground text-sm">
-          {pre_release.value}
-        </span>
-      )}
-      {insideQt && canUninstall && (canUpdate || latestVersionInstalled) && (
-        <UninstallButton moduleName={moduleName} translations={translations} />
-      )}
-      {latestVersionInstalled && (
+    <button
+      type="button"
+      onClick={doUninstall}
+      title={uninstall_this_module.value}
+      className="mt-3 inline-flex items-center justify-center whitespace-nowrap rounded bg-destructive px-3 py-1.5 font-medium text-primary text-sm transition-colors duration-200 hover:bg-red-700 dark:bg-red-700 dark:hover:bg-red-800"
+    >
+      {uninstall} {pre_release}
+    </button>
+  );
+}
+
+function ReleaseAction({
+  moduleName,
+  asset,
+  primaryAction,
+  secondaryAction,
+  translations,
+  latestInstalled,
+}: {
+  moduleName: string;
+  asset?: Asset;
+  primaryAction?: ReleaseStats['primaryAction'];
+  secondaryAction?: ReleaseStats['secondaryAction'];
+  translations: AppTranslations;
+  latestInstalled: boolean;
+}) {
+  const { latest_version_installed, installed } = translations;
+  // Only show installed text when there is no button
+  const showInstalledBadge =
+    latestInstalled &&
+    !(
+      insideQt &&
+      (primaryAction === 'uninstall-pre-release' ||
+        secondaryAction === 'uninstall')
+    );
+  const actions: React.ReactNode[] = [];
+  if (secondaryAction === 'update-pre-release') {
+    actions.push(
+      <UpdatePreReleaseButton
+        key="update-pre-release"
+        asset={asset}
+        translations={translations}
+      />,
+    );
+  }
+  if (primaryAction === 'install-stable') {
+    actions.push(
+      <InstallButton
+        key="install-stable"
+        asset={asset}
+        translations={translations}
+      />,
+    );
+  }
+  if (primaryAction === 'update-stable') {
+    actions.push(
+      <UpdateButton
+        key="update-stable"
+        asset={asset}
+        translations={translations}
+      />,
+    );
+  }
+  if (secondaryAction === 'install-pre-release') {
+    actions.push(
+      <InstallPreReleaseButton
+        key="install-pre-release"
+        asset={asset}
+        translations={translations}
+      />,
+    );
+  }
+  if (primaryAction === 'uninstall-pre-release' && insideQt) {
+    actions.push(
+      <UninstallPreReleaseButton
+        key="uninstall-pre-release"
+        moduleName={moduleName}
+        translations={translations}
+      />,
+    );
+  }
+  if (secondaryAction === 'uninstall' && insideQt) {
+    actions.push(
+      <UninstallButton
+        key="uninstall"
+        moduleName={moduleName}
+        translations={translations}
+      />,
+    );
+  }
+  return (
+    <div className="flex flex-col gap-2">
+      {actions}
+
+      {showInstalledBadge && (
         <span
           title={latest_version_installed.value}
           className="px-2 py-1.5 text-muted-foreground text-sm"
@@ -274,39 +391,105 @@ function ReleaseAction({
   );
 }
 
-export function ReleaseStats({
+export function ReleaseStatsLine({
   installedVersion,
-  latestVersion,
-  latestPublishedAt,
+  latestStableRelease,
+  latestPreRelease,
   maintainer,
+  latestVersionIs,
   downloads,
   translations,
 }: {
   installedVersion?: string;
-  latestVersion: string;
-  latestPublishedAt: string;
+  latestStableRelease?: Release;
+  latestPreRelease?: Release;
   maintainer: string;
-  downloads: number;
+  latestVersionIs?: ReleaseStats['latestVersionIs'];
+  downloads?: number;
   translations: AppTranslations;
 }) {
-  const { release_stats_installed, release_stats_notinstalled, by_maintainer } =
-    translations;
-  const publishedAt = new Date(latestPublishedAt).toLocaleDateString();
+  const {
+    by_maintainer,
+    installed_version,
+    latest_installed_version,
+    latest_version_on_with_downloads,
+    latest_beta_version_on_with_downloads,
+    latest_stable_with_download_and_beta,
+    latest_stable_and_beta_with_downloads,
+  } = translations;
   return (
-    <div className="flex flex-row justify-between text-base text-muted-foreground">
+    <div className="flex flex-row justify-between text-muted-foreground text-sm">
       <div>
-        {installedVersion
-          ? release_stats_installed({
-              installedVersion,
-              latestVersion,
-              publishedAt,
-              downloads,
-            })
-          : release_stats_notinstalled({
-              latestVersion,
-              publishedAt,
-              downloads,
-            })}
+        {latestVersionIs &&
+          latestVersionIs !== 'installed' &&
+          installedVersion && (
+            <span>{installed_version({ version: installedVersion })}, </span>
+          )}
+        {latestVersionIs === 'installed' && installedVersion && (
+          <span>
+            {latest_installed_version({ version: installedVersion })}{' '}
+          </span>
+        )}
+        {latestVersionIs === 'stable' &&
+          latestStableRelease &&
+          !latestPreRelease && (
+            <span>
+              {latest_version_on_with_downloads({
+                latestVersion: latestStableRelease.version,
+                publishedAt: new Date(
+                  latestStableRelease.publishedAt,
+                ).toLocaleDateString(),
+                downloads: downloads ?? 0,
+              })}
+            </span>
+          )}
+        {latestVersionIs === 'pre-release' &&
+          !latestStableRelease &&
+          latestPreRelease && (
+            <span>
+              {latest_beta_version_on_with_downloads({
+                latestVersion: latestPreRelease.version,
+                publishedAt: new Date(
+                  latestPreRelease.publishedAt,
+                ).toLocaleDateString(),
+                downloads: downloads ?? 0,
+              })}
+            </span>
+          )}
+        {latestStableRelease &&
+          latestPreRelease &&
+          latestVersionIs === 'stable' && (
+            <span>
+              {latest_stable_with_download_and_beta({
+                latestVersion: latestStableRelease.version,
+                publishedAt: new Date(
+                  latestStableRelease.publishedAt,
+                ).toLocaleDateString(),
+                downloads: downloads ?? 0,
+                latestBetaVersion: latestPreRelease.version,
+                latestBetaPublishedAt: new Date(
+                  latestPreRelease.publishedAt,
+                ).toLocaleDateString(),
+              })}
+            </span>
+          )}
+        {latestStableRelease &&
+          latestPreRelease &&
+          latestVersionIs === 'pre-release' && (
+            <span>
+              {latest_stable_and_beta_with_downloads({
+                latestVersion: latestStableRelease.version,
+                publishedAt: new Date(
+                  latestStableRelease.publishedAt,
+                ).toLocaleDateString(),
+                latestBetaVersion: latestPreRelease.version,
+                latestBetaPublishedAt: new Date(
+                  latestPreRelease.publishedAt,
+                ).toLocaleDateString(),
+                downloads: downloads ?? 0,
+              })}
+            </span>
+          )}
       </div>
       <div>{by_maintainer({ maintainer })}</div>
     </div>
@@ -369,23 +552,27 @@ function RepositoryCard({
   repo,
   allowPreRelease,
   translations,
+  language,
 }: {
   repo: Repository;
   allowPreRelease: boolean;
   translations: AppTranslations;
+  language: string;
 }) {
   const {
     latestPreRelease,
-    latestAnyRelease,
+    latestStableRelease,
     asset,
     installedVersion,
-    latestVersionInstalled,
-    canInstall,
-    canUpdate,
-    canUninstall,
+    latestVersionIs,
+    primaryAction,
+    secondaryAction,
   } = useRelease(repo, allowPreRelease);
 
   const cardId = `repo-card-${repo.name}`;
+  const name = repo.translations[language]?.name || repo.name;
+  const description =
+    repo.translations[language]?.description || repo.description;
   return (
     <li
       aria-labelledby={cardId}
@@ -394,12 +581,10 @@ function RepositoryCard({
       <div className="flex items-start justify-between gap-2">
         <div className="flex flex-col gap-2">
           <h3 id={cardId} className="font-semibold text-xl">
-            {repo.name}
+            {name}
           </h3>
-          {repo.shortDescriptionHTML && (
-            <div className="prose prose-sm text-base">
-              {repo.shortDescriptionHTML}
-            </div>
+          {description && (
+            <div className="prose prose-sm text-base">{description}</div>
           )}
           <div className="flex items-center gap-2">
             <RepositoryLinks
@@ -412,32 +597,24 @@ function RepositoryCard({
             />
           </div>
         </div>
-        {asset ? (
-          <ReleaseAction
-            moduleName={repo.name}
-            asset={asset}
-            canUpdate={canUpdate}
-            canInstall={canInstall}
-            canUninstall={canUninstall}
-            allowPreRelease={allowPreRelease}
-            latestPreRelease={latestPreRelease}
-            latestVersionInstalled={latestVersionInstalled}
-            translations={translations}
-          />
-        ) : (
-          <span>No compatible asset found</span>
-        )}
-      </div>
-      {latestAnyRelease && asset && (
-        <ReleaseStats
-          installedVersion={installedVersion}
-          latestVersion={latestAnyRelease.version}
-          latestPublishedAt={latestAnyRelease.publishedAt}
-          maintainer={repo.organization}
-          downloads={asset.downloadCount}
+        <ReleaseAction
+          moduleName={repo.name}
+          asset={asset}
+          primaryAction={primaryAction}
+          secondaryAction={secondaryAction}
           translations={translations}
+          latestInstalled={latestVersionIs === 'installed'}
         />
-      )}
+      </div>
+      <ReleaseStatsLine
+        installedVersion={installedVersion}
+        latestPreRelease={latestPreRelease}
+        latestStableRelease={latestStableRelease}
+        latestVersionIs={latestVersionIs}
+        maintainer={repo.organization}
+        downloads={asset?.downloadCount}
+        translations={translations}
+      />
     </li>
   );
 }
@@ -454,13 +631,16 @@ function filterOnInstallableRepositories(
       installedJaspVersion,
     );
     if (allowPreRelease) {
-      // Assume pre-releases are newer than regular releases
-      // so use pre-release as latest
       const latestPreRelease = findReleaseThatSatisfiesInstalledJaspVersion(
         repo.preReleases,
         installedJaspVersion,
       );
-      if (latestPreRelease) {
+      if (
+        (latestPreRelease &&
+          latestRelease &&
+          isNewerVersion(latestRelease.version, latestPreRelease.version)) ||
+        (!latestRelease && latestPreRelease)
+      ) {
         latestRelease = latestPreRelease;
       }
     }
@@ -490,8 +670,7 @@ function filterReposBySearchTerm(
     const nameMatches = repo.name.toLowerCase().includes(searchLower);
 
     // Strip HTML tags from description for search
-    const plainDescription =
-      repo.shortDescriptionHTML?.replace(/<[^>]*>/g, '') || '';
+    const plainDescription = repo.description?.replace(/<[^>]*>/g, '') || '';
     const descriptionMatches = plainDescription
       .toLowerCase()
       .includes(searchLower);
@@ -658,12 +837,87 @@ function getUpdateableAssets(
         info.installedModules,
         info.uninstallableModules,
       );
-      return rinfo.canUpdate && rinfo.asset?.downloadUrl;
+      return (
+        (rinfo.primaryAction === 'update-stable' ||
+          rinfo.secondaryAction === 'update-pre-release') &&
+        rinfo.asset?.downloadUrl
+      );
     })
     .filter(Boolean)
     .map((url) => url as string);
   const showUpdateAllButton = updateableAssets.length > 1 && insideQt;
   return { showUpdateAllButton, updateableAssets };
+}
+
+function InfoButton({
+  translations,
+  channels,
+}: {
+  translations: AppTranslations;
+  channels: string[];
+}) {
+  const infoMarkdown = translations.information_panel;
+  const renderMarkdown = useMarkdownRenderer({
+    forceBlock: true,
+    components: {
+      h1: ({ children }) => (
+        <h3 className="font-semibold text-lg">{children}</h3>
+      ),
+      h3: ({ children }) => (
+        <h3 className="font-semibold text-lg">{children}</h3>
+      ),
+      a: ({ href, children }) => (
+        <a
+          href={href}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-jasp-blue hover:underline"
+        >
+          {children}
+        </a>
+      ),
+      p: ({ children }) => <p className="mt-2">{children}</p>,
+      li: ({ children }) => <li className="ml-4 list-disc">{children}</li>,
+    },
+  });
+
+  const markdownMentionsAllChannels = channels.every((ch) =>
+    infoMarkdown.value.includes(ch),
+  );
+  if (!markdownMentionsAllChannels) {
+    console.warn(
+      'Not all channels are mentioned in the information panel. Please update text.',
+    );
+  }
+
+  return (
+    <>
+      <button
+        popoverTarget="infoPopover"
+        popoverTargetAction="toggle"
+        type="button"
+        className="ml-auto h-6 w-6 rounded-full border border-border hover:bg-background"
+        title={translations.information.value}
+      >
+        ?
+      </button>
+      <div
+        popover="auto"
+        id="infoPopover"
+        className="relative m-8 mx-auto max-w-sm gap-2 self-center rounded-lg border border-border bg-card p-4 text-foreground"
+      >
+        <button
+          popoverTarget="infoPopover"
+          popoverTargetAction="hide"
+          type="button"
+          className="absolute top-2 right-2 h-6 w-6 rounded hover:bg-background"
+        >
+          ×
+        </button>
+        {renderMarkdown(infoMarkdown.value)}
+      </div>
+    </>
+  );
 }
 
 export function App() {
@@ -731,7 +985,7 @@ export function App() {
   return (
     <JASPScrollBar>
       <main className={cn('px-2', showUpdateAllButton && 'pb-18')}>
-        <div className="mb-4 rounded-lg border border-border bg-card p-3 text-card-foreground shadow-sm">
+        <header className="mb-4 rounded-lg border border-border bg-card p-3 text-card-foreground shadow-sm">
           <div className="flex flex-col gap-3">
             <div className="flex flex-row gap-3">
               <ChannelSelector
@@ -748,6 +1002,10 @@ export function App() {
                   description={allow_prereleases_checkbox_description.value}
                 />
               </div>
+              <InfoButton
+                translations={translations}
+                channels={availableChannels}
+              />
             </div>
             <div>
               <label className="mb-1 block font-medium text-sm">
@@ -765,7 +1023,7 @@ export function App() {
               </label>
             </div>
           </div>
-        </div>
+        </header>
         <ul className="space-y-3">
           {filteredRepos.map((repo) => (
             <RepositoryCard
@@ -773,6 +1031,7 @@ export function App() {
               repo={repo}
               allowPreRelease={allowPreRelease}
               translations={translations}
+              language={info.language}
             />
           ))}
           {filteredRepos.length === 0 && <div>{no_modules_found}</div>}

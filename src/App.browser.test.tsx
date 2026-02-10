@@ -88,19 +88,15 @@ describe('App component', () => {
       });
     });
 
-    describe('Show pre-releases checkbox', () => {
-      test('displays pre-release text when checkbox is checked', async () => {
-        // Check the "Show pre-releases" checkbox
+    describe('Show betas checkbox', () => {
+      test('displays betas text when checkbox is checked', async () => {
+        // Check the "Show betas" checkbox
         const checkbox = screen.getByLabelText('Show Betas');
         await checkbox.click();
 
-        // Search for jaspAnova to filter results
-        const input = screen.getByLabelText('Search for a module');
-        await input.fill('jaspAnova');
-
-        // Assert that the pre-release text appears
+        // Assert that the latest beta text appears
         await expect
-          .element(screen.getByText('Beta', { exact: true }))
+          .element(screen.getByText('latest beta'))
           .toBeInTheDocument();
       });
     });
@@ -117,25 +113,38 @@ describe('App component', () => {
             searchParams: {
               c: 'test.json',
               a: 'MacOS_arm64',
-              i: '{"jaspAnova":"0.95.4"}',
+              i: '{"jaspAnova":"0.95.4-release.0"}',
             },
           }),
         },
       );
     });
 
-    test('shows Update button and release stats for older installed version', async () => {
+    test('shows Update button', async () => {
       const input = screen.getByLabelText('Search for a module');
       await input.fill('jaspAnova');
 
-      await expect.element(screen.getByText('Update')).toBeInTheDocument();
       await expect
-        .element(screen.getByText(/Installed 0\.95\.4, latest 0\.95\.5/i))
+        .element(screen.getByText('Update', { exact: true }))
+        .toBeInTheDocument();
+    });
+
+    test('release stats for older installed version', async () => {
+      const input = screen.getByLabelText('Search for a module');
+      await input.fill('jaspAnova');
+
+      await expect
+        .element(
+          screen.getByText(
+            /Installed 0\.95\.4-release\.0, Latest 0\.95\.5-release\.0/i,
+          ),
+        )
         .toBeInTheDocument();
     });
   });
 
   describe('Given test catalog and when the latest module version is installed', () => {
+    let jaspAnovaCard: Locator;
     beforeEach(async () => {
       screen = await render(
         <NuqslessWrapper>
@@ -146,34 +155,40 @@ describe('App component', () => {
             searchParams: {
               c: 'test.json',
               a: 'MacOS_arm64',
-              i: '{"jaspAnova":"0.95.5"}',
+              i: '{"jaspAnova":"0.95.5-release.0"}',
             },
           }),
         },
       );
+      jaspAnovaCard = screen.getByRole('listitem', { name: 'jaspAnova' });
+      await expect.element(jaspAnovaCard).toBeInTheDocument();
     });
 
-    test('shows installed release stats and no action buttons', async () => {
-      const jaspAnovaCard = screen.getByRole('listitem', { name: 'jaspAnova' });
-      await expect.element(jaspAnovaCard).toBeInTheDocument();
-
-      const releaseStats = jaspAnovaCard.getByText(
-        /Installed 0\.95\.5, latest 0\.95\.5 on .* with 10 downloads/i,
-      );
-      await expect.element(releaseStats).toBeInTheDocument();
-
-      const installedStatus = jaspAnovaCard.getByTitle(
-        /latest version is installed/i,
-      );
-      await expect.element(installedStatus).toBeInTheDocument();
-
+    test('say installed', async () => {
       const installedText = jaspAnovaCard.getByText('Installed', {
         exact: true,
       });
       await expect.element(installedText).toBeInTheDocument();
 
-      // Verify action buttons/links don't render when latest version is installed
-      // Instead, the "Installed" status label replaces them
+      const installedStatus = jaspAnovaCard.getByTitle(
+        'latest version is installed',
+      );
+      await expect.element(installedStatus).toBeInTheDocument();
+    });
+
+    test('shows installed release stats ', async () => {
+      const releaseStats = jaspAnovaCard.getByText(
+        'Latest installed 0.95.5-release.0',
+      );
+      await expect.element(releaseStats).toBeInTheDocument();
+    });
+
+    test('no action buttons', async () => {
+      const installedText = jaspAnovaCard.getByText('Installed', {
+        exact: true,
+      });
+      await expect.element(installedText).toBeInTheDocument();
+
       await expect
         .element(jaspAnovaCard.getByRole('button'))
         .not.toBeInTheDocument();
@@ -183,6 +198,57 @@ describe('App component', () => {
       await expect
         .element(jaspAnovaCard.getByRole('link', { name: 'Update' }))
         .not.toBeInTheDocument();
+    });
+
+    // TODO add test for  release is on GitHub that does not work on installed JASP version
+    // try out with ?v=0.94.0 should show releasejaspAnova v0.94.0
+  });
+
+  describe('Given test catalog and module is removable and unchecked betas checkbox and when beta is installed', () => {
+    beforeEach(async () => {
+      screen = await render(
+        <NuqslessWrapper>
+          <App />
+        </NuqslessWrapper>,
+        {
+          wrapper: withNuqsTestingAdapter({
+            searchParams: {
+              c: 'test.json',
+              a: 'MacOS_arm64',
+              i: '{"jaspAnova":"0.96.0-beta.1"}',
+              p: 'false',
+              u: '["jaspAnova"]',
+            },
+          }),
+        },
+      );
+    });
+
+    test('Should not show update button', async () => {
+      const jaspAnovaCard = screen.getByRole('listitem', { name: 'jaspAnova' });
+      await expect.element(jaspAnovaCard).toBeInTheDocument();
+
+      await expect
+        .element(jaspAnovaCard.getByRole('link', { name: 'Update' }))
+        .not.toBeInTheDocument();
+    });
+
+    test('Should not show uninstall button', async () => {
+      const jaspAnovaCard = screen.getByRole('listitem', { name: 'jaspAnova' });
+      await expect.element(jaspAnovaCard).toBeInTheDocument();
+
+      await expect
+        .element(jaspAnovaCard.getByRole('link', { name: 'Uninstall' }))
+        .not.toBeInTheDocument();
+    });
+
+    test('Should say installed outside qt', async () => {
+      const jaspAnovaCard = screen.getByRole('listitem', { name: 'jaspAnova' });
+      await expect.element(jaspAnovaCard).toBeInTheDocument();
+
+      await expect
+        .element(jaspAnovaCard.getByText('Installed', { exact: true }))
+        .toBeInTheDocument();
     });
   });
 
@@ -286,13 +352,55 @@ describe('App component', () => {
         .element(installButton)
         .toHaveAttribute(
           'href',
-          'https://github.com/test/test/releases/download/v0.95.5/test1_Windows_x86-64.JASPModule',
+          'https://github.com/test/test/releases/download/v0.95.5-release.0/test1_Windows_x86-64.JASPModule',
         );
 
-      // jaspAnova should be the only listitem since it's the only module with Windows_x86-64 asset
       const allListItems = screen.getByRole('listitem');
       const listItemElements = await allListItems.all();
-      expect(listItemElements.length).toBe(1);
+      expect(listItemElements.length).toBe(4);
+    });
+  });
+
+  describe('Given test catalog with nl as language', () => {
+    beforeEach(async () => {
+      screen = await render(
+        <NuqslessWrapper>
+          <App />
+        </NuqslessWrapper>,
+        {
+          wrapper: withNuqsTestingAdapter({
+            searchParams: { c: 'test.json', a: 'MacOS_arm64', l: 'nl' },
+          }),
+        },
+      );
+    });
+
+    test('renders search label in Dutch', async () => {
+      await expect
+        .element(screen.getByText('Zoek een module'))
+        .toBeInTheDocument();
+    });
+
+    test('renders jaspAnova name in Dutch', async () => {
+      const jaspAnovaCard = screen.getByRole('listitem', {
+        name: 'Mijn Anova Module',
+      });
+      await expect.element(jaspAnovaCard).toBeInTheDocument();
+
+      await expect
+        .element(jaspAnovaCard.getByText('Mijn Anova Module'))
+        .toBeInTheDocument();
+    });
+
+    test('renders jaspAnova description in Dutch', async () => {
+      const jaspAnovaCard = screen.getByRole('listitem', {
+        name: 'Mijn Anova Module',
+      });
+      await expect.element(jaspAnovaCard).toBeInTheDocument();
+
+      await expect
+        .element(jaspAnovaCard.getByText('Test Module 1 in Nederlands'))
+        .toBeInTheDocument();
     });
   });
 });
