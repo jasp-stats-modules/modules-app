@@ -39,7 +39,7 @@ export interface Repository {
 }
 
 export interface Submodule {
-  git_url: string;
+  gitUrl: string;
   path: string;
   name: string;
   description: string;

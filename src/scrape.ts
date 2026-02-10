@@ -80,7 +80,7 @@ async function pullAndScrapeRegistry(
   return submodules;
 }
 
-function logSubmoduleStats(submodules: Submodule[]): string {
+export function logSubmoduleStats(submodules: Submodule[]): string {
   const total = submodules.length;
   const translationCounts = submodules.map(
     (s) => Object.keys(s.translations).length,
@@ -94,7 +94,7 @@ function logSubmoduleStats(submodules: Submodule[]): string {
   return lines.join('\n');
 }
 
-async function extractBareSubmodules(registry_dir: string) {
+export async function extractBareSubmodules(registry_dir: string) {
   const gitmodulesPath = pathJoin(registry_dir, '.gitmodules');
   const gitmodulesContent = await fs.readFile(gitmodulesPath, 'utf8');
 
@@ -132,7 +132,7 @@ export async function nameAndDescriptionFromSubmodule(
   );
 
   const submoduleDetails: Submodule = {
-    git_url: gitUrl,
+    gitUrl,
     path,
     name: title,
     description,
@@ -219,7 +219,7 @@ function submodulesToRepo2Channels(submodules: Submodule[]): Repo2Channels {
   const repo2channels: Repo2Channels = {};
   for (const submodule of submodules) {
     const channel = path2channel(submodule.path);
-    const nameWithOwner = url2nameWithOwner(submodule.git_url);
+    const nameWithOwner = url2nameWithOwner(submodule.gitUrl);
     if (!repo2channels[nameWithOwner]) {
       repo2channels[nameWithOwner] = [];
     }
@@ -334,7 +334,7 @@ export function parseDescriptionQml(content: string): {
   };
 }
 
-export async function extractNameAndDescriptionFromPoFile(
+async function extractNameAndDescriptionFromPoFile(
   poPath: string,
   title: string,
   description: string,
@@ -361,7 +361,7 @@ export async function extractNameAndDescriptionFromPoFile(
   return undefined;
 }
 
-async function extractTranslationsFromPoFiles(
+export async function extractTranslationsFromPoFiles(
   repoDir: string,
   title: string,
   description: string,
@@ -576,7 +576,7 @@ async function releaseAssets(
 
     const queries = chunk
       .map((submodule, index) => {
-        const nameWithOwner = url2nameWithOwner(submodule.git_url);
+        const nameWithOwner = url2nameWithOwner(submodule.gitUrl);
         const [owner, repo] = nameWithOwner.split('/');
         return dedent`
         repo${index}: repository(owner: "${owner}", name: "${repo}") {
@@ -631,7 +631,7 @@ async function releaseAssets(
           ...restRepo
         } = repo;
         const submodule = chunk.find(
-          (s) => url2nameWithOwner(s.git_url) === nameWithOwner,
+          (s) => url2nameWithOwner(s.gitUrl) === nameWithOwner,
         );
         if (!submodule) {
           throw new Error(

@@ -1,5 +1,5 @@
 import fs from 'node:fs/promises';
-import path from 'node:path';
+import path, { join } from 'node:path';
 import { Octokit } from '@octokit/core';
 import { paginateGraphQL } from '@octokit/plugin-paginate-graphql';
 import chalk from 'chalk';
@@ -19,10 +19,13 @@ import type { GqlRelease } from './scrape';
 import {
   batchedArray,
   extractArchitectureFromUrl,
-  extractNameAndDescriptionFromPoFile,
+  extractBareSubmodules,
+  extractTranslationsFromPoFiles,
   latestReleasePerJaspVersionRange,
   logChannelStats,
   logReleaseStatistics,
+  logSubmoduleStats,
+  nameAndDescriptionFromSubmodules,
   parseDescriptionQml,
   parseReleaseFrontMatter,
   path2channel,
@@ -409,7 +412,7 @@ describe('releaseAssetsPaged', () => {
     const octokit = new MyOctokit({ auth: 'fake-token' });
     const submodules = [
       {
-        git_url: 'https://github.com/jasp-stats-modules/jaspAnova.git',
+        gitUrl: 'https://github.com/jasp-stats-modules/jaspAnova.git',
         path: 'registry/Official/jaspAnova',
         name: 'jaspAnova',
         description: 'Anova module',
@@ -478,7 +481,7 @@ describe('releaseAssetsPaged', () => {
     const octokit = new MyOctokit({ auth: 'fake-token' });
     const submodules: Submodule[] = [
       {
-        git_url: 'https://github.com/jasp-stats-modules/jaspAnova.git',
+        gitUrl: 'https://github.com/jasp-stats-modules/jaspAnova.git',
         path: 'registry/Official/jaspAnova',
         name: 'jaspAnova',
         description: 'Anova module',
@@ -552,7 +555,7 @@ describe('releaseAssetsPaged', () => {
     const octokit = new MyOctokit({ auth: 'fake-token' });
     const submodules: Submodule[] = [
       {
-        git_url: 'https://github.com/jasp-stats-modules/jaspAnova.git',
+        gitUrl: 'https://github.com/jasp-stats-modules/jaspAnova.git',
         path: 'registry/Official/jaspAnova',
         name: 'jaspAnova',
         description: 'Anova module',
@@ -653,7 +656,7 @@ describe('releaseAssetsPaged', () => {
     const octokit = new MyOctokit({ auth: 'fake-token' });
     const submodules: Submodule[] = [
       {
-        git_url: 'https://github.com/jasp-stats-modules/jaspAnova.git',
+        gitUrl: 'https://github.com/jasp-stats-modules/jaspAnova.git',
         path: 'registry/Official/jaspAnova',
         name: 'jaspAnova',
         description: 'Anova module',
@@ -728,7 +731,7 @@ describe('releaseAssetsPaged', () => {
     const octokit = new MyOctokit({ auth: 'fake-token' });
     const submodules: Submodule[] = [
       {
-        git_url: 'https://github.com/jasp-stats-modules/jaspAnova.git',
+        gitUrl: 'https://github.com/jasp-stats-modules/jaspAnova.git',
         path: 'registry/Official/jaspAnova',
         name: 'jaspAnova',
         description: 'Anova module',
@@ -851,14 +854,14 @@ describe('releaseAssetsPaged', () => {
     const octokit = new MyOctokit({ auth: 'fake-token' });
     const submodules: Submodule[] = [
       {
-        git_url: 'https://github.com/jasp-stats-modules/jaspAnova.git',
+        gitUrl: 'https://github.com/jasp-stats-modules/jaspAnova.git',
         path: 'registry/Official/jaspAnova',
         name: 'jaspAnova',
         description: 'Anova module',
         translations: {},
       },
       {
-        git_url: 'https://github.com/jasp-stats-modules/jaspBain.git',
+        gitUrl: 'https://github.com/jasp-stats-modules/jaspBain.git',
         path: 'registry/Official/jaspBain',
         name: 'jaspBain',
         description: 'Bain module',
@@ -1075,13 +1078,10 @@ describe('logChannelStats', () => {
   });
 });
 
-describe('extractNameAndDescriptionFromPoFile', () => {
-  let tempDir: tmp.DirResult;
-
-  beforeEach(async () => {
-    // Create temp directory using tmp package
-    tempDir = tmp.dirSync({ unsafeCleanup: true });
-    const poContent = `msgid ""
+async function writePoFileForDutch(moduleDir: string) {
+  const poDir = path.join(moduleDir, 'po');
+  await fs.mkdir(poDir);
+  const poContent = `msgid ""
 msgstr ""
 "MIME-Version: 1.0\\n"
 "Content-Type: text/plain; charset=UTF-8\\n"
@@ -1111,7 +1111,15 @@ msgctxt "Description|"
 msgid "MANOVA"
 msgstr "MANOVA"
 `;
-    await fs.writeFile(path.join(tempDir.name, 'QML-nl.po'), poContent);
+  await fs.writeFile(path.join(poDir, 'QML-nl.po'), poContent);
+}
+
+describe('extractTranslationsFromPoFiles', () => {
+  let tempDir: tmp.DirResult;
+
+  beforeEach(async () => {
+    // Create temp directory using tmp package
+    tempDir = tmp.dirSync({ unsafeCleanup: true });
   });
 
   afterEach(() => {
@@ -1120,30 +1128,30 @@ msgstr "MANOVA"
   });
 
   test('extracts language and translated name/description', async () => {
-    const result = await extractNameAndDescriptionFromPoFile(
-      path.join(tempDir.name, 'QML-nl.po'),
+    await writePoFileForDutch(tempDir.name);
+    const result = await extractTranslationsFromPoFiles(
+      tempDir.name,
       'ANOVA',
       'Classical',
     );
 
-    const expected = [
-      'nl',
-      {
+    const expected = {
+      nl: {
         name: 'ANOVA',
         description: 'Klassiek',
       },
-    ];
+    };
     expect(result).toEqual(expected);
   });
 
-  test('uses undefined when translation is not found', async () => {
-    const result = await extractNameAndDescriptionFromPoFile(
-      path.join(tempDir.name, 'QML-nl.po'),
+  test('given empty dir returns empty object', async () => {
+    const result = await extractTranslationsFromPoFiles(
+      path.join(tempDir.name),
       'ANOVA',
       'NonExistentDescription',
     );
 
-    const expected = undefined;
+    const expected = {};
     expect(result).toEqual(expected);
   });
 });
@@ -1175,4 +1183,107 @@ Description {
       'Failed to parse name and description from Description.qml content',
     );
   });
+});
+
+describe('given a mock registry with a single submodule with a single translation', () => {
+  let tempDir: tmp.DirResult;
+
+  beforeEach(async () => {
+    // Create temp directory using tmp package
+    tempDir = tmp.dirSync({ unsafeCleanup: true });
+
+    const gimodulesFile = path.join(tempDir.name, '.gitmodules');
+    const content = `[submodule "beta-modules/jaspAnova"]
+path = Official/jaspAnova
+url = https://github.com/jasp-stats-modules/jaspAnova.git
+`;
+    await fs.writeFile(gimodulesFile, content);
+
+    const moduleDir = path.join(tempDir.name, 'Official/jaspAnova');
+    await fs.mkdir(moduleDir, { recursive: true });
+    const instDir = path.join(moduleDir, 'inst');
+    await fs.mkdir(instDir);
+
+    const descriptionQmlContent = `import QtQuick
+import JASP.Module
+
+Description {
+        title           : qsTr("Classical")
+        icon            : "analysis-classical-anova.svg"
+        description     : qsTr("Repeated Measures ANOVA")
+}
+`;
+    await fs.writeFile(
+      path.join(instDir, 'Description.qml'),
+      descriptionQmlContent,
+    );
+
+    await writePoFileForDutch(moduleDir);
+  });
+
+  afterEach(() => {
+    // Clean up temp directory
+    tempDir.removeCallback();
+  });
+
+  test('extractBareSubmodules', async () => {
+    const result = await extractBareSubmodules(tempDir.name);
+    const expected = [
+      {
+        gitUrl: 'https://github.com/jasp-stats-modules/jaspAnova.git',
+        path: join(tempDir.name, 'Official', 'jaspAnova'),
+      },
+    ];
+    expect(result).toEqual(expected);
+  });
+
+  test('nameAndDescriptionFromSubmodules', async () => {
+    const bareSubmodules = [
+      {
+        gitUrl: 'https://github.com/jasp-stats-modules/jaspAnova.git',
+        path: join(tempDir.name, 'Official', 'jaspAnova'),
+      },
+    ];
+
+    const result = await nameAndDescriptionFromSubmodules(bareSubmodules);
+    const expected: Submodule[] = [
+      {
+        description: 'Repeated Measures ANOVA',
+        gitUrl: 'https://github.com/jasp-stats-modules/jaspAnova.git',
+        name: 'Classical',
+        path: join(tempDir.name, 'Official', 'jaspAnova'),
+        translations: {
+          nl: {
+            description: 'Herhaalde Metingen ANOVA',
+            name: 'Klassiek',
+          },
+        },
+      },
+    ];
+    expect(result).toEqual(expected);
+  });
+});
+
+test('logSubmoduleStats', () => {
+  const submodules: Submodule[] = [
+    {
+      description: 'Repeated Measures ANOVA',
+      gitUrl: 'https://github.com/jasp-stats-modules/jaspAnova.git',
+      name: 'Classical',
+      path: join('Official', 'jaspAnova'),
+      translations: {
+        nl: {
+          description: 'Herhaalde Metingen ANOVA',
+          name: 'Klassiek',
+        },
+      },
+    },
+  ];
+
+  const result = logSubmoduleStats(submodules);
+  const expected = [
+    'Found 1 submodules',
+    'Average number of translations per submodule: 1',
+  ].join('\n');
+  expect(result).toEqual(expected);
 });

@@ -49,10 +49,10 @@ Use the "Run workflow" button to trigger the workflow manually.
 To get a list of available JASP modules, it does the following with the help of the `src/scrape.ts` script:
 
 1. Fetches the git submodules of HEAD of main branch of the https://github.com/jasp-stats-modules/modules-registry repository.
-   - the directory in which a submodule is located is the channel
+   - the directory in which a submodule is located is called the channel
 2. For each submodule parses 
    1. the English title and description from `inst/Description.qml` file
-   2. translations of title and description from `po/QML-<lang>.po` files, where `<lang>` is the language code (e.g., `nl` for Dutch)
+   2. translations of title and description from `po/QML-<lang>.po` files, where `<lang>` is the language code (for example, `nl` for Dutch)
 3. For each submodule fetches its releases
    1. Fetches data for the latest 20 releases, paged per 3 repositories using GitHub GraphQL API
    2. Filter the first 20 release assets per release ending with `.JASPModule` extension
