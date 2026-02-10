@@ -21,11 +21,14 @@ export interface Translation {
 }
 export type Translations = Record<Lang, Translation>;
 
-export interface BareRepository {
+export interface ModuleTranslations {
+  name: string; // English name from Description.qml
+  description: string; // English description from Description.qml
+  translations: Translations; // Translations from QML-*.po files
+}
+
+export interface BareRepository extends ModuleTranslations {
   id: string; // GitHub repo name
-  name: string; // Human readable name from Description.qml
-  description: string; // description from Description.qml
-  translations: Translations;
   // repo (nameWithOwner format) in https://github.com/jasp-stats-modules/modules-registry
   // where submodule is pointing to
   releaseSource: string;
@@ -41,10 +44,7 @@ export interface Repository extends BareRepository {
   preReleases: Release[];
 }
 
-export interface Submodule {
+export interface Submodule extends ModuleTranslations {
   gitUrl: string;
   path: string;
-  name: string;
-  description: string;
-  translations: Translations;
 }
