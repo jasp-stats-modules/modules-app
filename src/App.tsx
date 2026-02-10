@@ -7,10 +7,11 @@ import { useIntlayer, useMarkdownRenderer } from 'react-intlayer';
 import { useDebounceValue } from 'usehooks-ts';
 import { cn } from '@/lib/utils';
 import type { Asset, Release, Repository } from '@/types';
-import { insideQt, useJaspQtObject } from '@/useJaspQtObject';
+import { type Info, insideQt, useJaspQtObject } from '@/useJaspQtObject';
 import { useInfo } from './useInfo';
 import {
   findReleaseThatSatisfiesInstalledJaspVersion,
+  getReleaseInfo,
   isNewerVersion,
   type ReleaseStats,
   useRelease,
@@ -790,6 +791,64 @@ function JASPScrollBar({ children }: { children: ReactNode }) {
   );
 }
 
+function UpdateAllButton({
+  label,
+  assets,
+}: {
+  label: string;
+  assets: string[];
+}) {
+  const { data: jasp } = useJaspQtObject();
+
+  async function doUpdateAll() {
+    await jasp?.installMany(assets);
+  }
+
+  return (
+    <div className="fixed bottom-0 left-0 z-50 w-full border-border border-t bg-background px-2 pt-2 pb-2">
+      <button
+        type="button"
+        onClick={doUpdateAll}
+        className="inline-flex w-full items-center justify-center whitespace-nowrap rounded bg-jasp-green px-3 py-1.5 font-medium text-lg text-primary transition-colors duration-200 hover:bg-green-600 dark:hover:bg-green-800"
+      >
+        {label} ({assets.length})
+      </button>
+    </div>
+  );
+}
+
+function getUpdateableAssets(
+  installableRepos: Repository[],
+  info: Info,
+  allowPreRelease: boolean,
+) {
+  if (!insideQt) {
+    // Uncomment for testing outside Qt
+    // return { showUpdateAllButton: true, updateableAssets: ['https://example.com', 'https://example2.com'] };
+    return { showUpdateAllButton: false, updateableAssets: [] };
+  }
+  const updateableAssets = installableRepos
+    .map((repo) => {
+      const rinfo = getReleaseInfo(
+        repo,
+        info.version,
+        allowPreRelease,
+        info.arch,
+        info.installedModules,
+        info.uninstallableModules,
+      );
+      return (
+        (rinfo.primaryAction === 'update-stable' ||
+          rinfo.secondaryAction === 'update-pre-release') &&
+        rinfo.asset?.downloadUrl
+      );
+    })
+    .filter(Boolean)
+    .map((url) => url as string);
+  const showUpdateAllButton = updateableAssets.length > 1 && insideQt;
+  return { showUpdateAllButton, updateableAssets };
+}
+
 function InfoButton({
   translations,
   channels,
@@ -868,6 +927,7 @@ export function App() {
     allow_prereleases_checkbox_description,
     search_for_a_module,
     no_modules_found,
+    update_all,
   } = translations;
   const { info, error, isInfoFetched } = useInfo();
   const [catalogUrl] = useQueryState('c', {
@@ -906,6 +966,11 @@ export function App() {
     installableRepos,
     debouncedSearchTerm,
   );
+  const { showUpdateAllButton, updateableAssets } = getUpdateableAssets(
+    installableRepos,
+    info,
+    allowPreRelease,
+  );
 
   if (error) {
     return <div>Error fetching environment info: {String(error)}</div>;
@@ -919,7 +984,7 @@ export function App() {
 
   return (
     <JASPScrollBar>
-      <main className="px-2 py-2">
+      <main className={cn('px-2', showUpdateAllButton && 'pb-18')}>
         <header className="mb-4 rounded-lg border border-border bg-card p-3 text-card-foreground shadow-sm">
           <div className="flex flex-col gap-3">
             <div className="flex flex-row gap-3">
@@ -971,6 +1036,9 @@ export function App() {
           ))}
           {filteredRepos.length === 0 && <div>{no_modules_found}</div>}
         </ul>
+        {showUpdateAllButton && (
+          <UpdateAllButton label={update_all.value} assets={updateableAssets} />
+        )}
       </main>
     </JASPScrollBar>
   );

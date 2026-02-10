@@ -66,7 +66,9 @@
       }
     },
     "releaseSource": "jasp-stats-modules/jaspAcceptanceSampling",
-    "organization": "jasp-stats",
+    "channels": [
+      "Official"
+    ],
     "releases": [
       {
         "publishedAt": "2026-02-08T21:31:27Z",
@@ -125,9 +127,7 @@
         ]
       }
     ],
-    "channels": [
-      "Official"
-    ]
+    "organization": "jasp-stats"
   },
   {
     "id": "jaspAnova",
@@ -188,7 +188,9 @@
       }
     },
     "releaseSource": "jasp-stats-modules/jaspAnova",
-    "organization": "jasp-stats",
+    "channels": [
+      "Official"
+    ],
     "releases": [
       {
         "publishedAt": "2026-02-08T21:35:03Z",
@@ -247,9 +249,7 @@
         ]
       }
     ],
-    "channels": [
-      "Official"
-    ]
+    "organization": "jasp-stats"
   },
   {
     "id": "jaspAudit",
@@ -302,7 +302,9 @@
       }
     },
     "releaseSource": "jasp-stats-modules/jaspAudit",
-    "organization": "jasp-stats",
+    "channels": [
+      "Official"
+    ],
     "releases": [
       {
         "publishedAt": "2026-02-08T21:37:04Z",
@@ -361,10 +363,8 @@
         ]
       }
     ],
-    "homepageUrl": "https://koenderks.github.io/jaum/",
-    "channels": [
-      "Official"
-    ]
+    "organization": "jasp-stats",
+    "homepageUrl": "https://koenderks.github.io/jaum/"
   },
   {
     "id": "jaspBFF",
@@ -397,7 +397,9 @@
       }
     },
     "releaseSource": "jasp-stats-modules/jaspBFF",
-    "organization": "jasp-stats",
+    "channels": [
+      "Official"
+    ],
     "releases": [
       {
         "publishedAt": "2026-02-08T21:37:26Z",
@@ -456,9 +458,7 @@
         ]
       }
     ],
-    "channels": [
-      "Official"
-    ]
+    "organization": "jasp-stats"
   },
   {
     "id": "jaspBain",
@@ -515,7 +515,9 @@
       }
     },
     "releaseSource": "jasp-stats-modules/jaspBain",
-    "organization": "jasp-stats",
+    "channels": [
+      "Official"
+    ],
     "releases": [
       {
         "publishedAt": "2026-02-08T21:38:32Z",
@@ -574,9 +576,7 @@
         ]
       }
     ],
-    "channels": [
-      "Official"
-    ]
+    "organization": "jasp-stats"
   },
   {
     "id": "jaspBfpack",
@@ -584,7 +584,9 @@
     "description": "A module for computing Bayes factors for equality, inequality, and order constrained hypotheses.",
     "translations": {},
     "releaseSource": "jasp-stats-modules/jaspBfpack",
-    "organization": "jasp-stats",
+    "channels": [
+      "Official"
+    ],
     "releases": [
       {
         "publishedAt": "2026-02-08T21:39:20Z",
@@ -643,9 +645,7 @@
         ]
       }
     ],
-    "channels": [
-      "Official"
-    ]
+    "organization": "jasp-stats"
   },
   {
     "id": "jaspBsts",
@@ -690,7 +690,9 @@
       }
     },
     "releaseSource": "jasp-stats-modules/jaspBsts",
-    "organization": "jasp-stats",
+    "channels": [
+      "Official"
+    ],
     "releases": [
       {
         "publishedAt": "2026-02-08T21:39:59Z",
@@ -749,9 +751,7 @@
         ]
       }
     ],
-    "channels": [
-      "Official"
-    ]
+    "organization": "jasp-stats"
   },
   {
     "id": "jaspCircular",
@@ -796,7 +796,9 @@
       }
     },
     "releaseSource": "jasp-stats-modules/jaspCircular",
-    "organization": "jasp-stats",
+    "channels": [
+      "Official"
+    ],
     "releases": [
       {
         "publishedAt": "2026-02-08T21:40:43Z",
@@ -855,9 +857,7 @@
         ]
       }
     ],
-    "channels": [
-      "Official"
-    ]
+    "organization": "jasp-stats"
   },
   {
     "id": "jaspCochrane",
@@ -910,7 +910,9 @@
       }
     },
     "releaseSource": "jasp-stats-modules/jaspCochrane",
-    "organization": "jasp-stats",
+    "channels": [
+      "Official"
+    ],
     "releases": [
       {
         "publishedAt": "2026-02-08T21:41:35Z",
@@ -969,9 +971,7 @@
         ]
       }
     ],
-    "channels": [
-      "Official"
-    ]
+    "organization": "jasp-stats"
   },
   {
     "id": "jaspDescriptives",
@@ -1048,7 +1048,9 @@
       }
     },
     "releaseSource": "jasp-stats-modules/jaspDescriptives",
-    "organization": "jasp-stats",
+    "channels": [
+      "Official"
+    ],
     "releases": [
       {
         "publishedAt": "2026-02-08T21:42:41Z",
@@ -1107,9 +1109,7 @@
         ]
       }
     ],
-    "channels": [
-      "Official"
-    ]
+    "organization": "jasp-stats"
   },
   {
     "id": "jaspDistributions",
@@ -1162,7 +1162,9 @@
       }
     },
     "releaseSource": "jasp-stats-modules/jaspDistributions",
-    "organization": "jasp-stats",
+    "channels": [
+      "Official"
+    ],
     "releases": [
       {
         "publishedAt": "2026-02-08T21:43:30Z",
@@ -1221,9 +1223,7 @@
         ]
       }
     ],
-    "channels": [
-      "Official"
-    ]
+    "organization": "jasp-stats"
   },
   {
     "id": "jaspEquivalenceTTests",
@@ -1284,7 +1284,9 @@
       }
     },
     "releaseSource": "jasp-stats-modules/jaspEquivalenceTTests",
-    "organization": "jasp-stats",
+    "channels": [
+      "Official"
+    ],
     "releases": [
       {
         "publishedAt": "2026-02-08T21:44:14Z",
@@ -1343,9 +1345,7 @@
         ]
       }
     ],
-    "channels": [
-      "Official"
-    ]
+    "organization": "jasp-stats"
   },
   {
     "id": "jaspEsci",
@@ -1353,7 +1353,9 @@
     "description": "ESCI in JASP",
     "translations": {},
     "releaseSource": "jasp-stats-modules/jaspEsci",
-    "organization": "jasp-stats",
+    "channels": [
+      "Official"
+    ],
     "releases": [
       {
         "publishedAt": "2026-02-08T21:44:46Z",
@@ -1412,9 +1414,7 @@
         ]
       }
     ],
-    "channels": [
-      "Official"
-    ]
+    "organization": "jasp-stats"
   },
   {
     "id": "jaspFactor",
@@ -1475,7 +1475,9 @@
       }
     },
     "releaseSource": "jasp-stats-modules/jaspFactor",
-    "organization": "jasp-stats",
+    "channels": [
+      "Official"
+    ],
     "releases": [
       {
         "publishedAt": "2026-02-08T21:45:29Z",
@@ -1534,9 +1536,7 @@
         ]
       }
     ],
-    "channels": [
-      "Official"
-    ]
+    "organization": "jasp-stats"
   },
   {
     "id": "jaspFrequencies",
@@ -1601,7 +1601,9 @@
       }
     },
     "releaseSource": "jasp-stats-modules/jaspFrequencies",
-    "organization": "jasp-stats",
+    "channels": [
+      "Official"
+    ],
     "releases": [
       {
         "publishedAt": "2026-02-08T21:46:04Z",
@@ -1660,9 +1662,7 @@
         ]
       }
     ],
-    "channels": [
-      "Official"
-    ]
+    "organization": "jasp-stats"
   },
   {
     "id": "jaspJags",
@@ -1707,7 +1707,9 @@
       }
     },
     "releaseSource": "jasp-stats-modules/jaspJags",
-    "organization": "jasp-stats",
+    "channels": [
+      "Official"
+    ],
     "releases": [
       {
         "publishedAt": "2026-02-08T21:46:40Z",
@@ -1766,9 +1768,7 @@
         ]
       }
     ],
-    "channels": [
-      "Official"
-    ]
+    "organization": "jasp-stats"
   },
   {
     "id": "jaspLearnBayes",
@@ -1825,7 +1825,9 @@
       }
     },
     "releaseSource": "jasp-stats-modules/jaspLearnBayes",
-    "organization": "jasp-stats",
+    "channels": [
+      "Official"
+    ],
     "releases": [
       {
         "publishedAt": "2026-02-08T21:47:10Z",
@@ -1884,9 +1886,7 @@
         ]
       }
     ],
-    "channels": [
-      "Official"
-    ]
+    "organization": "jasp-stats"
   },
   {
     "id": "jaspLearnStats",
@@ -1935,7 +1935,9 @@
       }
     },
     "releaseSource": "jasp-stats-modules/jaspLearnStats",
-    "organization": "jasp-stats",
+    "channels": [
+      "Official"
+    ],
     "releases": [
       {
         "publishedAt": "2026-02-08T21:47:57Z",
@@ -1994,9 +1996,7 @@
         ]
       }
     ],
-    "channels": [
-      "Official"
-    ]
+    "organization": "jasp-stats"
   },
   {
     "id": "jaspMachineLearning",
@@ -2045,7 +2045,9 @@
       }
     },
     "releaseSource": "jasp-stats-modules/jaspMachineLearning",
-    "organization": "jasp-stats",
+    "channels": [
+      "Official"
+    ],
     "releases": [
       {
         "publishedAt": "2026-02-08T21:48:56Z",
@@ -2104,9 +2106,7 @@
         ]
       }
     ],
-    "channels": [
-      "Official"
-    ]
+    "organization": "jasp-stats"
   },
   {
     "id": "jaspMetaAnalysis",
@@ -2171,7 +2171,9 @@
       }
     },
     "releaseSource": "jasp-stats-modules/jaspMetaAnalysis",
-    "organization": "jasp-stats",
+    "channels": [
+      "Official"
+    ],
     "releases": [
       {
         "publishedAt": "2026-02-08T21:50:02Z",
@@ -2230,9 +2232,7 @@
         ]
       }
     ],
-    "channels": [
-      "Official"
-    ]
+    "organization": "jasp-stats"
   },
   {
     "id": "jaspMixedModels",
@@ -2289,7 +2289,9 @@
       }
     },
     "releaseSource": "jasp-stats-modules/jaspMixedModels",
-    "organization": "jasp-stats",
+    "channels": [
+      "Official"
+    ],
     "releases": [
       {
         "publishedAt": "2026-02-08T21:51:02Z",
@@ -2348,9 +2350,7 @@
         ]
       }
     ],
-    "channels": [
-      "Official"
-    ]
+    "organization": "jasp-stats"
   },
   {
     "id": "jaspNetwork",
@@ -2403,7 +2403,9 @@
       }
     },
     "releaseSource": "jasp-stats-modules/jaspNetwork",
-    "organization": "jasp-stats",
+    "channels": [
+      "Official"
+    ],
     "releases": [
       {
         "publishedAt": "2026-02-08T21:51:52Z",
@@ -2462,9 +2464,7 @@
         ]
       }
     ],
-    "channels": [
-      "Official"
-    ]
+    "organization": "jasp-stats"
   },
   {
     "id": "jaspPower",
@@ -2517,7 +2517,9 @@
       }
     },
     "releaseSource": "jasp-stats-modules/jaspPower",
-    "organization": "jasp-stats",
+    "channels": [
+      "Official"
+    ],
     "releases": [
       {
         "publishedAt": "2026-02-08T21:52:24Z",
@@ -2576,9 +2578,7 @@
         ]
       }
     ],
-    "channels": [
-      "Official"
-    ]
+    "organization": "jasp-stats"
   },
   {
     "id": "jaspPredictiveAnalytics",
@@ -2607,7 +2607,9 @@
       }
     },
     "releaseSource": "jasp-stats-modules/jaspPredictiveAnalytics",
-    "organization": "jasp-stats",
+    "channels": [
+      "Official"
+    ],
     "releases": [
       {
         "publishedAt": "2026-02-08T21:53:09Z",
@@ -2666,9 +2668,7 @@
         ]
       }
     ],
-    "channels": [
-      "Official"
-    ]
+    "organization": "jasp-stats"
   },
   {
     "id": "jaspProcess",
@@ -2697,7 +2697,9 @@
       }
     },
     "releaseSource": "jasp-stats-modules/jaspProcess",
-    "organization": "jasp-stats",
+    "channels": [
+      "Official"
+    ],
     "releases": [
       {
         "publishedAt": "2026-02-08T21:54:04Z",
@@ -2756,9 +2758,7 @@
         ]
       }
     ],
-    "channels": [
-      "Official"
-    ]
+    "organization": "jasp-stats"
   },
   {
     "id": "jaspProphet",
@@ -2807,7 +2807,9 @@
       }
     },
     "releaseSource": "jasp-stats-modules/jaspProphet",
-    "organization": "jasp-stats",
+    "channels": [
+      "Official"
+    ],
     "releases": [
       {
         "publishedAt": "2026-02-08T21:54:42Z",
@@ -2866,9 +2868,7 @@
         ]
       }
     ],
-    "channels": [
-      "Official"
-    ]
+    "organization": "jasp-stats"
   },
   {
     "id": "jaspQualityControl",
@@ -2909,7 +2909,9 @@
       }
     },
     "releaseSource": "jasp-stats-modules/jaspQualityControl",
-    "organization": "jasp-stats",
+    "channels": [
+      "Official"
+    ],
     "releases": [
       {
         "publishedAt": "2026-02-08T21:55:29Z",
@@ -2968,9 +2970,7 @@
         ]
       }
     ],
-    "channels": [
-      "Official"
-    ]
+    "organization": "jasp-stats"
   },
   {
     "id": "jaspRegression",
@@ -3031,7 +3031,9 @@
       }
     },
     "releaseSource": "jasp-stats-modules/jaspRegression",
-    "organization": "jasp-stats",
+    "channels": [
+      "Official"
+    ],
     "releases": [
       {
         "publishedAt": "2026-02-08T21:56:44Z",
@@ -3090,9 +3092,7 @@
         ]
       }
     ],
-    "channels": [
-      "Official"
-    ]
+    "organization": "jasp-stats"
   },
   {
     "id": "jaspReliability",
@@ -3145,7 +3145,9 @@
       }
     },
     "releaseSource": "jasp-stats-modules/jaspReliability",
-    "organization": "jasp-stats",
+    "channels": [
+      "Official"
+    ],
     "releases": [
       {
         "publishedAt": "2026-02-08T21:57:31Z",
@@ -3204,9 +3206,7 @@
         ]
       }
     ],
-    "channels": [
-      "Official"
-    ]
+    "organization": "jasp-stats"
   },
   {
     "id": "jaspSem",
@@ -3251,7 +3251,9 @@
       }
     },
     "releaseSource": "jasp-stats-modules/jaspSem",
-    "organization": "jasp-stats",
+    "channels": [
+      "Official"
+    ],
     "releases": [
       {
         "publishedAt": "2026-02-08T21:59:02Z",
@@ -3310,9 +3312,7 @@
         ]
       }
     ],
-    "channels": [
-      "Official"
-    ]
+    "organization": "jasp-stats"
   },
   {
     "id": "jaspSummaryStatistics",
@@ -3365,7 +3365,9 @@
       }
     },
     "releaseSource": "jasp-stats-modules/jaspSummaryStatistics",
-    "organization": "jasp-stats",
+    "channels": [
+      "Official"
+    ],
     "releases": [
       {
         "publishedAt": "2026-02-08T22:00:14Z",
@@ -3424,9 +3426,7 @@
         ]
       }
     ],
-    "channels": [
-      "Official"
-    ]
+    "organization": "jasp-stats"
   },
   {
     "id": "jaspSurvival",
@@ -3434,7 +3434,9 @@
     "description": "Perform analyses of censored time to event data.",
     "translations": {},
     "releaseSource": "jasp-stats-modules/jaspSurvival",
-    "organization": "jasp-stats",
+    "channels": [
+      "Official"
+    ],
     "releases": [
       {
         "publishedAt": "2026-02-08T22:00:53Z",
@@ -3493,9 +3495,7 @@
         ]
       }
     ],
-    "channels": [
-      "Official"
-    ]
+    "organization": "jasp-stats"
   },
   {
     "id": "jaspTTests",
@@ -3564,7 +3564,9 @@
       }
     },
     "releaseSource": "jasp-stats-modules/jaspTTests",
-    "organization": "jasp-stats",
+    "channels": [
+      "Official"
+    ],
     "releases": [
       {
         "publishedAt": "2026-02-08T22:01:24Z",
@@ -3623,9 +3625,7 @@
         ]
       }
     ],
-    "channels": [
-      "Official"
-    ]
+    "organization": "jasp-stats"
   },
   {
     "id": "jaspTestModule",
@@ -3642,7 +3642,9 @@
       }
     },
     "releaseSource": "jasp-stats-modules/jaspTestModule",
-    "organization": "jasp-stats",
+    "channels": [
+      "Community"
+    ],
     "releases": [
       {
         "publishedAt": "2026-02-08T21:29:03Z",
@@ -3701,9 +3703,7 @@
         ]
       }
     ],
-    "channels": [
-      "Community"
-    ]
+    "organization": "jasp-stats"
   },
   {
     "id": "jaspVisualModeling",
@@ -3752,7 +3752,9 @@
       }
     },
     "releaseSource": "jasp-stats-modules/jaspVisualModeling",
-    "organization": "jasp-stats",
+    "channels": [
+      "Official"
+    ],
     "releases": [
       {
         "publishedAt": "2026-02-08T22:03:15Z",
@@ -3811,9 +3813,7 @@
         ]
       }
     ],
-    "channels": [
-      "Official"
-    ]
+    "organization": "jasp-stats"
   },
   {
     "id": "jaspTimeSeries",
@@ -3850,7 +3850,9 @@
       }
     },
     "releaseSource": "jasp-stats-modules/jaspTimeSeries",
-    "organization": "jasp-stats",
+    "channels": [
+      "Official"
+    ],
     "releases": [
       {
         "publishedAt": "2026-02-08T22:02:26Z",
@@ -3893,7 +3895,7 @@
           },
           {
             "downloadUrl": "https://github.com/jasp-stats-modules/jaspTimeSeries/releases/download/0.95.0-beta.0_e72386bc_R-4-5-2_Beta/jaspTimeSeries_0.95.0-beta.0_MacOS_arm64_R-4-5-2.JASPModule",
-            "downloadCount": 0,
+            "downloadCount": 1,
             "architecture": "MacOS_arm64"
           },
           {
@@ -3909,9 +3911,7 @@
         ]
       }
     ],
-    "channels": [
-      "Official"
-    ]
+    "organization": "jasp-stats"
   },
   {
     "id": "jaspRobustTTests",
@@ -3952,7 +3952,9 @@
       }
     },
     "releaseSource": "jasp-stats-modules/jaspRobustTTests",
-    "organization": "jasp-stats",
+    "channels": [
+      "Official"
+    ],
     "releases": [
       {
         "publishedAt": "2026-02-08T21:58:13Z",
@@ -4011,9 +4013,7 @@
         ]
       }
     ],
-    "channels": [
-      "Official"
-    ]
+    "organization": "jasp-stats"
   },
   {
     "id": "jaspDyads",
@@ -4021,7 +4021,9 @@
     "description": "This module offers dyadic network analyses.",
     "translations": {},
     "releaseSource": "jasp-stats-modules/jaspDyads",
-    "organization": "pankajrsingla",
+    "channels": [
+      "Community"
+    ],
     "releases": [
       {
         "publishedAt": "2026-02-08T21:28:30Z",
@@ -4045,7 +4047,7 @@
           },
           {
             "downloadUrl": "https://github.com/jasp-stats-modules/jaspDyads/releases/download/0.19.3-release.0_30f8cdc1_R-4-5-2_Release/jaspDyads_0.19.3-release.0_Windows_x86-64_R-4-5-2.JASPModule",
-            "downloadCount": 0,
+            "downloadCount": 1,
             "architecture": "Windows_x86-64"
           }
         ]
@@ -4080,8 +4082,6 @@
         ]
       }
     ],
-    "channels": [
-      "Community"
-    ]
+    "organization": "pankajrsingla"
   }
 ]
