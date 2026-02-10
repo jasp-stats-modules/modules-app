@@ -72,12 +72,12 @@
             "downloadCount": 5,
             "architecture": "MacOS_arm64"
           },
-                    {
+          {
             "downloadUrl": "https://github.com/test/test/releases/download/v0.96.0-beta.1/test1_MacOS_x86_64.JASPModule",
             "downloadCount": 5,
             "architecture": "MacOS_x86_64"
           },
-                    {
+          {
             "downloadUrl": "https://github.com/test/test/releases/download/v0.96.0-beta.1/test1_Flatpak_x86_64.JASPModule",
             "downloadCount": 5,
             "architecture": "Flatpak_x86_64"
