@@ -45,7 +45,6 @@ async function pullAndScrapeRegistry(
     .catch(() => false);
 
   if (!exists) {
-    console.info(`Cloning ${repoUrl} (branch ${branch}) into ${REGISTRY_DIR}`);
     await simpleGit().clone(repoUrl, REGISTRY_DIR, [
       '--depth',
       '1',
@@ -53,36 +52,31 @@ async function pullAndScrapeRegistry(
       '--branch',
       branch,
     ]);
-    // Initialise submodules after fresh clone
-    const bare_submodules = await extractBareSubmodules(REGISTRY_DIR);
-    return await nameAndDescriptionFromSubmodules(bare_submodules);
+  } else {
+    const git = gitInstance();
+    await git.fetch(['origin', branch, '--depth', '1']);
+    await git.checkout(branch);
   }
 
-  console.log('Fetching latest changes in existing registry');
-  const git = gitInstance();
-  console.info(`Fetching latest ${branch} in existing registry`);
-  await git.fetch(['origin', branch, '--depth', '1']);
-
-  console.info(`Checking out ${branch} in existing registry`);
-  await git.checkout(branch);
-
-  console.log(
-    'Pulling latest changes with fast-forward only and recursive submodule update',
-  );
+  // TODO make pulling faster by
+  // 1. doing sparse checkout of inst/Description.qml and po/QML-*.po files only
+  // 2. caching on GH workflow
+  // 3. Writing submodules var somewhere and download it when creating public/index.json
+  console.log('Pulling latest changes of registry and its submodules');
   // Pull latest (fast‑forward only)
+  const git = gitInstance();
   await git.pull('origin', branch, {
     '--depth': '1',
     '--ff-only': null,
     '--recurse-submodules': null,
     '--progress': null,
+    '--jobs': '10',
   });
 
-  // Update submodules after pulling latest changes
   console.log('Listing submodules in registry');
   const bare_submodules = await extractBareSubmodules(REGISTRY_DIR);
   console.log('Extracting submodule information');
   const submodules = await nameAndDescriptionFromSubmodules(bare_submodules);
-  console.log('Finished loading submodules');
   return submodules;
 }
 
@@ -505,9 +499,10 @@ export function latestReleasePerJaspVersionRange(
       asset.downloadUrl.endsWith('.JASPModule'),
     ).length;
     if (nrOfModuleAssets < requiredNrAssets) {
-      console.log(
-        `Release ${release.tagName} does not have ${requiredNrAssets} or more assets, it has ${nrOfModuleAssets} . Skipping.`,
-      );
+      // TODO use log package to only log with --verbose flag, otherwise keep it silent
+      // console.debug(
+      //   `Release ${release.tagName} does not have ${requiredNrAssets} or more assets, it has ${nrOfModuleAssets} . Skipping.`,
+      // );
       continue;
     }
     if (!seen.has(jaspVersionRange)) {
@@ -759,8 +754,8 @@ async function scrape(
 ) {
   const octokit = new MyOctokit({ auth: process.env.GITHUB_TOKEN });
 
-  console.info('Fetching submodules from', `${owner}/${repo}`);
   const repoUrl = `https://github.com/${owner}/${repo}.git`;
+  console.info('Fetching submodules from', `${repoUrl} (branch ${branch})`);
   const submodules = await pullAndScrapeRegistry(repoUrl, branch);
   console.log(logSubmoduleStats(submodules));
   console.info('Fetching release assets');
