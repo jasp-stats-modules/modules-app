@@ -55,7 +55,7 @@ describe('path2channel', () => {
   });
 
   test('handles single segment path', () => {
-    expect(path2channel('standalone')).toBe(undefined);
+    expect(() => path2channel('standalone')).toThrow('Invalid path');
   });
 });
 

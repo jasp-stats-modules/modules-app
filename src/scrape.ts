@@ -186,6 +186,9 @@ export function url2nameWithOwner(url: string): string {
 export function path2channel(path: string): string {
   // For example
   // ".../Official/jaspAnova" -> "Official"
+  if (!path.includes('/')) {
+    throw new Error(`Invalid path: ${path}`);
+  }
   return path.split('/').reverse()[1];
 }
 
