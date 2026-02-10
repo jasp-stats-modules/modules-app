@@ -20,6 +20,16 @@
             "downloadUrl": "https://github.com/test/test/releases/download/v0.95.5-release.0/test1_Windows_x86-64.JASPModule",
             "downloadCount": 25,
             "architecture": "Windows_x86-64"
+          },
+          {
+            "downloadUrl": "https://github.com/test/test/releases/download/v0.95.5-release.0/0_Flatpak_x86_64_R_64.JASPModule",
+            "downloadCount": 25,
+            "architecture": "Flatpak_x86_64"
+          },
+          {
+            "downloadUrl": "https://github.com/test/test/releases/download/v0.95.5-release.0/test1_MacOS_x86_64.JASPModule",
+            "downloadCount": 25,
+            "architecture": "MacOS_x86_64"
           }
         ]
       },
@@ -61,6 +71,21 @@
             "downloadUrl": "https://github.com/test/test/releases/download/v0.96.0-beta.1/test1_MacOS_arm64.JASPModule",
             "downloadCount": 5,
             "architecture": "MacOS_arm64"
+          },
+                    {
+            "downloadUrl": "https://github.com/test/test/releases/download/v0.96.0-beta.1/test1_MacOS_x86_64.JASPModule",
+            "downloadCount": 5,
+            "architecture": "MacOS_x86_64"
+          },
+                    {
+            "downloadUrl": "https://github.com/test/test/releases/download/v0.96.0-beta.1/test1_Flatpak_x86_64.JASPModule",
+            "downloadCount": 5,
+            "architecture": "Flatpak_x86_64"
+          },
+          {
+            "downloadUrl": "https://github.com/test/test/releases/download/v0.96.0-beta.1/test1_Windows_x86-64.JASPModule",
+            "downloadCount": 5,
+            "architecture": "Windows_x86-64"
           }
         ]
       }
@@ -83,6 +108,21 @@
             "downloadUrl": "https://github.com/test/test/releases/download/v0.95.5-release.0/test2_MacOS_arm64.JASPModule",
             "downloadCount": 10,
             "architecture": "MacOS_arm64"
+          },
+          {
+            "downloadUrl": "https://github.com/test/test/releases/download/v0.95.5-release.0/test2_MacOS_x86_64.JASPModule",
+            "downloadCount": 10,
+            "architecture": "MacOS_x86_64"
+          },
+          {
+            "downloadUrl": "https://github.com/test/test/releases/download/v0.95.5-release.0/test2_Flatpak_x86_64.JASPModule",
+            "downloadCount": 10,
+            "architecture": "Flatpak_x86_64"
+          },
+          {
+            "downloadUrl": "https://github.com/test/test/releases/download/v0.95.5-release.0/test2_Windows_x86-64.JASPModule",
+            "downloadCount": 10,
+            "architecture": "Windows_x86-64"
           }
         ]
       }
@@ -105,6 +145,21 @@
             "downloadUrl": "https://github.com/test/test/releases/download/v0.95.5-release.0/test3_MacOS_arm64.JASPModule",
             "downloadCount": 10,
             "architecture": "MacOS_arm64"
+          },
+          {
+            "downloadUrl": "https://github.com/test/test/releases/download/v0.95.5-release.0/test3_MacOS_x86_64.JASPModule",
+            "downloadCount": 10,
+            "architecture": "MacOS_x86_64"
+          },
+          {
+            "downloadUrl": "https://github.com/test/test/releases/download/v0.95.5-release.0/test3_Flatpak_x86_64.JASPModule",
+            "downloadCount": 10,
+            "architecture": "Flatpak_x86_64"
+          },
+          {
+            "downloadUrl": "https://github.com/test/test/releases/download/v0.95.5-release.0/test3_Windows_x86-64.JASPModule",
+            "downloadCount": 10,
+            "architecture": "Windows_x86-64"
           }
         ]
       }
@@ -128,6 +183,21 @@
             "downloadUrl": "https://github.com/test/test/releases/download/v0.95.5-release.0/test4_MacOS_arm64.JASPModule",
             "downloadCount": 10,
             "architecture": "MacOS_arm64"
+          },
+          {
+            "downloadUrl": "https://github.com/test/test/releases/download/v0.95.5-release.0/test4_MacOS_x86_64.JASPModule",
+            "downloadCount": 10,
+            "architecture": "MacOS_x86_64"
+          },
+          {
+            "downloadUrl": "https://github.com/test/test/releases/download/v0.95.5-release.0/test4_Flatpak_x86_64.JASPModule",
+            "downloadCount": 10,
+            "architecture": "Flatpak_x86_64"
+          },
+          {
+            "downloadUrl": "https://github.com/test/test/releases/download/v0.95.5-release.0/test4_Windows_x86-64.JASPModule",
+            "downloadCount": 10,
+            "architecture": "Windows_x86-64"
           }
         ]
       }
@@ -152,6 +222,21 @@
             "downloadUrl": "https://github.com/nlesc/jaspRapid/releases/download/v0.95.5-release.0/testRapid_MacOS_arm64.JASPModule",
             "downloadCount": 15,
             "architecture": "MacOS_arm64"
+          },
+          {
+            "downloadUrl": "https://github.com/nlesc/jaspRapid/releases/download/v0.95.5-release.0/testRapid_MacOS_x86_64.JASPModule",
+            "downloadCount": 15,
+            "architecture": "MacOS_x86_64"
+          },
+          {
+            "downloadUrl": "https://github.com/nlesc/jaspRapid/releases/download/v0.95.5-release.0/testRapid_Flatpak_x86_64.JASPModule",
+            "downloadCount": 15,
+            "architecture": "Flatpak_x86_64"
+          },
+          {
+            "downloadUrl": "https://github.com/nlesc/jaspRapid/releases/download/v0.95.5-release.0/testRapid_Windows_x86-64.JASPModule",
+            "downloadCount": 15,
+            "architecture": "Windows_x86-64"
           }
         ]
       }

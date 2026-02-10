@@ -358,7 +358,7 @@ describe('App component', () => {
       // jaspAnova should be the only listitem since it's the only module with Windows_x86-64 asset
       const allListItems = screen.getByRole('listitem');
       const listItemElements = await allListItems.all();
-      expect(listItemElements.length).toBe(1);
+      expect(listItemElements.length).toBe(4);
     });
   });
 });

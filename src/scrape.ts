@@ -12,6 +12,7 @@ import * as v from 'valibot';
 import type { Asset, Release, Repository } from './types';
 
 const MyOctokit = Octokit.plugin(paginateGraphQL);
+const REQUIRED_NUMBER_OF_ASSETS_PER_RELEASE = 4;
 
 export function url2nameWithOwner(url: string): string {
   // For example
@@ -373,6 +374,13 @@ export function latestReleasePerJaspVersionRange(
     if (!jaspVersionRange) {
       console.log(
         'Could not extract JASP version range from release description',
+      );
+      continue;
+    }
+    const nrOfAssets = release.releaseAssets.nodes.length;
+    if (nrOfAssets !== REQUIRED_NUMBER_OF_ASSETS_PER_RELEASE) {
+      console.log(
+        `Release ${release.tagName} does not have ${REQUIRED_NUMBER_OF_ASSETS_PER_RELEASE} assets, it has ${nrOfAssets} . Skipping.`,
       );
       continue;
     }
