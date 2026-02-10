@@ -113,7 +113,7 @@ describe('App component', () => {
             searchParams: {
               c: 'test.json',
               a: 'MacOS_arm64',
-              i: '{"jaspAnova":"0.95.4"}',
+              i: '{"jaspAnova":"0.95.4-release.0"}',
             },
           }),
         },
@@ -134,7 +134,11 @@ describe('App component', () => {
       await input.fill('jaspAnova');
 
       await expect
-        .element(screen.getByText(/Installed 0\.95\.4, Latest 0\.95\.5/i))
+        .element(
+          screen.getByText(
+            /Installed 0\.95\.4-release\.0, Latest 0\.95\.5-release\.0/i,
+          ),
+        )
         .toBeInTheDocument();
     });
   });
@@ -151,7 +155,7 @@ describe('App component', () => {
             searchParams: {
               c: 'test.json',
               a: 'MacOS_arm64',
-              i: '{"jaspAnova":"0.95.5"}',
+              i: '{"jaspAnova":"0.95.5-release.0"}',
             },
           }),
         },
@@ -173,7 +177,9 @@ describe('App component', () => {
     });
 
     test('shows installed release stats ', async () => {
-      const releaseStats = jaspAnovaCard.getByText('Latest installed 0.95.5');
+      const releaseStats = jaspAnovaCard.getByText(
+        'Latest installed 0.95.5-release.0',
+      );
       await expect.element(releaseStats).toBeInTheDocument();
     });
 
@@ -346,7 +352,7 @@ describe('App component', () => {
         .element(installButton)
         .toHaveAttribute(
           'href',
-          'https://github.com/test/test/releases/download/v0.95.5/test1_Windows_x86-64.JASPModule',
+          'https://github.com/test/test/releases/download/v0.95.5-release.0/test1_Windows_x86-64.JASPModule',
         );
 
       // jaspAnova should be the only listitem since it's the only module with Windows_x86-64 asset

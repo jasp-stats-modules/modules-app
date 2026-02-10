@@ -1,4 +1,4 @@
-import { lt, prerelease, satisfies } from 'semver';
+import { compareBuild, prerelease, satisfies } from 'semver';
 import type { Asset, Release, Repository } from '@/types';
 import { useInfo } from './useInfo';
 
@@ -24,23 +24,23 @@ export interface ReleaseStats {
 
 function jaspVersionToSemver(version: string): string {
   if (isJaspStableReleaseVersion(version)) {
-    // make semantic version out of 1.2.3.0 by removing the trailing .0
-    return version.replace(/\.0$/, '');
+    //'0.95.5-release.1 in semver 0.95.5+1
+    return version.replace('-release.', '+');
   }
-  // Convert 1.2.3.4 to 1.2.3-beta.4 for semver comparison
   if (isJaspBetaVersion(version)) {
-    return version.replace(/^(\d+\.\d+\.\d+)\.(\d+)$/, '$1-beta.$2');
+    return version;
   }
   return version;
 }
 
 function isJaspBetaVersion(version: string): boolean {
-  return /\d+\.\d+\.\d+\.\d+/.test(version);
+  // 0.95.5-beta.0
+  return /\d+\.\d+\.\d+-beta\.\d+/.test(version);
 }
 
 function isJaspStableReleaseVersion(version: string): boolean {
-  // installing jaspAnova_0.95.5_Flatpak_x86_64_R-4-5-2.JASPModule is reported by JASP as version 0.95.5.0
-  return /^\d+\.\d+\.\d+\.0$/.test(version);
+  // 0.95.5-release.1
+  return /^\d+\.\d+\.\d+-release\.\d+$/.test(version);
 }
 
 export function isPreRelease(version: string): boolean {
@@ -48,17 +48,17 @@ export function isPreRelease(version: string): boolean {
   return prerelease(semver) !== null;
 }
 
+/**
+ * Whether the candidateVersion is newer than the currentVersion.
+ */
 export function isNewerVersion(
   currentVersion: string,
   candidateVersion: string,
 ): boolean {
-  currentVersion = jaspVersionToSemver(currentVersion);
-  candidateVersion = jaspVersionToSemver(candidateVersion);
-  try {
-    return lt(currentVersion, candidateVersion);
-  } catch {
-    return currentVersion !== candidateVersion;
-  }
+  const currentSemVersion = jaspVersionToSemver(currentVersion);
+  const candidateSemVersion = jaspVersionToSemver(candidateVersion);
+  const compareResult = compareBuild(currentSemVersion, candidateSemVersion);
+  return compareResult === -1;
 }
 
 export function getReleaseInfo(
