@@ -11,6 +11,7 @@ import { type SimpleGitProgressEvent, simpleGit } from 'simple-git';
 import * as v from 'valibot';
 import type {
   Asset,
+  BareRepository,
   Lang,
   Release,
   Repository,
@@ -21,6 +22,8 @@ import type {
 
 // Directory where the modules-registry repo will be cloned/updated
 export const REGISTRY_DIR = resolve('registry');
+const MyOctokit = Octokit.plugin(paginateGraphQL);
+const DEFAULT_REQUIRED_NUMBER_OF_ASSETS_PER_RELEASE = 4;
 
 // Helper: get a simple-git instance pointing at the registry directory
 function gitInstance() {
@@ -38,13 +41,17 @@ function gitInstance() {
 async function pullAndScrapeRegistry(
   repoUrl: string,
   branch: string,
-): Promise<Submodule[]> {
+): Promise<BareRepository[]> {
   const exists = await fs
     .access(REGISTRY_DIR)
     .then(() => true)
     .catch(() => false);
 
-  if (!exists) {
+  if (exists) {
+    const git = gitInstance();
+    await git.fetch(['origin', branch, '--depth', '1']);
+    await git.checkout(branch);
+  } else {
     await simpleGit().clone(repoUrl, REGISTRY_DIR, [
       '--depth',
       '1',
@@ -52,16 +59,13 @@ async function pullAndScrapeRegistry(
       '--branch',
       branch,
     ]);
-  } else {
-    const git = gitInstance();
-    await git.fetch(['origin', branch, '--depth', '1']);
-    await git.checkout(branch);
   }
 
   // TODO make pulling faster by
   // 1. doing sparse checkout of inst/Description.qml and po/QML-*.po files only
   // 2. caching on GH workflow
   // 3. Writing submodules var somewhere and download it when creating public/index.json
+
   console.log('Pulling latest changes of registry and its submodules');
   // Pull latest (fast‑forward only)
   const git = gitInstance();
@@ -74,13 +78,40 @@ async function pullAndScrapeRegistry(
   });
 
   console.log('Listing submodules in registry');
-  const bare_submodules = await extractBareSubmodules(REGISTRY_DIR);
+  const bareSubmodules = await extractBareSubmodules(REGISTRY_DIR);
   console.log('Extracting submodule information');
-  const submodules = await nameAndDescriptionFromSubmodules(bare_submodules);
-  return submodules;
+  const ungroupdedSubmodules =
+    await nameAndDescriptionFromSubmodules(bareSubmodules);
+  return groupByChannel(ungroupdedSubmodules);
 }
 
-export function logSubmoduleStats(submodules: Submodule[]): string {
+/**
+ * The same JASP module/submodule can be in multiple channels/directory.
+ */
+export function groupByChannel(submodules: Submodule[]): BareRepository[] {
+  const repositories: BareRepository[] = [];
+  for (const submodule of submodules) {
+    const channel = path2channel(submodule.path);
+    const nameWithOwner = url2nameWithOwner(submodule.gitUrl);
+    const existingRepo = repositories.find((r) => r.id === nameWithOwner);
+    if (existingRepo) {
+      existingRepo.channels.push(channel);
+    } else {
+      repositories.push({
+        // this expects the clone in jasp-stats-modules was note renamed
+        id: nameWithOwner.split('/')[1],
+        name: submodule.name,
+        description: submodule.description,
+        translations: submodule.translations,
+        releaseSource: nameWithOwner,
+        channels: [channel],
+      });
+    }
+  }
+  return repositories;
+}
+
+export function logBareRepoStats(submodules: BareRepository[]): string {
   const total = submodules.length;
   const translationCounts = submodules.map(
     (s) => Object.keys(s.translations).length,
@@ -125,6 +156,7 @@ export async function nameAndDescriptionFromSubmodule(
   const qmlDescriptionPath = pathJoin(path, 'inst', 'Description.qml');
   const qmlDescriptionContent = await fs.readFile(qmlDescriptionPath, 'utf8');
   const { title, description } = parseDescriptionQml(qmlDescriptionContent);
+
   const translations = await extractTranslationsFromPoFiles(
     path,
     title,
@@ -140,9 +172,6 @@ export async function nameAndDescriptionFromSubmodule(
   };
   return submoduleDetails;
 }
-
-const MyOctokit = Octokit.plugin(paginateGraphQL);
-const DEFAULT_REQUIRED_NUMBER_OF_ASSETS_PER_RELEASE = 4;
 
 export function url2nameWithOwner(url: string): string {
   // For example
@@ -213,19 +242,6 @@ export function parseSubModulesFile(text: string): BareSubmodule[] {
   }
 
   return result;
-}
-
-function submodulesToRepo2Channels(submodules: Submodule[]): Repo2Channels {
-  const repo2channels: Repo2Channels = {};
-  for (const submodule of submodules) {
-    const channel = path2channel(submodule.path);
-    const nameWithOwner = url2nameWithOwner(submodule.gitUrl);
-    if (!repo2channels[nameWithOwner]) {
-      repo2channels[nameWithOwner] = [];
-    }
-    repo2channels[nameWithOwner].push(channel);
-  }
-  return repo2channels;
 }
 
 /**
@@ -394,12 +410,11 @@ export function batchedArray<T>(array: T[], size: number): T[][] {
 }
 
 export async function releaseAssetsPaged(
-  submodules: Submodule[],
+  submodules: BareRepository[],
   requiredNrAssets: number = DEFAULT_REQUIRED_NUMBER_OF_ASSETS_PER_RELEASE,
   pageSize = 10,
   octokit: InstanceType<typeof MyOctokit>,
 ): Promise<Repository[]> {
-  const repo2channels = submodulesToRepo2Channels(submodules);
   const batches = batchedArray(submodules, pageSize);
   const results: Repository[] = [];
 
@@ -415,17 +430,12 @@ export async function releaseAssetsPaged(
   );
   for (let i = 0; i < totalBatches; i++) {
     const batch = batches[i];
-    const rawBatchResults = await releaseAssets(
+    const batchResults = await releaseAssets(
       batch,
       requiredNrAssets,
       20,
       20,
       octokit,
-    );
-    // TODO do associateChannelsWithRepositories in nameAndDescriptionFromSubmodules
-    const batchResults = associateChannelsWithRepositories(
-      rawBatchResults,
-      repo2channels,
     );
     results.push(...batchResults);
     bar.tick();
@@ -461,16 +471,6 @@ interface GqlAssetsResult {
       nodes: GqlRelease[];
     };
   };
-}
-
-function associateChannelsWithRepositories(
-  batchResults: Omit<Repository, 'channels'>[],
-  repo2channels: Repo2Channels,
-): Repository[] {
-  return batchResults.map((repo) => {
-    const channels = repo2channels[repo.releaseSource];
-    return { ...repo, channels };
-  });
 }
 
 export function latestReleasePerJaspVersionRange(
@@ -560,15 +560,15 @@ export function transformRelease(
 }
 
 async function releaseAssets(
-  repos: Submodule[],
+  repos: BareRepository[],
   requiredNrAssets: number,
   firstReleases = 20,
   firstAssets = 20,
   octokit: InstanceType<typeof MyOctokit>,
-): Promise<Omit<Repository, 'channels'>[]> {
+): Promise<Repository[]> {
   const allRepos = Array.from(repos);
   const CHUNK_SIZE = 3;
-  const finalResults: Omit<Repository, 'channels'>[] = [];
+  const finalResults: Repository[] = [];
 
   // Loop through repositories in chunks
   for (let i = 0; i < allRepos.length; i += CHUNK_SIZE) {
@@ -576,7 +576,7 @@ async function releaseAssets(
 
     const queries = chunk
       .map((submodule, index) => {
-        const nameWithOwner = url2nameWithOwner(submodule.gitUrl);
+        const nameWithOwner = submodule.releaseSource;
         const [owner, repo] = nameWithOwner.split('/');
         return dedent`
         repo${index}: repository(owner: "${owner}", name: "${repo}") {
@@ -612,7 +612,7 @@ async function releaseAssets(
 
     try {
       const result = await octokit.graphql<GqlAssetsResult>(fullQuery);
-      const processedChunk: Omit<Repository, 'channels'>[] = [];
+      const processedChunk: Repository[] = [];
       // Process each repo individually to allow async name extraction
       for (const rawRepo of Object.values(result)) {
         // Filter out nulls (if a repo wasn't found)
@@ -622,20 +622,11 @@ async function releaseAssets(
           console.log(`No releases found for ${repo.nameWithOwner}. Skipping.`);
           continue;
         }
-        const {
-          name,
-          nameWithOwner,
-          parent: _,
-          releases,
-          homepageUrl,
-          ...restRepo
-        } = repo;
-        const submodule = chunk.find(
-          (s) => url2nameWithOwner(s.gitUrl) === nameWithOwner,
-        );
-        if (!submodule) {
+        const { nameWithOwner, parent, releases, homepageUrl } = repo;
+        const bareRepo = chunk.find((s) => s.releaseSource === nameWithOwner);
+        if (!bareRepo) {
           throw new Error(
-            `Received data for repo ${rawRepo.nameWithOwner} which was not in the original query batch`,
+            `Received data for repo ${repo.nameWithOwner} which was not in the original query batch`,
           );
         }
 
@@ -654,16 +645,11 @@ async function releaseAssets(
           requiredNrAssets,
         ).map((r) => transformRelease(r, nameWithOwner));
 
-        const newRepo: Omit<Repository, 'channels'> = {
-          ...restRepo,
-          id: name,
-          name: submodule.name,
-          description: submodule.description,
-          translations: submodule.translations,
-          releaseSource: nameWithOwner,
-          organization: repo.parent?.owner.login ?? 'unknown_org',
+        const newRepo: Repository = {
+          ...bareRepo,
           releases: newReleases.map(([release, _]) => release),
           preReleases: newPreReleases.map(([release, _]) => release),
+          organization: parent?.owner.login ?? 'unknown_org',
         };
         if (homepageUrl) {
           newRepo.homepageUrl = homepageUrl;
@@ -756,11 +742,11 @@ async function scrape(
 
   const repoUrl = `https://github.com/${owner}/${repo}.git`;
   console.info('Fetching submodules from', `${repoUrl} (branch ${branch})`);
-  const submodules = await pullAndScrapeRegistry(repoUrl, branch);
-  console.log(logSubmoduleStats(submodules));
+  const bareRepos = await pullAndScrapeRegistry(repoUrl, branch);
+  console.log(logBareRepoStats(bareRepos));
   console.info('Fetching release assets');
   const repositories = await releaseAssetsPaged(
-    submodules,
+    bareRepos,
     DEFAULT_REQUIRED_NUMBER_OF_ASSETS_PER_RELEASE,
     10,
     octokit,

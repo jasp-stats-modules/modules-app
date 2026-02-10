@@ -21,10 +21,11 @@ import {
   extractArchitectureFromUrl,
   extractBareSubmodules,
   extractTranslationsFromPoFiles,
+  groupByChannel,
   latestReleasePerJaspVersionRange,
+  logBareRepoStats,
   logChannelStats,
   logReleaseStatistics,
-  logSubmoduleStats,
   nameAndDescriptionFromSubmodules,
   parseDescriptionQml,
   parseReleaseFrontMatter,
@@ -34,7 +35,7 @@ import {
   url2nameWithOwner,
   versionFromTagName,
 } from './scrape';
-import type { Repository, Submodule } from './types';
+import type { BareRepository, Repository, Submodule } from './types';
 
 describe('url2nameWithOwner', () => {
   test('extracts owner and repo from GitHub URL', () => {
@@ -410,17 +411,18 @@ describe('releaseAssetsPaged', () => {
     );
 
     const octokit = new MyOctokit({ auth: 'fake-token' });
-    const submodules = [
+    const bareRepos: BareRepository[] = [
       {
-        gitUrl: 'https://github.com/jasp-stats-modules/jaspAnova.git',
-        path: 'registry/Official/jaspAnova',
+        id: 'jaspAnova',
+        channels: ['Official'],
+        releaseSource: 'jasp-stats-modules/jaspAnova',
         name: 'jaspAnova',
         description: 'Anova module',
         translations: {},
       },
     ];
 
-    const result = await releaseAssetsPaged(submodules, 1, 10, octokit);
+    const result = await releaseAssetsPaged(bareRepos, 1, 10, octokit);
 
     expect(result).toEqual(
       expect.arrayContaining([
@@ -479,17 +481,18 @@ describe('releaseAssetsPaged', () => {
     );
 
     const octokit = new MyOctokit({ auth: 'fake-token' });
-    const submodules: Submodule[] = [
+    const bareRepos: BareRepository[] = [
       {
-        gitUrl: 'https://github.com/jasp-stats-modules/jaspAnova.git',
-        path: 'registry/Official/jaspAnova',
+        id: 'jaspAnova',
+        channels: ['Official'],
+        releaseSource: 'jasp-stats-modules/jaspAnova',
         name: 'jaspAnova',
         description: 'Anova module',
         translations: {},
       },
-    ] as Submodule[]; // Minimal submodule to trigger the query
+    ];
 
-    const result = await releaseAssetsPaged(submodules, 1, 10, octokit);
+    const result = await releaseAssetsPaged(bareRepos, 1, 10, octokit);
 
     expect(result).toHaveLength(0);
   });
@@ -553,17 +556,18 @@ describe('releaseAssetsPaged', () => {
     );
 
     const octokit = new MyOctokit({ auth: 'fake-token' });
-    const submodules: Submodule[] = [
+    const bareRepos: BareRepository[] = [
       {
-        gitUrl: 'https://github.com/jasp-stats-modules/jaspAnova.git',
-        path: 'registry/Official/jaspAnova',
+        id: 'jaspAnova',
+        channels: ['Official'],
+        releaseSource: 'jasp-stats-modules/jaspAnova',
         name: 'jaspAnova',
         description: 'Anova module',
         translations: {},
       },
     ];
 
-    const result = await releaseAssetsPaged(submodules, 1, 10, octokit);
+    const result = await releaseAssetsPaged(bareRepos, 1, 10, octokit);
 
     expect(result).toEqual(
       expect.arrayContaining([
@@ -654,17 +658,18 @@ describe('releaseAssetsPaged', () => {
     );
 
     const octokit = new MyOctokit({ auth: 'fake-token' });
-    const submodules: Submodule[] = [
+    const bareRepos: BareRepository[] = [
       {
-        gitUrl: 'https://github.com/jasp-stats-modules/jaspAnova.git',
-        path: 'registry/Official/jaspAnova',
+        id: 'jaspAnova',
+        channels: ['Official'],
+        releaseSource: 'jasp-stats-modules/jaspAnova',
         name: 'jaspAnova',
         description: 'Anova module',
         translations: {},
       },
     ];
 
-    const result = await releaseAssetsPaged(submodules, 1, 10, octokit);
+    const result = await releaseAssetsPaged(bareRepos, 1, 10, octokit);
 
     expect(result).toEqual(
       expect.arrayContaining([
@@ -729,17 +734,18 @@ describe('releaseAssetsPaged', () => {
     );
 
     const octokit = new MyOctokit({ auth: 'fake-token' });
-    const submodules: Submodule[] = [
+    const bareRepos: BareRepository[] = [
       {
-        gitUrl: 'https://github.com/jasp-stats-modules/jaspAnova.git',
-        path: 'registry/Official/jaspAnova',
+        id: 'jaspAnova',
+        channels: ['Official'],
+        releaseSource: 'jasp-stats-modules/jaspAnova',
         name: 'jaspAnova',
         description: 'Anova module',
         translations: {},
       },
     ];
 
-    const result = await releaseAssetsPaged(submodules, 1, 10, octokit);
+    const result = await releaseAssetsPaged(bareRepos, 1, 10, octokit);
 
     expect(result).toEqual(
       expect.arrayContaining([
@@ -852,24 +858,26 @@ describe('releaseAssetsPaged', () => {
     );
 
     const octokit = new MyOctokit({ auth: 'fake-token' });
-    const submodules: Submodule[] = [
+    const bareRepos: BareRepository[] = [
       {
-        gitUrl: 'https://github.com/jasp-stats-modules/jaspAnova.git',
-        path: 'registry/Official/jaspAnova',
+        channels: ['Official'],
+        id: 'jaspAnova',
+        releaseSource: 'jasp-stats-modules/jaspAnova',
         name: 'jaspAnova',
         description: 'Anova module',
         translations: {},
       },
       {
-        gitUrl: 'https://github.com/jasp-stats-modules/jaspBain.git',
-        path: 'registry/Official/jaspBain',
+        channels: ['Official'],
+        id: 'jaspBain',
+        releaseSource: 'jasp-stats-modules/jaspBain',
         name: 'jaspBain',
         description: 'Bain module',
         translations: {},
       },
     ];
 
-    const result = await releaseAssetsPaged(submodules, 1, 1, octokit);
+    const result = await releaseAssetsPaged(bareRepos, 1, 1, octokit);
 
     expect(result).toEqual(
       expect.arrayContaining([
@@ -1262,15 +1270,52 @@ Description {
     ];
     expect(result).toEqual(expected);
   });
+
+  test('groupByChannel', () => {
+    const submodules: Submodule[] = [
+      {
+        description: 'Repeated Measures ANOVA',
+        gitUrl: 'https://github.com/jasp-stats-modules/jaspAnova.git',
+        name: 'Classical',
+        path: join(tempDir.name, 'Official', 'jaspAnova'),
+        translations: {
+          nl: {
+            description: 'Herhaalde Metingen ANOVA',
+            name: 'Klassiek',
+          },
+        },
+      },
+    ];
+
+    const bareRepos = groupByChannel(submodules);
+
+    const expected: BareRepository[] = [
+      {
+        id: 'jaspAnova',
+        releaseSource: 'jasp-stats-modules/jaspAnova',
+        channels: ['Official'],
+        description: 'Repeated Measures ANOVA',
+        name: 'Classical',
+        translations: {
+          nl: {
+            description: 'Herhaalde Metingen ANOVA',
+            name: 'Klassiek',
+          },
+        },
+      },
+    ];
+    expect(bareRepos).toEqual(expected);
+  });
 });
 
-test('logSubmoduleStats', () => {
-  const submodules: Submodule[] = [
+test('logBareRepoStats', () => {
+  const submodules: BareRepository[] = [
     {
+      id: 'jaspAnova',
+      releaseSource: 'jasp-stats-modules/jaspAnova',
+      channels: ['Official'],
       description: 'Repeated Measures ANOVA',
-      gitUrl: 'https://github.com/jasp-stats-modules/jaspAnova.git',
       name: 'Classical',
-      path: join('Official', 'jaspAnova'),
       translations: {
         nl: {
           description: 'Herhaalde Metingen ANOVA',
@@ -1280,7 +1325,7 @@ test('logSubmoduleStats', () => {
     },
   ];
 
-  const result = logSubmoduleStats(submodules);
+  const result = logBareRepoStats(submodules);
   const expected = [
     'Found 1 submodules',
     'Average number of translations per submodule: 1',
