@@ -381,8 +381,21 @@ describe('App component', () => {
         .toBeInTheDocument();
     });
 
+    test('renders jaspAnova name in Dutch', async () => {
+      const jaspAnovaCard = screen.getByRole('listitem', {
+        name: 'Mijn Anova Module',
+      });
+      await expect.element(jaspAnovaCard).toBeInTheDocument();
+
+      await expect
+        .element(jaspAnovaCard.getByText('Mijn Anova Module'))
+        .toBeInTheDocument();
+    });
+
     test('renders jaspAnova description in Dutch', async () => {
-      const jaspAnovaCard = screen.getByRole('listitem', { name: 'jaspAnova' });
+      const jaspAnovaCard = screen.getByRole('listitem', {
+        name: 'Mijn Anova Module',
+      });
       await expect.element(jaspAnovaCard).toBeInTheDocument();
 
       await expect

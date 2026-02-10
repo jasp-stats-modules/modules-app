@@ -569,7 +569,6 @@ function RepositoryCard({
   } = useRelease(repo, allowPreRelease);
 
   const cardId = `repo-card-${repo.name}`;
-  console.log(repo, repo.translations, language);
   const name = repo.translations[language]?.name || repo.name;
   const description =
     repo.translations[language]?.description || repo.description;
