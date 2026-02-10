@@ -420,7 +420,7 @@ describe('getReleaseInfo', () => {
       {
         installed: '1.0.0-release.0',
         stableRelease: '1.0.0-release.0',
-        preRelease: '1.0.0-beta .1',
+        preRelease: '1.0.0-beta.1',
         allowPreRelease: false,
         removeable: false,
       },

@@ -355,7 +355,6 @@ describe('App component', () => {
           'https://github.com/test/test/releases/download/v0.95.5-release.0/test1_Windows_x86-64.JASPModule',
         );
 
-      // jaspAnova should be the only listitem since it's the only module with Windows_x86-64 asset
       const allListItems = screen.getByRole('listitem');
       const listItemElements = await allListItems.all();
       expect(listItemElements.length).toBe(4);

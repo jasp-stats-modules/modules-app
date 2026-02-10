@@ -244,7 +244,7 @@ describe('latestReleasePerJaspVersionRange', () => {
         isPrerelease: false,
         publishedAt: '2024-12-01T00:00:00Z',
         releaseAssets: { nodes: [] },
-        tagName: 'v1.0.0',
+        tagName: '0.95.5-release.1_3307653d_R-4-5-2_Release',
         description: '---\njasp: >=0.95.0\n---\n',
       },
     ];
@@ -260,7 +260,7 @@ describe('latestReleasePerJaspVersionRange', () => {
         isPrerelease: false,
         publishedAt: '2025-01-01T00:00:00Z',
         releaseAssets: { nodes: [] },
-        tagName: 'v1.0.0',
+        tagName: '0.95.5-release.1_3307653d_R-4-5-2_Release',
         description: undefined,
       },
     ];
@@ -276,7 +276,7 @@ describe('latestReleasePerJaspVersionRange', () => {
         isPrerelease: false,
         publishedAt: '2025-01-01T00:00:00Z',
         releaseAssets: { nodes: [] },
-        tagName: 'v1.0.0',
+        tagName: '0.95.5-release.1_3307653d_R-4-5-2_Release',
         description: 'No frontmatter here',
       },
     ];
@@ -292,8 +292,8 @@ describe('latestReleasePerJaspVersionRange', () => {
         isPrerelease: false,
         publishedAt: '2025-01-01T00:00:00Z',
         releaseAssets: { nodes: [] },
-        tagName: 'v1.0.0',
-        description: 'No frontmatter here',
+        tagName: '0.95.5-release.1_3307653d_R-4-5-2_Release',
+        description: '---\njasp: >=0.95.0\n---\n',
       },
     ];
 

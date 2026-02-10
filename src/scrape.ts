@@ -285,7 +285,7 @@ export function batchedArray<T>(array: T[], size: number): T[][] {
 
 export async function releaseAssetsPaged(
   repo2channels: Repo2Channels,
-  required_nr_assets: number = DEFAULT_REQUIRED_NUMBER_OF_ASSETS_PER_RELEASE,
+  requiredNrAssets: number = DEFAULT_REQUIRED_NUMBER_OF_ASSETS_PER_RELEASE,
   pageSize = 10,
   octokit: InstanceType<typeof MyOctokit>,
 ): Promise<Repository[]> {
@@ -307,7 +307,7 @@ export async function releaseAssetsPaged(
     const batch = batches[i];
     const rawBatchResults = await releaseAssets(
       batch,
-      required_nr_assets,
+      requiredNrAssets,
       20,
       20,
       octokit,
@@ -365,7 +365,7 @@ function associateChannelsWithRepositories(
 
 export function latestReleasePerJaspVersionRange(
   releases: GqlRelease[],
-  required_nr_assets: number,
+  requiredNrAssets: number,
 ): GqlRelease[] {
   const sortedReleases = [...releases].sort((a, b) =>
     b.publishedAt.localeCompare(a.publishedAt),
@@ -385,10 +385,12 @@ export function latestReleasePerJaspVersionRange(
       );
       continue;
     }
-    const nrOfAssets = release.releaseAssets.nodes.length;
-    if (nrOfAssets < required_nr_assets) {
+    const nrOfModuleAssets = release.releaseAssets.nodes.filter((asset) =>
+      asset.downloadUrl.endsWith('.JASPModule'),
+    ).length;
+    if (nrOfModuleAssets < requiredNrAssets) {
       console.log(
-        `Release ${release.tagName} does not have ${required_nr_assets} or more assets, it has ${nrOfAssets} . Skipping.`,
+        `Release ${release.tagName} does not have ${requiredNrAssets} or more assets, it has ${nrOfModuleAssets} . Skipping.`,
       );
       continue;
     }
@@ -448,7 +450,7 @@ export function transformRelease(
 
 async function releaseAssets(
   repos: Iterable<string>,
-  required_nr_assets: number,
+  requiredNrAssets: number,
   firstReleases = 20,
   firstAssets = 20,
   octokit: InstanceType<typeof MyOctokit>,
@@ -529,11 +531,11 @@ async function releaseAssets(
 
           const newReleases = latestReleasePerJaspVersionRange(
             productionReleases,
-            required_nr_assets,
+            requiredNrAssets,
           ).map((r) => transformRelease(r, nameWithOwner));
           const newPreReleases = latestReleasePerJaspVersionRange(
             preReleases,
-            required_nr_assets,
+            requiredNrAssets,
           ).map((r) => transformRelease(r, nameWithOwner));
 
           const newRepo: Omit<Repository, 'channels'> = {
