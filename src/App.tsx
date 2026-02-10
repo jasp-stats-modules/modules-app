@@ -3,7 +3,7 @@ import { House } from 'lucide-react';
 import { useQueryState } from 'nuqs';
 import type { Dispatch, ReactNode, SetStateAction } from 'react';
 import { useEffect, useState } from 'react';
-import { useIntlayer } from 'react-intlayer';
+import { useIntlayer, useMarkdownRenderer } from 'react-intlayer';
 import { useDebounceValue } from 'usehooks-ts';
 import { cn } from '@/lib/utils';
 import type { Asset, Release, Repository } from '@/types';
@@ -788,6 +788,77 @@ function JASPScrollBar({ children }: { children: ReactNode }) {
   );
 }
 
+function InfoButton({
+  translations,
+  channels,
+}: {
+  translations: AppTranslations;
+  channels: string[];
+}) {
+  const infoMarkdown = translations.information_panel;
+  const renderMarkdown = useMarkdownRenderer({
+    forceBlock: true,
+    components: {
+      h1: ({ children }) => (
+        <h3 className="font-semibold text-lg">{children}</h3>
+      ),
+      h3: ({ children }) => (
+        <h3 className="font-semibold text-lg">{children}</h3>
+      ),
+      a: ({ href, children }) => (
+        <a
+          href={href}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-jasp-blue hover:underline"
+        >
+          {children}
+        </a>
+      ),
+      p: ({ children }) => <p className="mt-2">{children}</p>,
+      li: ({ children }) => <li className="ml-4 list-disc">{children}</li>,
+    },
+  });
+
+  const markdownMentionsAllChannels = channels.every((ch) =>
+    infoMarkdown.value.includes(ch),
+  );
+  if (!markdownMentionsAllChannels) {
+    console.warn(
+      'Not all channels are mentioned in the information panel. Please update text.',
+    );
+  }
+
+  return (
+    <>
+      <button
+        popoverTarget="infoPopover"
+        popoverTargetAction="toggle"
+        type="button"
+        className="ml-auto h-6 w-6 rounded-full border border-border hover:bg-background"
+        title={translations.information.value}
+      >
+        ?
+      </button>
+      <div
+        popover="auto"
+        id="infoPopover"
+        className="relative m-8 mx-auto max-w-sm gap-2 self-center rounded-lg border border-border bg-card p-4"
+      >
+        <button
+          popoverTarget="infoPopover"
+          popoverTargetAction="hide"
+          type="button"
+          className="absolute top-2 right-2 h-6 w-6 rounded hover:bg-background"
+        >
+          ×
+        </button>
+        {renderMarkdown(infoMarkdown.value)}
+      </div>
+    </>
+  );
+}
+
 export function App() {
   const translations = useIntlayer<'app'>('app');
   const {
@@ -847,7 +918,7 @@ export function App() {
   return (
     <JASPScrollBar>
       <main className="px-2 py-2">
-        <div className="mb-4 rounded-lg border border-border bg-card p-3 text-card-foreground shadow-sm">
+        <header className="mb-4 rounded-lg border border-border bg-card p-3 text-card-foreground shadow-sm">
           <div className="flex flex-col gap-3">
             <div className="flex flex-row gap-3">
               <ChannelSelector
@@ -864,6 +935,10 @@ export function App() {
                   description={allow_prereleases_checkbox_description.value}
                 />
               </div>
+              <InfoButton
+                translations={translations}
+                channels={availableChannels}
+              />
             </div>
             <div>
               <label className="mb-1 block font-medium text-sm">
@@ -881,7 +956,7 @@ export function App() {
               </label>
             </div>
           </div>
-        </div>
+        </header>
         <ul className="space-y-3">
           {filteredRepos.map((repo) => (
             <RepositoryCard
