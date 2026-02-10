@@ -124,7 +124,7 @@ describe('App component', () => {
       const input = screen.getByLabelText('Search for a module');
       await input.fill('jaspAnova');
 
-      await expect.element(screen.getByText('Update')).toBeInTheDocument();
+      await expect.element(screen.getByText('Update', { exact: true })).toBeInTheDocument();
     });
 
     test('release stats for older installed version', async () => {
