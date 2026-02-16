@@ -38,6 +38,8 @@ In a standalone web application you can tell the web application which version/a
 - f: Font name. Use the name of a font installed on your system. For example use `SansSerif`. Besides OS fonts also `FreeSans`, `Fira Code` and `Fira Code Retina` fonts are available.
 
 A full URL could look like [https://jasp-stats-modules.github.io/modules-app/?a=Windows_x86-64&v=0.95.0-release.0&i=%5B%22jaspTTests%22%2C%22jaspRegression%22%5D&p=0](https://jasp-stats-modules.github.io/modules-app/?a=Windows_x86-64&v=0.95.0-release.0&i=%5B%22jaspTTests%22%2C%22jaspRegression%22%5D&p=0&t=dark&l=nl).
+or
+[http://localhost:3000/?v=0.95.1&a=Windows_x86-64&i={%22jaspAnova%22:%220.95.4-release.0%22}&u=[%22jaspAnova%22]&p=false&t=system&l=en]
 
 ## Update list of modules
 

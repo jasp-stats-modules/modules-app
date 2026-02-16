@@ -11,6 +11,43 @@ export function findReleaseThatSatisfiesInstalledJaspVersion(
   );
 }
 
+export interface InstallStableAction {
+  type: 'install-stable';
+  asset: Asset;
+}
+
+export interface UpdateStableAction {
+  type: 'update-stable';
+  asset: Asset;
+}
+
+export interface UninstallPreReleaseAction {
+  type: 'uninstall-pre-release';
+  moduleId: string;
+}
+
+export interface InstallPreReleaseAction {
+  type: 'install-pre-release';
+  asset: Asset;
+}
+
+export interface UpdatePreReleaseAction {
+  type: 'update-pre-release';
+  asset: Asset;
+}
+
+export interface UninstallAction {
+  type: 'uninstall';
+  moduleId: string;
+}
+
+export type AnyAction = InstallStableAction
+  | UpdateStableAction
+  | UninstallPreReleaseAction
+  | InstallPreReleaseAction
+  | UpdatePreReleaseAction
+  | UninstallAction;
+
 export interface ReleaseStats {
   latestStableRelease?: Release;
   latestPreRelease?: Release;
@@ -20,6 +57,7 @@ export interface ReleaseStats {
   // The *-pre-release actions are only possible when allowPreRelease=true
   primaryAction?: 'install-stable' | 'update-stable' | 'uninstall-pre-release';
   secondaryAction?: 'install-pre-release' | 'update-pre-release' | 'uninstall';
+  actions: AnyAction[];
 }
 
 function jaspVersionToSemver(version: string): string {
@@ -165,6 +203,23 @@ export function getReleaseInfo(
   ) {
     primaryAction = 'uninstall-pre-release';
   }
+  const actions: AnyAction[] = [];
+  if (primaryAction === 'install-stable' && stableAsset) {
+    actions.push({ type: 'install-stable', asset: stableAsset });
+  } else if (primaryAction === 'update-stable' && stableAsset) {
+    actions.push({ type: 'update-stable', asset: stableAsset });
+  } else if (primaryAction === 'uninstall-pre-release' && repo.id) {
+    actions.push({ type: 'uninstall-pre-release', moduleId: repo.id });
+  }
+  if (secondaryAction === 'install-pre-release' && preReleaseAsset) {
+    actions.push({ type: 'install-pre-release', asset: preReleaseAsset });
+  } else if (secondaryAction === 'update-pre-release' && preReleaseAsset) {
+    actions.push({ type: 'update-pre-release', asset: preReleaseAsset });
+  }
+  else if (secondaryAction === 'uninstall' && repo.id) {
+    actions.push({ type: 'uninstall', moduleId: repo.id });
+  }
+  
   return {
     latestStableRelease,
     latestPreRelease: allowPreRelease ? latestPreRelease : undefined,
@@ -173,6 +228,7 @@ export function getReleaseInfo(
     latestVersionIs,
     primaryAction,
     secondaryAction,
+    actions,
   };
 }
 

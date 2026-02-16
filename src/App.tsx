@@ -1,5 +1,5 @@
 import { queryOptions, useQuery } from '@tanstack/react-query';
-import { House } from 'lucide-react';
+import { ChevronDownIcon, House } from 'lucide-react';
 import { useQueryState } from 'nuqs';
 import type { Dispatch, ReactNode, SetStateAction } from 'react';
 import { useEffect, useState } from 'react';
@@ -14,7 +14,9 @@ import {
   isNewerVersion,
   type ReleaseStats,
   useRelease,
+  type AnyAction,
 } from './useRelease';
+import { Menu } from '@base-ui/react/menu';
 
 type AppTranslations = ReturnType<typeof useIntlayer<'app'>>;
 
@@ -295,6 +297,57 @@ function UninstallPreReleaseButton({
   );
 }
 
+function ActionsButton({
+  actions
+}: {actions: AnyAction[]}) {
+  if (actions.length === 0) {
+    return <div>Latest installed</div>;
+  }
+
+  const mainAction = actions[0];
+  let menu = <></>;
+  if (actions.length > 1) {
+    const menuActions = actions.slice(1);
+    menu = (
+      <Menu.Root>
+      <Menu.Trigger className="inline-flex items-center justify-center whitespace-nowrap data-popup-open:rotate-180 rounded-r data-popup-open:rounded-l bg-jasp-blue font-medium text-primary text-sm transition-colors duration-200 hover:bg-blue-700 dark:bg-blue-700 dark:hover:bg-blue-800">
+        <ChevronDownIcon className="" />
+      </Menu.Trigger>
+      <Menu.Portal>
+        <Menu.Positioner>
+        <Menu.Popup className="bg-primary-foreground text-primary rounded shadow-md p-1">
+          {menuActions.map((action) => (
+          <Menu.Item key={action.type}>{action.type}</Menu.Item>
+          ))}
+        </Menu.Popup>
+        </Menu.Positioner>
+      </Menu.Portal>
+      </Menu.Root>
+    )
+    return (
+      <div className="flex flex-row">
+      <button
+        type="button"
+        className="inline-flex items-center justify-center whitespace-nowrap rounded-l bg-jasp-blue ps-3 py-1.5 font-medium text-primary text-sm transition-colors duration-200 hover:bg-blue-700 dark:bg-blue-700 dark:hover:bg-blue-800"
+      >
+        {mainAction.type}
+      </button>
+      {menu}
+      </div>
+    )
+  }
+  return (
+    <div>
+         <button
+          type="button"
+          className="inline-flex items-center justify-center whitespace-nowrap rounded bg-jasp-blue px-3 py-1.5 font-medium text-primary text-sm transition-colors duration-200 hover:bg-blue-700 dark:bg-blue-700 dark:hover:bg-blue-800"
+        >
+          {mainAction.type}
+        </button>
+            </div>
+  )
+}
+
 function ReleaseAction({
   moduleId,
   asset,
@@ -566,6 +619,7 @@ function RepositoryCard({
     latestVersionIs,
     primaryAction,
     secondaryAction,
+    actions,
   } = useRelease(repo, allowPreRelease);
 
   const cardId = `repo-card-${repo.name}`;
@@ -596,14 +650,15 @@ function RepositoryCard({
             />
           </div>
         </div>
-        <ReleaseAction
+        <ActionsButton actions={actions}/>
+        {/* <ReleaseAction
           moduleId={repo.id}
           asset={asset}
           primaryAction={primaryAction}
           secondaryAction={secondaryAction}
           translations={translations}
           latestInstalled={latestVersionIs === 'installed'}
-        />
+        /> */}
       </div>
       <ReleaseStatsLine
         installedVersion={installedVersion}
