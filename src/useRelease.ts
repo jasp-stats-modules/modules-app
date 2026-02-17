@@ -1,4 +1,11 @@
-import { compareBuild, prerelease, satisfies } from 'semver';
+import {
+  compareBuild,
+  major,
+  minor,
+  patch,
+  prerelease,
+  satisfies,
+} from 'semver';
 import type { Asset, Release, Repository } from '@/types';
 import { useInfo } from './useInfo';
 
@@ -44,8 +51,6 @@ export interface UpdatePreReleaseAction extends BaseAssetAction {
   type: 'update-pre-release';
 }
 
-// Downgrade from release version to pre-release of same release version
-// for example 0.95.5-release.1 -> 0.95.5-beta.2
 export interface DowngradePreReleaseAction extends BaseAssetAction {
   type: 'downgrade-pre-release';
 }
@@ -167,11 +172,7 @@ export function getReleaseInfo(
     }
   }
   const actions: AnyAction[] = [];
-  if (
-    stableAsset &&
-    latestStableReleaseVersion &&
-    !latestPreReleaseIsNewerThanStable
-  ) {
+  if (stableAsset && latestStableReleaseVersion) {
     if (!installedVersion) {
       actions.push({
         type: 'install-stable',
@@ -202,6 +203,32 @@ export function getReleaseInfo(
         from: installedVersion,
       });
     }
+  }
+  // Downgrade from stable release to pre-release of same release version
+  // for example 0.95.5-release.4 -> 0.95.5-beta.2
+  const samePatchVersion =
+    installedVersion &&
+    latestPreReleaseVersion &&
+    major(jaspVersionToSemver(installedVersion)) ===
+      major(jaspVersionToSemver(latestPreReleaseVersion)) &&
+    minor(jaspVersionToSemver(installedVersion)) ===
+      minor(jaspVersionToSemver(latestPreReleaseVersion)) &&
+    patch(jaspVersionToSemver(installedVersion)) ===
+      patch(jaspVersionToSemver(latestPreReleaseVersion));
+  if (
+    allowPreRelease &&
+    installedVersion !== undefined &&
+    !isPreRelease(installedVersion) &&
+    latestPreReleaseVersion !== undefined &&
+    preReleaseAsset &&
+    samePatchVersion
+  ) {
+    actions.push({
+      type: 'downgrade-pre-release',
+      asset: preReleaseAsset,
+      to: latestPreReleaseVersion,
+      from: installedVersion,
+    });
   }
   if (
     installedVersion &&

@@ -21,6 +21,7 @@ import {
 import { useInfo } from './useInfo';
 import {
   type AnyAction,
+  type DowngradePreReleaseAction,
   findReleaseThatSatisfiesInstalledJaspVersion,
   type InstallPreReleaseAction,
   type InstallStableAction,
@@ -256,6 +257,26 @@ function UpdatePreReleaseButton({
   );
 }
 
+function DowngradePreReleaseButton({
+  action,
+  translations,
+}: {
+  action: DowngradePreReleaseAction;
+  translations: AppTranslations;
+}) {
+  const { downgrade, pre_release } = translations;
+  return (
+    <a
+      href={action.asset.downloadUrl}
+      data-slot="button"
+      title={`${downgrade.value} from version ${action.from} to ${action.to}`}
+      className={buttonVariants({ variant: 'secondary' })}
+    >
+      {downgrade} {pre_release}
+    </a>
+  );
+}
+
 function UninstallButton({
   action,
   translations,
@@ -346,8 +367,9 @@ function ActionButton({
     );
   }
   if (action.type === 'downgrade-pre-release') {
-    // Do not expect this action be the main action
-    return null;
+    return (
+      <DowngradePreReleaseButton action={action} translations={translations} />
+    );
   }
   return null;
 }
@@ -363,7 +385,7 @@ function ActionMenuItem({
 
   if (action.type === 'install-stable' || action.type === 'update-stable') {
     // Do not expect these action be in the menu, as it should be the main action
-    return null;
+   throw new Error(`Action of type ${action.type} should not be in the menu`)
   }
   if (
     action.type === 'uninstall'
@@ -399,7 +421,10 @@ function ActionMenuItem({
   }
   if (action.type === 'install-pre-release') {
     return (
-      <DropdownMenuLinkItem href={action.asset.downloadUrl}>
+      <DropdownMenuLinkItem
+        href={action.asset.downloadUrl}
+        title={`${translations.install.value} version ${action.to}`}
+      >
         {translations.install} {translations.pre_release}
       </DropdownMenuLinkItem>
     );
@@ -418,9 +443,9 @@ function ActionMenuItem({
     return (
       <DropdownMenuLinkItem
         href={action.asset.downloadUrl}
-        title={`${translations.update.value} from version ${action.from} to ${action.to}`}
+        title={`${translations.downgrade.value} from version ${action.from} to ${action.to}`}
       >
-        {action.type}
+        {translations.downgrade} {translations.pre_release}
       </DropdownMenuLinkItem>
     );
   }
@@ -441,6 +466,7 @@ function ActionsButton({
   const mainAction = actions[0];
   if (actions.length > 1) {
     const menuActions = actions.slice(1);
+    // Make menu trigger icon match the main action variant
     let triggerVariant: VariantProps<typeof buttonVariants>['variant'] =
       'outline';
     if (mainAction.type.startsWith('install')) {
