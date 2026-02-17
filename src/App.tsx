@@ -184,11 +184,14 @@ function InstallButton({
   action: InstallStableAction;
   translations: AppTranslations;
 }) {
-  const { install } = translations;
+  const { install, action_version_title } = translations;
   return (
     <a
       href={action.asset.downloadUrl}
-      title={`${install.value} version ${action.to}`}
+      title={action_version_title({
+        action: install.value,
+        version: action.to,
+      }).value}
       className={buttonVariants()}
       data-slot="button"
     >
@@ -204,15 +207,22 @@ function InstallPreReleaseButton({
   action: InstallPreReleaseAction;
   translations: AppTranslations;
 }) {
-  const { install, pre_release } = translations;
+  const { install, pre_release, action_version_title, action_with_pre_release } =
+    translations;
   return (
     <a
       href={action.asset.downloadUrl}
-      title={`${install.value} version ${action.to}`}
+      title={action_version_title({
+        action: install.value,
+        version: action.to,
+      }).value}
       data-slot="button"
       className={buttonVariants()}
     >
-      {install} {pre_release}
+      {action_with_pre_release({
+        action: install.value,
+        preRelease: pre_release.value,
+      })}
     </a>
   );
 }
@@ -224,11 +234,15 @@ function UpdateButton({
   action: UpdateStableAction;
   translations: AppTranslations;
 }) {
-  const { update } = translations;
+  const { update, action_version_from_to_title } = translations;
   return (
     <a
       href={action.asset.downloadUrl}
-      title={`${update.value} from version ${action.from} to ${action.to}`}
+      title={action_version_from_to_title({
+        action: update.value,
+        from: action.from,
+        to: action.to,
+      }).value}
       data-slot="button"
       className={buttonVariants({ variant: 'secondary' })}
     >
@@ -244,15 +258,27 @@ function UpdatePreReleaseButton({
   action: UpdatePreReleaseAction;
   translations: AppTranslations;
 }) {
-  const { update, pre_release } = translations;
+  const {
+    update,
+    pre_release,
+    action_version_from_to_title,
+    action_with_pre_release,
+  } = translations;
   return (
     <a
       href={action.asset.downloadUrl}
       data-slot="button"
-      title={`${update.value} from version ${action.from} to ${action.to}`}
+      title={action_version_from_to_title({
+        action: update.value,
+        from: action.from,
+        to: action.to,
+      }).value}
       className={buttonVariants({ variant: 'secondary' })}
     >
-      {update} {pre_release}
+      {action_with_pre_release({
+        action: update.value,
+        preRelease: pre_release.value,
+      })}
     </a>
   );
 }
@@ -264,15 +290,27 @@ function DowngradePreReleaseButton({
   action: DowngradePreReleaseAction;
   translations: AppTranslations;
 }) {
-  const { downgrade, pre_release } = translations;
+  const {
+    downgrade,
+    pre_release,
+    action_version_from_to_title,
+    action_with_pre_release,
+  } = translations;
   return (
     <a
       href={action.asset.downloadUrl}
       data-slot="button"
-      title={`${downgrade.value} from version ${action.from} to ${action.to}`}
+      title={action_version_from_to_title({
+        action: downgrade.value,
+        from: action.from,
+        to: action.to,
+      }).value}
       className={buttonVariants({ variant: 'secondary' })}
     >
-      {downgrade} {pre_release}
+      {action_with_pre_release({
+        action: downgrade.value,
+        preRelease: pre_release.value,
+      })}
     </a>
   );
 }
@@ -309,7 +347,12 @@ function UninstallPreReleaseButton({
   action: UninstallPreReleaseAction;
   translations: AppTranslations;
 }) {
-  const { uninstall, uninstall_this_module, pre_release } = translations;
+  const {
+    uninstall,
+    uninstall_this_module,
+    pre_release,
+    action_with_pre_release,
+  } = translations;
   const { data: jasp } = useJaspQtObject();
 
   async function doUninstall() {
@@ -322,7 +365,10 @@ function UninstallPreReleaseButton({
       onClick={doUninstall}
       title={uninstall_this_module.value}
     >
-      {uninstall} {pre_release}
+      {action_with_pre_release({
+        action: uninstall.value,
+        preRelease: pre_release.value,
+      })}
     </Button>
   );
 }
@@ -382,6 +428,11 @@ function ActionMenuItem({
   translations: AppTranslations;
 }) {
   const { data: jasp } = useJaspQtObject();
+  const {
+    action_version_title,
+    action_version_from_to_title,
+    action_with_pre_release,
+  } = translations;
 
   if (action.type === 'install-stable' || action.type === 'update-stable') {
     // Do not expect these action be in the menu, as it should be the main action
@@ -415,7 +466,10 @@ function ActionMenuItem({
           jasp?.uninstall(action.moduleId);
         }}
       >
-        {translations.uninstall} {translations.pre_release}
+        {action_with_pre_release({
+          action: translations.uninstall.value,
+          preRelease: translations.pre_release.value,
+        })}
       </DropdownMenuItem>
     );
   }
@@ -423,9 +477,15 @@ function ActionMenuItem({
     return (
       <DropdownMenuLinkItem
         href={action.asset.downloadUrl}
-        title={`${translations.install.value} version ${action.to}`}
+        title={action_version_title({
+          action: translations.install.value,
+          version: action.to,
+        }).value}
       >
-        {translations.install} {translations.pre_release}
+        {action_with_pre_release({
+          action: translations.install.value,
+          preRelease: translations.pre_release.value,
+        })}
       </DropdownMenuLinkItem>
     );
   }
@@ -433,9 +493,16 @@ function ActionMenuItem({
     return (
       <DropdownMenuLinkItem
         href={action.asset.downloadUrl}
-        title={`${translations.update.value} from version ${action.from} to ${action.to}`}
+        title={action_version_from_to_title({
+          action: translations.update.value,
+          from: action.from,
+          to: action.to,
+        }).value}
       >
-        {translations.update} {translations.pre_release}
+        {action_with_pre_release({
+          action: translations.update.value,
+          preRelease: translations.pre_release.value,
+        })}
       </DropdownMenuLinkItem>
     );
   }
@@ -443,9 +510,16 @@ function ActionMenuItem({
     return (
       <DropdownMenuLinkItem
         href={action.asset.downloadUrl}
-        title={`${translations.downgrade.value} from version ${action.from} to ${action.to}`}
+        title={action_version_from_to_title({
+          action: translations.downgrade.value,
+          from: action.from,
+          to: action.to,
+        }).value}
       >
-        {translations.downgrade} {translations.pre_release}
+        {action_with_pre_release({
+          action: translations.downgrade.value,
+          preRelease: translations.pre_release.value,
+        })}
       </DropdownMenuLinkItem>
     );
   }
@@ -460,7 +534,7 @@ function ActionsButton({
   translations: AppTranslations;
 }) {
   if (actions.length === 0) {
-    return <div>Latest installed</div>;
+    return <div>{translations.latest_version_installed}</div>;
   }
 
   const mainAction = actions[0];
@@ -480,7 +554,7 @@ function ActionsButton({
         <ActionButton action={mainAction} translations={translations} />
         <DropdownMenu>
           <DropdownMenuTrigger
-            title="More actions"
+            title={translations.more_actions.value}
             render={
               <Button variant={triggerVariant} size="icon">
                 <ChevronDownIcon />
