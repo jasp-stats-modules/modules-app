@@ -11,52 +11,63 @@ export function findReleaseThatSatisfiesInstalledJaspVersion(
   );
 }
 
-export interface InstallStableAction {
+interface BaseInstallAction {
+  asset: Asset;
+  to: string;
+}
+
+interface BaseAssetAction extends BaseInstallAction {
+  from: string;
+}
+export interface InstallStableAction extends BaseInstallAction {
   type: 'install-stable';
-  asset: Asset;
 }
 
-export interface UpdateStableAction {
+export interface UpdateStableAction extends BaseAssetAction {
   type: 'update-stable';
-  asset: Asset;
 }
 
-export interface UninstallPreReleaseAction {
+interface BaseUninstallAction {
+  moduleId: string;
+  from: string;
+}
+
+export interface UninstallPreReleaseAction extends BaseUninstallAction {
   type: 'uninstall-pre-release';
-  moduleId: string;
 }
 
-export interface InstallPreReleaseAction {
+export interface InstallPreReleaseAction extends BaseInstallAction {
   type: 'install-pre-release';
-  asset: Asset;
 }
 
-export interface UpdatePreReleaseAction {
+export interface UpdatePreReleaseAction extends BaseAssetAction {
   type: 'update-pre-release';
-  asset: Asset;
 }
 
-export interface UninstallAction {
+// Downgrade from release version to pre-release of same release version
+// for example 0.95.5-release.1 -> 0.95.5-beta.2
+export interface DowngradePreReleaseAction extends BaseAssetAction {
+  type: 'downgrade-pre-release';
+}
+
+export interface UninstallAction extends BaseUninstallAction {
   type: 'uninstall';
-  moduleId: string;
 }
 
-export type AnyAction = InstallStableAction
+export type AnyAction =
+  | InstallStableAction
   | UpdateStableAction
   | UninstallPreReleaseAction
   | InstallPreReleaseAction
   | UpdatePreReleaseAction
+  | DowngradePreReleaseAction
   | UninstallAction;
 
 export interface ReleaseStats {
   latestStableRelease?: Release;
   latestPreRelease?: Release;
   installedVersion?: string;
-  asset?: Asset;
   latestVersionIs?: 'stable' | 'pre-release' | 'installed';
-  // The *-pre-release actions are only possible when allowPreRelease=true
-  primaryAction?: 'install-stable' | 'update-stable' | 'uninstall-pre-release';
-  secondaryAction?: 'install-pre-release' | 'update-pre-release' | 'uninstall';
   actions: AnyAction[];
 }
 
@@ -141,7 +152,6 @@ export function getReleaseInfo(
   const installedIsPreRelease =
     installedVersion && isPreRelease(installedVersion);
   let latestVersionIs: ReleaseStats['latestVersionIs'];
-  let asset: Asset | undefined;
   if (installedVersion) {
     latestVersionIs = 'installed';
     if (canUpdateToStable && !latestPreReleaseIsNewerThanStable) {
@@ -156,78 +166,72 @@ export function getReleaseInfo(
       latestVersionIs = 'stable';
     }
   }
-  if (latestVersionIs === 'stable' && stableAsset) {
-    asset = stableAsset;
-  } else if (latestVersionIs === 'pre-release' && preReleaseAsset) {
-    asset = preReleaseAsset;
-  }
-  let primaryAction: ReleaseStats['primaryAction'];
+  const actions: AnyAction[] = [];
   if (
     stableAsset &&
     latestStableReleaseVersion &&
     !latestPreReleaseIsNewerThanStable
   ) {
     if (!installedVersion) {
-      primaryAction = 'install-stable';
+      actions.push({
+        type: 'install-stable',
+        asset: stableAsset,
+        to: latestStableReleaseVersion,
+      });
     } else if (canUpdateToStable) {
-      primaryAction = 'update-stable';
+      actions.push({
+        type: 'update-stable',
+        asset: stableAsset,
+        to: latestStableReleaseVersion,
+        from: installedVersion,
+      });
     }
   }
-  let secondaryAction: ReleaseStats['secondaryAction'];
-  if (
-    allowPreRelease &&
-    preReleaseAsset &&
-    latestPreReleaseVersion &&
-    latestPreReleaseIsNewerThanStable
-  ) {
+  if (allowPreRelease && preReleaseAsset && latestPreReleaseVersion) {
     if (!installedVersion) {
-      secondaryAction = 'install-pre-release';
+      actions.push({
+        type: 'install-pre-release',
+        asset: preReleaseAsset,
+        to: latestPreReleaseVersion,
+      });
     } else if (canUpdateToPreRelease) {
-      secondaryAction = 'update-pre-release';
+      actions.push({
+        type: 'update-pre-release',
+        asset: preReleaseAsset,
+        to: latestPreReleaseVersion,
+        from: installedVersion,
+      });
     }
   }
   if (
-    !secondaryAction &&
     installedVersion &&
     uninstallableModules.includes(repo.id) &&
     !installedIsPreRelease
   ) {
-    secondaryAction = 'uninstall';
+    actions.push({
+      type: 'uninstall',
+      moduleId: repo.id,
+      from: installedVersion,
+    });
   }
   if (
-    !primaryAction &&
     allowPreRelease &&
     installedVersion &&
     uninstallableModules.includes(repo.id) &&
     installedIsPreRelease
   ) {
-    primaryAction = 'uninstall-pre-release';
+    actions.push({
+      type: 'uninstall-pre-release',
+      moduleId: repo.id,
+      from: installedVersion,
+    });
   }
-  const actions: AnyAction[] = [];
-  if (primaryAction === 'install-stable' && stableAsset) {
-    actions.push({ type: 'install-stable', asset: stableAsset });
-  } else if (primaryAction === 'update-stable' && stableAsset) {
-    actions.push({ type: 'update-stable', asset: stableAsset });
-  } else if (primaryAction === 'uninstall-pre-release' && repo.id) {
-    actions.push({ type: 'uninstall-pre-release', moduleId: repo.id });
-  }
-  if (secondaryAction === 'install-pre-release' && preReleaseAsset) {
-    actions.push({ type: 'install-pre-release', asset: preReleaseAsset });
-  } else if (secondaryAction === 'update-pre-release' && preReleaseAsset) {
-    actions.push({ type: 'update-pre-release', asset: preReleaseAsset });
-  }
-  else if (secondaryAction === 'uninstall' && repo.id) {
-    actions.push({ type: 'uninstall', moduleId: repo.id });
-  }
-  
+
   return {
     latestStableRelease,
     latestPreRelease: allowPreRelease ? latestPreRelease : undefined,
-    asset,
     installedVersion,
     latestVersionIs,
-    primaryAction,
-    secondaryAction,
     actions,
   };
 }

@@ -101,10 +101,8 @@ describe('getReleaseInfo', () => {
         removeable: false,
       },
       {
-        primaryAction: undefined,
-        secondaryAction: undefined,
+        actions:[],
         latestVersionIs: 'installed',
-        asset: undefined,
         installedVersion: '1.0.0-release.0',
         latestPreRelease: undefined,
         latestStableRelease: undefined,
@@ -119,10 +117,12 @@ describe('getReleaseInfo', () => {
         removeable: true,
       },
       {
-        primaryAction: undefined,
-        secondaryAction: 'uninstall',
+        actions: [{
+          type: 'uninstall',
+          from: '1.0.0-release.0',
+          moduleId: 'jaspAcceptanceSampling',
+        }],
         latestVersionIs: 'installed',
-        asset: undefined,
         installedVersion: '1.0.0-release.0',
         latestPreRelease: undefined,
         latestStableRelease: undefined,

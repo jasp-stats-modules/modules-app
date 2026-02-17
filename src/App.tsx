@@ -1,4 +1,5 @@
 import { queryOptions, useQuery } from '@tanstack/react-query';
+import type { VariantProps } from 'class-variance-authority';
 import { ChevronDownIcon, House } from 'lucide-react';
 import { useQueryState } from 'nuqs';
 import type { Dispatch, ReactNode, SetStateAction } from 'react';
@@ -6,17 +7,31 @@ import { useEffect, useState } from 'react';
 import { useIntlayer, useMarkdownRenderer } from 'react-intlayer';
 import { useDebounceValue } from 'usehooks-ts';
 import { cn } from '@/lib/utils';
-import type { Asset, Release, Repository } from '@/types';
-import { insideQt, useJaspQtObject } from '@/useJaspQtObject';
+import type { Release, Repository } from '@/types';
+import { useJaspQtObject } from '@/useJaspQtObject';
+import { Button, buttonVariants } from './Button';
+import { ButtonGroup } from './ButtonGroup';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLinkItem,
+  DropdownMenuTrigger,
+} from './dropdown-menu';
 import { useInfo } from './useInfo';
 import {
+  type AnyAction,
   findReleaseThatSatisfiesInstalledJaspVersion,
+  type InstallPreReleaseAction,
+  type InstallStableAction,
   isNewerVersion,
   type ReleaseStats,
+  type UninstallAction,
+  type UninstallPreReleaseAction,
+  type UpdatePreReleaseAction,
+  type UpdateStableAction,
   useRelease,
-  type AnyAction,
 } from './useRelease';
-import { Menu } from '@base-ui/react/menu';
 
 type AppTranslations = ReturnType<typeof useIntlayer<'app'>>;
 
@@ -162,20 +177,19 @@ function Checkbox({
 }
 
 function InstallButton({
-  asset,
+  action,
   translations,
 }: {
-  asset?: Asset;
+  action: InstallStableAction;
   translations: AppTranslations;
 }) {
   const { install } = translations;
-  if (!asset) {
-    return null;
-  }
   return (
     <a
-      href={asset.downloadUrl}
-      className="inline-flex items-center justify-center whitespace-nowrap rounded bg-jasp-green px-3 py-1.5 font-medium text-primary text-sm transition-colors duration-200 hover:bg-green-600 dark:hover:bg-green-800"
+      href={action.asset.downloadUrl}
+      title={`${install.value} version ${action.to}`}
+      className={buttonVariants()}
+      data-slot="button"
     >
       {install}
     </a>
@@ -183,20 +197,19 @@ function InstallButton({
 }
 
 function InstallPreReleaseButton({
-  asset,
+  action,
   translations,
 }: {
-  asset?: Asset;
+  action: InstallPreReleaseAction;
   translations: AppTranslations;
 }) {
   const { install, pre_release } = translations;
-  if (!asset) {
-    return null;
-  }
   return (
     <a
-      href={asset.downloadUrl}
-      className="inline-flex items-center justify-center whitespace-nowrap rounded bg-jasp-green px-3 py-1.5 font-medium text-primary text-sm transition-colors duration-200 hover:bg-green-600 dark:hover:bg-green-800"
+      href={action.asset.downloadUrl}
+      title={`${install.value} version ${action.to}`}
+      data-slot="button"
+      className={buttonVariants()}
     >
       {install} {pre_release}
     </a>
@@ -204,20 +217,19 @@ function InstallPreReleaseButton({
 }
 
 function UpdateButton({
-  asset,
+  action,
   translations,
 }: {
-  asset?: Asset;
+  action: UpdateStableAction;
   translations: AppTranslations;
 }) {
   const { update } = translations;
-  if (!asset) {
-    return null;
-  }
   return (
     <a
-      href={asset.downloadUrl}
-      className="inline-flex items-center justify-center whitespace-nowrap rounded bg-jasp-blue px-3 py-1.5 font-medium text-primary text-sm transition-colors duration-200 hover:bg-blue-700 dark:bg-blue-700 dark:hover:bg-blue-800"
+      href={action.asset.downloadUrl}
+      title={`${update.value} from version ${action.from} to ${action.to}`}
+      data-slot="button"
+      className={buttonVariants({ variant: 'secondary' })}
     >
       {update}
     </a>
@@ -225,20 +237,19 @@ function UpdateButton({
 }
 
 function UpdatePreReleaseButton({
-  asset,
+  action,
   translations,
 }: {
-  asset?: Asset;
+  action: UpdatePreReleaseAction;
   translations: AppTranslations;
 }) {
   const { update, pre_release } = translations;
-  if (!asset) {
-    return null;
-  }
   return (
     <a
-      href={asset.downloadUrl}
-      className="inline-flex items-center justify-center whitespace-nowrap rounded bg-jasp-blue px-3 py-1.5 font-medium text-primary text-sm transition-colors duration-200 hover:bg-blue-700 dark:bg-blue-700 dark:hover:bg-blue-800"
+      href={action.asset.downloadUrl}
+      data-slot="button"
+      title={`${update.value} from version ${action.from} to ${action.to}`}
+      className={buttonVariants({ variant: 'secondary' })}
     >
       {update} {pre_release}
     </a>
@@ -246,201 +257,224 @@ function UpdatePreReleaseButton({
 }
 
 function UninstallButton({
-  moduleId,
+  action,
   translations,
 }: {
-  moduleId: string;
+  action: UninstallAction;
   translations: AppTranslations;
 }) {
   const { uninstall, uninstall_this_module } = translations;
   const { data: jasp } = useJaspQtObject();
 
   async function doUninstall() {
-    await jasp?.uninstall(moduleId);
+    await jasp?.uninstall(action.moduleId);
   }
 
   return (
-    <button
-      type="button"
+    <Button
+      variant="destructive"
       onClick={doUninstall}
       title={uninstall_this_module.value}
-      className="mt-3 inline-flex items-center justify-center whitespace-nowrap rounded bg-destructive px-3 py-1.5 font-medium text-primary text-sm transition-colors duration-200 hover:bg-red-700 dark:bg-red-700 dark:hover:bg-red-800"
     >
       {uninstall}
-    </button>
+    </Button>
   );
 }
 
 function UninstallPreReleaseButton({
-  moduleId,
+  action,
   translations,
 }: {
-  moduleId: string;
+  action: UninstallPreReleaseAction;
   translations: AppTranslations;
 }) {
   const { uninstall, uninstall_this_module, pre_release } = translations;
   const { data: jasp } = useJaspQtObject();
 
   async function doUninstall() {
-    await jasp?.uninstall(moduleId);
+    await jasp?.uninstall(action.moduleId);
   }
 
   return (
-    <button
-      type="button"
+    <Button
+      variant="destructive"
       onClick={doUninstall}
       title={uninstall_this_module.value}
-      className="mt-3 inline-flex items-center justify-center whitespace-nowrap rounded bg-destructive px-3 py-1.5 font-medium text-primary text-sm transition-colors duration-200 hover:bg-red-700 dark:bg-red-700 dark:hover:bg-red-800"
     >
       {uninstall} {pre_release}
-    </button>
+    </Button>
   );
 }
 
+function ActionButton({
+  action,
+  translations,
+}: {
+  action: AnyAction;
+  translations: AppTranslations;
+}) {
+  if (action.type === 'install-stable') {
+    return <InstallButton action={action} translations={translations} />;
+  }
+  if (action.type === 'update-stable') {
+    return <UpdateButton action={action} translations={translations} />;
+  }
+  if (
+    action.type === 'uninstall'
+    // TODO only uninstall if inside Qt
+    // && insideQt
+  ) {
+    return <UninstallButton action={action} translations={translations} />;
+  }
+  if (
+    action.type === 'uninstall-pre-release'
+    // TODO only uninstall if inside Qt
+    // && insideQt
+  ) {
+    return (
+      <UninstallPreReleaseButton action={action} translations={translations} />
+    );
+  }
+  if (action.type === 'install-pre-release') {
+    return (
+      <InstallPreReleaseButton action={action} translations={translations} />
+    );
+  }
+  if (action.type === 'update-pre-release') {
+    return (
+      <UpdatePreReleaseButton action={action} translations={translations} />
+    );
+  }
+  if (action.type === 'downgrade-pre-release') {
+    // Do not expect this action be the main action
+    return null;
+  }
+  return null;
+}
+
+function ActionMenuItem({
+  action,
+  translations,
+}: {
+  action: AnyAction;
+  translations: AppTranslations;
+}) {
+  const { data: jasp } = useJaspQtObject();
+
+  if (action.type === 'install-stable' || action.type === 'update-stable') {
+    // Do not expect these action be in the menu, as it should be the main action
+    return null;
+  }
+  if (
+    action.type === 'uninstall'
+    // TODO only uninstall if inside Qt
+    // && insideQt
+  ) {
+    return (
+      <DropdownMenuItem
+        variant="destructive"
+        onClick={() => {
+          jasp?.uninstall(action.moduleId);
+        }}
+      >
+        {translations.uninstall}
+      </DropdownMenuItem>
+    );
+  }
+  if (
+    action.type === 'uninstall-pre-release'
+    // TODO only uninstall if inside Qt
+    // && insideQt
+  ) {
+    return (
+      <DropdownMenuItem
+        variant="destructive"
+        onClick={() => {
+          jasp?.uninstall(action.moduleId);
+        }}
+      >
+        {translations.uninstall} {translations.pre_release}
+      </DropdownMenuItem>
+    );
+  }
+  if (action.type === 'install-pre-release') {
+    return (
+      <DropdownMenuLinkItem href={action.asset.downloadUrl}>
+        {translations.install} {translations.pre_release}
+      </DropdownMenuLinkItem>
+    );
+  }
+  if (action.type === 'update-pre-release') {
+    return (
+      <DropdownMenuLinkItem
+        href={action.asset.downloadUrl}
+        title={`${translations.update.value} from version ${action.from} to ${action.to}`}
+      >
+        {translations.update} {translations.pre_release}
+      </DropdownMenuLinkItem>
+    );
+  }
+  if (action.type === 'downgrade-pre-release') {
+    return (
+      <DropdownMenuLinkItem
+        href={action.asset.downloadUrl}
+        title={`${translations.update.value} from version ${action.from} to ${action.to}`}
+      >
+        {action.type}
+      </DropdownMenuLinkItem>
+    );
+  }
+  return null;
+}
+
 function ActionsButton({
-  actions
-}: {actions: AnyAction[]}) {
+  actions,
+  translations,
+}: {
+  actions: AnyAction[];
+  translations: AppTranslations;
+}) {
   if (actions.length === 0) {
     return <div>Latest installed</div>;
   }
 
   const mainAction = actions[0];
-  let menu = <></>;
   if (actions.length > 1) {
     const menuActions = actions.slice(1);
-    menu = (
-      <Menu.Root>
-      <Menu.Trigger className="inline-flex items-center justify-center whitespace-nowrap data-popup-open:rotate-180 rounded-r data-popup-open:rounded-l bg-jasp-blue font-medium text-primary text-sm transition-colors duration-200 hover:bg-blue-700 dark:bg-blue-700 dark:hover:bg-blue-800">
-        <ChevronDownIcon className="" />
-      </Menu.Trigger>
-      <Menu.Portal>
-        <Menu.Positioner>
-        <Menu.Popup className="bg-primary-foreground text-primary rounded shadow-md p-1">
-          {menuActions.map((action) => (
-          <Menu.Item key={action.type}>{action.type}</Menu.Item>
-          ))}
-        </Menu.Popup>
-        </Menu.Positioner>
-      </Menu.Portal>
-      </Menu.Root>
-    )
+    let triggerVariant: VariantProps<typeof buttonVariants>['variant'] =
+      'outline';
+    if (mainAction.type.startsWith('install')) {
+      triggerVariant = 'default';
+    }
+    if (mainAction.type.startsWith('update')) {
+      triggerVariant = 'secondary';
+    }
     return (
-      <div className="flex flex-row">
-      <button
-        type="button"
-        className="inline-flex items-center justify-center whitespace-nowrap rounded-l bg-jasp-blue ps-3 py-1.5 font-medium text-primary text-sm transition-colors duration-200 hover:bg-blue-700 dark:bg-blue-700 dark:hover:bg-blue-800"
-      >
-        {mainAction.type}
-      </button>
-      {menu}
-      </div>
-    )
-  }
-  return (
-    <div>
-         <button
-          type="button"
-          className="inline-flex items-center justify-center whitespace-nowrap rounded bg-jasp-blue px-3 py-1.5 font-medium text-primary text-sm transition-colors duration-200 hover:bg-blue-700 dark:bg-blue-700 dark:hover:bg-blue-800"
-        >
-          {mainAction.type}
-        </button>
-            </div>
-  )
-}
-
-function ReleaseAction({
-  moduleId,
-  asset,
-  primaryAction,
-  secondaryAction,
-  translations,
-  latestInstalled,
-}: {
-  moduleId: string;
-  asset?: Asset;
-  primaryAction?: ReleaseStats['primaryAction'];
-  secondaryAction?: ReleaseStats['secondaryAction'];
-  translations: AppTranslations;
-  latestInstalled: boolean;
-}) {
-  const { latest_version_installed, installed } = translations;
-  // Only show installed text when there is no button
-  const showInstalledBadge =
-    latestInstalled &&
-    !(
-      insideQt &&
-      (primaryAction === 'uninstall-pre-release' ||
-        secondaryAction === 'uninstall')
-    );
-  const actions: React.ReactNode[] = [];
-  if (secondaryAction === 'update-pre-release') {
-    actions.push(
-      <UpdatePreReleaseButton
-        key="update-pre-release"
-        asset={asset}
-        translations={translations}
-      />,
+      <ButtonGroup>
+        <ActionButton action={mainAction} translations={translations} />
+        <DropdownMenu>
+          <DropdownMenuTrigger
+            title="More actions"
+            render={
+              <Button variant={triggerVariant} size="icon">
+                <ChevronDownIcon />
+              </Button>
+            }
+          />
+          <DropdownMenuContent align="end" className="w-44">
+            {menuActions.map((action) => (
+              <ActionMenuItem
+                key={action.type}
+                action={action}
+                translations={translations}
+              />
+            ))}
+          </DropdownMenuContent>
+        </DropdownMenu>
+      </ButtonGroup>
     );
   }
-  if (primaryAction === 'install-stable') {
-    actions.push(
-      <InstallButton
-        key="install-stable"
-        asset={asset}
-        translations={translations}
-      />,
-    );
-  }
-  if (primaryAction === 'update-stable') {
-    actions.push(
-      <UpdateButton
-        key="update-stable"
-        asset={asset}
-        translations={translations}
-      />,
-    );
-  }
-  if (secondaryAction === 'install-pre-release') {
-    actions.push(
-      <InstallPreReleaseButton
-        key="install-pre-release"
-        asset={asset}
-        translations={translations}
-      />,
-    );
-  }
-  if (primaryAction === 'uninstall-pre-release' && insideQt) {
-    actions.push(
-      <UninstallPreReleaseButton
-        key="uninstall-pre-release"
-        moduleId={moduleId}
-        translations={translations}
-      />,
-    );
-  }
-  if (secondaryAction === 'uninstall' && insideQt) {
-    actions.push(
-      <UninstallButton
-        key="uninstall"
-        moduleId={moduleId}
-        translations={translations}
-      />,
-    );
-  }
-  return (
-    <div className="flex flex-col gap-2">
-      {actions}
-
-      {showInstalledBadge && (
-        <span
-          title={latest_version_installed.value}
-          className="px-2 py-1.5 text-muted-foreground text-sm"
-        >
-          {installed.value}
-        </span>
-      )}
-    </div>
-  );
+  return <ActionButton action={mainAction} translations={translations} />;
 }
 
 export function ReleaseStatsLine({
@@ -614,11 +648,8 @@ function RepositoryCard({
   const {
     latestPreRelease,
     latestStableRelease,
-    asset,
     installedVersion,
     latestVersionIs,
-    primaryAction,
-    secondaryAction,
     actions,
   } = useRelease(repo, allowPreRelease);
 
@@ -626,6 +657,7 @@ function RepositoryCard({
   const name = repo.translations[language]?.name || repo.name;
   const description =
     repo.translations[language]?.description || repo.description;
+
   return (
     <li
       aria-labelledby={cardId}
@@ -650,15 +682,7 @@ function RepositoryCard({
             />
           </div>
         </div>
-        <ActionsButton actions={actions}/>
-        {/* <ReleaseAction
-          moduleId={repo.id}
-          asset={asset}
-          primaryAction={primaryAction}
-          secondaryAction={secondaryAction}
-          translations={translations}
-          latestInstalled={latestVersionIs === 'installed'}
-        /> */}
+        <ActionsButton actions={actions} translations={translations} />
       </div>
       <ReleaseStatsLine
         installedVersion={installedVersion}
@@ -666,7 +690,16 @@ function RepositoryCard({
         latestStableRelease={latestStableRelease}
         latestVersionIs={latestVersionIs}
         maintainer={repo.organization}
-        downloads={asset?.downloadCount}
+        // TODO have latest stable and pre-release downloads separate in useRelease
+        downloads={
+          actions.find(
+            (a) =>
+              a.type === 'install-stable' ||
+              a.type === 'update-stable' ||
+              a.type === 'install-pre-release' ||
+              a.type === 'update-pre-release',
+          )?.asset.downloadCount
+        }
         translations={translations}
       />
     </li>
