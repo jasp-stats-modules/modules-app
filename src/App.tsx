@@ -8,7 +8,7 @@ import { useIntlayer, useMarkdownRenderer } from 'react-intlayer';
 import { useDebounceValue } from 'usehooks-ts';
 import { cn } from '@/lib/utils';
 import type { Release, Repository } from '@/types';
-import { useJaspQtObject } from '@/useJaspQtObject';
+import { insideQt, useJaspQtObject } from '@/useJaspQtObject';
 import { Button, buttonVariants } from './Button';
 import { ButtonGroup } from './ButtonGroup';
 import {
@@ -188,10 +188,12 @@ function InstallButton({
   return (
     <a
       href={action.asset.downloadUrl}
-      title={action_version_title({
-        action: install.value,
-        version: action.to,
-      }).value}
+      title={
+        action_version_title({
+          action: install.value,
+          version: action.to,
+        }).value
+      }
       className={buttonVariants()}
       data-slot="button"
     >
@@ -207,15 +209,21 @@ function InstallPreReleaseButton({
   action: InstallPreReleaseAction;
   translations: AppTranslations;
 }) {
-  const { install, pre_release, action_version_title, action_with_pre_release } =
-    translations;
+  const {
+    install,
+    pre_release,
+    action_version_title,
+    action_with_pre_release,
+  } = translations;
   return (
     <a
       href={action.asset.downloadUrl}
-      title={action_version_title({
-        action: install.value,
-        version: action.to,
-      }).value}
+      title={
+        action_version_title({
+          action: install.value,
+          version: action.to,
+        }).value
+      }
       data-slot="button"
       className={buttonVariants()}
     >
@@ -238,11 +246,13 @@ function UpdateButton({
   return (
     <a
       href={action.asset.downloadUrl}
-      title={action_version_from_to_title({
-        action: update.value,
-        from: action.from,
-        to: action.to,
-      }).value}
+      title={
+        action_version_from_to_title({
+          action: update.value,
+          from: action.from,
+          to: action.to,
+        }).value
+      }
       data-slot="button"
       className={buttonVariants({ variant: 'secondary' })}
     >
@@ -268,11 +278,13 @@ function UpdatePreReleaseButton({
     <a
       href={action.asset.downloadUrl}
       data-slot="button"
-      title={action_version_from_to_title({
-        action: update.value,
-        from: action.from,
-        to: action.to,
-      }).value}
+      title={
+        action_version_from_to_title({
+          action: update.value,
+          from: action.from,
+          to: action.to,
+        }).value
+      }
       className={buttonVariants({ variant: 'secondary' })}
     >
       {action_with_pre_release({
@@ -300,11 +312,13 @@ function DowngradePreReleaseButton({
     <a
       href={action.asset.downloadUrl}
       data-slot="button"
-      title={action_version_from_to_title({
-        action: downgrade.value,
-        from: action.from,
-        to: action.to,
-      }).value}
+      title={
+        action_version_from_to_title({
+          action: downgrade.value,
+          from: action.from,
+          to: action.to,
+        }).value
+      }
       className={buttonVariants({ variant: 'secondary' })}
     >
       {action_with_pre_release({
@@ -386,18 +400,10 @@ function ActionButton({
   if (action.type === 'update-stable') {
     return <UpdateButton action={action} translations={translations} />;
   }
-  if (
-    action.type === 'uninstall'
-    // TODO only uninstall if inside Qt
-    // && insideQt
-  ) {
+  if (action.type === 'uninstall' && insideQt) {
     return <UninstallButton action={action} translations={translations} />;
   }
-  if (
-    action.type === 'uninstall-pre-release'
-    // TODO only uninstall if inside Qt
-    // && insideQt
-  ) {
+  if (action.type === 'uninstall-pre-release' && insideQt) {
     return (
       <UninstallPreReleaseButton action={action} translations={translations} />
     );
@@ -436,13 +442,9 @@ function ActionMenuItem({
 
   if (action.type === 'install-stable' || action.type === 'update-stable') {
     // Do not expect these action be in the menu, as it should be the main action
-   throw new Error(`Action of type ${action.type} should not be in the menu`)
+    throw new Error(`Action of type ${action.type} should not be in the menu`);
   }
-  if (
-    action.type === 'uninstall'
-    // TODO only uninstall if inside Qt
-    // && insideQt
-  ) {
+  if (action.type === 'uninstall' && insideQt) {
     return (
       <DropdownMenuItem
         variant="destructive"
@@ -454,11 +456,7 @@ function ActionMenuItem({
       </DropdownMenuItem>
     );
   }
-  if (
-    action.type === 'uninstall-pre-release'
-    // TODO only uninstall if inside Qt
-    // && insideQt
-  ) {
+  if (action.type === 'uninstall-pre-release' && insideQt) {
     return (
       <DropdownMenuItem
         variant="destructive"
@@ -477,10 +475,12 @@ function ActionMenuItem({
     return (
       <DropdownMenuLinkItem
         href={action.asset.downloadUrl}
-        title={action_version_title({
-          action: translations.install.value,
-          version: action.to,
-        }).value}
+        title={
+          action_version_title({
+            action: translations.install.value,
+            version: action.to,
+          }).value
+        }
       >
         {action_with_pre_release({
           action: translations.install.value,
@@ -493,11 +493,13 @@ function ActionMenuItem({
     return (
       <DropdownMenuLinkItem
         href={action.asset.downloadUrl}
-        title={action_version_from_to_title({
-          action: translations.update.value,
-          from: action.from,
-          to: action.to,
-        }).value}
+        title={
+          action_version_from_to_title({
+            action: translations.update.value,
+            from: action.from,
+            to: action.to,
+          }).value
+        }
       >
         {action_with_pre_release({
           action: translations.update.value,
@@ -510,11 +512,13 @@ function ActionMenuItem({
     return (
       <DropdownMenuLinkItem
         href={action.asset.downloadUrl}
-        title={action_version_from_to_title({
-          action: translations.downgrade.value,
-          from: action.from,
-          to: action.to,
-        }).value}
+        title={
+          action_version_from_to_title({
+            action: translations.downgrade.value,
+            from: action.from,
+            to: action.to,
+          }).value
+        }
       >
         {action_with_pre_release({
           action: translations.downgrade.value,
