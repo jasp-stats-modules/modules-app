@@ -23,14 +23,15 @@ interface BaseInstallAction {
   to: string;
 }
 
-interface BaseAssetAction extends BaseInstallAction {
+interface BaseFromAction extends BaseInstallAction {
   from: string;
 }
+
 export interface InstallStableAction extends BaseInstallAction {
   type: 'install-stable';
 }
 
-export interface UpdateStableAction extends BaseAssetAction {
+export interface UpdateStableAction extends BaseFromAction {
   type: 'update-stable';
 }
 
@@ -47,11 +48,11 @@ export interface InstallPreReleaseAction extends BaseInstallAction {
   type: 'install-pre-release';
 }
 
-export interface UpdatePreReleaseAction extends BaseAssetAction {
+export interface UpdatePreReleaseAction extends BaseFromAction {
   type: 'update-pre-release';
 }
 
-export interface DowngradePreReleaseAction extends BaseAssetAction {
+export interface DowngradePreReleaseAction extends BaseFromAction {
   type: 'downgrade-pre-release';
 }
 
@@ -113,6 +114,24 @@ export function isNewerVersion(
   const candidateSemVersion = jaspVersionToSemver(candidateVersion);
   const compareResult = compareBuild(currentSemVersion, candidateSemVersion);
   return compareResult === -1;
+}
+
+function isSamePatchVersion(
+  installedVersion: string,
+  latestPreReleaseVersion: string | undefined,
+): boolean {
+  const installedSemver = jaspVersionToSemver(installedVersion);
+  const preReleaseSemver =
+    latestPreReleaseVersion !== undefined
+      ? jaspVersionToSemver(latestPreReleaseVersion)
+      : undefined;
+  return (
+    !!installedSemver &&
+    !!preReleaseSemver &&
+    major(installedSemver) === major(preReleaseSemver) &&
+    minor(installedSemver) === minor(preReleaseSemver) &&
+    patch(installedSemver) === patch(preReleaseSemver)
+  );
 }
 
 export function getReleaseInfo(
@@ -206,15 +225,10 @@ export function getReleaseInfo(
   }
   // Downgrade from stable release to pre-release of same release version
   // for example 0.95.5-release.4 -> 0.95.5-beta.2
-  const samePatchVersion =
-    installedVersion &&
-    latestPreReleaseVersion &&
-    major(jaspVersionToSemver(installedVersion)) ===
-      major(jaspVersionToSemver(latestPreReleaseVersion)) &&
-    minor(jaspVersionToSemver(installedVersion)) ===
-      minor(jaspVersionToSemver(latestPreReleaseVersion)) &&
-    patch(jaspVersionToSemver(installedVersion)) ===
-      patch(jaspVersionToSemver(latestPreReleaseVersion));
+  const samePatchVersion = isSamePatchVersion(
+    installedVersion,
+    latestPreReleaseVersion,
+  );
   if (
     allowPreRelease &&
     installedVersion !== undefined &&

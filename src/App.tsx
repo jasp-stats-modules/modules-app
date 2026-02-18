@@ -559,6 +559,7 @@ function ActionsButton({
         <DropdownMenu>
           <DropdownMenuTrigger
             title={translations.more_actions.value}
+            aria-label={translations.more_actions.value}
             render={
               <Button variant={triggerVariant} size="icon">
                 <ChevronDownIcon />
