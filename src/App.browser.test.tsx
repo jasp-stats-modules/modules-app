@@ -165,15 +165,10 @@ describe('App component', () => {
     });
 
     test('say installed', async () => {
-      const installedText = jaspAnovaCard.getByText('Installed', {
-        exact: true,
-      });
-      await expect.element(installedText).toBeInTheDocument();
-
-      const installedStatus = jaspAnovaCard.getByTitle(
-        'latest version is installed',
+      const installedText = jaspAnovaCard.getByText(
+        'Latest version is installed',
       );
-      await expect.element(installedStatus).toBeInTheDocument();
+      await expect.element(installedText).toBeInTheDocument();
     });
 
     test('shows installed release stats ', async () => {
@@ -184,11 +179,6 @@ describe('App component', () => {
     });
 
     test('no action buttons', async () => {
-      const installedText = jaspAnovaCard.getByText('Installed', {
-        exact: true,
-      });
-      await expect.element(installedText).toBeInTheDocument();
-
       await expect
         .element(jaspAnovaCard.getByRole('button'))
         .not.toBeInTheDocument();
@@ -247,7 +237,7 @@ describe('App component', () => {
       await expect.element(jaspAnovaCard).toBeInTheDocument();
 
       await expect
-        .element(jaspAnovaCard.getByText('Installed', { exact: true }))
+        .element(jaspAnovaCard.getByText('Latest version is installed'))
         .toBeInTheDocument();
     });
   });
