@@ -581,13 +581,19 @@ function ActionsButton({
   return <ActionButton action={mainAction} translations={translations} />;
 }
 
+function totalDownloads(release: Release): number {
+  return release.assets.reduce(
+    (sum, asset) => sum + (asset.downloadCount ?? 0),
+    0,
+  );
+}
+
 export function ReleaseStatsLine({
   installedVersion,
   latestStableRelease,
   latestPreRelease,
   maintainer,
   latestVersionIs,
-  downloads,
   translations,
 }: {
   installedVersion?: string;
@@ -595,7 +601,6 @@ export function ReleaseStatsLine({
   latestPreRelease?: Release;
   maintainer: string;
   latestVersionIs?: ReleaseStats['latestVersionIs'];
-  downloads?: number;
   translations: AppTranslations;
 }) {
   const {
@@ -604,9 +609,12 @@ export function ReleaseStatsLine({
     latest_installed_version,
     latest_version_on_with_downloads,
     latest_beta_version_on_with_downloads,
-    latest_stable_with_download_and_beta,
     latest_stable_and_beta_with_downloads,
   } = translations;
+  console.log({
+    latestPreRelease,
+    latestStableRelease,
+  });
   return (
     <div className="flex flex-row justify-between text-muted-foreground text-sm">
       <div>
@@ -629,7 +637,7 @@ export function ReleaseStatsLine({
                 publishedAt: new Date(
                   latestStableRelease.publishedAt,
                 ).toLocaleDateString(),
-                downloads: downloads ?? 0,
+                downloads: totalDownloads(latestStableRelease),
               })}
             </span>
           )}
@@ -642,44 +650,26 @@ export function ReleaseStatsLine({
                 publishedAt: new Date(
                   latestPreRelease.publishedAt,
                 ).toLocaleDateString(),
-                downloads: downloads ?? 0,
+                downloads: totalDownloads(latestPreRelease),
               })}
             </span>
           )}
-        {latestStableRelease &&
-          latestPreRelease &&
-          latestVersionIs === 'stable' && (
-            <span>
-              {latest_stable_with_download_and_beta({
-                latestVersion: latestStableRelease.version,
-                publishedAt: new Date(
-                  latestStableRelease.publishedAt,
-                ).toLocaleDateString(),
-                downloads: downloads ?? 0,
-                latestBetaVersion: latestPreRelease.version,
-                latestBetaPublishedAt: new Date(
-                  latestPreRelease.publishedAt,
-                ).toLocaleDateString(),
-              })}
-            </span>
-          )}
-        {latestStableRelease &&
-          latestPreRelease &&
-          latestVersionIs === 'pre-release' && (
-            <span>
-              {latest_stable_and_beta_with_downloads({
-                latestVersion: latestStableRelease.version,
-                publishedAt: new Date(
-                  latestStableRelease.publishedAt,
-                ).toLocaleDateString(),
-                latestBetaVersion: latestPreRelease.version,
-                latestBetaPublishedAt: new Date(
-                  latestPreRelease.publishedAt,
-                ).toLocaleDateString(),
-                downloads: downloads ?? 0,
-              })}
-            </span>
-          )}
+        {latestStableRelease && latestPreRelease && (
+          <span>
+            {latest_stable_and_beta_with_downloads({
+              latestVersion: latestStableRelease.version,
+              publishedAt: new Date(
+                latestStableRelease.publishedAt,
+              ).toLocaleDateString(),
+              latestBetaVersion: latestPreRelease.version,
+              latestBetaPublishedAt: new Date(
+                latestPreRelease.publishedAt,
+              ).toLocaleDateString(),
+              downloads: totalDownloads(latestStableRelease),
+              betaDownloads: totalDownloads(latestPreRelease),
+            })}
+          </span>
+        )}
       </div>
       <div>{by_maintainer({ maintainer })}</div>
     </div>
@@ -794,16 +784,6 @@ function RepositoryCard({
         latestStableRelease={latestStableRelease}
         latestVersionIs={latestVersionIs}
         maintainer={repo.organization}
-        // TODO have latest stable and pre-release downloads separate in useRelease
-        downloads={
-          actions.find(
-            (a) =>
-              a.type === 'install-stable' ||
-              a.type === 'update-stable' ||
-              a.type === 'install-pre-release' ||
-              a.type === 'update-pre-release',
-          )?.asset.downloadCount
-        }
         translations={translations}
       />
     </li>
