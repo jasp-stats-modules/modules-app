@@ -611,10 +611,6 @@ export function ReleaseStatsLine({
     latest_beta_version_on_with_downloads,
     latest_stable_and_beta_with_downloads,
   } = translations;
-  console.log({
-    latestPreRelease,
-    latestStableRelease,
-  });
   return (
     <div className="flex flex-row justify-between text-muted-foreground text-sm">
       <div>
