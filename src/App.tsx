@@ -803,7 +803,10 @@ function getInstallableReleaseStats(
 
 function getInstallableReleaseStatsFromRepository(
   repo: Repository,
-  info: Pick<Info, 'version' | 'arch' | 'installedModules' | 'uninstallableModules'>,
+  info: Pick<
+    Info,
+    'version' | 'arch' | 'installedModules' | 'uninstallableModules'
+  >,
   allowPreRelease: boolean,
 ): ReleaseStats[] {
   let latestRelease = findReleaseThatSatisfiesInstalledJaspVersion(
@@ -827,7 +830,9 @@ function getInstallableReleaseStatsFromRepository(
   if (!latestRelease) {
     return [];
   }
-  const hasArch = latestRelease.assets.some((a) => a.architecture === info.arch);
+  const hasArch = latestRelease.assets.some(
+    (a) => a.architecture === info.arch,
+  );
   if (!hasArch) {
     // No assets found with compatible architecture
     return [];
@@ -1153,9 +1158,9 @@ export function App() {
     debouncedSearchTerm,
   );
   const { showUpdateAllButton, updateableAssets } = getUpdateableAssets(
-    // update all button ignores search term, 
+    // update all button ignores search term,
     // but takes into account selected channels and pre-release toggle
-    installableReleaseStats, 
+    installableReleaseStats,
   );
 
   if (error) {
