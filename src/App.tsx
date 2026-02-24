@@ -189,6 +189,7 @@ function InstallButton({
   return (
     <a
       href={action.asset.downloadUrl}
+      // TODO to title add module id/title
       title={
         action_version_title({
           action: install.value,
@@ -1009,13 +1010,16 @@ function getUpdateableAssets(
         info.uninstallableModules,
       );
       if (rinfo.actions.length > 0) {
+        if (allowPreRelease && rinfo.latestVersionIs === 'pre-release') {
+          const preReleaseAction = rinfo.actions.find((a) =>
+            a.type === 'update-pre-release'
+          );
+          if (preReleaseAction) {
+            return preReleaseAction.asset.downloadUrl;
+          }
+        }
         const mainAction = rinfo.actions[0];
-        if (
-          mainAction.type === 'update-stable' ||
-          (allowPreRelease &&
-            (mainAction.type === 'update-pre-release' ||
-              mainAction.type === 'downgrade-pre-release'))
-        ) {
+        if (mainAction.type === 'update-stable') {
           return mainAction.asset.downloadUrl;
         }
       }
