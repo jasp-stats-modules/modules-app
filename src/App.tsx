@@ -1011,8 +1011,8 @@ function getUpdateableAssets(
       );
       if (rinfo.actions.length > 0) {
         if (allowPreRelease && rinfo.latestVersionIs === 'pre-release') {
-          const preReleaseAction = rinfo.actions.find((a) =>
-            a.type === 'update-pre-release'
+          const preReleaseAction = rinfo.actions.find(
+            (a) => a.type === 'update-pre-release',
           );
           if (preReleaseAction) {
             return preReleaseAction.asset.downloadUrl;
