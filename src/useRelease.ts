@@ -70,6 +70,7 @@ export type AnyAction =
   | UninstallAction;
 
 export interface ReleaseStats {
+  repo: Repository;
   latestStableRelease?: Release;
   latestPreRelease?: Release;
   installedVersion?: string;
@@ -269,6 +270,7 @@ export function getReleaseInfo(
   }
 
   return {
+    repo,
     latestStableRelease,
     latestPreRelease: allowPreRelease ? latestPreRelease : undefined,
     installedVersion,

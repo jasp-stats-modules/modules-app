@@ -1,11 +1,6 @@
 import { describe, expect, test } from 'vitest';
 import type { Asset, Repository } from './types';
-import {
-  getReleaseInfo,
-  isNewerVersion,
-  isPreRelease,
-  type ReleaseStats,
-} from './useRelease';
+import { getReleaseInfo, isNewerVersion, isPreRelease } from './useRelease';
 
 describe('isNewerVersion', () => {
   test.for<[string, string, boolean]>([
@@ -90,7 +85,7 @@ describe('getReleaseInfo', () => {
         allowPreRelease: boolean;
         removeable: boolean;
       },
-      ReleaseStats,
+      Omit<ReturnType<typeof getReleaseInfo>, 'repo'>,
     ]
   >([
     [
@@ -692,6 +687,6 @@ describe('getReleaseInfo', () => {
       given.removeable ? ['jaspAcceptanceSampling'] : [],
     );
 
-    expect(info).toStrictEqual(expected);
+    expect(info).toStrictEqual({ ...expected, repo });
   });
 });
