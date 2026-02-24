@@ -56,12 +56,10 @@ To get a list of available JASP modules, it does the following with the help of 
 3. For each submodule fetches its releases
    1. Fetches data for the latest 20 releases, paged per 3 repositories using GitHub GraphQL API
    2. Filter the first 20 release assets per release ending with `.JASPModule` extension
-   3. Looks in release description for the module name+description and JASP version range the module is compatible with. The [version range](https://semver.npmjs.com/), name and description are specified in [front matter header](https://www.markdownlang.com/advanced/frontmatter.html) as for example:
+   3. Looks in release description for the JASP version range the module is compatible with. The [version range](https://semver.npmjs.com/) is specified in [front matter header](https://www.markdownlang.com/advanced/frontmatter.html) as for example:
       ```markdown
       ---
       jasp: '>=0.95.0-release.0'
-      name: My module
-      description: A description of my module
       ---
       ```
    4. Split releases into latest release for each JASP version range and latest pre release.
