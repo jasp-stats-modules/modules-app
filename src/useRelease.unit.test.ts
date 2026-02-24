@@ -82,6 +82,7 @@ describe('getReleaseInfo', () => {
 
   test.for<
     [
+      string,
       {
         installed: string | undefined;
         stableRelease: string | undefined;
@@ -93,6 +94,7 @@ describe('getReleaseInfo', () => {
     ]
   >([
     [
+      'Installed, no releases',
       {
         installed: '1.0.0-release.0',
         stableRelease: undefined,
@@ -101,16 +103,15 @@ describe('getReleaseInfo', () => {
         removeable: false,
       },
       {
-        primaryAction: undefined,
-        secondaryAction: undefined,
+        actions: [],
         latestVersionIs: 'installed',
-        asset: undefined,
         installedVersion: '1.0.0-release.0',
         latestPreRelease: undefined,
         latestStableRelease: undefined,
       },
     ],
     [
+      'Installed removeable, no releases',
       {
         installed: '1.0.0-release.0',
         stableRelease: undefined,
@@ -119,16 +120,21 @@ describe('getReleaseInfo', () => {
         removeable: true,
       },
       {
-        primaryAction: undefined,
-        secondaryAction: 'uninstall',
+        actions: [
+          {
+            type: 'uninstall',
+            from: '1.0.0-release.0',
+            moduleId: 'jaspAcceptanceSampling',
+          },
+        ],
         latestVersionIs: 'installed',
-        asset: undefined,
         installedVersion: '1.0.0-release.0',
         latestPreRelease: undefined,
         latestStableRelease: undefined,
       },
     ],
     [
+      'Not installed, stable available',
       {
         installed: undefined,
         stableRelease: '1.0.0-release.0',
@@ -137,16 +143,21 @@ describe('getReleaseInfo', () => {
         removeable: false,
       },
       {
-        primaryAction: 'install-stable',
-        secondaryAction: undefined,
+        actions: [
+          {
+            type: 'install-stable',
+            asset: stableAsset,
+            to: '1.0.0-release.0',
+          },
+        ],
         latestVersionIs: 'stable',
-        asset: stableAsset,
         installedVersion: undefined,
         latestPreRelease: undefined,
         latestStableRelease: release('1.0.0-release.0', 'stable'),
       },
     ],
     [
+      'Not installed, pre enabled',
       {
         installed: undefined,
         stableRelease: '1.0.0-release.0',
@@ -155,16 +166,26 @@ describe('getReleaseInfo', () => {
         removeable: false,
       },
       {
-        primaryAction: undefined,
-        secondaryAction: 'install-pre-release',
+        actions: [
+          {
+            type: 'install-stable',
+            asset: stableAsset,
+            to: '1.0.0-release.0',
+          },
+          {
+            type: 'install-pre-release',
+            asset: preAsset,
+            to: '1.1.0-beta.1',
+          },
+        ],
         latestVersionIs: 'pre-release',
-        asset: preAsset,
         installedVersion: undefined,
         latestPreRelease: release('1.1.0-beta.1', 'pre-release'),
         latestStableRelease: release('1.0.0-release.0', 'stable'),
       },
     ],
     [
+      'Latest installed, removeable',
       {
         installed: '1.0.0-release.0',
         stableRelease: '1.0.0-release.0',
@@ -173,16 +194,21 @@ describe('getReleaseInfo', () => {
         removeable: true,
       },
       {
-        primaryAction: undefined,
-        secondaryAction: 'uninstall',
+        actions: [
+          {
+            type: 'uninstall',
+            from: '1.0.0-release.0',
+            moduleId: 'jaspAcceptanceSampling',
+          },
+        ],
         latestVersionIs: 'installed',
-        asset: undefined,
         installedVersion: '1.0.0-release.0',
         latestPreRelease: undefined,
         latestStableRelease: release('1.0.0-release.0', 'stable'),
       },
     ],
     [
+      'Outdated, update to stable',
       {
         installed: '0.9.0-release.0',
         stableRelease: '1.0.0-release.0',
@@ -191,16 +217,22 @@ describe('getReleaseInfo', () => {
         removeable: false,
       },
       {
-        primaryAction: 'update-stable',
-        secondaryAction: undefined,
+        actions: [
+          {
+            type: 'update-stable',
+            asset: stableAsset,
+            from: '0.9.0-release.0',
+            to: '1.0.0-release.0',
+          },
+        ],
         latestVersionIs: 'stable',
-        asset: stableAsset,
         installedVersion: '0.9.0-release.0',
         latestPreRelease: undefined,
         latestStableRelease: release('1.0.0-release.0', 'stable'),
       },
     ],
     [
+      'Outdated, update+uninstall stable',
       {
         installed: '0.9.0-release.0',
         stableRelease: '1.0.0-release.0',
@@ -209,16 +241,27 @@ describe('getReleaseInfo', () => {
         removeable: true,
       },
       {
-        primaryAction: 'update-stable',
-        secondaryAction: 'uninstall',
+        actions: [
+          {
+            type: 'update-stable',
+            asset: stableAsset,
+            from: '0.9.0-release.0',
+            to: '1.0.0-release.0',
+          },
+          {
+            type: 'uninstall',
+            from: '0.9.0-release.0',
+            moduleId: 'jaspAcceptanceSampling',
+          },
+        ],
         latestVersionIs: 'stable',
-        asset: stableAsset,
         installedVersion: '0.9.0-release.0',
         latestPreRelease: undefined,
         latestStableRelease: release('1.0.0-release.0', 'stable'),
       },
     ],
     [
+      'Outdated, both releases, pre enabled',
       {
         installed: '0.9.0-release.0',
         stableRelease: '1.0.0-release.0',
@@ -227,16 +270,33 @@ describe('getReleaseInfo', () => {
         removeable: true,
       },
       {
-        primaryAction: undefined,
-        secondaryAction: 'update-pre-release',
+        actions: [
+          {
+            type: 'update-stable',
+            asset: stableAsset,
+            from: '0.9.0-release.0',
+            to: '1.0.0-release.0',
+          },
+          {
+            type: 'update-pre-release',
+            asset: preAsset,
+            from: '0.9.0-release.0',
+            to: '1.1.0-beta.1',
+          },
+          {
+            type: 'uninstall',
+            from: '0.9.0-release.0',
+            moduleId: 'jaspAcceptanceSampling',
+          },
+        ],
         latestVersionIs: 'pre-release',
-        asset: preAsset,
         installedVersion: '0.9.0-release.0',
         latestPreRelease: release('1.1.0-beta.1', 'pre-release'),
         latestStableRelease: release('1.0.0-release.0', 'stable'),
       },
     ],
     [
+      'Pre latest, uninstall',
       {
         installed: '1.1.0-beta.1',
         stableRelease: '1.0.0-release.0',
@@ -245,16 +305,21 @@ describe('getReleaseInfo', () => {
         removeable: true,
       },
       {
-        primaryAction: 'uninstall-pre-release',
-        secondaryAction: undefined,
+        actions: [
+          {
+            type: 'uninstall-pre-release',
+            from: '1.1.0-beta.1',
+            moduleId: 'jaspAcceptanceSampling',
+          },
+        ],
         latestVersionIs: 'installed',
-        asset: undefined,
         installedVersion: '1.1.0-beta.1',
         latestPreRelease: release('1.1.0-beta.1', 'pre-release'),
         latestStableRelease: release('1.0.0-release.0', 'stable'),
       },
     ],
     [
+      'Pre update available, removeable',
       {
         installed: '1.1.0-beta.1',
         stableRelease: '1.0.0-release.0',
@@ -263,16 +328,27 @@ describe('getReleaseInfo', () => {
         removeable: true,
       },
       {
-        primaryAction: 'uninstall-pre-release',
-        secondaryAction: 'update-pre-release',
+        actions: [
+          {
+            type: 'update-pre-release',
+            asset: preAsset,
+            from: '1.1.0-beta.1',
+            to: '1.1.0-beta.2',
+          },
+          {
+            type: 'uninstall-pre-release',
+            from: '1.1.0-beta.1',
+            moduleId: 'jaspAcceptanceSampling',
+          },
+        ],
         latestVersionIs: 'pre-release',
-        asset: preAsset,
         installedVersion: '1.1.0-beta.1',
         latestPreRelease: release('1.1.0-beta.2', 'pre-release'),
         latestStableRelease: release('1.0.0-release.0', 'stable'),
       },
     ],
     [
+      'Pre update, not removeable',
       {
         installed: '1.1.0-beta.1',
         stableRelease: '1.0.0-release.0',
@@ -281,16 +357,22 @@ describe('getReleaseInfo', () => {
         removeable: false,
       },
       {
-        primaryAction: undefined,
-        secondaryAction: 'update-pre-release',
+        actions: [
+          {
+            type: 'update-pre-release',
+            asset: preAsset,
+            from: '1.1.0-beta.1',
+            to: '1.1.0-beta.2',
+          },
+        ],
         latestVersionIs: 'pre-release',
-        asset: preAsset,
         installedVersion: '1.1.0-beta.1',
         latestPreRelease: release('1.1.0-beta.2', 'pre-release'),
         latestStableRelease: release('1.0.0-release.0', 'stable'),
       },
     ],
     [
+      'Pre→stable, pre disabled',
       {
         installed: '1.0.0-beta.1',
         stableRelease: '1.0.0-release.0',
@@ -299,16 +381,22 @@ describe('getReleaseInfo', () => {
         removeable: true,
       },
       {
-        primaryAction: 'update-stable',
-        secondaryAction: undefined,
+        actions: [
+          {
+            type: 'update-stable',
+            asset: stableAsset,
+            from: '1.0.0-beta.1',
+            to: '1.0.0-release.0',
+          },
+        ],
         latestVersionIs: 'stable',
-        asset: stableAsset,
         installedVersion: '1.0.0-beta.1',
         latestPreRelease: undefined,
         latestStableRelease: release('1.0.0-release.0', 'stable'),
       },
     ],
     [
+      'Pre→stable (newer pre available)',
       {
         installed: '1.0.0-beta.1',
         stableRelease: '1.0.0-release.0',
@@ -317,16 +405,33 @@ describe('getReleaseInfo', () => {
         removeable: true,
       },
       {
-        primaryAction: 'update-stable',
-        secondaryAction: undefined,
+        actions: [
+          {
+            type: 'update-stable',
+            asset: stableAsset,
+            from: '1.0.0-beta.1',
+            to: '1.0.0-release.0',
+          },
+          {
+            type: 'update-pre-release',
+            asset: preAsset,
+            from: '1.0.0-beta.1',
+            to: '1.0.0-beta.2',
+          },
+          {
+            type: 'uninstall-pre-release',
+            from: '1.0.0-beta.1',
+            moduleId: 'jaspAcceptanceSampling',
+          },
+        ],
         latestVersionIs: 'stable',
-        asset: stableAsset,
         installedVersion: '1.0.0-beta.1',
         latestPreRelease: release('1.0.0-beta.2', 'pre-release'),
         latestStableRelease: release('1.0.0-release.0', 'stable'),
       },
     ],
     [
+      'Stable latest, no updates',
       {
         installed: '1.0.0-release.0',
         stableRelease: '1.0.0-release.0',
@@ -335,16 +440,15 @@ describe('getReleaseInfo', () => {
         removeable: false,
       },
       {
-        primaryAction: undefined,
-        secondaryAction: undefined,
+        actions: [],
         latestVersionIs: 'installed',
-        asset: undefined,
         installedVersion: '1.0.0-release.0',
         latestPreRelease: undefined,
         latestStableRelease: release('1.0.0-release.0', 'stable'),
       },
     ],
     [
+      'Only pre, update+uninstall',
       {
         installed: '1.1.0-beta.1',
         stableRelease: undefined,
@@ -353,16 +457,27 @@ describe('getReleaseInfo', () => {
         removeable: true,
       },
       {
-        primaryAction: 'uninstall-pre-release',
-        secondaryAction: 'update-pre-release',
+        actions: [
+          {
+            type: 'update-pre-release',
+            asset: preAsset,
+            from: '1.1.0-beta.1',
+            to: '1.1.0-beta.2',
+          },
+          {
+            type: 'uninstall-pre-release',
+            from: '1.1.0-beta.1',
+            moduleId: 'jaspAcceptanceSampling',
+          },
+        ],
         latestVersionIs: 'pre-release',
-        asset: preAsset,
         installedVersion: '1.1.0-beta.1',
         latestPreRelease: release('1.1.0-beta.2', 'pre-release'),
         latestStableRelease: undefined,
       },
     ],
     [
+      'Only pre, disabled, no action',
       {
         installed: '1.1.0-beta.1',
         stableRelease: undefined,
@@ -371,16 +486,15 @@ describe('getReleaseInfo', () => {
         removeable: true,
       },
       {
-        primaryAction: undefined,
-        secondaryAction: undefined,
+        actions: [],
         latestVersionIs: 'installed',
-        asset: undefined,
         installedVersion: '1.1.0-beta.1',
         latestPreRelease: undefined,
         latestStableRelease: undefined,
       },
     ],
     [
+      'Stable latest, pre enabled (none)',
       {
         installed: '1.0.0-release.0',
         stableRelease: '1.0.0-release.0',
@@ -389,34 +503,15 @@ describe('getReleaseInfo', () => {
         removeable: false,
       },
       {
-        primaryAction: undefined,
-        secondaryAction: undefined,
+        actions: [],
         latestVersionIs: 'installed',
-        asset: undefined,
         installedVersion: '1.0.0-release.0',
         latestPreRelease: undefined,
         latestStableRelease: release('1.0.0-release.0', 'stable'),
       },
     ],
     [
-      {
-        installed: '1.0.0-release.0',
-        stableRelease: '1.0.0-release.0',
-        preRelease: '1.0.0-beta.1',
-        allowPreRelease: true,
-        removeable: false,
-      },
-      {
-        primaryAction: undefined,
-        secondaryAction: undefined,
-        latestVersionIs: 'installed',
-        asset: undefined,
-        installedVersion: '1.0.0-release.0',
-        latestPreRelease: release('1.0.0-beta.1', 'pre-release'),
-        latestStableRelease: release('1.0.0-release.0', 'stable'),
-      },
-    ],
-    [
+      'Stable latest, older pre (disabled)',
       {
         installed: '1.0.0-release.0',
         stableRelease: '1.0.0-release.0',
@@ -425,16 +520,15 @@ describe('getReleaseInfo', () => {
         removeable: false,
       },
       {
-        primaryAction: undefined,
-        secondaryAction: undefined,
+        actions: [],
         latestVersionIs: 'installed',
-        asset: undefined,
         installedVersion: '1.0.0-release.0',
         latestPreRelease: undefined,
         latestStableRelease: release('1.0.0-release.0', 'stable'),
       },
     ],
     [
+      'Installed newer, no downgrades',
       {
         installed: '2.0.0-release.0',
         stableRelease: '1.0.0-release.0',
@@ -443,16 +537,15 @@ describe('getReleaseInfo', () => {
         removeable: false,
       },
       {
-        primaryAction: undefined,
-        secondaryAction: undefined,
+        actions: [],
         latestVersionIs: 'installed',
-        asset: undefined,
         installedVersion: '2.0.0-release.0',
         latestPreRelease: undefined,
         latestStableRelease: release('1.0.0-release.0', 'stable'),
       },
     ],
     [
+      'Stable update, intermediate pre skip',
       {
         installed: '1.1.0-release.0',
         stableRelease: '1.2.0-release.0',
@@ -461,16 +554,28 @@ describe('getReleaseInfo', () => {
         removeable: false,
       },
       {
-        primaryAction: 'update-stable',
-        secondaryAction: undefined,
+        actions: [
+          {
+            type: 'update-stable',
+            asset: stableAsset,
+            from: '1.1.0-release.0',
+            to: '1.2.0-release.0',
+          },
+          {
+            type: 'update-pre-release',
+            asset: preAsset,
+            from: '1.1.0-release.0',
+            to: '1.1.5-beta.1',
+          },
+        ],
         latestVersionIs: 'stable',
-        asset: stableAsset,
         installedVersion: '1.1.0-release.0',
         latestPreRelease: release('1.1.5-beta.1', 'pre-release'),
         latestStableRelease: release('1.2.0-release.0', 'stable'),
       },
     ],
     [
+      'Stable latest, older pre disabled',
       {
         installed: '1.2.0-release.0',
         stableRelease: '1.2.0-release.0',
@@ -479,34 +584,89 @@ describe('getReleaseInfo', () => {
         removeable: false,
       },
       {
-        primaryAction: undefined,
-        secondaryAction: undefined,
+        actions: [],
         latestVersionIs: 'installed',
-        asset: undefined,
         installedVersion: '1.2.0-release.0',
         latestPreRelease: undefined,
         latestStableRelease: release('1.2.0-release.0', 'stable'),
       },
     ],
     [
+      'Stable latest, newer pre disabled',
       {
         installed: '1.2.0-release.0',
         stableRelease: '1.2.0-release.0',
-        preRelease: '1.2.5.1-beta.1',
+        preRelease: '1.2.5-beta.1',
         allowPreRelease: false,
         removeable: false,
       },
       {
-        primaryAction: undefined,
-        secondaryAction: undefined,
+        actions: [],
         latestVersionIs: 'installed',
-        asset: undefined,
         installedVersion: '1.2.0-release.0',
         latestPreRelease: undefined,
         latestStableRelease: release('1.2.0-release.0', 'stable'),
       },
     ],
-  ])('given %o => %o', ([given, expected]) => {
+    [
+      'Latest stable, older latest pre',
+      {
+        installed: '1.2.0-release.0',
+        stableRelease: '1.2.0-release.0',
+        preRelease: '1.1.5-beta.1',
+        allowPreRelease: true,
+        removeable: false,
+      },
+      {
+        actions: [],
+        latestVersionIs: 'installed',
+        installedVersion: '1.2.0-release.0',
+        latestPreRelease: release('1.1.5-beta.1', 'pre-release'),
+        latestStableRelease: release('1.2.0-release.0', 'stable'),
+      },
+    ],
+    [
+      'Pre same as stable, pre disallowed',
+      {
+        installed: '1.2.0-release.0',
+        stableRelease: '1.2.0-release.0',
+        preRelease: '1.2.0-beta.1',
+        allowPreRelease: false,
+        removeable: false,
+      },
+      {
+        actions: [],
+        latestVersionIs: 'installed',
+        installedVersion: '1.2.0-release.0',
+        latestPreRelease: undefined,
+        latestStableRelease: release('1.2.0-release.0', 'stable'),
+      },
+    ],
+    [
+      'Pre same as stable, pre allowed',
+      {
+        installed: '1.2.0-release.0',
+        stableRelease: '1.2.0-release.0',
+        preRelease: '1.2.0-beta.1',
+        allowPreRelease: true,
+        removeable: false,
+      },
+      {
+        actions: [
+          {
+            type: 'downgrade-pre-release',
+            asset: preAsset,
+            from: '1.2.0-release.0',
+            to: '1.2.0-beta.1',
+          },
+        ],
+        latestVersionIs: 'installed',
+        installedVersion: '1.2.0-release.0',
+        latestPreRelease: release('1.2.0-beta.1', 'pre-release'),
+        latestStableRelease: release('1.2.0-release.0', 'stable'),
+      },
+    ],
+  ])('$0', ([_summary, given, expected]) => {
     const repo: Repository = {
       id: 'jaspAcceptanceSampling',
       name: 'jaspAcceptanceSampling',
