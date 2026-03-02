@@ -29,6 +29,7 @@ export interface ModuleTranslations {
 
 export interface BareRepository extends ModuleTranslations {
   id: string; // GitHub repo name
+  homepageUrl?: string;
   // repo (nameWithOwner format) in https://github.com/jasp-stats-modules/modules-registry
   // where submodule is pointing to
   releaseSource: string;
@@ -46,5 +47,6 @@ export interface Repository extends BareRepository {
 
 export interface Submodule extends ModuleTranslations {
   gitUrl: string;
+  homepageUrl?: string;
   path: string;
 }

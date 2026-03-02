@@ -27,10 +27,12 @@ import {
   logChannelStats,
   logReleaseStatistics,
   nameAndDescriptionFromSubmodules,
+  parseDescriptionFile,
   parseDescriptionQml,
   parseReleaseFrontMatter,
   path2channel,
   releaseAssetsPaged,
+  resolveHomepageUrl,
   transformRelease,
   url2nameWithOwner,
   versionFromTagName,
@@ -378,6 +380,7 @@ describe('releaseAssetsPaged', () => {
                 name: 'jaspAnova',
                 nameWithOwner: 'jasp-stats-modules/jaspAnova',
                 parent: {
+                  nameWithOwner: 'jasp-stats-modules/jaspAnova',
                   owner: {
                     login: 'jasp-stats-modules',
                   },
@@ -465,6 +468,7 @@ describe('releaseAssetsPaged', () => {
                 name: 'jaspAnova',
                 nameWithOwner: 'jasp-stats-modules/jaspAnova',
                 parent: {
+                  nameWithOwner: 'jasp-stats-modules/jaspAnova',
                   owner: {
                     login: 'jasp-stats-modules',
                   },
@@ -507,6 +511,7 @@ describe('releaseAssetsPaged', () => {
                 name: 'jaspAnova',
                 nameWithOwner: 'jasp-stats-modules/jaspAnova',
                 parent: {
+                  nameWithOwner: 'jasp-stats-modules/jaspAnova',
                   owner: {
                     login: 'jasp-stats-modules',
                   },
@@ -614,7 +619,7 @@ describe('releaseAssetsPaged', () => {
     );
   });
 
-  test('includes optional homepageUrl when present', async () => {
+  test('keeps homepageUrl from bare repository metadata', async () => {
     server.use(
       graphql.operation(({ query }) => {
         if (query.includes('repo0:')) {
@@ -623,8 +628,8 @@ describe('releaseAssetsPaged', () => {
               repo0: {
                 name: 'jaspAnova',
                 nameWithOwner: 'jasp-stats-modules/jaspAnova',
-                homepageUrl: 'https://example.com/jasp-anova',
                 parent: {
+                  nameWithOwner: 'jasp-stats-modules/jaspAnova',
                   owner: {
                     login: 'jasp-stats-modules',
                   },
@@ -665,6 +670,7 @@ describe('releaseAssetsPaged', () => {
         releaseSource: 'jasp-stats-modules/jaspAnova',
         name: 'jaspAnova',
         description: 'Anova module',
+        homepageUrl: 'https://example.com/jasp-anova',
         translations: {},
       },
     ];
@@ -691,6 +697,74 @@ describe('releaseAssetsPaged', () => {
             }),
           ]),
           preReleases: [],
+        }),
+      ]),
+    );
+  });
+
+  test('uses parent repository for homepage fallback when homepage is missing', async () => {
+    server.use(
+      graphql.operation(({ query }) => {
+        if (query.includes('repo0:')) {
+          return HttpResponse.json({
+            data: {
+              repo0: {
+                name: 'jaspSyntheticData',
+                nameWithOwner: 'jasp-stats-modules/jaspSyntheticData',
+                parent: {
+                  nameWithOwner: 'doomlab/jasp-synthetic-data',
+                  owner: {
+                    login: 'doomlab',
+                  },
+                },
+                releases: {
+                  nodes: [
+                    {
+                      tagName: '0.95.0_2cbd8a6d_R-4-5-1',
+                      publishedAt: '2025-01-01T00:00:00Z',
+                      description: '---\njasp: >=0.95.0\n---\n',
+                      isDraft: false,
+                      isPrerelease: false,
+                      releaseAssets: {
+                        nodes: [
+                          {
+                            downloadUrl:
+                              'https://example.com/jaspSyntheticData_0.95.0_MacOS_x86_64_R-4-5-1.JASPModule',
+                            downloadCount: 100,
+                          },
+                        ],
+                      },
+                    },
+                  ],
+                },
+              },
+            },
+          });
+        }
+        return HttpResponse.json({ data: {} });
+      }),
+    );
+
+    const octokit = new MyOctokit({ auth: 'fake-token' });
+    const bareRepos: BareRepository[] = [
+      {
+        id: 'jaspSyntheticData',
+        channels: ['Official'],
+        releaseSource: 'jasp-stats-modules/jaspSyntheticData',
+        name: 'jaspSyntheticData',
+        description: 'Synthetic data module',
+        translations: {},
+      },
+    ];
+
+    const result = await releaseAssetsPaged(bareRepos, 1, 10, octokit);
+
+    expect(result).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          id: 'jaspSyntheticData',
+          homepageUrl: 'https://github.com/doomlab/jasp-synthetic-data',
+          organization: 'doomlab',
         }),
       ]),
     );
@@ -791,6 +865,7 @@ describe('releaseAssetsPaged', () => {
                 name: 'jaspAnova',
                 nameWithOwner: 'jasp-stats-modules/jaspAnova',
                 parent: {
+                  nameWithOwner: 'jasp-stats-modules/jaspAnova',
                   owner: {
                     login: 'jasp-stats-modules',
                   },
@@ -825,6 +900,7 @@ describe('releaseAssetsPaged', () => {
                 name: 'jaspBain',
                 nameWithOwner: 'jasp-stats-modules/jaspBain',
                 parent: {
+                  nameWithOwner: 'jasp-stats-modules/jaspBain',
                   owner: {
                     login: 'jasp-stats-modules',
                   },
@@ -1193,6 +1269,90 @@ Description {
   });
 });
 
+describe('parseDescriptionFile', () => {
+  test('extracts key-value pairs from DESCRIPTION content', () => {
+    const content = `Package: jaspAnova
+Type: Package
+Title: ANOVA
+Website: example.com/jasp-anova
+`;
+
+    const result = parseDescriptionFile(content);
+    expect(result).toEqual({
+      Package: 'jaspAnova',
+      Type: 'Package',
+      Title: 'ANOVA',
+      Website: 'example.com/jasp-anova',
+    });
+  });
+
+  test('handles DESCRIPTION content without Website key', () => {
+    const content = `Package: jaspAnova
+Type: Package
+Title: ANOVA
+`;
+
+    const result = parseDescriptionFile(content);
+    expect(result).toEqual({
+      Package: 'jaspAnova',
+      Type: 'Package',
+      Title: 'ANOVA',
+    });
+    expect(result.Website).toBeUndefined();
+  });
+
+  test('supports multiline values', () => {
+    const content = `Description: First line
+  second line
+Website: https://example.com/jasp-anova
+`;
+
+    const result = parseDescriptionFile(content);
+    expect(result).toEqual({
+      Description: 'First line second line',
+      Website: 'https://example.com/jasp-anova',
+    });
+  });
+
+  test('supports website on indented continuation line', () => {
+    const content = `Website:
+  http://foo.com
+Title: foo
+
+`;
+
+    const result = parseDescriptionFile(content);
+    expect(result).toEqual({
+      Website: 'http://foo.com',
+      Title: 'foo',
+    });
+  });
+});
+
+describe('resolveHomepageUrl', () => {
+  test('adds https when website has no scheme', () => {
+    const result = resolveHomepageUrl('example.com/jasp-anova');
+    expect(result).toBe('https://example.com/jasp-anova');
+  });
+
+  test('returns undefined for placeholder host', () => {
+    const result = resolveHomepageUrl('https://www.jasp-stats.org/');
+    expect(result).toBeUndefined();
+  });
+
+  test('returns undefined when website is missing or invalid', () => {
+    expect(resolveHomepageUrl(undefined)).toBeUndefined();
+    expect(resolveHomepageUrl(':::not-a-url:::')).toBeUndefined();
+  });
+
+  test('drops .git suffix from website urls', () => {
+    const result = resolveHomepageUrl(
+      'https://github.com/doomlab/jasp-synthetic-data.git',
+    );
+    expect(result).toBe('https://github.com/doomlab/jasp-synthetic-data');
+  });
+});
+
 describe('given a mock registry with a single submodule with a single translation', () => {
   let tempDir: tmp.DirResult;
 
@@ -1224,6 +1384,11 @@ Description {
     await fs.writeFile(
       path.join(instDir, 'Description.qml'),
       descriptionQmlContent,
+    );
+
+    await fs.writeFile(
+      path.join(moduleDir, 'DESCRIPTION'),
+      'Package: jaspAnova\nWebsite: jasp-stats.org\n',
     );
 
     await writePoFileForDutch(moduleDir);
@@ -1260,6 +1425,7 @@ Description {
         gitUrl: 'https://github.com/jasp-stats-modules/jaspAnova.git',
         name: 'Classical',
         path: join(tempDir.name, 'Official', 'jaspAnova'),
+        homepageUrl: undefined,
         translations: {
           nl: {
             description: 'Herhaalde Metingen ANOVA',
@@ -1271,6 +1437,20 @@ Description {
     expect(result).toEqual(expected);
   });
 
+  test('throws when DESCRIPTION file is missing', async () => {
+    const moduleDir = join(tempDir.name, 'Official', 'jaspAnova');
+    await fs.rm(join(moduleDir, 'DESCRIPTION'));
+
+    await expect(
+      nameAndDescriptionFromSubmodules([
+        {
+          gitUrl: 'https://github.com/jasp-stats-modules/jaspAnova.git',
+          path: moduleDir,
+        },
+      ]),
+    ).rejects.toThrow();
+  });
+
   describe('groupByChannel', () => {
     test('given one submodule', () => {
       const submodules: Submodule[] = [
@@ -1279,6 +1459,7 @@ Description {
           gitUrl: 'https://github.com/jasp-stats-modules/jaspAnova.git',
           name: 'Classical',
           path: join(tempDir.name, 'Official', 'jaspAnova'),
+          homepageUrl: undefined,
           translations: {
             nl: {
               description: 'Herhaalde Metingen ANOVA',
@@ -1297,6 +1478,7 @@ Description {
           channels: ['Official'],
           description: 'Repeated Measures ANOVA',
           name: 'Classical',
+          homepageUrl: undefined,
           translations: {
             nl: {
               description: 'Herhaalde Metingen ANOVA',
@@ -1316,6 +1498,7 @@ Description {
         gitUrl: 'https://github.com/jasp-stats-modules/jaspAnova.git',
         name: 'Classical',
         path: join(tempDir.name, 'Official', 'jaspAnova'),
+        homepageUrl: undefined,
         translations: {
           nl: {
             description: 'Herhaalde Metingen ANOVA',
@@ -1328,6 +1511,7 @@ Description {
         gitUrl: 'https://github.com/jasp-stats-modules/jaspAnova.git',
         name: 'Classical',
         path: join(tempDir.name, 'Community', 'jaspAnova'),
+        homepageUrl: undefined,
         translations: {
           nl: {
             description: 'Herhaalde Metingen ANOVA',
@@ -1346,6 +1530,7 @@ Description {
         channels: ['Official', 'Community'],
         description: 'Repeated Measures ANOVA',
         name: 'Classical',
+        homepageUrl: undefined,
         translations: {
           nl: {
             description: 'Herhaalde Metingen ANOVA',
