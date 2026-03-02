@@ -33,7 +33,7 @@ import {
   type UninstallPreReleaseAction,
   type UpdatePreReleaseAction,
   type UpdateStableAction,
-} from './useRelease';
+} from './releaseStats';
 
 type AppTranslations = ReturnType<typeof useIntlayer<'app'>>;
 

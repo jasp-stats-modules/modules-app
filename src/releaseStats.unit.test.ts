@@ -4,7 +4,7 @@ import {
   isNewerVersion,
   isPreRelease,
   resolveReleaseStats,
-} from './useRelease';
+} from './releaseStats';
 
 describe('isNewerVersion', () => {
   test.for<[string, string, boolean]>([
