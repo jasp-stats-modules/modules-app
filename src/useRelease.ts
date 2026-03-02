@@ -7,7 +7,6 @@ import {
   satisfies,
 } from 'semver';
 import type { Asset, Release, Repository } from '@/types';
-import { useInfo } from './useInfo';
 
 export function findReleaseThatSatisfiesInstalledJaspVersion(
   releases: Release[],
@@ -277,19 +276,4 @@ export function getReleaseInfo(
     latestVersionIs,
     actions,
   };
-}
-
-export function useRelease(
-  repo: Repository,
-  allowPreRelease: boolean,
-): ReleaseStats {
-  const { info } = useInfo();
-  return getReleaseInfo(
-    repo,
-    info.version,
-    allowPreRelease,
-    info.arch,
-    info.installedModules,
-    info.uninstallableModules,
-  );
 }
