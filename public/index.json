@@ -65,6 +65,7 @@
         "description": "Kabul örneklemesi"
       }
     },
+    "homepageUrl": "https://github.com/jasp-stats/jaspAcceptanceSampling",
     "releaseSource": "jasp-stats-modules/jaspAcceptanceSampling",
     "channels": [
       "Official"
@@ -187,6 +188,7 @@
         "description": "பல வழிகளுக்கு இடையிலான வேறுபாட்டை மதிப்பிடுங்கள்"
       }
     },
+    "homepageUrl": "https://github.com/jasp-stats/jaspAnova",
     "releaseSource": "jasp-stats-modules/jaspAnova",
     "channels": [
       "Official"
@@ -301,6 +303,7 @@
         "description": "தணிக்கை செய்வதற்கான புள்ளிவிவர முறைகள்"
       }
     },
+    "homepageUrl": "https://github.com/jasp-stats/jaspAudit",
     "releaseSource": "jasp-stats-modules/jaspAudit",
     "channels": [
       "Official"
@@ -363,8 +366,7 @@
         ]
       }
     ],
-    "organization": "jasp-stats",
-    "homepageUrl": "https://koenderks.github.io/jaum/"
+    "organization": "jasp-stats"
   },
   {
     "id": "jaspBFF",
@@ -396,6 +398,7 @@
         "description": "Bu modül Bayes faktörü işlevleri sunar."
       }
     },
+    "homepageUrl": "https://github.com/jasp-stats/jaspBFF",
     "releaseSource": "jasp-stats-modules/jaspBFF",
     "channels": [
       "Official"
@@ -514,6 +517,7 @@
         "description": "Eşitlik, eşitsizlik ve yaklaşık eşitlik kısıtlı hipotezler için düzeltilmiş kesirli Bayes faktörlerinin yaklaşıklı hesaplanmasına yönelik bir modül."
       }
     },
+    "homepageUrl": "https://www.informative-hypotheses.sites.uu.nl/software/bain/",
     "releaseSource": "jasp-stats-modules/jaspBain",
     "channels": [
       "Official"
@@ -583,6 +587,7 @@
     "name": "BFpack",
     "description": "A module for computing Bayes factors for equality, inequality, and order constrained hypotheses.",
     "translations": {},
+    "homepageUrl": "https://bfpack.info/",
     "releaseSource": "jasp-stats-modules/jaspBfpack",
     "channels": [
       "Official"
@@ -689,6 +694,7 @@
         "description": "Bu modül, zaman serisi analizine uygun doğrusal Gaussian durum uzayı modellerine Bayesyen bir yaklaşım sunar."
       }
     },
+    "homepageUrl": "https://github.com/jasp-stats/jaspBsts",
     "releaseSource": "jasp-stats-modules/jaspBsts",
     "channels": [
       "Official"
@@ -795,6 +801,7 @@
         "description": "Bu modül yönelimsel veriler için temel yöntemler sunar"
       }
     },
+    "homepageUrl": "https://eye-tuebingen.de/berenslab",
     "releaseSource": "jasp-stats-modules/jaspCircular",
     "channels": [
       "Official"
@@ -909,6 +916,7 @@
         "description": "Bu modül, Cochrane tıbbi veri setlerini analiz etmeye olanak tanır."
       }
     },
+    "homepageUrl": "https://github.com/jasp-stats/jaspCochrane",
     "releaseSource": "jasp-stats-modules/jaspCochrane",
     "channels": [
       "Official"
@@ -1047,6 +1055,7 @@
         "description": "Tablolar ve grafiklerle verileri keşfedin"
       }
     },
+    "homepageUrl": "https://github.com/jasp-stats/jaspDescriptives",
     "releaseSource": "jasp-stats-modules/jaspDescriptives",
     "channels": [
       "Official"
@@ -1161,6 +1170,7 @@
         "description": "விநியோகங்களைக் காட்சிப்படுத்தி அவற்றை தரவுக்கு பொருத்தவும்"
       }
     },
+    "homepageUrl": "https://github.com/jasp-stats/jaspDistributions",
     "releaseSource": "jasp-stats-modules/jaspDistributions",
     "channels": [
       "Official"
@@ -1283,6 +1293,7 @@
         "description": "İki ortalama arasındaki farkı aralık-boşluk hipoteziyle test edin"
       }
     },
+    "homepageUrl": "https://github.com/jasp-stats/jaspEquivalenceTTests",
     "releaseSource": "jasp-stats-modules/jaspEquivalenceTTests",
     "channels": [
       "Official"
@@ -1352,6 +1363,7 @@
     "name": "ESCI",
     "description": "ESCI in JASP",
     "translations": {},
+    "homepageUrl": "https://thenewstatistics.com/",
     "releaseSource": "jasp-stats-modules/jaspEsci",
     "channels": [
       "Official"
@@ -1474,6 +1486,7 @@
         "description": "Verilerdeki gizli yapıyı keşfedin"
       }
     },
+    "homepageUrl": "https://github.com/jasp-stats/jaspFactor",
     "releaseSource": "jasp-stats-modules/jaspFactor",
     "channels": [
       "Official"
@@ -1600,6 +1613,7 @@
         "description": "எண்ணிக்கை தரவுகளுக்கான பகுப்பாய்வு"
       }
     },
+    "homepageUrl": "https://github.com/jasp-stats/jaspFrequencies",
     "releaseSource": "jasp-stats-modules/jaspFrequencies",
     "channels": [
       "Official"
@@ -1706,6 +1720,7 @@
         "description": "மார்ட்டின் பிளம்மரின் சாக்ச் திட்டத்துடன் பேய்சியன் வரைகலை மாதிரிகளை மார்கோவ் சங்கிலி மான்டே கார்லோவுடன் செயல்படுத்தவும்"
       }
     },
+    "homepageUrl": "https://github.com/jasp-stats/jaspJags",
     "releaseSource": "jasp-stats-modules/jaspJags",
     "channels": [
       "Official"
@@ -1824,6 +1839,7 @@
         "description": "எளிய எடுத்துக்காட்டுகள் மற்றும் துணை உரையுடன் பேய்சியன் புள்ளிவிவரங்களைக் கற்றுக்கொள்ளுங்கள்"
       }
     },
+    "homepageUrl": "https://github.com/jasp-stats/jaspLearnBayes",
     "releaseSource": "jasp-stats-modules/jaspLearnBayes",
     "channels": [
       "Official"
@@ -1934,6 +1950,7 @@
         "description": "Basit örnekler ve destekleyici metinlerle klasik istatistikleri öğrenin"
       }
     },
+    "homepageUrl": "https://github.com/jasp-stats/jaspLearnStats",
     "releaseSource": "jasp-stats-modules/jaspLearnStats",
     "channels": [
       "Official"
@@ -2044,6 +2061,7 @@
         "description": "பின்னடைவு, வகைப்பாடு மற்றும் கிளச்டரிங் ஆகியவற்றிற்கான தரவு உந்துதல் முறைகளைப் பயன்படுத்தி மாறிகளுக்கு இடையிலான உறவை ஆராயுங்கள்"
       }
     },
+    "homepageUrl": "https://github.com/jasp-stats/jaspMachineLearning",
     "releaseSource": "jasp-stats-modules/jaspMachineLearning",
     "channels": [
       "Official"
@@ -2170,6 +2188,7 @@
         "description": "Birden fazla çalışmadan elde edilen kanıtları sentezleyin"
       }
     },
+    "homepageUrl": "https://github.com/jasp-stats/jaspMetaAnalysis",
     "releaseSource": "jasp-stats-modules/jaspMetaAnalysis",
     "channels": [
       "Official"
@@ -2288,6 +2307,7 @@
         "description": "Rastgele etkilerle çoklu ortalamalar arasındaki farkı değerlendirin"
       }
     },
+    "homepageUrl": "https://github.com/jasp-stats/jaspMixedModels",
     "releaseSource": "jasp-stats-modules/jaspMixedModels",
     "channels": [
       "Official"
@@ -2402,6 +2422,7 @@
         "description": "நெட்வொர்க்காக ஒழுங்கமைக்கப்பட்ட மாறிகளுக்கு இடையிலான இணைப்புகளை ஆராயுங்கள்"
       }
     },
+    "homepageUrl": "https://github.com/jasp-stats/jaspNetwork",
     "releaseSource": "jasp-stats-modules/jaspNetwork",
     "channels": [
       "Official"
@@ -2516,6 +2537,7 @@
         "description": "Bu modül, güç analizleri yapmanıza olanak tanır."
       }
     },
+    "homepageUrl": "https://github.com/jasp-stats/jaspPower",
     "releaseSource": "jasp-stats-modules/jaspPower",
     "channels": [
       "Official"
@@ -2606,6 +2628,7 @@
         "description": "Bu modül zaman serisi tahminleri sunar ve bunları kalite kontrol kavramlarıyla birleştirir. Bu şekilde bir sürecin gelecekte belirli bir sınırı aşıp aşmayacağı tahmin edilebilir."
       }
     },
+    "homepageUrl": "https://github.com/jasp-stats/jaspPredictiveAnalytics",
     "releaseSource": "jasp-stats-modules/jaspPredictiveAnalytics",
     "channels": [
       "Official"
@@ -2696,6 +2719,7 @@
         "description": "காரண மற்றும் நிபந்தனை செயல்முறை மாதிரிகளை சோதித்து ஒப்பிட்டுப் பாருங்கள்."
       }
     },
+    "homepageUrl": "https://github.com/jasp-stats/jaspProcess",
     "releaseSource": "jasp-stats-modules/jaspProcess",
     "channels": [
       "Official"
@@ -2806,6 +2830,7 @@
         "description": "Bu modül zaman serisi tahmini için basit bir model sunar."
       }
     },
+    "homepageUrl": "https://github.com/jasp-stats/jaspProphet",
     "releaseSource": "jasp-stats-modules/jaspProphet",
     "channels": [
       "Official"
@@ -2908,6 +2933,7 @@
         "description": "ஒரு தயாரிக்கப்பட்ட தயாரிப்பு வரையறுக்கப்பட்ட தர அளவுகோல்களைக் கடைப்பிடித்தால் ஆராயுங்கள்"
       }
     },
+    "homepageUrl": "https://github.com/jasp-stats/jaspQualityControl",
     "releaseSource": "jasp-stats-modules/jaspQualityControl",
     "channels": [
       "Official"
@@ -3030,6 +3056,7 @@
         "description": "Değişkenler arasındaki ilişkiyi değerlendir"
       }
     },
+    "homepageUrl": "https://github.com/jasp-stats/jaspRegression",
     "releaseSource": "jasp-stats-modules/jaspRegression",
     "channels": [
       "Official"
@@ -3144,6 +3171,7 @@
         "description": "Test puanlarının güvenilirliğini ölçün"
       }
     },
+    "homepageUrl": "https://github.com/jasp-stats/Reliability",
     "releaseSource": "jasp-stats-modules/jaspReliability",
     "channels": [
       "Official"
@@ -3250,6 +3278,7 @@
         "description": "மறைந்திருக்கும் தரவு கட்டமைப்பு வெள்ளை யவ்ச் ரோசல்சலின் லா திட்டத்தை மதிப்பீடு செய்யுங்கள்"
       }
     },
+    "homepageUrl": "https://github.com/jasp-stats/jaspSem/",
     "releaseSource": "jasp-stats-modules/jaspSem",
     "channels": [
       "Official"
@@ -3364,6 +3393,7 @@
         "description": "Yeterli istatistiklerden yaygın Bayes testlerini uygulayın"
       }
     },
+    "homepageUrl": "https://github.com/jasp-stats/jaspSummaryStatistics",
     "releaseSource": "jasp-stats-modules/jaspSummaryStatistics",
     "channels": [
       "Official"
@@ -3433,6 +3463,7 @@
     "name": "Survival",
     "description": "Perform analyses of censored time to event data.",
     "translations": {},
+    "homepageUrl": "https://github.com/jasp-stats/jaspSurvival",
     "releaseSource": "jasp-stats-modules/jaspSurvival",
     "channels": [
       "Official"
@@ -3563,6 +3594,7 @@
         "description": "İki ortalama arasındaki farkı değerlendirin"
       }
     },
+    "homepageUrl": "https://github.com/jasp-stats/jaspTTests",
     "releaseSource": "jasp-stats-modules/jaspTTests",
     "channels": [
       "Official"
@@ -3641,6 +3673,7 @@
         "description": "Een module om dingen te testen."
       }
     },
+    "homepageUrl": "https://github.com/jasp-stats/jaspTestModule",
     "releaseSource": "jasp-stats-modules/jaspTestModule",
     "channels": [
       "Community"
@@ -3751,6 +3784,7 @@
         "description": "மாறிகள் இடையிலான சார்புகளை வரைபடமாக ஆராயுங்கள்"
       }
     },
+    "homepageUrl": "https://github.com/dustinfife/flexplot",
     "releaseSource": "jasp-stats-modules/jaspVisualModeling",
     "channels": [
       "Official"
@@ -3849,6 +3883,7 @@
         "description": "இந்த தொகுதி நேரத் தொடர் பகுப்பாய்வுகளை வழங்குகிறது."
       }
     },
+    "homepageUrl": "https://sophieberkhout.github.io/",
     "releaseSource": "jasp-stats-modules/jaspTimeSeries",
     "channels": [
       "Official"
@@ -3951,6 +3986,7 @@
         "description": "İki ortalama arasındaki farkı sağlam bir şekilde değerlendirin"
       }
     },
+    "homepageUrl": "https://github.com/jasp-stats/jaspRobustTTests",
     "releaseSource": "jasp-stats-modules/jaspRobustTTests",
     "channels": [
       "Official"
@@ -4020,6 +4056,7 @@
     "name": "Dyads",
     "description": "This module offers dyadic network analyses.",
     "translations": {},
+    "homepageUrl": "https://github.com/pankajrsingla/jaspDyads",
     "releaseSource": "jasp-stats-modules/jaspDyads",
     "channels": [
       "Community"
@@ -4089,6 +4126,7 @@
     "name": "Synthetic Data",
     "description": "A module to create synthetic data from a dataset",
     "translations": {},
+    "homepageUrl": "https://github.com/doomlab/jasp-synthetic-data",
     "releaseSource": "jasp-stats-modules/jaspSyntheticData",
     "channels": [
       "Community"
