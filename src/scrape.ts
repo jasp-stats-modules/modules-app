@@ -71,7 +71,7 @@ async function pullAndScrapeRegistry(
   const git = gitInstance();
   await git.pull('origin', branch, {
     '--depth': '1',
-    '--ff-only': null,
+    '--rebase': null,
     '--recurse-submodules': null,
     '--progress': null,
     '--jobs': '10',
