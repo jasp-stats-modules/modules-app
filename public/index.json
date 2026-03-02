@@ -66,6 +66,7 @@
       }
     },
     "homepageUrl": "https://github.com/jasp-stats/jaspAcceptanceSampling",
+    "iconUrl": "https://raw.githubusercontent.com/jasp-stats-modules/jaspAcceptanceSampling/f52d5f57264e7be371e15061da457741d68d3555/inst/icons/acceptance_sampling.svg",
     "releaseSource": "jasp-stats-modules/jaspAcceptanceSampling",
     "channels": [
       "Official"
@@ -189,6 +190,7 @@
       }
     },
     "homepageUrl": "https://github.com/jasp-stats/jaspAnova",
+    "iconUrl": "https://raw.githubusercontent.com/jasp-stats-modules/jaspAnova/b62100c2dbedc65b89ddcd8972a8400c9e179f55/inst/icons/analysis-classical-anova.svg",
     "releaseSource": "jasp-stats-modules/jaspAnova",
     "channels": [
       "Official"
@@ -304,6 +306,7 @@
       }
     },
     "homepageUrl": "https://github.com/jasp-stats/jaspAudit",
+    "iconUrl": "https://raw.githubusercontent.com/jasp-stats-modules/jaspAudit/74479d15d4edeb3273f80ebe54d34798aa41a63b/inst/icons/audit-module.svg",
     "releaseSource": "jasp-stats-modules/jaspAudit",
     "channels": [
       "Official"
@@ -399,6 +402,7 @@
       }
     },
     "homepageUrl": "https://github.com/jasp-stats/jaspBFF",
+    "iconUrl": "https://raw.githubusercontent.com/jasp-stats-modules/jaspBFF/d14e8e0feebf679b4c7af42300cb93ca8b64127f/inst/icons/analysis-bayes-factor-functions.svg",
     "releaseSource": "jasp-stats-modules/jaspBFF",
     "channels": [
       "Official"
@@ -411,7 +415,7 @@
         "assets": [
           {
             "downloadUrl": "https://github.com/jasp-stats-modules/jaspBFF/releases/download/0.95.5-release.12_R-4-5-2_Release/jaspBFF_0.95.5-release.12_Flatpak_x86_64_R-4-5-2.JASPModule",
-            "downloadCount": 1,
+            "downloadCount": 2,
             "architecture": "Flatpak_x86_64"
           },
           {
@@ -518,6 +522,7 @@
       }
     },
     "homepageUrl": "https://www.informative-hypotheses.sites.uu.nl/software/bain/",
+    "iconUrl": "https://raw.githubusercontent.com/jasp-stats-modules/jaspBain/4393d7afe2c09a3101f2aabd9e0860a7d0a5fd07/inst/icons/bain-module.svg",
     "releaseSource": "jasp-stats-modules/jaspBain",
     "channels": [
       "Official"
@@ -588,6 +593,7 @@
     "description": "A module for computing Bayes factors for equality, inequality, and order constrained hypotheses.",
     "translations": {},
     "homepageUrl": "https://bfpack.info/",
+    "iconUrl": "https://raw.githubusercontent.com/jasp-stats-modules/jaspBfpack/1370cc9facc35a167978ab5381d838f4198c3714/inst/icons/bain-module.svg",
     "releaseSource": "jasp-stats-modules/jaspBfpack",
     "channels": [
       "Official"
@@ -695,6 +701,7 @@
       }
     },
     "homepageUrl": "https://github.com/jasp-stats/jaspBsts",
+    "iconUrl": "https://raw.githubusercontent.com/jasp-stats-modules/jaspBsts/61565befd58871a3ee33c081b90367fb98ffd1e1/inst/icons/bsts.png",
     "releaseSource": "jasp-stats-modules/jaspBsts",
     "channels": [
       "Official"
@@ -802,6 +809,7 @@
       }
     },
     "homepageUrl": "https://eye-tuebingen.de/berenslab",
+    "iconUrl": "https://raw.githubusercontent.com/jasp-stats-modules/jaspCircular/cc9f64ca95ed1929e3f1888502a4c9ef9ae2a6ca/inst/icons/analysis-circstats-descriptives.svg",
     "releaseSource": "jasp-stats-modules/jaspCircular",
     "channels": [
       "Official"
@@ -917,6 +925,7 @@
       }
     },
     "homepageUrl": "https://github.com/jasp-stats/jaspCochrane",
+    "iconUrl": "https://raw.githubusercontent.com/jasp-stats-modules/jaspCochrane/be2f099e1c609c5c19175f945f1653caf5ebc82c/inst/icons/cochraneLogo.svg",
     "releaseSource": "jasp-stats-modules/jaspCochrane",
     "channels": [
       "Official"
@@ -1056,6 +1065,7 @@
       }
     },
     "homepageUrl": "https://github.com/jasp-stats/jaspDescriptives",
+    "iconUrl": "https://raw.githubusercontent.com/jasp-stats-modules/jaspDescriptives/31dbca5f2d145ee39dc72acff0a23f22deb70160/inst/icons/analysis-descriptives.svg",
     "releaseSource": "jasp-stats-modules/jaspDescriptives",
     "channels": [
       "Official"
@@ -1171,6 +1181,7 @@
       }
     },
     "homepageUrl": "https://github.com/jasp-stats/jaspDistributions",
+    "iconUrl": "https://raw.githubusercontent.com/jasp-stats-modules/jaspDistributions/297d7e41a34f51641359f2b9ce5b035b7e412189/inst/icons/discoverdistributions-distributions.svg",
     "releaseSource": "jasp-stats-modules/jaspDistributions",
     "channels": [
       "Official"
@@ -1294,6 +1305,7 @@
       }
     },
     "homepageUrl": "https://github.com/jasp-stats/jaspEquivalenceTTests",
+    "iconUrl": "https://raw.githubusercontent.com/jasp-stats-modules/jaspEquivalenceTTests/7808e3e7987cc1415d212fcbb4c812b20dff08a1/inst/icons/equivalence-module.svg",
     "releaseSource": "jasp-stats-modules/jaspEquivalenceTTests",
     "channels": [
       "Official"
@@ -1364,6 +1376,7 @@
     "description": "ESCI in JASP",
     "translations": {},
     "homepageUrl": "https://thenewstatistics.com/",
+    "iconUrl": "https://raw.githubusercontent.com/jasp-stats-modules/jaspEsci/6b9e03229f3f9dce189e4d77bdc95def420c0b95/inst/icons/esci_logo.svg",
     "releaseSource": "jasp-stats-modules/jaspEsci",
     "channels": [
       "Official"
@@ -1487,6 +1500,7 @@
       }
     },
     "homepageUrl": "https://github.com/jasp-stats/jaspFactor",
+    "iconUrl": "https://raw.githubusercontent.com/jasp-stats-modules/jaspFactor/3131a0b8c0759a98f6a91098b5dfab19cc4fc349/inst/icons/analysis-classical-sem.svg",
     "releaseSource": "jasp-stats-modules/jaspFactor",
     "channels": [
       "Official"
@@ -1614,6 +1628,7 @@
       }
     },
     "homepageUrl": "https://github.com/jasp-stats/jaspFrequencies",
+    "iconUrl": "https://raw.githubusercontent.com/jasp-stats-modules/jaspFrequencies/e24f81f362a8c627ebdd6c848ea6a70bd9d80f7a/inst/icons/analysis-classical-crosstabs.svg",
     "releaseSource": "jasp-stats-modules/jaspFrequencies",
     "channels": [
       "Official"
@@ -1721,6 +1736,7 @@
       }
     },
     "homepageUrl": "https://github.com/jasp-stats/jaspJags",
+    "iconUrl": "https://raw.githubusercontent.com/jasp-stats-modules/jaspJags/9266b3d041c792e6f216acccd1044ae3a43ba735/inst/icons/analysis-JAGS.svg",
     "releaseSource": "jasp-stats-modules/jaspJags",
     "channels": [
       "Official"
@@ -1840,6 +1856,7 @@
       }
     },
     "homepageUrl": "https://github.com/jasp-stats/jaspLearnBayes",
+    "iconUrl": "https://raw.githubusercontent.com/jasp-stats-modules/jaspLearnBayes/551d46e8cfd19f16a5f0b7cb0547f7c2bbc69335/inst/icons/learning-stats.png",
     "releaseSource": "jasp-stats-modules/jaspLearnBayes",
     "channels": [
       "Official"
@@ -1951,6 +1968,7 @@
       }
     },
     "homepageUrl": "https://github.com/jasp-stats/jaspLearnStats",
+    "iconUrl": "https://raw.githubusercontent.com/jasp-stats-modules/jaspLearnStats/ed4f0df8d0298bfd4121357d2f5ced2e45db82e7/inst/icons/learning-stats.svg",
     "releaseSource": "jasp-stats-modules/jaspLearnStats",
     "channels": [
       "Official"
@@ -2062,6 +2080,7 @@
       }
     },
     "homepageUrl": "https://github.com/jasp-stats/jaspMachineLearning",
+    "iconUrl": "https://raw.githubusercontent.com/jasp-stats-modules/jaspMachineLearning/0bff55871c321421f1741ca7c733ed0b6e829420/inst/icons/analysis-ml-ribbon.svg",
     "releaseSource": "jasp-stats-modules/jaspMachineLearning",
     "channels": [
       "Official"
@@ -2189,6 +2208,7 @@
       }
     },
     "homepageUrl": "https://github.com/jasp-stats/jaspMetaAnalysis",
+    "iconUrl": "https://raw.githubusercontent.com/jasp-stats-modules/jaspMetaAnalysis/507d1a062744f78b84e5d6e9e172380be0e5f0f0/inst/icons/meta-analysis.svg",
     "releaseSource": "jasp-stats-modules/jaspMetaAnalysis",
     "channels": [
       "Official"
@@ -2308,6 +2328,7 @@
       }
     },
     "homepageUrl": "https://github.com/jasp-stats/jaspMixedModels",
+    "iconUrl": "https://raw.githubusercontent.com/jasp-stats-modules/jaspMixedModels/ac0ead8d336f043b6731885f14c58f036eda8724/inst/icons/MixedModels_classical.svg",
     "releaseSource": "jasp-stats-modules/jaspMixedModels",
     "channels": [
       "Official"
@@ -2423,6 +2444,7 @@
       }
     },
     "homepageUrl": "https://github.com/jasp-stats/jaspNetwork",
+    "iconUrl": "https://raw.githubusercontent.com/jasp-stats-modules/jaspNetwork/8f0b8fbc48f8f1593e2e99d1f33e18ed0be4d34b/inst/icons/analysis-network.svg",
     "releaseSource": "jasp-stats-modules/jaspNetwork",
     "channels": [
       "Official"
@@ -2538,6 +2560,7 @@
       }
     },
     "homepageUrl": "https://github.com/jasp-stats/jaspPower",
+    "iconUrl": "https://raw.githubusercontent.com/jasp-stats-modules/jaspPower/079e0d970305586a4f088b992c56814e5e6e4ced/inst/icons/power.svg",
     "releaseSource": "jasp-stats-modules/jaspPower",
     "channels": [
       "Official"
@@ -2629,6 +2652,7 @@
       }
     },
     "homepageUrl": "https://github.com/jasp-stats/jaspPredictiveAnalytics",
+    "iconUrl": "https://raw.githubusercontent.com/jasp-stats-modules/jaspPredictiveAnalytics/4d2cf1211cc418fa3cba2fc4cbe8e3775e8e01c8/inst/icons/icon.png",
     "releaseSource": "jasp-stats-modules/jaspPredictiveAnalytics",
     "channels": [
       "Official"
@@ -2720,6 +2744,7 @@
       }
     },
     "homepageUrl": "https://github.com/jasp-stats/jaspProcess",
+    "iconUrl": "https://raw.githubusercontent.com/jasp-stats-modules/jaspProcess/35ddf6d02ee1632fc56e1cc4e94e670bf379d30c/inst/icons/classical-process.svg",
     "releaseSource": "jasp-stats-modules/jaspProcess",
     "channels": [
       "Official"
@@ -2831,6 +2856,7 @@
       }
     },
     "homepageUrl": "https://github.com/jasp-stats/jaspProphet",
+    "iconUrl": "https://raw.githubusercontent.com/jasp-stats-modules/jaspProphet/85242079b93c02136626754990cfbff878c35dc1/inst/icons/analysis-prophet.svg",
     "releaseSource": "jasp-stats-modules/jaspProphet",
     "channels": [
       "Official"
@@ -2934,6 +2960,7 @@
       }
     },
     "homepageUrl": "https://github.com/jasp-stats/jaspQualityControl",
+    "iconUrl": "https://raw.githubusercontent.com/jasp-stats-modules/jaspQualityControl/4e24b94576f77ccc4398c50c96b583318f3fdbe3/inst/icons/qualityControl-module.svg",
     "releaseSource": "jasp-stats-modules/jaspQualityControl",
     "channels": [
       "Official"
@@ -3057,6 +3084,7 @@
       }
     },
     "homepageUrl": "https://github.com/jasp-stats/jaspRegression",
+    "iconUrl": "https://raw.githubusercontent.com/jasp-stats-modules/jaspRegression/32db5a7aa24ad0763d6050177b7878fd30e48f5f/inst/icons/analysis-classical-regression.svg",
     "releaseSource": "jasp-stats-modules/jaspRegression",
     "channels": [
       "Official"
@@ -3172,6 +3200,7 @@
       }
     },
     "homepageUrl": "https://github.com/jasp-stats/Reliability",
+    "iconUrl": "https://raw.githubusercontent.com/jasp-stats-modules/jaspReliability/3db48f8471e0b1b5d2191d64da30aab6a3d51dab/inst/icons/reliability_icon_classic.svg",
     "releaseSource": "jasp-stats-modules/jaspReliability",
     "channels": [
       "Official"
@@ -3279,6 +3308,7 @@
       }
     },
     "homepageUrl": "https://github.com/jasp-stats/jaspSem/",
+    "iconUrl": "https://raw.githubusercontent.com/jasp-stats-modules/jaspSem/3f93262e29394c1fa9d1b20c01825ab573aaf34c/inst/icons/sem-latreg.svg",
     "releaseSource": "jasp-stats-modules/jaspSem",
     "channels": [
       "Official"
@@ -3394,6 +3424,7 @@
       }
     },
     "homepageUrl": "https://github.com/jasp-stats/jaspSummaryStatistics",
+    "iconUrl": "https://raw.githubusercontent.com/jasp-stats-modules/jaspSummaryStatistics/bbf9628c584e4d5f8b51aaa12920ad29fec39950/inst/icons/analysis-bayesian-ttest.svg",
     "releaseSource": "jasp-stats-modules/jaspSummaryStatistics",
     "channels": [
       "Official"
@@ -3464,6 +3495,7 @@
     "description": "Perform analyses of censored time to event data.",
     "translations": {},
     "homepageUrl": "https://github.com/jasp-stats/jaspSurvival",
+    "iconUrl": "https://raw.githubusercontent.com/jasp-stats-modules/jaspSurvival/69dc1db1b65e48c3068287fa8e365a1324b12fe7/inst/icons/survival-analysis.svg",
     "releaseSource": "jasp-stats-modules/jaspSurvival",
     "channels": [
       "Official"
@@ -3595,6 +3627,7 @@
       }
     },
     "homepageUrl": "https://github.com/jasp-stats/jaspTTests",
+    "iconUrl": "https://raw.githubusercontent.com/jasp-stats-modules/jaspTTests/3edaadde5ed2929ed081f054bb2917c35b547a38/inst/icons/analysis-classical-ttest.svg",
     "releaseSource": "jasp-stats-modules/jaspTTests",
     "channels": [
       "Official"
@@ -3674,6 +3707,7 @@
       }
     },
     "homepageUrl": "https://github.com/jasp-stats/jaspTestModule",
+    "iconUrl": "https://raw.githubusercontent.com/jasp-stats-modules/jaspTestModule/ff835269fbf206178d6051239fe3850e849584bd/inst/icons/test.svg",
     "releaseSource": "jasp-stats-modules/jaspTestModule",
     "channels": [
       "Community"
@@ -3785,6 +3819,7 @@
       }
     },
     "homepageUrl": "https://github.com/dustinfife/flexplot",
+    "iconUrl": "https://raw.githubusercontent.com/jasp-stats-modules/jaspVisualModeling/b2447e6ea4556a8997b76d7787beacd3d4875eb0/inst/icons/FlexplotLogo.svg",
     "releaseSource": "jasp-stats-modules/jaspVisualModeling",
     "channels": [
       "Official"
@@ -3884,6 +3919,7 @@
       }
     },
     "homepageUrl": "https://sophieberkhout.github.io/",
+    "iconUrl": "https://raw.githubusercontent.com/jasp-stats-modules/jaspTimeSeries/94467d973c7d360d4b5ae1a9506f0142fcafefbd/inst/icons/analysis-time-series.svg",
     "releaseSource": "jasp-stats-modules/jaspTimeSeries",
     "channels": [
       "Official"
@@ -3987,6 +4023,7 @@
       }
     },
     "homepageUrl": "https://github.com/jasp-stats/jaspRobustTTests",
+    "iconUrl": "https://raw.githubusercontent.com/jasp-stats-modules/jaspRobustTTests/8546aa451de3188e130e6a5e1e8e1b30b530dee8/inst/icons/analysis-bayesian-ttest.svg",
     "releaseSource": "jasp-stats-modules/jaspRobustTTests",
     "channels": [
       "Official"
@@ -4057,6 +4094,7 @@
     "description": "This module offers dyadic network analyses.",
     "translations": {},
     "homepageUrl": "https://github.com/pankajrsingla/jaspDyads",
+    "iconUrl": "https://raw.githubusercontent.com/jasp-stats-modules/jaspDyads/b5f74b492556e7c6a6f9692b61b1715c5f6e5f30/inst/icons/network.svg",
     "releaseSource": "jasp-stats-modules/jaspDyads",
     "channels": [
       "Community"
@@ -4127,6 +4165,7 @@
     "description": "A module to create synthetic data from a dataset",
     "translations": {},
     "homepageUrl": "https://github.com/doomlab/jasp-synthetic-data",
+    "iconUrl": "https://raw.githubusercontent.com/jasp-stats-modules/jaspSyntheticData/feed6cbc515b857ac70c3a3da4415216d9d7c41b/inst/icons/jsdIcon.png",
     "releaseSource": "jasp-stats-modules/jaspSyntheticData",
     "channels": [
       "Community"
