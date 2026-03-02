@@ -744,10 +744,9 @@ function RepositoryCard({
     latestVersionIs,
     actions,
   } = releaseStats;
-  const { name, description } = {
-    name: repo.translations[language]?.name || repo.name,
-    description: repo.translations[language]?.description || repo.description,
-  };
+  const name = repo.translations[language]?.name || repo.name;
+  const description =
+    repo.translations[language]?.description || repo.description;
   const cardId = `repo-card-${repo.name}`;
 
   return (
