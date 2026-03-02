@@ -22,6 +22,10 @@ describe('isNewerVersion', () => {
     ['0.95.5-release.2', '0.95.5-beta.1', false], // stable is always newer than pre-release
     ['0.95.6-beta.1', '0.95.5-release.0', false], // beta on newer stable is newer than older stable
     ['0.95.6-beta.1', '0.95.5-release.2', false], // beta on newer stable is newer than older stable
+    ['0.95.5-beta-13', '0.95.5-beta-2', true], // numeric beta
+    ['0.95.5-beta-2', '0.95.5-beta-13', false],
+    ['0.95.5-release-13', '0.95.5-release-2', true], // numeric release
+    ['0.95.5-release-2', '0.95.5-release-13', false],
   ])(
     'isNewerVersion(%s, %s) should be %s',
     ([currentVersion, candidateVersion, expected]) => {
