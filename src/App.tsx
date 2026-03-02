@@ -24,11 +24,11 @@ import {
   type AnyAction,
   type DowngradePreReleaseAction,
   findReleaseThatSatisfiesInstalledJaspVersion,
-  getReleaseInfo,
   type InstallPreReleaseAction,
   type InstallStableAction,
   isNewerVersion,
   type ReleaseStats,
+  resolveReleaseStats,
   type UninstallAction,
   type UninstallPreReleaseAction,
   type UpdatePreReleaseAction,
@@ -842,7 +842,7 @@ function getInstallableReleaseStatsFromRepository(
     return [];
   }
   return [
-    getReleaseInfo(
+    resolveReleaseStats(
       repo,
       info.version,
       allowPreRelease,

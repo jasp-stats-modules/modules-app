@@ -134,7 +134,7 @@ function isSamePatchVersion(
   );
 }
 
-export function getReleaseInfo(
+export function resolveReleaseStats(
   repo: Repository,
   installedJaspVersion: string,
   allowPreRelease: boolean,
