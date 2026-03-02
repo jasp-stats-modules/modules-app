@@ -731,6 +731,23 @@ function RepositoryChannels({
   );
 }
 
+function RepositoryIcon({ iconUrl, alt }: { iconUrl?: string; alt: string }) {
+  const [isBroken, setIsBroken] = useState(false);
+
+  if (!iconUrl || isBroken) {
+    return null;
+  }
+
+  return (
+    <img
+      src={iconUrl}
+      alt={alt}
+      className="h-12 w-12 shrink-0 rounded"
+      onError={() => setIsBroken(true)}
+    />
+  );
+}
+
 function RepositoryCard({
   releaseStats,
   translations,
@@ -751,6 +768,7 @@ function RepositoryCard({
   const name = repo.translations[language]?.name || repo.name;
   const description =
     repo.translations[language]?.description || repo.description;
+  const iconAlt = translations.module_icon_alt({ name }).value;
   const cardId = `repo-card-${repo.name}`;
 
   return (
@@ -759,26 +777,29 @@ function RepositoryCard({
       className="flex flex-col gap-2 rounded-lg border border-border bg-card p-3 text-card-foreground shadow-sm transition-shadow duration-200 hover:shadow-md dark:hover:shadow-lg"
     >
       <div className="flex items-start justify-between gap-2">
-        <div className="flex flex-col gap-2">
-          <h3 id={cardId} className="font-semibold text-xl">
-            {name}
-          </h3>
-          {description && (
-            <div className="prose prose-sm text-base">{description}</div>
-          )}
-          <div className="flex items-center gap-2">
-            <RepositoryLinks
-              homepageUrl={repo.homepageUrl}
-              translations={translations}
-            />
-            <RepositoryChannels
-              channels={repo.channels}
-              translations={translations}
-            />
+        <div className="flex min-w-0 flex-1 gap-2">
+          <RepositoryIcon iconUrl={repo.iconUrl} alt={iconAlt} />
+          <div className="flex min-w-0 flex-col gap-2">
+            <h3 id={cardId} className="font-semibold text-xl">
+              {name}
+            </h3>
+            <div className="flex items-center gap-2">
+              <RepositoryLinks
+                homepageUrl={repo.homepageUrl}
+                translations={translations}
+              />
+              <RepositoryChannels
+                channels={repo.channels}
+                translations={translations}
+              />
+            </div>
           </div>
         </div>
         <ActionsButton actions={actions} translations={translations} />
       </div>
+      {description && (
+        <div className="prose prose-sm text-base">{description}</div>
+      )}
       <ReleaseStatsLine
         installedVersion={installedVersion}
         latestPreRelease={latestPreRelease}

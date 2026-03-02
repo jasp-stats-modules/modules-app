@@ -3,6 +3,7 @@
     "id": "jaspAnova",
     "name": "jaspAnova",
     "description": "Test Module 1",
+    "iconUrl": "data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2064%2064'%3E%3Crect%20width='64'%20height='64'%20rx='12'%20fill='%232563eb'/%3E%3Cpath%20d='M16%2046L28%2030l8%2010%2012-18'%20fill='none'%20stroke='white'%20stroke-width='6'%20stroke-linecap='round'%20stroke-linejoin='round'/%3E%3C/svg%3E",
     "releaseSource": "jasp-stats-modules/jaspAnova",
     "organization": "jasp-stats",
     "translations": {
