@@ -1,10 +1,10 @@
 import { describe, expect, test } from 'vitest';
-import type { Asset, Repository } from './types';
 import {
   isNewerVersion,
   isPreRelease,
   resolveReleaseStats,
 } from './releaseStats';
+import type { Asset, Repository } from './types';
 
 describe('isNewerVersion', () => {
   test.for<[string, string, boolean]>([

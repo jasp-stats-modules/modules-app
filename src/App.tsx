@@ -19,7 +19,6 @@ import {
   DropdownMenuLinkItem,
   DropdownMenuTrigger,
 } from './dropdown-menu';
-import { useInfo } from './useInfo';
 import {
   type AnyAction,
   type DowngradePreReleaseAction,
@@ -34,6 +33,7 @@ import {
   type UpdatePreReleaseAction,
   type UpdateStableAction,
 } from './releaseStats';
+import { useInfo } from './useInfo';
 
 type AppTranslations = ReturnType<typeof useIntlayer<'app'>>;
 
