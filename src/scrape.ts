@@ -106,6 +106,7 @@ export function groupByChannel(submodules: Submodule[]): BareRepository[] {
         description: submodule.description,
         translations: submodule.translations,
         homepageUrl: submodule.homepageUrl,
+        iconUrl: submodule.iconUrl,
         releaseSource: nameWithOwner,
         channels: [channel],
       });
@@ -162,14 +163,22 @@ export async function nameAndDescriptionFromSubmodule(
     fs.readFile(qmlDescriptionPath, 'utf8'),
     fs.readFile(descriptionFilePath, 'utf8'),
   ]);
-  const { title, description } = parseDescriptionQml(qmlDescriptionContent);
+  const { title, description, icon } = parseDescriptionQml(
+    qmlDescriptionContent,
+  );
   const website = parseDescriptionFile(descriptionFileContent).Website;
   const homepageUrl = resolveHomepageUrl(website);
-
-  const translations = await extractTranslationsFromPoFiles(
-    path,
-    title,
-    description,
+  const releaseSource = url2nameWithOwner(gitUrl);
+  const [resolvedIconFileName, submoduleHeadSha, translations] =
+    await Promise.all([
+      resolveModuleIconFileName(path, icon),
+      resolveSubmoduleHeadSha(path),
+      extractTranslationsFromPoFiles(path, title, description),
+    ]);
+  const iconUrl = moduleIconRawUrl(
+    releaseSource,
+    submoduleHeadSha,
+    resolvedIconFileName,
   );
 
   const submoduleDetails: Submodule = {
@@ -178,6 +187,7 @@ export async function nameAndDescriptionFromSubmodule(
     name: title,
     description,
     homepageUrl,
+    iconUrl,
     translations,
   };
   return submoduleDetails;
@@ -268,6 +278,59 @@ function isPlaceholderWebsite(urlString: string): boolean {
 
 function githubRepoUrl(nameWithOwner: string): string {
   return `https://github.com/${nameWithOwner}`;
+}
+
+function moduleIconRawUrl(
+  nameWithOwner: string,
+  commitSha: string | undefined,
+  iconFileName: string | undefined,
+): string | undefined {
+  if (!commitSha || !iconFileName) {
+    return undefined;
+  }
+  return `https://raw.githubusercontent.com/${nameWithOwner}/${commitSha}/inst/icons/${iconFileName}`;
+}
+
+async function resolveSubmoduleHeadSha(
+  submodulePath: string,
+): Promise<string | undefined> {
+  try {
+    return await simpleGit({ baseDir: submodulePath }).revparse(['HEAD']);
+  } catch {
+    return undefined;
+  }
+}
+
+async function resolveModuleIconFileName(
+  repoPath: string,
+  icon: string | undefined,
+): Promise<string | undefined> {
+  if (!icon) {
+    return undefined;
+  }
+  const iconsDir = pathJoin(repoPath, 'inst', 'icons');
+  const exactIconPath = pathJoin(iconsDir, icon);
+  const hasExactIcon = await fs
+    .access(exactIconPath)
+    .then(() => true)
+    .catch(() => false);
+  if (hasExactIcon) {
+    return icon;
+  }
+
+  // Handle icon === "bain-module" case -> bain-module.svg
+  let iconFiles: string[] = [];
+  try {
+    iconFiles = await fs.readdir(iconsDir);
+  } catch {
+    return undefined;
+  }
+
+  const matchingFiles = iconFiles.filter((fileName) =>
+    fileName.startsWith(icon),
+  );
+
+  return matchingFiles[0];
 }
 
 export function resolveHomepageUrl(
@@ -450,11 +513,13 @@ export function addQuotesInDescription(input: string): string {
 export function parseDescriptionQml(content: string): {
   title: string;
   description: string;
+  icon?: string;
 } {
   const titleMatch = /title\s*:\s*[^q]*?qsTr\("([^"]+)"\)/s.exec(content);
   const descriptionMatch = /description\s*:\s*[^q]*?qsTr\("([^"]+)"\)/s.exec(
     content,
   );
+  const icon = parseTopLevelDescriptionIcon(content);
   if (!titleMatch || !descriptionMatch) {
     throw new Error(
       'Failed to parse name and description from Description.qml content',
@@ -463,7 +528,45 @@ export function parseDescriptionQml(content: string): {
   return {
     title: titleMatch[1],
     description: descriptionMatch[1],
+    icon,
   };
+}
+
+function parseTopLevelDescriptionIcon(content: string): string | undefined {
+  const lines = content.split(/\r?\n/);
+  let sawDescription = false;
+  let inDescriptionBlock = false;
+  let depth = 0;
+
+  for (const line of lines) {
+    const openBraces = (line.match(/\{/g) || []).length;
+    const closeBraces = (line.match(/\}/g) || []).length;
+
+    if (!inDescriptionBlock) {
+      if (!sawDescription && /\bDescription\b/.test(line)) {
+        sawDescription = true;
+      }
+      if (sawDescription && openBraces > 0) {
+        inDescriptionBlock = true;
+        depth = openBraces - closeBraces;
+      }
+      continue;
+    }
+
+    if (depth === 1) {
+      const iconMatch = /^\s*icon\s*:\s*"([^"]+)"/.exec(line);
+      if (iconMatch?.[1]) {
+        return iconMatch[1].trim();
+      }
+    }
+
+    depth += openBraces - closeBraces;
+    if (depth <= 0) {
+      return undefined;
+    }
+  }
+
+  return undefined;
 }
 
 async function extractNameAndDescriptionFromPoFile(

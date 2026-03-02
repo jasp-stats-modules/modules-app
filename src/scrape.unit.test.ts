@@ -1257,6 +1257,76 @@ Description {
     expect(result.description).toBe(
       'Evaluate the difference between multiple means',
     );
+    expect(result.icon).toBe('analysis-classical-anova.svg');
+  });
+
+  test('extracts icon with different spacing and trailing comment', () => {
+    const qml = `
+Description {
+  title: qsTr("Synthetic Data")
+  description: qsTr("A module to create synthetic data")
+  icon        : "jsdIcon.png" // Located in /inst/icons/
+}
+`;
+    const result = parseDescriptionQml(qml);
+    expect(result.icon).toBe('jsdIcon.png');
+  });
+
+  test('extracts extensionless top-level icon', () => {
+    const qml = `
+Description {
+  title: qsTr("Bain")
+  description: qsTr("A module")
+  icon: "bain-module"
+}
+`;
+    const result = parseDescriptionQml(qml);
+    expect(result.icon).toBe('bain-module');
+  });
+
+  test('prefers top-level Description icon over nested GroupTitle icon', () => {
+    const qml = `
+import QtQuick
+import JASP.Module
+
+Description
+{
+    title           : qsTr("Summary Statistics")
+    description     : qsTr("Apply common Bayesian tests from sufficient statistics")
+    icon            : "analysis-bayesian-ttest.svg"
+    requiresData    : false
+    hasWrappers     : false
+    preloadData     : false
+
+    GroupTitle
+    {
+        title: qsTr("Regression")
+        icon:  "analysis-bayesian-regression.svg"
+    }
+}
+`;
+    const result = parseDescriptionQml(qml);
+    const expected = {
+      title: 'Summary Statistics',
+      description: 'Apply common Bayesian tests from sufficient statistics',
+      icon: 'analysis-bayesian-ttest.svg',
+    };
+    expect(result).toEqual(expected);
+  });
+
+  test('does not pick nested icon when top-level icon is missing', () => {
+    const qml = `
+Description {
+  title: qsTr("Dyads")
+  description: qsTr("Dyadic analysis")
+  GroupTitle {
+    title: qsTr("Single Level")
+    icon: "single_level.svg"
+  }
+}
+`;
+    const result = parseDescriptionQml(qml);
+    expect(result.icon).toBeUndefined();
   });
 
   test('returns undefined for missing fields', () => {
