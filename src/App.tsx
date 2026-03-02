@@ -8,7 +8,8 @@ import { useIntlayer, useMarkdownRenderer } from 'react-intlayer';
 import { useDebounceValue } from 'usehooks-ts';
 import { cn } from '@/lib/utils';
 import type { Release, Repository } from '@/types';
-import { type Info, insideQt, useJaspQtObject } from '@/useJaspQtObject';
+import type { Info } from '@/useJaspQtObject';
+import { insideQt, useJaspQtObject } from '@/useJaspQtObject';
 import { Button, buttonVariants } from './Button';
 import { ButtonGroup } from './ButtonGroup';
 import {
@@ -18,22 +19,21 @@ import {
   DropdownMenuLinkItem,
   DropdownMenuTrigger,
 } from './dropdown-menu';
-import { useInfo } from './useInfo';
 import {
   type AnyAction,
   type DowngradePreReleaseAction,
   findReleaseThatSatisfiesInstalledJaspVersion,
-  getReleaseInfo,
   type InstallPreReleaseAction,
   type InstallStableAction,
   isNewerVersion,
   type ReleaseStats,
+  resolveReleaseStats,
   type UninstallAction,
   type UninstallPreReleaseAction,
   type UpdatePreReleaseAction,
   type UpdateStableAction,
-  useRelease,
-} from './useRelease';
+} from './releaseStats';
+import { useInfo } from './useInfo';
 
 type AppTranslations = ReturnType<typeof useIntlayer<'app'>>;
 
@@ -728,28 +728,26 @@ function RepositoryChannels({
 }
 
 function RepositoryCard({
-  repo,
-  allowPreRelease,
+  releaseStats,
   translations,
   language,
 }: {
-  repo: Repository;
-  allowPreRelease: boolean;
+  releaseStats: ReleaseStats;
   translations: AppTranslations;
   language: string;
 }) {
   const {
+    repo,
     latestPreRelease,
     latestStableRelease,
     installedVersion,
     latestVersionIs,
     actions,
-  } = useRelease(repo, allowPreRelease);
-
-  const cardId = `repo-card-${repo.name}`;
+  } = releaseStats;
   const name = repo.translations[language]?.name || repo.name;
   const description =
     repo.translations[language]?.description || repo.description;
+  const cardId = `repo-card-${repo.name}`;
 
   return (
     <li
@@ -789,51 +787,76 @@ function RepositoryCard({
   );
 }
 
-function filterOnInstallableRepositories(
+function getInstallableReleaseStats(
   reposOfChannel: Repository[],
-  installedJaspVersion: string,
+  info: Pick<
+    Info,
+    'version' | 'arch' | 'installedModules' | 'uninstallableModules'
+  >,
   allowPreRelease: boolean,
-  architecture: string,
-): Repository[] {
-  return reposOfChannel.filter((repo) => {
-    let latestRelease = findReleaseThatSatisfiesInstalledJaspVersion(
-      repo.releases,
-      installedJaspVersion,
-    );
-    if (allowPreRelease) {
-      const latestPreRelease = findReleaseThatSatisfiesInstalledJaspVersion(
-        repo.preReleases,
-        installedJaspVersion,
-      );
-      if (
-        (latestPreRelease &&
-          latestRelease &&
-          isNewerVersion(latestRelease.version, latestPreRelease.version)) ||
-        (!latestRelease && latestPreRelease)
-      ) {
-        latestRelease = latestPreRelease;
-      }
-    }
-    if (!latestRelease) {
-      return false;
-    }
-    const hasArch = latestRelease.assets.some(
-      (a) => a.architecture === architecture,
-    );
-    if (!hasArch) {
-      // No assets found with compatible architecture
-      return false;
-    }
-    const hasAssets = latestRelease?.assets && latestRelease.assets.length > 0;
-    return hasAssets;
-  });
+): ReleaseStats[] {
+  return reposOfChannel.flatMap((repo) =>
+    getInstallableReleaseStatsFromRepository(repo, info, allowPreRelease),
+  );
 }
 
-function filterReposBySearchTerm(
-  installableRepos: Repository[],
+function getInstallableReleaseStatsFromRepository(
+  repo: Repository,
+  info: Pick<
+    Info,
+    'version' | 'arch' | 'installedModules' | 'uninstallableModules'
+  >,
+  allowPreRelease: boolean,
+): ReleaseStats[] {
+  let latestRelease = findReleaseThatSatisfiesInstalledJaspVersion(
+    repo.releases,
+    info.version,
+  );
+  if (allowPreRelease) {
+    const latestPreRelease = findReleaseThatSatisfiesInstalledJaspVersion(
+      repo.preReleases,
+      info.version,
+    );
+    if (
+      (latestPreRelease &&
+        latestRelease &&
+        isNewerVersion(latestRelease.version, latestPreRelease.version)) ||
+      (!latestRelease && latestPreRelease)
+    ) {
+      latestRelease = latestPreRelease;
+    }
+  }
+  if (!latestRelease) {
+    return [];
+  }
+  const hasArch = latestRelease.assets.some(
+    (a) => a.architecture === info.arch,
+  );
+  if (!hasArch) {
+    // No assets found with compatible architecture
+    return [];
+  }
+  const hasAssets = latestRelease?.assets && latestRelease.assets.length > 0;
+  if (!hasAssets) {
+    return [];
+  }
+  return [
+    resolveReleaseStats(
+      repo,
+      info.version,
+      allowPreRelease,
+      info.arch,
+      info.installedModules,
+      info.uninstallableModules,
+    ),
+  ];
+}
+
+function filterReleaseStatsBySearchTerm(
+  releaseStats: ReleaseStats[],
   searchTerm: string,
-): Repository[] {
-  return installableRepos.filter((repo) => {
+): ReleaseStats[] {
+  return releaseStats.filter(({ repo }) => {
     if (!searchTerm.trim()) return true;
 
     const searchLower = searchTerm.toLowerCase();
@@ -987,30 +1010,16 @@ function UpdateAllButton({
   );
 }
 
-function getUpdateableAssets(
-  installableRepos: Repository[],
-  info: Info,
-  allowPreRelease: boolean,
-) {
+function getUpdateableAssets(releaseStats: ReleaseStats[]) {
   if (!insideQt) {
     // Uncomment for testing outside Qt
     // return { showUpdateAllButton: true, updateableAssets: ['https://example.com', 'https://example2.com'] };
     return { showUpdateAllButton: false, updateableAssets: [] };
   }
-  // getReleaseInfo is called for each card and here again
-  //TODO call getReleaseInfo once
-  const updateableAssets = installableRepos
-    .map((repo) => {
-      const rinfo = getReleaseInfo(
-        repo,
-        info.version,
-        allowPreRelease,
-        info.arch,
-        info.installedModules,
-        info.uninstallableModules,
-      );
+  const updateableAssets = releaseStats
+    .map((rinfo) => {
       if (rinfo.actions.length > 0) {
-        if (allowPreRelease && rinfo.latestVersionIs === 'pre-release') {
+        if (rinfo.latestVersionIs === 'pre-release') {
           const preReleaseAction = rinfo.actions.find(
             (a) => a.type === 'update-pre-release',
           );
@@ -1138,20 +1147,19 @@ export function App() {
     repositories || [],
     selectedChannels,
   );
-  const installableRepos = filterOnInstallableRepositories(
+  const installableReleaseStats = getInstallableReleaseStats(
     reposOfSelectedChannels,
-    info.version,
+    info,
     allowPreRelease,
-    info.arch,
   );
-  const filteredRepos = filterReposBySearchTerm(
-    installableRepos,
+  const filteredReleaseStats = filterReleaseStatsBySearchTerm(
+    installableReleaseStats,
     debouncedSearchTerm,
   );
   const { showUpdateAllButton, updateableAssets } = getUpdateableAssets(
-    installableRepos,
-    info,
-    allowPreRelease,
+    // update all button ignores search term,
+    // but takes into account selected channels and pre-release toggle
+    installableReleaseStats,
   );
 
   if (error) {
@@ -1207,16 +1215,15 @@ export function App() {
           </div>
         </header>
         <ul className="space-y-3">
-          {filteredRepos.map((repo) => (
+          {filteredReleaseStats.map((releaseStats) => (
             <RepositoryCard
-              key={`${repo.organization}/${repo.name}`}
-              repo={repo}
-              allowPreRelease={allowPreRelease}
+              key={`${releaseStats.repo.organization}/${releaseStats.repo.name}`}
+              releaseStats={releaseStats}
               translations={translations}
               language={info.language}
             />
           ))}
-          {filteredRepos.length === 0 && <div>{no_modules_found}</div>}
+          {filteredReleaseStats.length === 0 && <div>{no_modules_found}</div>}
         </ul>
         {showUpdateAllButton && (
           <UpdateAllButton label={update_all.value} assets={updateableAssets} />

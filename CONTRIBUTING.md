@@ -31,12 +31,10 @@ This section is for maintainers of the package.
 To develop/test the Qt WebChannel integration, you must run the web app inside JASP stats desktop application.
 
 1. Start development server with `pnpm dev --host 0.0.0.0`.
-2. Compile JASP using instructions at https://github.com/jasp-escience/jasp-desktop/blob/webchannel-test/Docs/development/jasp-build-guide-linux.md#build--run-inside-the-container .
+2. Compile JASP using instructions at https://github.com/jasp-escience/jasp-desktop/blob/development/Docs/development/jasp-building-guide.md .
 3. Start JASP desktop application.
 4. In Preferences > Advanced, set **Module library URL** to url that is accessable by JASP desktop. For example "http://172.17.0.1:3000"
 5. Open the module menu. You should see your web app loading inside JASP with [HMR](https://vite.dev/guide/features.html#hot-module-replacement).
-
-<!-- TODO adjust build instructions url to main repo and branch when merged. -->
 
 ## Technology Stack
 

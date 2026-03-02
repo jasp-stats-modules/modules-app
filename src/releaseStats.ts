@@ -7,7 +7,6 @@ import {
   satisfies,
 } from 'semver';
 import type { Asset, Release, Repository } from '@/types';
-import { useInfo } from './useInfo';
 
 export function findReleaseThatSatisfiesInstalledJaspVersion(
   releases: Release[],
@@ -70,6 +69,7 @@ export type AnyAction =
   | UninstallAction;
 
 export interface ReleaseStats {
+  repo: Repository;
   latestStableRelease?: Release;
   latestPreRelease?: Release;
   installedVersion?: string;
@@ -134,7 +134,7 @@ function isSamePatchVersion(
   );
 }
 
-export function getReleaseInfo(
+export function resolveReleaseStats(
   repo: Repository,
   installedJaspVersion: string,
   allowPreRelease: boolean,
@@ -269,25 +269,11 @@ export function getReleaseInfo(
   }
 
   return {
+    repo,
     latestStableRelease,
     latestPreRelease: allowPreRelease ? latestPreRelease : undefined,
     installedVersion,
     latestVersionIs,
     actions,
   };
-}
-
-export function useRelease(
-  repo: Repository,
-  allowPreRelease: boolean,
-): ReleaseStats {
-  const { info } = useInfo();
-  return getReleaseInfo(
-    repo,
-    info.version,
-    allowPreRelease,
-    info.arch,
-    info.installedModules,
-    info.uninstallableModules,
-  );
 }

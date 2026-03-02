@@ -1,17 +1,17 @@
 import { describe, expect, test } from 'vitest';
-import type { Asset, Repository } from './types';
 import {
-  getReleaseInfo,
   isNewerVersion,
   isPreRelease,
-  type ReleaseStats,
-} from './useRelease';
+  resolveReleaseStats,
+} from './releaseStats';
+import type { Asset, Repository } from './types';
 
 describe('isNewerVersion', () => {
   test.for<[string, string, boolean]>([
     // Works for semantic versioning style
     ['1.0.0', '1.0.1', true],
     ['2.0.0', '1.0.0', false],
+    ['1.1.1', '2.2.2', true],
     ['1.0.0', '1.0.0', false],
     ['1.0.0-alpha', '1.0.0', true],
     ['1.0.0-alpha', '1.0.0-beta', true],
@@ -27,6 +27,16 @@ describe('isNewerVersion', () => {
     ['0.95.5-release.2', '0.95.5-beta.1', false], // stable is always newer than pre-release
     ['0.95.6-beta.1', '0.95.5-release.0', false], // beta on newer stable is newer than older stable
     ['0.95.6-beta.1', '0.95.5-release.2', false], // beta on newer stable is newer than older stable
+    ['0.95.5-beta.13', '0.95.5-beta.2', false], // numeric beta
+    ['0.95.5-beta.2', '0.95.5-beta.13', true],
+    ['0.95.5-release.13', '0.95.5-release.2', false], // numeric release
+    ['0.95.5-release.2', '0.95.5-release.13', true],
+    // From https://semver.org/#spec-item-11
+    // Example: 1.0.0-alpha < 1.0.0-alpha.1 < 1.0.0-alpha.beta < 1.0.0-beta < 1.0.0-beta.2 < 1.0.0-beta.11 < 1.0.0-rc.1 < 1.0.0.
+    ['1.2.3-beta.2', '1.2.3-beta.11', true],
+    ['1.2.3-beta.11', '1.2.3-beta.2', false],
+    ['1.2.3-release.11', '1.2.3-release.2', false],
+    ['1.2.3-release.2', '1.2.3-release.11', true],
   ])(
     'isNewerVersion(%s, %s) should be %s',
     ([currentVersion, candidateVersion, expected]) => {
@@ -49,7 +59,7 @@ describe('isPreRelease', () => {
   });
 });
 
-describe('getReleaseInfo', () => {
+describe('resolveReleaseStats', () => {
   const stableAsset: Readonly<Asset> = {
     downloadUrl:
       'https://github.com/jasp-stats-modules/jaspAcceptanceSampling/releases/download/0.95.5_ab108567_R-4-5-1_Release/jaspAcceptanceSampling_0.95.5_Flatpak_x86_64_R-4-5-1.JASPModule',
@@ -90,7 +100,7 @@ describe('getReleaseInfo', () => {
         allowPreRelease: boolean;
         removeable: boolean;
       },
-      ReleaseStats,
+      Omit<ReturnType<typeof resolveReleaseStats>, 'repo'>,
     ]
   >([
     [
@@ -683,7 +693,7 @@ describe('getReleaseInfo', () => {
       channels: ['jasp-modules'],
     };
 
-    const info = getReleaseInfo(
+    const info = resolveReleaseStats(
       repo,
       '0.95.1',
       given.allowPreRelease,
@@ -692,6 +702,6 @@ describe('getReleaseInfo', () => {
       given.removeable ? ['jaspAcceptanceSampling'] : [],
     );
 
-    expect(info).toStrictEqual(expected);
+    expect(info).toStrictEqual({ ...expected, repo });
   });
 });
