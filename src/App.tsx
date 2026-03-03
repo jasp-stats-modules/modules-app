@@ -556,6 +556,9 @@ function ActionsButton({
     if (mainAction.type.startsWith('update')) {
       triggerVariant = 'secondary';
     }
+    if (mainAction.type.startsWith('uninstall')) {
+      triggerVariant = 'destructive';
+    }
     return (
       <ButtonGroup>
         <ActionButton action={mainAction} translations={translations} />
