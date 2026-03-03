@@ -676,6 +676,35 @@ describe('resolveReleaseStats', () => {
         latestStableRelease: release('1.2.0-release.0', 'stable'),
       },
     ],
+    [
+      'Pre same as stable, pre allowed and uninstallable',
+      {
+        installed: '1.2.0-release.0',
+        stableRelease: '1.2.0-release.0',
+        preRelease: '1.2.0-beta.1',
+        allowPreRelease: true,
+        removeable: true,
+      },
+      {
+        actions: [
+          {
+            type: 'uninstall',
+            from: '1.2.0-release.0',
+            moduleId: 'jaspAcceptanceSampling',
+          },
+          {
+            type: 'downgrade-pre-release',
+            asset: preAsset,
+            from: '1.2.0-release.0',
+            to: '1.2.0-beta.1',
+          },
+        ],
+        latestVersionIs: 'installed',
+        installedVersion: '1.2.0-release.0',
+        latestPreRelease: release('1.2.0-beta.1', 'pre-release'),
+        latestStableRelease: release('1.2.0-release.0', 'stable'),
+      },
+    ],
   ])('$0', ([_summary, given, expected]) => {
     const repo: Repository = {
       id: 'jaspAcceptanceSampling',

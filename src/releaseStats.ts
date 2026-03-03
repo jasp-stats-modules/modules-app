@@ -229,21 +229,7 @@ export function resolveReleaseStats(
     installedVersion,
     latestPreReleaseVersion,
   );
-  if (
-    allowPreRelease &&
-    installedVersion !== undefined &&
-    !isPreRelease(installedVersion) &&
-    latestPreReleaseVersion !== undefined &&
-    preReleaseAsset &&
-    samePatchVersion
-  ) {
-    actions.push({
-      type: 'downgrade-pre-release',
-      asset: preReleaseAsset,
-      to: latestPreReleaseVersion,
-      from: installedVersion,
-    });
-  }
+
   if (
     installedVersion &&
     uninstallableModules.includes(repo.id) &&
@@ -264,6 +250,21 @@ export function resolveReleaseStats(
     actions.push({
       type: 'uninstall-pre-release',
       moduleId: repo.id,
+      from: installedVersion,
+    });
+  }
+  if (
+    allowPreRelease &&
+    installedVersion !== undefined &&
+    !isPreRelease(installedVersion) &&
+    latestPreReleaseVersion !== undefined &&
+    preReleaseAsset &&
+    samePatchVersion
+  ) {
+    actions.push({
+      type: 'downgrade-pre-release',
+      asset: preReleaseAsset,
+      to: latestPreReleaseVersion,
       from: installedVersion,
     });
   }
