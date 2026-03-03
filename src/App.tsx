@@ -1,6 +1,6 @@
 import { queryOptions, useQuery } from '@tanstack/react-query';
 import type { VariantProps } from 'class-variance-authority';
-import { ChevronDownIcon } from 'lucide-react';
+import { ChevronDownIcon, House } from 'lucide-react';
 import { useQueryState } from 'nuqs';
 import type { Dispatch, ReactNode, SetStateAction } from 'react';
 import { useEffect, useState } from 'react';
@@ -694,11 +694,7 @@ function RepositoryLinks({
       rel="noopener noreferrer"
       href={homepageUrl}
     >
-      <img
-        className="h-6 w-6 hover:opacity-75"
-        src={infoButton}
-        alt={go_to_home_page_of_module.value}
-      />
+      <House size={12} className="text-foreground" />
     </a>
   );
 }
@@ -1116,7 +1112,11 @@ function InfoButton({
         className="ml-auto h-6 w-6 rounded-full border border-border hover:bg-background"
         title={translations.information.value}
       >
-        ?
+        <img
+          className="h-6 w-6 hover:opacity-75"
+          src={infoButton}
+          alt={translations.information.value}
+        />
       </button>
       <div
         popover="auto"
