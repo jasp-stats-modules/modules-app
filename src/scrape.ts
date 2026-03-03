@@ -67,11 +67,10 @@ async function pullAndScrapeRegistry(
   // 3. Writing submodules var somewhere and download it when creating public/index.json
 
   console.log('Pulling latest changes of registry and its submodules');
-  // Pull latest (fast‑forward only)
   const git = gitInstance();
   await git.pull('origin', branch, {
     '--depth': '1',
-    '--ff-only': null,
+    '--rebase': null,
     '--recurse-submodules': null,
     '--progress': null,
     '--jobs': '10',
@@ -105,6 +104,7 @@ export function groupByChannel(submodules: Submodule[]): BareRepository[] {
         name: submodule.name,
         description: submodule.description,
         translations: submodule.translations,
+        homepageUrl: submodule.homepageUrl,
         releaseSource: nameWithOwner,
         channels: [channel],
       });
@@ -156,8 +156,14 @@ export async function nameAndDescriptionFromSubmodule(
 ) {
   const { path, gitUrl } = bare_submodule;
   const qmlDescriptionPath = pathJoin(path, 'inst', 'Description.qml');
-  const qmlDescriptionContent = await fs.readFile(qmlDescriptionPath, 'utf8');
+  const descriptionFilePath = pathJoin(path, 'DESCRIPTION');
+  const [qmlDescriptionContent, descriptionFileContent] = await Promise.all([
+    fs.readFile(qmlDescriptionPath, 'utf8'),
+    fs.readFile(descriptionFilePath, 'utf8'),
+  ]);
   const { title, description } = parseDescriptionQml(qmlDescriptionContent);
+  const website = parseDescriptionFile(descriptionFileContent).Website;
+  const homepageUrl = resolveHomepageUrl(website);
 
   const translations = await extractTranslationsFromPoFiles(
     path,
@@ -170,9 +176,114 @@ export async function nameAndDescriptionFromSubmodule(
     path,
     name: title,
     description,
+    homepageUrl,
     translations,
   };
   return submoduleDetails;
+}
+/**
+ * Parse R DESCRIPTION file content and return an object with key‑value pairs.
+ * It is in a Debian Control Format.
+ * @param descriptionContent
+ * @returns
+ */
+export function parseDescriptionFile(
+  descriptionContent: string,
+): Record<string, string | undefined> {
+  const parsed: Record<string, string> = {};
+  let currentKey: string | undefined;
+
+  const lines = descriptionContent.split(/\r?\n/);
+  for (const rawLine of lines) {
+    const line = rawLine.replace(/\s+$/, '');
+    if (!line) {
+      currentKey = undefined;
+      continue;
+    }
+
+    if (/^\s/.test(line)) {
+      if (currentKey) {
+        parsed[currentKey] = parsed[currentKey]
+          ? `${parsed[currentKey]} ${line.trim()}`
+          : line.trim();
+      }
+      continue;
+    }
+
+    const separatorIndex = line.indexOf(':');
+    if (separatorIndex === -1) {
+      currentKey = undefined;
+      continue;
+    }
+
+    const key = line.slice(0, separatorIndex).trim();
+    const value = line.slice(separatorIndex + 1).trim();
+    if (!key) {
+      currentKey = undefined;
+      continue;
+    }
+
+    parsed[key] = value;
+    currentKey = key;
+  }
+
+  return parsed;
+}
+
+function normalizeWebsiteUrl(rawWebsite: string): string | undefined {
+  const trimmedWebsite = rawWebsite.trim();
+  if (!trimmedWebsite) {
+    return undefined;
+  }
+
+  const withScheme = /^https?:\/\//i.test(trimmedWebsite)
+    ? trimmedWebsite
+    : `https://${trimmedWebsite}`;
+
+  try {
+    const parsed = new URL(withScheme);
+    if (parsed.protocol !== 'http:' && parsed.protocol !== 'https:') {
+      return undefined;
+    }
+    if (parsed.pathname.endsWith('.git')) {
+      parsed.pathname = parsed.pathname.slice(0, -4);
+    }
+    return parsed.toString();
+  } catch {
+    return undefined;
+  }
+}
+
+function isPlaceholderWebsite(urlString: string): boolean {
+  try {
+    const hostname = new URL(urlString).hostname.toLowerCase();
+    return (
+      hostname === 'jasp-stats.org' || hostname.endsWith('.jasp-stats.org')
+    );
+  } catch {
+    return false;
+  }
+}
+
+function githubRepoUrl(nameWithOwner: string): string {
+  return `https://github.com/${nameWithOwner}`;
+}
+
+export function resolveHomepageUrl(
+  website: string | undefined,
+): string | undefined {
+  if (!website) {
+    return undefined;
+  }
+
+  const normalizedWebsite = normalizeWebsiteUrl(website);
+  if (!normalizedWebsite) {
+    return undefined;
+  }
+  if (isPlaceholderWebsite(normalizedWebsite)) {
+    return undefined;
+  }
+  return normalizedWebsite;
 }
 
 export function url2nameWithOwner(url: string): string {
@@ -465,8 +576,8 @@ interface GqlAssetsResult {
   [key: string]: {
     name: string;
     nameWithOwner: string;
-    homepageUrl?: string;
     parent?: {
+      nameWithOwner: string;
       owner: {
         login: string;
       };
@@ -586,8 +697,8 @@ async function releaseAssets(
         repo${index}: repository(owner: "${owner}", name: "${repo}") {
           name,
           nameWithOwner
-          homepageUrl
           parent {
+            nameWithOwner
             owner {
               login
             }
@@ -626,7 +737,7 @@ async function releaseAssets(
           console.log(`No releases found for ${repo.nameWithOwner}. Skipping.`);
           continue;
         }
-        const { nameWithOwner, parent, releases, homepageUrl } = repo;
+        const { nameWithOwner, parent, releases } = repo;
         const bareRepo = chunk.find((s) => s.releaseSource === nameWithOwner);
         if (!bareRepo) {
           throw new Error(
@@ -648,16 +759,18 @@ async function releaseAssets(
           preReleases,
           requiredNrAssets,
         ).map((r) => transformRelease(r, nameWithOwner));
+        const fallbackNameWithOwner =
+          parent?.nameWithOwner ?? bareRepo.releaseSource;
+        const homepageUrl =
+          bareRepo.homepageUrl ?? githubRepoUrl(fallbackNameWithOwner);
 
         const newRepo: Repository = {
           ...bareRepo,
+          homepageUrl,
           releases: newReleases.map(([release, _]) => release),
           preReleases: newPreReleases.map(([release, _]) => release),
           organization: parent?.owner.login ?? 'unknown_org',
         };
-        if (homepageUrl) {
-          newRepo.homepageUrl = homepageUrl;
-        }
         processedChunk.push(newRepo);
       }
 

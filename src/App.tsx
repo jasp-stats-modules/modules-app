@@ -1,6 +1,6 @@
 import { queryOptions, useQuery } from '@tanstack/react-query';
 import type { VariantProps } from 'class-variance-authority';
-import { ChevronDownIcon, House } from 'lucide-react';
+import { ChevronDownIcon } from 'lucide-react';
 import { useQueryState } from 'nuqs';
 import type { Dispatch, ReactNode, SetStateAction } from 'react';
 import { useEffect, useState } from 'react';
@@ -19,6 +19,7 @@ import {
   DropdownMenuLinkItem,
   DropdownMenuTrigger,
 } from './dropdown-menu';
+import infoButton from './info-button.png';
 import {
   type AnyAction,
   type DowngradePreReleaseAction,
@@ -693,7 +694,11 @@ function RepositoryLinks({
       rel="noopener noreferrer"
       href={homepageUrl}
     >
-      <House size={12} className="text-foreground" />
+      <img
+        className="h-6 w-6 hover:opacity-75"
+        src={infoButton}
+        alt={go_to_home_page_of_module.value}
+      />
     </a>
   );
 }
