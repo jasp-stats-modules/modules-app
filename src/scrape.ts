@@ -326,9 +326,9 @@ async function resolveModuleIconFileName(
     return undefined;
   }
 
-  const matchingFiles = iconFiles.filter((fileName) =>
-    fileName.startsWith(icon),
-  );
+  const matchingFiles = iconFiles
+    .filter((fileName) => fileName.startsWith(`${icon}.`))
+    .sort();
 
   return matchingFiles[0];
 }
