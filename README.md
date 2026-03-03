@@ -54,6 +54,7 @@ To get a list of available JASP modules, it does the following with the help of 
    1. the English title and description from `inst/Description.qml` file
    2. translations of title and description from `po/QML-<lang>.po` files, where `<lang>` is the language code (for example, `nl` for Dutch)
    3. homepage URL from the `Website` field in `DESCRIPTION` file; if missing/invalid or pointing to `jasp-stats.org`, it falls back to the GitHub parent repository URL (or submodule repository URL if parent is unavailable)
+   4. icon from the `icon` field in `inst/Description.qml`, resolved from `inst/icons`; icons are optimized and then embedded as data URLs
 3. For each submodule fetches its releases
    1. Fetches data for the latest 20 releases, paged per 3 repositories using GitHub GraphQL API
    2. Filter the first 20 release assets per release ending with `.JASPModule` extension
