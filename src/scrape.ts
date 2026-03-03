@@ -7,7 +7,9 @@ import dedent from 'dedent';
 import * as gettextParser from 'gettext-parser';
 import matter from 'gray-matter';
 import ProgressBar from 'progress';
+import sharp from 'sharp';
 import { type SimpleGitProgressEvent, simpleGit } from 'simple-git';
+import { optimize } from 'svgo';
 import * as v from 'valibot';
 import type {
   Asset,
@@ -24,6 +26,7 @@ import type {
 export const REGISTRY_DIR = resolve('registry');
 const MyOctokit = Octokit.plugin(paginateGraphQL);
 const DEFAULT_REQUIRED_NUMBER_OF_ASSETS_PER_RELEASE = 4;
+const MAX_PNG_ICON_DIMENSION = 96;
 
 // Helper: get a simple-git instance pointing at the registry directory
 function gitInstance() {
@@ -168,18 +171,10 @@ export async function nameAndDescriptionFromSubmodule(
   );
   const website = parseDescriptionFile(descriptionFileContent).Website;
   const homepageUrl = resolveHomepageUrl(website);
-  const releaseSource = url2nameWithOwner(gitUrl);
-  const [resolvedIconFileName, submoduleHeadSha, translations] =
-    await Promise.all([
-      resolveModuleIconFileName(path, icon),
-      resolveSubmoduleHeadSha(path),
-      extractTranslationsFromPoFiles(path, title, description),
-    ]);
-  const iconUrl = moduleIconRawUrl(
-    releaseSource,
-    submoduleHeadSha,
-    resolvedIconFileName,
-  );
+  const [iconUrl, translations] = await Promise.all([
+    resolveModuleIconDataUrl(path, icon),
+    extractTranslationsFromPoFiles(path, title, description),
+  ]);
 
   const submoduleDetails: Submodule = {
     gitUrl,
@@ -280,23 +275,180 @@ function githubRepoUrl(nameWithOwner: string): string {
   return `https://github.com/${nameWithOwner}`;
 }
 
-function moduleIconRawUrl(
-  nameWithOwner: string,
-  commitSha: string | undefined,
-  iconFileName: string | undefined,
-): string | undefined {
-  if (!commitSha || !iconFileName) {
-    return undefined;
+function iconFileName2mimeType(iconFileName: string): string | undefined {
+  const lowerCaseIconFileName = iconFileName.toLowerCase();
+  if (lowerCaseIconFileName.endsWith('.svg')) {
+    return 'image/svg+xml';
   }
-  return `https://raw.githubusercontent.com/${nameWithOwner}/${commitSha}/inst/icons/${iconFileName}`;
+  if (lowerCaseIconFileName.endsWith('.png')) {
+    return 'image/png';
+  }
+  return undefined;
 }
 
-async function resolveSubmoduleHeadSha(
-  submodulePath: string,
-): Promise<string | undefined> {
+function optimizeSvgForDataUrl(svgContent: string): string {
   try {
-    return await simpleGit({ baseDir: submodulePath }).revparse(['HEAD']);
+    const optimizedSvg = optimize(svgContent, {
+      multipass: true,
+      js2svg: {
+        pretty: false,
+      },
+      plugins: [
+        {
+          name: 'preset-default',
+        },
+        {
+          name: 'removeEditorsNSData',
+        },
+        {
+          name: 'removeMetadata',
+        },
+        {
+          name: 'cleanupNumericValues',
+          params: {
+            floatPrecision: 1,
+          },
+        },
+        {
+          name: 'convertPathData',
+          params: {
+            floatPrecision: 1,
+            transformPrecision: 1,
+          },
+        },
+        {
+          name: 'convertTransform',
+          params: {
+            floatPrecision: 1,
+          },
+        },
+        {
+          name: 'mergePaths',
+          params: {
+            force: true,
+          },
+        },
+        {
+          name: 'sortAttrs',
+        },
+        {
+          name: 'sortDefsChildren',
+        },
+      ],
+    });
+    return optimizedSvg.data;
+  } catch (e) {
+    console.warn('Failed to optimize SVG, using original version. Error:', e);
+    return svgContent;
+  }
+}
+
+function svgToDataUrl(svgContent: string): string {
+  const optimizedSvg = optimizeSvgForDataUrl(svgContent);
+  return `data:image/svg+xml,${encodeURIComponent(optimizedSvg)}`;
+}
+
+function embeddedPngDataUrlFromSvg(svgContent: string): string | undefined {
+  const embeddedPngMatch =
+    /(?:xlink:)?href\s*=\s*["'](data:image\/png;base64,[^"']+)["']/i.exec(
+      svgContent,
+    );
+  if (!embeddedPngMatch?.[1]) {
+    return undefined;
+  }
+  return embeddedPngMatch[1];
+}
+
+async function extractEmbeddedPngFromSvg(
+  svgContent: string,
+): Promise<Buffer | undefined> {
+  const embeddedPngDataUrl = embeddedPngDataUrlFromSvg(svgContent);
+  if (!embeddedPngDataUrl) {
+    return undefined;
+  }
+
+  const base64Prefix = 'data:image/png;base64,';
+  const base64Content = embeddedPngDataUrl
+    .slice(base64Prefix.length)
+    .replace(/\s+/g, '');
+  if (!base64Content) {
+    return undefined;
+  }
+
+  try {
+    const pngContent = Buffer.from(base64Content, 'base64');
+    if (pngContent.length === 0) {
+      return undefined;
+    }
+    const pngMetadata = await sharp(pngContent).metadata();
+    if (pngMetadata.format !== 'png') {
+      return undefined;
+    }
+    return pngContent;
   } catch {
+    return undefined;
+  }
+}
+
+async function optimizePngForDataUrl(pngContent: Buffer): Promise<Buffer> {
+  try {
+    return await sharp(pngContent)
+      .resize({
+        width: MAX_PNG_ICON_DIMENSION,
+        height: MAX_PNG_ICON_DIMENSION,
+        fit: 'inside',
+        withoutEnlargement: true,
+      })
+      .png({
+        palette: true,
+        compressionLevel: 9,
+        quality: 85,
+        effort: 10,
+      })
+      .toBuffer();
+  } catch (e) {
+    console.warn('Failed to optimize PNG, using original version. Error:', e);
+    return pngContent;
+  }
+}
+
+function pngToDataUrl(pngContent: Buffer): string {
+  return `data:image/png;base64,${pngContent.toString('base64')}`;
+}
+
+async function resolveModuleIconDataUrl(
+  repoPath: string,
+  icon: string | undefined,
+): Promise<string | undefined> {
+  const iconFileName = await resolveModuleIconFileName(repoPath, icon);
+  if (!iconFileName) {
+    return undefined;
+  }
+
+  const mimeType = iconFileName2mimeType(iconFileName);
+  if (!mimeType) {
+    return undefined;
+  }
+
+  const iconPath = pathJoin(repoPath, 'inst', 'icons', iconFileName);
+  try {
+    if (mimeType === 'image/svg+xml') {
+      const svgContent = await fs.readFile(iconPath, 'utf8');
+      const embeddedPngContent = await extractEmbeddedPngFromSvg(svgContent);
+      if (embeddedPngContent) {
+        const optimizedPngContent =
+          await optimizePngForDataUrl(embeddedPngContent);
+        return pngToDataUrl(optimizedPngContent);
+      }
+      return svgToDataUrl(svgContent);
+    }
+    const pngContent = await fs.readFile(iconPath);
+    const optimizedPngContent = await optimizePngForDataUrl(pngContent);
+    return pngToDataUrl(optimizedPngContent);
+  } catch (e) {
+    console.log(
+      `Failed to read or process icon file at ${iconPath}. Skipping icon. Error: ${e}`,
+    );
     return undefined;
   }
 }
