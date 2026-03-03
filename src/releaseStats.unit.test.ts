@@ -677,7 +677,7 @@ describe('resolveReleaseStats', () => {
       },
     ],
     [
-      'Pre same as stable, pre allowed and uninstallable',
+      'Pre same as stable, allowpre+removable',
       {
         installed: '1.2.0-release.0',
         stableRelease: '1.2.0-release.0',
