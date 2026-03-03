@@ -19,6 +19,7 @@ import {
   DropdownMenuLinkItem,
   DropdownMenuTrigger,
 } from './dropdown-menu';
+import infoButton from './info-button.png';
 import {
   type AnyAction,
   type DowngradePreReleaseAction,
@@ -695,7 +696,7 @@ function RepositoryLinks({
     >
       <img
         className="h-6 w-6 hover:opacity-75"
-        src="/info-button.png"
+        src={infoButton}
         alt={go_to_home_page_of_module.value}
       />
     </a>

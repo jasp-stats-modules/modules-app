@@ -70,7 +70,6 @@ async function pullAndScrapeRegistry(
   // 3. Writing submodules var somewhere and download it when creating public/index.json
 
   console.log('Pulling latest changes of registry and its submodules');
-  // Pull latest (fast‑forward only)
   const git = gitInstance();
   await git.pull('origin', branch, {
     '--depth': '1',
