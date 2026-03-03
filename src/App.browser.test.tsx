@@ -33,6 +33,13 @@ describe('App component', () => {
       expect(buttonElements.length).toBeGreaterThan(3);
     });
 
+    test('renders module icon when iconUrl exists', async () => {
+      const card = screen.getByRole('listitem', { name: 'jaspAnova' });
+      await expect
+        .element(card.getByRole('img', { name: 'jaspAnova icon' }))
+        .toBeInTheDocument();
+    });
+
     describe('Search for existing modules', () => {
       beforeEach(async () => {
         const input = screen.getByLabelText('Search for a module');
@@ -85,6 +92,12 @@ describe('App component', () => {
         await expect
           .element(link)
           .toHaveAttribute('href', 'https://github.com/nlesc/jaspRapid');
+      });
+
+      test('does not render module icon when iconUrl is missing', async () => {
+        await expect
+          .element(card.getByRole('img', { name: 'jaspRapid icon' }))
+          .not.toBeInTheDocument();
       });
     });
 

@@ -1257,6 +1257,76 @@ Description {
     expect(result.description).toBe(
       'Evaluate the difference between multiple means',
     );
+    expect(result.icon).toBe('analysis-classical-anova.svg');
+  });
+
+  test('extracts icon with different spacing and trailing comment', () => {
+    const qml = `
+Description {
+  title: qsTr("Synthetic Data")
+  description: qsTr("A module to create synthetic data")
+  icon        : "jsdIcon.png" // Located in /inst/icons/
+}
+`;
+    const result = parseDescriptionQml(qml);
+    expect(result.icon).toBe('jsdIcon.png');
+  });
+
+  test('extracts extensionless top-level icon', () => {
+    const qml = `
+Description {
+  title: qsTr("Bain")
+  description: qsTr("A module")
+  icon: "bain-module"
+}
+`;
+    const result = parseDescriptionQml(qml);
+    expect(result.icon).toBe('bain-module');
+  });
+
+  test('prefers top-level Description icon over nested GroupTitle icon', () => {
+    const qml = `
+import QtQuick
+import JASP.Module
+
+Description
+{
+    title           : qsTr("Summary Statistics")
+    description     : qsTr("Apply common Bayesian tests from sufficient statistics")
+    icon            : "analysis-bayesian-ttest.svg"
+    requiresData    : false
+    hasWrappers     : false
+    preloadData     : false
+
+    GroupTitle
+    {
+        title: qsTr("Regression")
+        icon:  "analysis-bayesian-regression.svg"
+    }
+}
+`;
+    const result = parseDescriptionQml(qml);
+    const expected = {
+      title: 'Summary Statistics',
+      description: 'Apply common Bayesian tests from sufficient statistics',
+      icon: 'analysis-bayesian-ttest.svg',
+    };
+    expect(result).toEqual(expected);
+  });
+
+  test('does not pick nested icon when top-level icon is missing', () => {
+    const qml = `
+Description {
+  title: qsTr("Dyads")
+  description: qsTr("Dyadic analysis")
+  GroupTitle {
+    title: qsTr("Single Level")
+    icon: "single_level.svg"
+  }
+}
+`;
+    const result = parseDescriptionQml(qml);
+    expect(result.icon).toBeUndefined();
   });
 
   test('returns undefined for missing fields', () => {
@@ -1371,6 +1441,8 @@ url = https://github.com/jasp-stats-modules/jaspAnova.git
     await fs.mkdir(moduleDir, { recursive: true });
     const instDir = path.join(moduleDir, 'inst');
     await fs.mkdir(instDir);
+    const iconsDir = path.join(instDir, 'icons');
+    await fs.mkdir(iconsDir);
 
     const descriptionQmlContent = `import QtQuick
 import JASP.Module
@@ -1384,6 +1456,10 @@ Description {
     await fs.writeFile(
       path.join(instDir, 'Description.qml'),
       descriptionQmlContent,
+    );
+    await fs.writeFile(
+      path.join(iconsDir, 'analysis-classical-anova.svg'),
+      '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 8 8"><rect width="8" height="8" fill="#2563eb"/></svg>',
     );
 
     await fs.writeFile(
@@ -1419,8 +1495,8 @@ Description {
     ];
 
     const result = await nameAndDescriptionFromSubmodules(bareSubmodules);
-    const expected: Submodule[] = [
-      {
+    expect(result).toEqual([
+      expect.objectContaining({
         description: 'Repeated Measures ANOVA',
         gitUrl: 'https://github.com/jasp-stats-modules/jaspAnova.git',
         name: 'Classical',
@@ -1432,9 +1508,126 @@ Description {
             name: 'Klassiek',
           },
         },
+      }),
+    ]);
+    expect(result[0].iconUrl).toContain('data:image/svg+xml,');
+    expect(result[0].iconUrl).toContain('%3Csvg');
+  });
+
+  test('removes svg metadata/editor junk before data url encoding', async () => {
+    const moduleDir = join(tempDir.name, 'Official', 'jaspAnova');
+    await fs.writeFile(
+      join(moduleDir, 'inst', 'icons', 'analysis-classical-anova.svg'),
+      `<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape" inkscape:version="1.3" viewBox="0 0 8 8">
+  <metadata>junk</metadata>
+  <rect width="8" height="8" fill="#2563eb"/>
+</svg>`,
+    );
+
+    const result = await nameAndDescriptionFromSubmodules([
+      {
+        gitUrl: 'https://github.com/jasp-stats-modules/jaspAnova.git',
+        path: moduleDir,
       },
-    ];
-    expect(result).toEqual(expected);
+    ]);
+
+    const iconUrl = result[0].iconUrl;
+    expect(iconUrl).toContain('data:image/svg+xml,');
+    expect(iconUrl).not.toContain('metadata');
+    expect(iconUrl).not.toContain('inkscape');
+  });
+
+  test('encodes png icon as base64 data url', async () => {
+    const moduleDir = join(tempDir.name, 'Official', 'jaspAnova');
+    const qmlPath = join(moduleDir, 'inst', 'Description.qml');
+    await fs.writeFile(
+      qmlPath,
+      `Description {
+  title: qsTr("Classical")
+  icon: "analysis-classical-anova.png"
+  description: qsTr("Repeated Measures ANOVA")
+}
+`,
+    );
+    const pngBytes = Buffer.from([0x89, 0x50, 0x4e, 0x47, 0x00, 0x01]);
+    await fs.writeFile(
+      join(moduleDir, 'inst', 'icons', 'analysis-classical-anova.png'),
+      pngBytes,
+    );
+
+    const result = await nameAndDescriptionFromSubmodules([
+      {
+        gitUrl: 'https://github.com/jasp-stats-modules/jaspAnova.git',
+        path: moduleDir,
+      },
+    ]);
+
+    expect(result[0].iconUrl).toContain('data:image/png;base64,');
+    expect(result[0].iconUrl?.length).toBeGreaterThan(24);
+  });
+
+  test('extracts embedded png from svg and encodes as png data url', async () => {
+    const moduleDir = join(tempDir.name, 'Official', 'jaspAnova');
+    const onePixelPngBase64 =
+      'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR4nGNgYAAAAAMAASsJTYQAAAAASUVORK5CYII=';
+    await fs.writeFile(
+      join(moduleDir, 'inst', 'icons', 'analysis-classical-anova.svg'),
+      `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1 1"><image href="data:image/png;base64,${onePixelPngBase64}" width="1" height="1"/></svg>`,
+    );
+
+    const result = await nameAndDescriptionFromSubmodules([
+      {
+        gitUrl: 'https://github.com/jasp-stats-modules/jaspAnova.git',
+        path: moduleDir,
+      },
+    ]);
+
+    expect(result[0].iconUrl).toContain('data:image/png;base64,');
+  });
+
+  test('falls back to svg data url when embedded png payload is malformed', async () => {
+    const moduleDir = join(tempDir.name, 'Official', 'jaspAnova');
+    await fs.writeFile(
+      join(moduleDir, 'inst', 'icons', 'analysis-classical-anova.svg'),
+      '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 8 8"><image href="data:image/png;base64,not-base64!" width="8" height="8"/><rect width="8" height="8" fill="#2563eb"/></svg>',
+    );
+
+    const result = await nameAndDescriptionFromSubmodules([
+      {
+        gitUrl: 'https://github.com/jasp-stats-modules/jaspAnova.git',
+        path: moduleDir,
+      },
+    ]);
+
+    expect(result[0].iconUrl).toContain('data:image/svg+xml,');
+  });
+
+  test('ignores unsupported icon extension', async () => {
+    const moduleDir = join(tempDir.name, 'Official', 'jaspAnova');
+    const qmlPath = join(moduleDir, 'inst', 'Description.qml');
+    await fs.writeFile(
+      qmlPath,
+      `Description {
+  title: qsTr("Classical")
+  icon: "analysis-classical-anova.jpg"
+  description: qsTr("Repeated Measures ANOVA")
+}
+`,
+    );
+    await fs.writeFile(
+      join(moduleDir, 'inst', 'icons', 'analysis-classical-anova.jpg'),
+      'not-a-real-jpeg',
+    );
+
+    const result = await nameAndDescriptionFromSubmodules([
+      {
+        gitUrl: 'https://github.com/jasp-stats-modules/jaspAnova.git',
+        path: moduleDir,
+      },
+    ]);
+
+    expect(result[0].iconUrl).toBeUndefined();
   });
 
   test('throws when DESCRIPTION file is missing', async () => {
