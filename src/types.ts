@@ -41,8 +41,6 @@ export interface BareRepository extends ModuleTranslations {
 export interface Repository extends BareRepository {
   // Parent organization from which repo was forked to https://github.com/jasp-stats-modules/
   organization: string;
-  homepageUrl?: string;
-  iconUrl?: string;
   releases: Release[];
   preReleases: Release[];
 }
