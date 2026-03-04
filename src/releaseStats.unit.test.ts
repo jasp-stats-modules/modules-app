@@ -705,6 +705,31 @@ describe('resolveReleaseStats', () => {
         latestStableRelease: release('1.2.0-release.0', 'stable'),
       },
     ],
+    [
+      'Pre installed, stable newer, pre disallowed',
+      {
+        installed: '1.2.0-beta.1',
+        stableRelease: '1.2.0-release.0',
+        preRelease: '1.2.0-beta.1',
+        allowPreRelease: false,
+        removeable: true,
+      },
+      {
+        actions: [
+          {
+            type: 'update-stable',
+            asset: stableAsset,
+            from: '1.2.0-beta.1',
+            to: '1.2.0-release.0',
+          },
+          // TODO if allowPreRelease==false should we still be able to uninstall the pre-release?
+        ],
+        latestVersionIs: 'stable',
+        installedVersion: '1.2.0-beta.1',
+        latestPreRelease: undefined,
+        latestStableRelease: release('1.2.0-release.0', 'stable'),
+      },
+    ],
   ])('$0', ([_summary, given, expected]) => {
     const repo: Repository = {
       id: 'jaspAcceptanceSampling',
@@ -729,6 +754,7 @@ describe('resolveReleaseStats', () => {
       'Flatpak_x86_64',
       given.installed ? { jaspAcceptanceSampling: given.installed } : {},
       given.removeable ? ['jaspAcceptanceSampling'] : [],
+      true,
     );
 
     expect(info).toStrictEqual({ ...expected, repo });

@@ -134,6 +134,10 @@ function isSamePatchVersion(
   );
 }
 
+function actionableOutsideQt(action: AnyAction): boolean {
+  return action.type !== 'uninstall' && action.type !== 'uninstall-pre-release';
+}
+
 export function resolveReleaseStats(
   repo: Repository,
   installedJaspVersion: string,
@@ -141,6 +145,7 @@ export function resolveReleaseStats(
   arch: string,
   installedModules: { [x: string]: string },
   uninstallableModules: string[],
+  insideQt: boolean,
 ): ReleaseStats {
   const latestStableRelease = findReleaseThatSatisfiesInstalledJaspVersion(
     repo.releases,
@@ -269,12 +274,16 @@ export function resolveReleaseStats(
     });
   }
 
+  const actionableActions = insideQt
+    ? actions
+    : actions.filter(actionableOutsideQt);
+
   return {
     repo,
     latestStableRelease,
     latestPreRelease: allowPreRelease ? latestPreRelease : undefined,
     installedVersion,
     latestVersionIs,
-    actions,
+    actions: actionableActions,
   };
 }

@@ -873,6 +873,7 @@ function getInstallableReleaseStatsFromRepository(
       info.arch,
       info.installedModules,
       info.uninstallableModules,
+      insideQt,
     ),
   ];
 }
