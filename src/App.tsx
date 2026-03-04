@@ -34,9 +34,9 @@ import {
   type UpdatePreReleaseAction,
   type UpdateStableAction,
 } from './releaseStats';
+import { statsLine } from './statsLine';
+import type { AppTranslations } from './translations';
 import { useInfo } from './useInfo';
-
-type AppTranslations = ReturnType<typeof useIntlayer<'app'>>;
 
 const defaultChannel = 'Official';
 const defaultCatalog = 'index.json';
@@ -588,13 +588,6 @@ function ActionsButton({
   return <ActionButton action={mainAction} translations={translations} />;
 }
 
-function totalDownloads(release: Release): number {
-  return release.assets.reduce(
-    (sum, asset) => sum + (asset.downloadCount ?? 0),
-    0,
-  );
-}
-
 export function ReleaseStatsLine({
   installedVersion,
   latestStableRelease,
@@ -610,70 +603,17 @@ export function ReleaseStatsLine({
   latestVersionIs?: ReleaseStats['latestVersionIs'];
   translations: AppTranslations;
 }) {
-  const {
-    by_maintainer,
-    installed_version,
-    latest_installed_version,
-    latest_version_on_with_downloads,
-    latest_beta_version_on_with_downloads,
-    latest_stable_and_beta_with_downloads,
-  } = translations;
+  const { by_maintainer } = translations;
+  const stats = statsLine({
+    installedVersion,
+    latestStableRelease,
+    latestPreRelease,
+    latestVersionIs,
+    translations,
+  });
   return (
     <div className="flex flex-row justify-between text-muted-foreground text-sm">
-      <div>
-        {latestVersionIs &&
-          latestVersionIs !== 'installed' &&
-          installedVersion && (
-            <span>{installed_version({ version: installedVersion })}, </span>
-          )}
-        {latestVersionIs === 'installed' && installedVersion && (
-          <span>
-            {latest_installed_version({ version: installedVersion })}{' '}
-          </span>
-        )}
-        {latestVersionIs === 'stable' &&
-          latestStableRelease &&
-          !latestPreRelease && (
-            <span>
-              {latest_version_on_with_downloads({
-                latestVersion: latestStableRelease.version,
-                publishedAt: new Date(
-                  latestStableRelease.publishedAt,
-                ).toLocaleDateString(),
-                downloads: totalDownloads(latestStableRelease),
-              })}
-            </span>
-          )}
-        {latestVersionIs === 'pre-release' &&
-          !latestStableRelease &&
-          latestPreRelease && (
-            <span>
-              {latest_beta_version_on_with_downloads({
-                latestVersion: latestPreRelease.version,
-                publishedAt: new Date(
-                  latestPreRelease.publishedAt,
-                ).toLocaleDateString(),
-                downloads: totalDownloads(latestPreRelease),
-              })}
-            </span>
-          )}
-        {latestStableRelease && latestPreRelease && (
-          <span>
-            {latest_stable_and_beta_with_downloads({
-              latestVersion: latestStableRelease.version,
-              publishedAt: new Date(
-                latestStableRelease.publishedAt,
-              ).toLocaleDateString(),
-              latestBetaVersion: latestPreRelease.version,
-              latestBetaPublishedAt: new Date(
-                latestPreRelease.publishedAt,
-              ).toLocaleDateString(),
-              downloads: totalDownloads(latestStableRelease),
-              betaDownloads: totalDownloads(latestPreRelease),
-            })}
-          </span>
-        )}
-      </div>
+      <div>{stats}</div>
       <div>{by_maintainer({ maintainer })}</div>
     </div>
   );
