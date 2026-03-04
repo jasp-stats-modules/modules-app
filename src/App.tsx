@@ -780,7 +780,7 @@ function RepositoryCard({
         <div className="flex min-w-0 flex-1 gap-2">
           <RepositoryIcon iconUrl={repo.iconUrl} alt={iconAlt} />
           <div className="flex min-w-0 flex-col gap-2">
-            <h3 id={cardId} className="font-semibold text-xl">
+            <h3 id={cardId} className="break-words font-semibold text-xl">
               {name}
             </h3>
             <div className="flex items-center gap-2">
