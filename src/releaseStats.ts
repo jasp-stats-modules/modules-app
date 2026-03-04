@@ -138,34 +138,39 @@ function actionableOutsideQt(action: AnyAction): boolean {
   return action.type !== 'uninstall' && action.type !== 'uninstall-pre-release';
 }
 
+interface ResolveReleaseStatsOptions {
+  installedJaspVersion: string;
+  allowPreRelease: boolean;
+  arch: string;
+  installedModules: { [x: string]: string };
+  uninstallableModules: string[];
+  insideQt: boolean;
+}
+
 export function resolveReleaseStats(
   repo: Repository,
-  installedJaspVersion: string,
-  allowPreRelease: boolean,
-  arch: string,
-  installedModules: { [x: string]: string },
-  uninstallableModules: string[],
-  insideQt: boolean,
+  options: ResolveReleaseStatsOptions,
 ): ReleaseStats {
   const latestStableRelease = findReleaseThatSatisfiesInstalledJaspVersion(
     repo.releases,
-    installedJaspVersion,
+    options.installedJaspVersion,
   );
   const latestPreRelease = findReleaseThatSatisfiesInstalledJaspVersion(
     repo.preReleases,
-    installedJaspVersion,
+    options.installedJaspVersion,
   );
   const latestStableReleaseVersion = latestStableRelease?.version;
   const latestPreReleaseVersion = latestPreRelease?.version;
   const stableAsset = latestStableRelease?.assets.find(
-    (a) => a.architecture === arch,
+    (a) => a.architecture === options.arch,
   );
   const preReleaseAsset = latestPreRelease?.assets.find(
-    (a) => a.architecture === arch,
+    (a) => a.architecture === options.arch,
   );
-  const installedVersion: string | undefined = installedModules[repo.id];
+  const installedVersion: string | undefined =
+    options.installedModules[repo.id];
   const latestPreReleaseIsNewerThanStable =
-    allowPreRelease &&
+    options.allowPreRelease &&
     latestPreReleaseVersion !== undefined &&
     (latestStableReleaseVersion === undefined ||
       isNewerVersion(latestStableReleaseVersion, latestPreReleaseVersion));
@@ -174,7 +179,7 @@ export function resolveReleaseStats(
     latestStableReleaseVersion !== undefined &&
     isNewerVersion(installedVersion, latestStableReleaseVersion);
   const canUpdateToPreRelease =
-    allowPreRelease &&
+    options.allowPreRelease &&
     installedVersion !== undefined &&
     latestPreReleaseVersion !== undefined &&
     isNewerVersion(installedVersion, latestPreReleaseVersion);
@@ -212,7 +217,7 @@ export function resolveReleaseStats(
       });
     }
   }
-  if (allowPreRelease && preReleaseAsset && latestPreReleaseVersion) {
+  if (options.allowPreRelease && preReleaseAsset && latestPreReleaseVersion) {
     if (!installedVersion) {
       actions.push({
         type: 'install-pre-release',
@@ -237,7 +242,7 @@ export function resolveReleaseStats(
 
   if (
     installedVersion &&
-    uninstallableModules.includes(repo.id) &&
+    options.uninstallableModules.includes(repo.id) &&
     !installedIsPreRelease
   ) {
     actions.push({
@@ -247,9 +252,8 @@ export function resolveReleaseStats(
     });
   }
   if (
-    allowPreRelease &&
     installedVersion &&
-    uninstallableModules.includes(repo.id) &&
+    options.uninstallableModules.includes(repo.id) &&
     installedIsPreRelease
   ) {
     actions.push({
@@ -259,7 +263,7 @@ export function resolveReleaseStats(
     });
   }
   if (
-    allowPreRelease &&
+    options.allowPreRelease &&
     installedVersion !== undefined &&
     !isPreRelease(installedVersion) &&
     latestPreReleaseVersion !== undefined &&
@@ -274,14 +278,14 @@ export function resolveReleaseStats(
     });
   }
 
-  const actionableActions = insideQt
+  const actionableActions = options.insideQt
     ? actions
     : actions.filter(actionableOutsideQt);
 
   return {
     repo,
     latestStableRelease,
-    latestPreRelease: allowPreRelease ? latestPreRelease : undefined,
+    latestPreRelease: options.allowPreRelease ? latestPreRelease : undefined,
     installedVersion,
     latestVersionIs,
     actions: actionableActions,

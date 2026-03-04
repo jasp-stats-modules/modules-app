@@ -866,15 +866,14 @@ function getInstallableReleaseStatsFromRepository(
     return [];
   }
   return [
-    resolveReleaseStats(
-      repo,
-      info.version,
+    resolveReleaseStats(repo, {
+      installedJaspVersion: info.version,
       allowPreRelease,
-      info.arch,
-      info.installedModules,
-      info.uninstallableModules,
+      arch: info.arch,
+      installedModules: info.installedModules,
+      uninstallableModules: info.uninstallableModules,
       insideQt,
-    ),
+    }),
   ];
 }
 

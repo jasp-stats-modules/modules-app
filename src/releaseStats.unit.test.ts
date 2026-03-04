@@ -398,6 +398,11 @@ describe('resolveReleaseStats', () => {
             from: '1.0.0-beta.1',
             to: '1.0.0-release.0',
           },
+          {
+            type: 'uninstall-pre-release',
+            from: '1.0.0-beta.1',
+            moduleId: 'jaspAcceptanceSampling',
+          },
         ],
         latestVersionIs: 'stable',
         installedVersion: '1.0.0-beta.1',
@@ -487,7 +492,7 @@ describe('resolveReleaseStats', () => {
       },
     ],
     [
-      'Only pre, disabled, no action',
+      'Only pre, disabled, uninstall',
       {
         installed: '1.1.0-beta.1',
         stableRelease: undefined,
@@ -496,7 +501,13 @@ describe('resolveReleaseStats', () => {
         removeable: true,
       },
       {
-        actions: [],
+        actions: [
+          {
+            type: 'uninstall-pre-release',
+            from: '1.1.0-beta.1',
+            moduleId: 'jaspAcceptanceSampling',
+          },
+        ],
         latestVersionIs: 'installed',
         installedVersion: '1.1.0-beta.1',
         latestPreRelease: undefined,
@@ -722,7 +733,11 @@ describe('resolveReleaseStats', () => {
             from: '1.2.0-beta.1',
             to: '1.2.0-release.0',
           },
-          // TODO if allowPreRelease==false should we still be able to uninstall the pre-release?
+          {
+            type: 'uninstall-pre-release',
+            from: '1.2.0-beta.1',
+            moduleId: 'jaspAcceptanceSampling',
+          },
         ],
         latestVersionIs: 'stable',
         installedVersion: '1.2.0-beta.1',
@@ -747,15 +762,16 @@ describe('resolveReleaseStats', () => {
       channels: ['jasp-modules'],
     };
 
-    const info = resolveReleaseStats(
-      repo,
-      '0.95.1',
-      given.allowPreRelease,
-      'Flatpak_x86_64',
-      given.installed ? { jaspAcceptanceSampling: given.installed } : {},
-      given.removeable ? ['jaspAcceptanceSampling'] : [],
-      true,
-    );
+    const info = resolveReleaseStats(repo, {
+      installedJaspVersion: '0.95.1',
+      allowPreRelease: given.allowPreRelease,
+      arch: 'Flatpak_x86_64',
+      installedModules: given.installed
+        ? { jaspAcceptanceSampling: given.installed }
+        : {},
+      uninstallableModules: given.removeable ? ['jaspAcceptanceSampling'] : [],
+      insideQt: true,
+    });
 
     expect(info).toStrictEqual({ ...expected, repo });
   });
