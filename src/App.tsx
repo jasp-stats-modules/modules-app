@@ -1130,7 +1130,7 @@ function InfoButton({
           popoverTarget="infoPopover"
           popoverTargetAction="hide"
           type="button"
-          className="absolute top-2 right-2 h-6 w-6 rounded hover:bg-background"
+          className="float-right ml-2 h-6 w-6 rounded hover:bg-background"
         >
           ×
         </button>
