@@ -50,6 +50,7 @@ To get a list of available JASP modules, it does the following with the help of 
 
 1. Fetches the git submodules of HEAD of main branch of the https://github.com/jasp-stats-modules/modules-registry repository.
    - the directory in which a submodule is located is called the channel
+   - to see translation of channel name, make sure it is in [src/App.content.tsx](src/App.content.tsx)
 2. For each submodule parses 
    1. the English title and description from `inst/Description.qml` file
    2. translations of title and description from `po/QML-<lang>.po` files, where `<lang>` is the language code (for example, `nl` for Dutch)

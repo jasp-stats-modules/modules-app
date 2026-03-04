@@ -84,11 +84,13 @@ function ChannelSelector({
   selectedChannels,
   setSelectedChannels,
   channels,
+  translations,
   className = '',
 }: {
   selectedChannels: string[];
   setSelectedChannels: Dispatch<SetStateAction<string[]>>;
   channels: string[];
+  translations: AppTranslations;
   className?: string;
 }) {
   const { select_channel } = useIntlayer('app');
@@ -115,7 +117,7 @@ function ChannelSelector({
                 return Array.from(setPrev);
               })
             }
-            label={c}
+            label={getTranslatedChannel(c, translations)}
             name={`channel-${c}`}
           />
         ))}
@@ -724,7 +726,7 @@ function RepositoryChannels({
           )}
           title={channelText.value}
         >
-          {channel}
+          {getTranslatedChannel(channel, translations)}
         </span>
       ))}
     </div>
@@ -925,6 +927,18 @@ function useTheme() {
     const theme = isDarkTheme ? 'dark' : 'light';
     root.classList.add(theme);
   }, [isDarkTheme]);
+}
+
+function getTranslatedChannel(
+  channel: string,
+  translations: AppTranslations,
+): string {
+  const key = channel as keyof AppTranslations;
+  const translation = translations[key];
+  if (translation) {
+    return (translation as { value: string }).value;
+  }
+  return channel;
 }
 
 function uniqueChannels(repositories: Repository[]): string[] {
@@ -1211,6 +1225,7 @@ export function App() {
                 selectedChannels={selectedChannels}
                 setSelectedChannels={setSelectedChannels}
                 channels={availableChannels}
+                translations={translations}
               />
               <div className="flex items-center pt-5">
                 <Checkbox
