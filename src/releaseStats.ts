@@ -55,6 +55,10 @@ export interface DowngradePreReleaseAction extends BaseFromAction {
   type: 'downgrade-pre-release';
 }
 
+export interface DowngradeStableAction extends BaseFromAction {
+  type: 'downgrade-stable';
+}
+
 export interface UninstallAction extends BaseUninstallAction {
   type: 'uninstall';
 }
@@ -66,6 +70,7 @@ export type AnyAction =
   | InstallPreReleaseAction
   | UpdatePreReleaseAction
   | DowngradePreReleaseAction
+  | DowngradeStableAction
   | UninstallAction;
 
 export interface ReleaseStats {
@@ -116,7 +121,7 @@ export function isNewerVersion(
   return compareResult === -1;
 }
 
-function isSamePatchVersion(
+export function isSamePatchVersion(
   installedVersion: string,
   latestPreReleaseVersion: string | undefined,
 ): boolean {
@@ -274,6 +279,23 @@ export function resolveReleaseStats(
       type: 'downgrade-pre-release',
       asset: preReleaseAsset,
       to: latestPreReleaseVersion,
+      from: installedVersion,
+    });
+  }
+
+  // Downgrade from pre-release to stable
+  // for example 3.0.0-beta.1 -> 2.0.0-release.0 (pre-release installed is newer than available stable)
+  if (
+    installedVersion !== undefined &&
+    installedIsPreRelease &&
+    latestStableReleaseVersion !== undefined &&
+    stableAsset &&
+    isNewerVersion(latestStableReleaseVersion, installedVersion)
+  ) {
+    actions.push({
+      type: 'downgrade-stable',
+      asset: stableAsset,
+      to: latestStableReleaseVersion,
       from: installedVersion,
     });
   }

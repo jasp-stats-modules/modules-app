@@ -245,12 +245,12 @@ describe('App component', () => {
         .not.toBeInTheDocument();
     });
 
-    test('Should say installed outside qt', async () => {
+    test('Should show downgrade button', async () => {
       const jaspAnovaCard = screen.getByRole('listitem', { name: 'jaspAnova' });
       await expect.element(jaspAnovaCard).toBeInTheDocument();
 
       await expect
-        .element(jaspAnovaCard.getByText('Latest version is installed'))
+        .element(jaspAnovaCard.getByRole('link', { name: 'Downgrade' }))
         .toBeInTheDocument();
     });
   });

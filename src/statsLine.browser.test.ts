@@ -67,7 +67,7 @@ describe('totalDownloads', () => {
             downloadCount: undefined,
             architecture: 'x86_64',
           },
-        ] as any as Release['assets'],
+        ] as unknown as Release['assets'],
       },
       0,
     ],
@@ -78,7 +78,10 @@ describe('totalDownloads', () => {
 });
 
 describe('statsLine', () => {
-  const createMockRelease = (version: string, publishedAt: string = '2024-01-15T10:00:00Z'): Release => ({
+  const createMockRelease = (
+    version: string,
+    publishedAt: string = '2024-01-15T10:00:00Z',
+  ): Release => ({
     version,
     publishedAt,
     assets: [
@@ -115,32 +118,42 @@ describe('statsLine', () => {
     [
       'installed version only',
       {
-        installedVersion: '1.5.0',
+        installedVersion: '1.5.0-release.0',
         latestStableRelease: undefined,
         latestPreRelease: undefined,
         latestVersionIs: 'installed',
       },
-      'Latest installed 1.5.0 ',
+      'Latest installed 1.5.0-release.0 ',
+    ],
+    [
+      'installed version only',
+      {
+        installedVersion: '1.5.0-beta.3',
+        latestStableRelease: undefined,
+        latestPreRelease: undefined,
+        latestVersionIs: 'installed',
+      },
+      'Latest installed 1.5.0-beta.3 ',
     ],
     [
       'installed version with newer stable available',
       {
-        installedVersion: '1.5.0',
-        latestStableRelease: createMockRelease('2.0.0'),
+        installedVersion: '1.5.0-release.0',
+        latestStableRelease: createMockRelease('2.0.0-release.0'),
         latestPreRelease: undefined,
         latestVersionIs: 'stable',
       },
-      'Installed 1.5.0, Latest 2.0.0 on 1/15/2024 with 100 downloads',
+      'Installed 1.5.0-release.0, Latest 2.0.0-release.0 on 1/15/2024 with 100 downloads',
     ],
     [
       'stable release only',
       {
         installedVersion: undefined,
-        latestStableRelease: createMockRelease('2.0.0'),
+        latestStableRelease: createMockRelease('2.0.0-release.0'),
         latestPreRelease: undefined,
         latestVersionIs: 'stable',
       },
-      'Latest 2.0.0 on 1/15/2024 with 100 downloads',
+      'Latest 2.0.0-release.0 on 1/15/2024 with 100 downloads',
     ],
     [
       'pre-release only',
@@ -156,21 +169,31 @@ describe('statsLine', () => {
       'both stable and pre-release',
       {
         installedVersion: undefined,
-        latestStableRelease: createMockRelease('2.0.0'),
+        latestStableRelease: createMockRelease('2.0.0-release.0'),
         latestPreRelease: createMockRelease('3.0.0-beta.1'),
         latestVersionIs: 'stable',
       },
-      'Latest stable 2.0.0 on 1/15/2024 with 100 downloads, latest beta 3.0.0-beta.1 on 1/15/2024 with 100 downloads',
+      'Latest stable 2.0.0-release.0 on 1/15/2024 with 100 downloads, latest beta 3.0.0-beta.1 on 1/15/2024 with 100 downloads',
     ],
     [
-      'installed version with newer pre-release available',
+      'latest installed, downgradable beta',
       {
-        installedVersion: '1.5.0',
-        latestStableRelease: undefined,
-        latestPreRelease: createMockRelease('2.0.0-beta.1'),
-        latestVersionIs: 'pre-release',
+        installedVersion: '0.95.5-release.12',
+        latestStableRelease: createMockRelease('0.95.5-release.12'),
+        latestPreRelease: createMockRelease('0.95.5-beta.3'),
+        latestVersionIs: 'installed',
       },
-      'Installed 1.5.0, Latest beta 2.0.0-beta.1 on 1/15/2024 with 100 downloads',
+      'Latest installed 0.95.5-release.12, downgradable beta 0.95.5-beta.3 on 1/15/2024 with 100 downloads',
+    ],
+    [
+      'latest beta installed (newer than stable)',
+      {
+        installedVersion: '3.0.0-beta.1',
+        latestStableRelease: createMockRelease('2.0.0-release.0'),
+        latestPreRelease: createMockRelease('3.0.0-beta.1'),
+        latestVersionIs: 'installed',
+      },
+      'Latest installed 3.0.0-beta.1, downgradable stable 2.0.0-release.0 on 1/15/2024 with 100 downloads',
     ],
   ])('statsLine: %s', ([, params, expected]) => {
     // The getIntlayer needs to be run in vitest browser mode, otherwise it returns empty object.

@@ -23,6 +23,7 @@ import infoButton from './info-button.png';
 import {
   type AnyAction,
   type DowngradePreReleaseAction,
+  type DowngradeStableAction,
   findReleaseThatSatisfiesInstalledJaspVersion,
   type InstallPreReleaseAction,
   type InstallStableAction,
@@ -332,6 +333,32 @@ function DowngradePreReleaseButton({
   );
 }
 
+function DowngradeStableButton({
+  action,
+  translations,
+}: {
+  action: DowngradeStableAction;
+  translations: AppTranslations;
+}) {
+  const { downgrade, action_version_from_to_title } = translations;
+  return (
+    <a
+      href={action.asset.downloadUrl}
+      data-slot="button"
+      title={
+        action_version_from_to_title({
+          action: downgrade.value,
+          from: action.from,
+          to: action.to,
+        }).value
+      }
+      className={buttonVariants({ variant: 'secondary' })}
+    >
+      {downgrade}
+    </a>
+  );
+}
+
 function UninstallButton({
   action,
   translations,
@@ -424,6 +451,11 @@ function ActionButton({
   if (action.type === 'downgrade-pre-release') {
     return (
       <DowngradePreReleaseButton action={action} translations={translations} />
+    );
+  }
+  if (action.type === 'downgrade-stable') {
+    return (
+      <DowngradeStableButton action={action} translations={translations} />
     );
   }
   return null;
@@ -527,6 +559,22 @@ function ActionMenuItem({
           action: translations.downgrade.value,
           preRelease: translations.pre_release.value,
         })}
+      </DropdownMenuLinkItem>
+    );
+  }
+  if (action.type === 'downgrade-stable') {
+    return (
+      <DropdownMenuLinkItem
+        href={action.asset.downloadUrl}
+        title={
+          action_version_from_to_title({
+            action: translations.downgrade.value,
+            from: action.from,
+            to: action.to,
+          }).value
+        }
+      >
+        {translations.downgrade}
       </DropdownMenuLinkItem>
     );
   }
