@@ -101,16 +101,25 @@ export function JaspInfoProvider({ children }: { children: ReactNode }) {
     enabled: insideQt && !!jasp && isJaspFetched,
   });
 
-  const { setLocale } = useLocale();
+  const { setLocale, availableLocales } = useLocale();
   useEffect(() => {
     const lang =
       (insideQt && infoFromQt?.language) || infoFromSearchParams.language;
-    setLocale(lang);
+    const locale = lang as (typeof availableLocales)[number];
+    if (!availableLocales.includes(locale)) {
+      return;
+    }
+    setLocale(locale);
     if (typeof document !== 'undefined') {
       document.documentElement.lang = lang;
       document.documentElement.dir = getHTMLTextDir(lang);
     }
-  }, [infoFromQt?.language, infoFromSearchParams.language, setLocale]);
+  }, [
+    infoFromQt?.language,
+    infoFromSearchParams.language,
+    setLocale,
+    availableLocales.includes,
+  ]);
 
   const value = useMemo<JaspInfoContextValue>(() => {
     if (!insideQt) {
