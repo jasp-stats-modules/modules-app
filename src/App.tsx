@@ -85,11 +85,13 @@ function ChannelSelector({
   selectedChannels,
   setSelectedChannels,
   channels,
+  translations,
   className = '',
 }: {
   selectedChannels: string[];
   setSelectedChannels: Dispatch<SetStateAction<string[]>>;
   channels: string[];
+  translations: AppTranslations;
   className?: string;
 }) {
   const { select_channel } = useIntlayer('app');
@@ -116,7 +118,7 @@ function ChannelSelector({
                 return Array.from(setPrev);
               })
             }
-            label={c}
+            label={getTranslatedChannel(c, translations)}
             name={`channel-${c}`}
           />
         ))}
@@ -712,7 +714,7 @@ function RepositoryChannels({
           )}
           title={channelText.value}
         >
-          {channel}
+          {getTranslatedChannel(channel, translations)}
         </span>
       ))}
     </div>
@@ -768,7 +770,7 @@ function RepositoryCard({
         <div className="flex min-w-0 flex-1 gap-2">
           <RepositoryIcon iconUrl={repo.iconUrl} alt={iconAlt} />
           <div className="flex min-w-0 flex-col gap-2">
-            <h3 id={cardId} className="font-semibold text-xl">
+            <h3 id={cardId} className="break-words font-semibold text-xl">
               {name}
             </h3>
             <div className="flex items-center gap-2">
@@ -913,6 +915,19 @@ function useTheme() {
     const theme = isDarkTheme ? 'dark' : 'light';
     root.classList.add(theme);
   }, [isDarkTheme]);
+}
+
+function getTranslatedChannel(
+  channel: string,
+  translations: AppTranslations,
+): string {
+  const key = channel as keyof AppTranslations;
+  const translation = translations[key];
+  // This check is a bit brittle, but intlayer uses proxies which are hard to check
+  if (translation) {
+    return (translation as { value: string }).value;
+  }
+  return channel;
 }
 
 function uniqueChannels(repositories: Repository[]): string[] {
@@ -1085,9 +1100,9 @@ function InfoButton({
     },
   });
 
-  const markdownMentionsAllChannels = channels.every((ch) =>
-    infoMarkdown.value.includes(ch),
-  );
+  const markdownMentionsAllChannels = channels
+    .map((c) => getTranslatedChannel(c, translations))
+    .every((ch) => infoMarkdown.value.includes(ch));
   if (!markdownMentionsAllChannels) {
     console.warn(
       'Not all channels are mentioned in the information panel. Please update text.',
@@ -1118,7 +1133,7 @@ function InfoButton({
           popoverTarget="infoPopover"
           popoverTargetAction="hide"
           type="button"
-          className="absolute top-2 right-2 h-6 w-6 rounded hover:bg-background"
+          className="float-right ml-2 h-6 w-6 rounded hover:bg-background"
         >
           ×
         </button>
@@ -1199,6 +1214,7 @@ export function App() {
                 selectedChannels={selectedChannels}
                 setSelectedChannels={setSelectedChannels}
                 channels={availableChannels}
+                translations={translations}
               />
               <div className="flex items-center pt-5">
                 <Checkbox

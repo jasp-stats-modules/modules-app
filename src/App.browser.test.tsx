@@ -384,25 +384,37 @@ describe('App component', () => {
         .toBeInTheDocument();
     });
 
-    test('renders jaspAnova name in Dutch', async () => {
-      const jaspAnovaCard = screen.getByRole('listitem', {
-        name: 'Mijn Anova Module',
+    describe('renders jaspAnova', () => {
+      let jaspAnovaCard: Locator;
+      beforeEach(async () => {
+        jaspAnovaCard = screen.getByRole('listitem', {
+          name: 'Mijn Anova Module',
+        });
+        await expect.element(jaspAnovaCard).toBeInTheDocument();
       });
-      await expect.element(jaspAnovaCard).toBeInTheDocument();
 
-      await expect
-        .element(jaspAnovaCard.getByText('Mijn Anova Module'))
-        .toBeInTheDocument();
+      test(' name in Dutch', async () => {
+        await expect
+          .element(jaspAnovaCard.getByText('Mijn Anova Module'))
+          .toBeInTheDocument();
+      });
+
+      test('description in Dutch', async () => {
+        await expect
+          .element(jaspAnovaCard.getByText('Test Module 1 in Nederlands'))
+          .toBeInTheDocument();
+      });
+
+      test('channel in Dutch', async () => {
+        await expect
+          .element(jaspAnovaCard.getByText('officieel'))
+          .toBeInTheDocument();
+      });
     });
 
-    test('renders jaspAnova description in Dutch', async () => {
-      const jaspAnovaCard = screen.getByRole('listitem', {
-        name: 'Mijn Anova Module',
-      });
-      await expect.element(jaspAnovaCard).toBeInTheDocument();
-
+    test('Official channel checkbox label is in Dutch', async () => {
       await expect
-        .element(jaspAnovaCard.getByText('Test Module 1 in Nederlands'))
+        .element(screen.getByLabelText('Officieel'))
         .toBeInTheDocument();
     });
   });
