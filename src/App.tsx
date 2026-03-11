@@ -591,7 +591,7 @@ function ActionsButton({
   translations: AppTranslations;
 }) {
   if (actions.length === 0) {
-    return <div>{translations.latest_version_installed}</div>;
+    return <div>{translations.up_to_date}</div>;
   }
 
   const mainAction = actions[0];

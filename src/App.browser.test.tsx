@@ -178,9 +178,7 @@ describe('App component', () => {
     });
 
     test('say installed', async () => {
-      const installedText = jaspAnovaCard.getByText(
-        'Latest version is installed',
-      );
+      const installedText = jaspAnovaCard.getByText('Up to date');
       await expect.element(installedText).toBeInTheDocument();
     });
 
