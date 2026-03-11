@@ -5,6 +5,8 @@ on:
   push:
     branches:
       - main
+  schedule:
+    - cron: '0 14 * * *'
   workflow_dispatch:
     inputs:
       second_scrape:
