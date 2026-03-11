@@ -23,6 +23,7 @@ import infoButton from './info-button.png';
 import {
   type AnyAction,
   type DowngradePreReleaseAction,
+  type DowngradeStableAction,
   findReleaseThatSatisfiesInstalledJaspVersion,
   type InstallPreReleaseAction,
   type InstallStableAction,
@@ -34,9 +35,9 @@ import {
   type UpdatePreReleaseAction,
   type UpdateStableAction,
 } from './releaseStats';
+import { statsLine } from './statsLine';
+import type { AppTranslations } from './translations';
 import { useInfo } from './useInfo';
-
-type AppTranslations = ReturnType<typeof useIntlayer<'app'>>;
 
 const defaultChannel = 'Official';
 const defaultCatalog = 'index.json';
@@ -334,6 +335,32 @@ function DowngradePreReleaseButton({
   );
 }
 
+function DowngradeStableButton({
+  action,
+  translations,
+}: {
+  action: DowngradeStableAction;
+  translations: AppTranslations;
+}) {
+  const { downgrade, action_version_from_to_title } = translations;
+  return (
+    <a
+      href={action.asset.downloadUrl}
+      data-slot="button"
+      title={
+        action_version_from_to_title({
+          action: downgrade.value,
+          from: action.from,
+          to: action.to,
+        }).value
+      }
+      className={buttonVariants({ variant: 'secondary' })}
+    >
+      {downgrade}
+    </a>
+  );
+}
+
 function UninstallButton({
   action,
   translations,
@@ -426,6 +453,11 @@ function ActionButton({
   if (action.type === 'downgrade-pre-release') {
     return (
       <DowngradePreReleaseButton action={action} translations={translations} />
+    );
+  }
+  if (action.type === 'downgrade-stable') {
+    return (
+      <DowngradeStableButton action={action} translations={translations} />
     );
   }
   return null;
@@ -532,6 +564,22 @@ function ActionMenuItem({
       </DropdownMenuLinkItem>
     );
   }
+  if (action.type === 'downgrade-stable') {
+    return (
+      <DropdownMenuLinkItem
+        href={action.asset.downloadUrl}
+        title={
+          action_version_from_to_title({
+            action: translations.downgrade.value,
+            from: action.from,
+            to: action.to,
+          }).value
+        }
+      >
+        {translations.downgrade}
+      </DropdownMenuLinkItem>
+    );
+  }
   return null;
 }
 
@@ -543,7 +591,7 @@ function ActionsButton({
   translations: AppTranslations;
 }) {
   if (actions.length === 0) {
-    return <div>{translations.latest_version_installed}</div>;
+    return <div>{translations.up_to_date}</div>;
   }
 
   const mainAction = actions[0];
@@ -590,13 +638,6 @@ function ActionsButton({
   return <ActionButton action={mainAction} translations={translations} />;
 }
 
-function totalDownloads(release: Release): number {
-  return release.assets.reduce(
-    (sum, asset) => sum + (asset.downloadCount ?? 0),
-    0,
-  );
-}
-
 export function ReleaseStatsLine({
   installedVersion,
   latestStableRelease,
@@ -612,69 +653,20 @@ export function ReleaseStatsLine({
   latestVersionIs?: ReleaseStats['latestVersionIs'];
   translations: AppTranslations;
 }) {
-  const {
-    by_maintainer,
-    installed_version,
-    latest_installed_version,
-    latest_version_on_with_downloads,
-    latest_beta_version_on_with_downloads,
-    latest_stable_and_beta_with_downloads,
-  } = translations;
+  const { by_maintainer } = translations;
+  const stats = statsLine({
+    installedVersion,
+    latestStableRelease,
+    latestPreRelease,
+    latestVersionIs,
+    translations,
+  });
   return (
     <div className="flex flex-row justify-between text-muted-foreground text-sm">
-      <div>
-        {latestVersionIs &&
-          latestVersionIs !== 'installed' &&
-          installedVersion && (
-            <span>{installed_version({ version: installedVersion })}, </span>
-          )}
-        {latestVersionIs === 'installed' && installedVersion && (
-          <span>
-            {latest_installed_version({ version: installedVersion })}{' '}
-          </span>
-        )}
-        {latestVersionIs === 'stable' &&
-          latestStableRelease &&
-          !latestPreRelease && (
-            <span>
-              {latest_version_on_with_downloads({
-                latestVersion: latestStableRelease.version,
-                publishedAt: new Date(
-                  latestStableRelease.publishedAt,
-                ).toLocaleDateString(),
-                downloads: totalDownloads(latestStableRelease),
-              })}
-            </span>
-          )}
-        {latestVersionIs === 'pre-release' &&
-          !latestStableRelease &&
-          latestPreRelease && (
-            <span>
-              {latest_beta_version_on_with_downloads({
-                latestVersion: latestPreRelease.version,
-                publishedAt: new Date(
-                  latestPreRelease.publishedAt,
-                ).toLocaleDateString(),
-                downloads: totalDownloads(latestPreRelease),
-              })}
-            </span>
-          )}
-        {latestStableRelease && latestPreRelease && (
-          <span>
-            {latest_stable_and_beta_with_downloads({
-              latestVersion: latestStableRelease.version,
-              publishedAt: new Date(
-                latestStableRelease.publishedAt,
-              ).toLocaleDateString(),
-              latestBetaVersion: latestPreRelease.version,
-              latestBetaPublishedAt: new Date(
-                latestPreRelease.publishedAt,
-              ).toLocaleDateString(),
-              downloads: totalDownloads(latestStableRelease),
-              betaDownloads: totalDownloads(latestPreRelease),
-            })}
-          </span>
-        )}
+      <div className="flex flex-col">
+        {stats.map((line, index) => (
+          <div key={`${index}-${line}`}>{line}</div>
+        ))}
       </div>
       <div>{by_maintainer({ maintainer })}</div>
     </div>
@@ -868,14 +860,14 @@ function getInstallableReleaseStatsFromRepository(
     return [];
   }
   return [
-    resolveReleaseStats(
-      repo,
-      info.version,
+    resolveReleaseStats(repo, {
+      installedJaspVersion: info.version,
       allowPreRelease,
-      info.arch,
-      info.installedModules,
-      info.uninstallableModules,
-    ),
+      arch: info.arch,
+      installedModules: info.installedModules,
+      uninstallableModules: info.uninstallableModules,
+      insideQt,
+    }),
   ];
 }
 

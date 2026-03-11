@@ -147,11 +147,10 @@ describe('App component', () => {
       await input.fill('jaspAnova');
 
       await expect
-        .element(
-          screen.getByText(
-            /Installed 0\.95\.4-release\.0, Latest 0\.95\.5-release\.0/i,
-          ),
-        )
+        .element(screen.getByText(/Installed 0\.95\.4-release\.0/i))
+        .toBeInTheDocument();
+      await expect
+        .element(screen.getByText(/Latest 0\.95\.5-release\.0/i))
         .toBeInTheDocument();
     });
   });
@@ -178,9 +177,7 @@ describe('App component', () => {
     });
 
     test('say installed', async () => {
-      const installedText = jaspAnovaCard.getByText(
-        'Latest version is installed',
-      );
+      const installedText = jaspAnovaCard.getByText('Up to date');
       await expect.element(installedText).toBeInTheDocument();
     });
 
@@ -245,12 +242,12 @@ describe('App component', () => {
         .not.toBeInTheDocument();
     });
 
-    test('Should say installed outside qt', async () => {
+    test('Should show downgrade button', async () => {
       const jaspAnovaCard = screen.getByRole('listitem', { name: 'jaspAnova' });
       await expect.element(jaspAnovaCard).toBeInTheDocument();
 
       await expect
-        .element(jaspAnovaCard.getByText('Latest version is installed'))
+        .element(jaspAnovaCard.getByRole('link', { name: 'Downgrade' }))
         .toBeInTheDocument();
     });
   });
