@@ -147,11 +147,10 @@ describe('App component', () => {
       await input.fill('jaspAnova');
 
       await expect
-        .element(
-          screen.getByText(
-            /Installed 0\.95\.4-release\.0, Latest 0\.95\.5-release\.0/i,
-          ),
-        )
+        .element(screen.getByText(/Installed 0\.95\.4-release\.0/i))
+        .toBeInTheDocument();
+      await expect
+        .element(screen.getByText(/Latest 0\.95\.5-release\.0/i))
         .toBeInTheDocument();
     });
   });
