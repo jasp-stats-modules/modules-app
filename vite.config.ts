@@ -36,7 +36,12 @@ export default defineConfig({
           include: ['src/**/*.browser.{test,spec}.ts?(x)'],
           browser: {
             enabled: true,
-            provider: playwright(),
+            provider: playwright({
+              contextOptions: {
+                locale: 'en-US',
+                timezoneId: 'UTC',
+              },
+            }),
             // https://vitest.dev/guide/browser/playwright
             instances: [{ browser: 'chromium' }],
           },
