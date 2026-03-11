@@ -653,7 +653,7 @@ const appContent = {
     }),
     latest_stable_label: t({
       en: 'Latest stable',
-      nl: 'Laatste stable',
+      nl: 'Laatste stabiel',
       fr: 'Dernière stable',
       de: 'Neueste stabile',
       es: 'Última estable',
