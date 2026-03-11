@@ -18,9 +18,11 @@ import {
 import type { GqlRelease } from './scrape';
 import {
   batchedArray,
+  detectMissingArchitectures,
   extractArchitectureFromUrl,
   extractBareSubmodules,
   extractTranslationsFromPoFiles,
+  findOlderReleaseWithArchitecture,
   groupByChannel,
   latestReleasePerJaspVersionRange,
   logBareRepoStats,
@@ -31,13 +33,13 @@ import {
   parseDescriptionQml,
   parseReleaseFrontMatter,
   path2channel,
-  releaseAssetsPaged,
+  releaseAssets,
   resolveHomepageUrl,
   transformRelease,
   url2nameWithOwner,
   versionFromTagName,
 } from './scrape';
-import type { BareRepository, Repository, Submodule } from './types';
+import type { BareRepository, Release, Repository, Submodule } from './types';
 
 describe('url2nameWithOwner', () => {
   test('extracts owner and repo from GitHub URL', () => {
@@ -198,7 +200,7 @@ describe('latestReleasePerJaspVersionRange', () => {
     expect(result).toEqual([]);
   });
 
-  test('skips releases with not enough assets', () => {
+  test('keeps latest release even with not enough assets', () => {
     const input: GqlRelease[] = [
       {
         isDraft: false,
@@ -211,7 +213,57 @@ describe('latestReleasePerJaspVersionRange', () => {
     ];
 
     const result = latestReleasePerJaspVersionRange(input, 1);
-    expect(result).toEqual([]);
+    expect(result).toEqual([input[0]]);
+  });
+
+  test('appends older release that fills missing architecture', () => {
+    const input: GqlRelease[] = [
+      {
+        isDraft: false,
+        isPrerelease: false,
+        publishedAt: '2025-01-02T00:00:00Z',
+        releaseAssets: {
+          nodes: [
+            {
+              downloadUrl:
+                'https://example.com/jaspAnova_1.2.0_MacOS_x86_64_R-4-5-1.JASPModule',
+              downloadCount: 10,
+            },
+            {
+              downloadUrl:
+                'https://example.com/jaspAnova_1.2.0_MacOS_arm64_R-4-5-1.JASPModule',
+              downloadCount: 10,
+            },
+            {
+              downloadUrl:
+                'https://example.com/jaspAnova_1.2.0_Flatpak_x86_64_R-4-5-1.JASPModule',
+              downloadCount: 10,
+            },
+          ],
+        },
+        tagName: '1.2.0_abcdef_R-4-5-1',
+        description: '---\njasp: >=0.95.0\n---\n',
+      },
+      {
+        isDraft: false,
+        isPrerelease: false,
+        publishedAt: '2025-01-01T00:00:00Z',
+        releaseAssets: {
+          nodes: [
+            {
+              downloadUrl:
+                'https://example.com/jaspAnova_1.1.0_Windows_x86-64_R-4-5-1.JASPModule',
+              downloadCount: 20,
+            },
+          ],
+        },
+        tagName: '1.1.0_123456_R-4-5-1',
+        description: '---\njasp: >=0.95.0\n---\n',
+      },
+    ];
+
+    const result = latestReleasePerJaspVersionRange(input, 4);
+    expect(result).toEqual([input[0], input[1]]);
   });
 });
 
@@ -361,7 +413,7 @@ describe('transformRelease', () => {
   });
 });
 
-describe('releaseAssetsPaged', () => {
+describe('releaseAssets', () => {
   const MyOctokit = Octokit.plugin(paginateGraphQL);
   const server = setupServer();
 
@@ -372,11 +424,11 @@ describe('releaseAssetsPaged', () => {
   test('fetches release assets for repositories', async () => {
     server.use(
       graphql.operation(({ query }) => {
-        // Match queries with 'repo0:' (releaseAssets queries)
-        if (query.includes('repo0:')) {
+        // Match queries with 'repository(' (releaseAssets queries)
+        if (query.includes('repository(')) {
           return HttpResponse.json({
             data: {
-              repo0: {
+              repository: {
                 name: 'jaspAnova',
                 nameWithOwner: 'jasp-stats-modules/jaspAnova',
                 parent: {
@@ -425,7 +477,7 @@ describe('releaseAssetsPaged', () => {
       },
     ];
 
-    const result = await releaseAssetsPaged(bareRepos, 1, 10, octokit);
+    const result = await releaseAssets(bareRepos, 1, 20, 20, octokit);
 
     expect(result).toEqual(
       expect.arrayContaining([
@@ -461,10 +513,10 @@ describe('releaseAssetsPaged', () => {
   test('filters out repositories with no releases', async () => {
     server.use(
       graphql.operation(({ query }) => {
-        if (query.includes('repo0:')) {
+        if (query.includes('repository(')) {
           return HttpResponse.json({
             data: {
-              repo0: {
+              repository: {
                 name: 'jaspAnova',
                 nameWithOwner: 'jasp-stats-modules/jaspAnova',
                 parent: {
@@ -496,7 +548,7 @@ describe('releaseAssetsPaged', () => {
       },
     ];
 
-    const result = await releaseAssetsPaged(bareRepos, 1, 10, octokit);
+    const result = await releaseAssets(bareRepos, 1, 20, 20, octokit);
 
     expect(result).toHaveLength(0);
   });
@@ -504,10 +556,10 @@ describe('releaseAssetsPaged', () => {
   test('separates production and pre-releases', async () => {
     server.use(
       graphql.operation(({ query }) => {
-        if (query.includes('repo0:')) {
+        if (query.includes('repository(')) {
           return HttpResponse.json({
             data: {
-              repo0: {
+              repository: {
                 name: 'jaspAnova',
                 nameWithOwner: 'jasp-stats-modules/jaspAnova',
                 parent: {
@@ -572,7 +624,7 @@ describe('releaseAssetsPaged', () => {
       },
     ];
 
-    const result = await releaseAssetsPaged(bareRepos, 1, 10, octokit);
+    const result = await releaseAssets(bareRepos, 1, 20, 20, octokit);
 
     expect(result).toEqual(
       expect.arrayContaining([
@@ -622,10 +674,10 @@ describe('releaseAssetsPaged', () => {
   test('keeps homepageUrl from bare repository metadata', async () => {
     server.use(
       graphql.operation(({ query }) => {
-        if (query.includes('repo0:')) {
+        if (query.includes('repository(')) {
           return HttpResponse.json({
             data: {
-              repo0: {
+              repository: {
                 name: 'jaspAnova',
                 nameWithOwner: 'jasp-stats-modules/jaspAnova',
                 parent: {
@@ -675,7 +727,7 @@ describe('releaseAssetsPaged', () => {
       },
     ];
 
-    const result = await releaseAssetsPaged(bareRepos, 1, 10, octokit);
+    const result = await releaseAssets(bareRepos, 1, 20, 20, octokit);
 
     expect(result).toEqual(
       expect.arrayContaining([
@@ -705,10 +757,10 @@ describe('releaseAssetsPaged', () => {
   test('uses parent repository for homepage fallback when homepage is missing', async () => {
     server.use(
       graphql.operation(({ query }) => {
-        if (query.includes('repo0:')) {
+        if (query.includes('repository(')) {
           return HttpResponse.json({
             data: {
-              repo0: {
+              repository: {
                 name: 'jaspSyntheticData',
                 nameWithOwner: 'jasp-stats-modules/jaspSyntheticData',
                 parent: {
@@ -757,7 +809,7 @@ describe('releaseAssetsPaged', () => {
       },
     ];
 
-    const result = await releaseAssetsPaged(bareRepos, 1, 10, octokit);
+    const result = await releaseAssets(bareRepos, 1, 20, 20, octokit);
 
     expect(result).toEqual(
       expect.arrayContaining([
@@ -773,10 +825,10 @@ describe('releaseAssetsPaged', () => {
   test('handles missing parent organization', async () => {
     server.use(
       graphql.operation(({ query }) => {
-        if (query.includes('repo0:')) {
+        if (query.includes('repository(')) {
           return HttpResponse.json({
             data: {
-              repo0: {
+              repository: {
                 name: 'jaspAnova',
                 nameWithOwner: 'jasp-stats-modules/jaspAnova',
                 releases: {
@@ -819,7 +871,7 @@ describe('releaseAssetsPaged', () => {
       },
     ];
 
-    const result = await releaseAssetsPaged(bareRepos, 1, 10, octokit);
+    const result = await releaseAssets(bareRepos, 1, 20, 20, octokit);
 
     expect(result).toEqual(
       expect.arrayContaining([
@@ -852,63 +904,108 @@ describe('releaseAssetsPaged', () => {
     );
   });
 
-  test('batches repositories correctly', async () => {
+  test('stops pagination early when latest release is already complete', async () => {
     let callCount = 0;
 
     server.use(
       graphql.operation(({ query }) => {
+        if (!query.includes('repository(')) {
+          return HttpResponse.json({ data: {} });
+        }
+
         callCount++;
-        if (query.includes('jaspAnova')) {
+        return HttpResponse.json({
+          data: {
+            repository: {
+              name: 'jaspAnova',
+              nameWithOwner: 'jasp-stats-modules/jaspAnova',
+              parent: {
+                nameWithOwner: 'jasp-stats-modules/jaspAnova',
+                owner: { login: 'jasp-stats-modules' },
+              },
+              releases: {
+                nodes: [
+                  {
+                    tagName: '1.2.0_abcdef_R-4-5-1',
+                    publishedAt: '2025-01-02T00:00:00Z',
+                    description: '---\njasp: >=0.95.0\n---\n',
+                    isDraft: false,
+                    isPrerelease: false,
+                    releaseAssets: {
+                      nodes: [
+                        {
+                          downloadUrl:
+                            'https://example.com/jaspAnova_1.2.0_MacOS_x86_64_R-4-5-1.JASPModule',
+                          downloadCount: 1,
+                        },
+                        {
+                          downloadUrl:
+                            'https://example.com/jaspAnova_1.2.0_MacOS_arm64_R-4-5-1.JASPModule',
+                          downloadCount: 1,
+                        },
+                        {
+                          downloadUrl:
+                            'https://example.com/jaspAnova_1.2.0_Windows_x86-64_R-4-5-1.JASPModule',
+                          downloadCount: 1,
+                        },
+                        {
+                          downloadUrl:
+                            'https://example.com/jaspAnova_1.2.0_Flatpak_x86_64_R-4-5-1.JASPModule',
+                          downloadCount: 1,
+                        },
+                      ],
+                    },
+                  },
+                ],
+                pageInfo: {
+                  hasNextPage: true,
+                  endCursor: 'cursor-1',
+                },
+              },
+            },
+          },
+        });
+      }),
+    );
+
+    const octokit = new MyOctokit({ auth: 'fake-token' });
+    const bareRepos: BareRepository[] = [
+      {
+        id: 'jaspAnova',
+        channels: ['Official'],
+        releaseSource: 'jasp-stats-modules/jaspAnova',
+        name: 'jaspAnova',
+        description: 'Anova module',
+        translations: {},
+      },
+    ];
+
+    const result = await releaseAssets(bareRepos, 4, 20, 20, octokit);
+
+    expect(result).toHaveLength(1);
+    expect(callCount).toBe(1);
+  });
+
+  test('stops right after missing architecture is found on later page', async () => {
+    server.use(
+      graphql.operation(({ query }) => {
+        if (!query.includes('repository(')) {
+          return HttpResponse.json({ data: {} });
+        }
+        if (!query.includes('after: ')) {
           return HttpResponse.json({
             data: {
-              repo0: {
+              repository: {
                 name: 'jaspAnova',
                 nameWithOwner: 'jasp-stats-modules/jaspAnova',
                 parent: {
                   nameWithOwner: 'jasp-stats-modules/jaspAnova',
-                  owner: {
-                    login: 'jasp-stats-modules',
-                  },
+                  owner: { login: 'jasp-stats-modules' },
                 },
                 releases: {
                   nodes: [
                     {
-                      tagName: '0.95.0-release.0_2cbd8a6d_R-4-5-1',
-                      publishedAt: '2025-01-01T00:00:00Z',
-                      description: '---\njasp: >=0.95.0\n---\n',
-                      isDraft: false,
-                      isPrerelease: false,
-                      releaseAssets: {
-                        nodes: [
-                          {
-                            downloadUrl:
-                              'https://example.com/jaspAnova_0.95.0_MacOS_x86_64_R-4-5-1.JASPModule',
-                            downloadCount: 100,
-                          },
-                        ],
-                      },
-                    },
-                  ],
-                },
-              },
-            },
-          });
-        } else if (query.includes('jaspBain')) {
-          return HttpResponse.json({
-            data: {
-              repo0: {
-                name: 'jaspBain',
-                nameWithOwner: 'jasp-stats-modules/jaspBain',
-                parent: {
-                  nameWithOwner: 'jasp-stats-modules/jaspBain',
-                  owner: {
-                    login: 'jasp-stats-modules',
-                  },
-                },
-                releases: {
-                  nodes: [
-                    {
-                      tagName: '0.95.0-release.0_xyz789_R-4-5-1',
+                      tagName: '1.2.0-release_R-4-5-1',
                       publishedAt: '2025-01-02T00:00:00Z',
                       description: '---\njasp: >=0.95.0\n---\n',
                       isDraft: false,
@@ -917,13 +1014,65 @@ describe('releaseAssetsPaged', () => {
                         nodes: [
                           {
                             downloadUrl:
-                              'https://example.com/jaspBain_0.95.0_MacOS_x86_64_R-4-5-1.JASPModule',
-                            downloadCount: 80,
+                              'https://example.com/jaspAnova_1.2.0_MacOS_x86_64_R-4-5-1.JASPModule',
+                            downloadCount: 1,
+                          },
+                          {
+                            downloadUrl:
+                              'https://example.com/jaspAnova_1.2.0_MacOS_arm64_R-4-5-1.JASPModule',
+                            downloadCount: 1,
+                          },
+                          {
+                            downloadUrl:
+                              'https://example.com/jaspAnova_1.2.0_Flatpak_x86_64_R-4-5-1.JASPModule',
+                            downloadCount: 1,
                           },
                         ],
                       },
                     },
                   ],
+                  pageInfo: {
+                    hasNextPage: true,
+                    endCursor: 'cursor-1',
+                  },
+                },
+              },
+            },
+          });
+        }
+        if (query.includes('after: "cursor-1"')) {
+          return HttpResponse.json({
+            data: {
+              repository: {
+                name: 'jaspAnova',
+                nameWithOwner: 'jasp-stats-modules/jaspAnova',
+                parent: {
+                  nameWithOwner: 'jasp-stats-modules/jaspAnova',
+                  owner: { login: 'jasp-stats-modules' },
+                },
+                releases: {
+                  nodes: [
+                    {
+                      tagName: '1.1.0_123456_R-4-5-1',
+                      publishedAt: '2025-01-01T00:00:00Z',
+                      description: '---\njasp: >=0.95.0\n---\n',
+                      isDraft: false,
+                      isPrerelease: false,
+                      releaseAssets: {
+                        nodes: [
+                          {
+                            downloadUrl:
+                              'https://example.com/jaspAnova_1.1.0_Windows_x86-64_R-4-5-1.JASPModule',
+                            downloadCount: 1,
+                          },
+                        ],
+                      },
+                    },
+                  ],
+                  pageInfo: {
+                    hasNextPage: false,
+                    endCursor: 'cursor-2',
+                  },
                 },
               },
             },
@@ -936,63 +1085,19 @@ describe('releaseAssetsPaged', () => {
     const octokit = new MyOctokit({ auth: 'fake-token' });
     const bareRepos: BareRepository[] = [
       {
-        channels: ['Official'],
         id: 'jaspAnova',
+        channels: ['Official'],
         releaseSource: 'jasp-stats-modules/jaspAnova',
         name: 'jaspAnova',
         description: 'Anova module',
         translations: {},
       },
-      {
-        channels: ['Official'],
-        id: 'jaspBain',
-        releaseSource: 'jasp-stats-modules/jaspBain',
-        name: 'jaspBain',
-        description: 'Bain module',
-        translations: {},
-      },
     ];
 
-    const result = await releaseAssetsPaged(bareRepos, 1, 1, octokit);
+    const result = await releaseAssets(bareRepos, 4, 1, 1, octokit);
 
-    expect(result).toEqual(
-      expect.arrayContaining([
-        expect.objectContaining({
-          id: 'jaspAnova',
-          name: 'jaspAnova',
-          releaseSource: 'jasp-stats-modules/jaspAnova',
-          channels: ['Official'],
-          description: 'Anova module',
-          organization: 'jasp-stats-modules',
-          translations: {},
-          releases: expect.arrayContaining([
-            expect.objectContaining({
-              version: '0.95.0-release.0',
-              publishedAt: '2025-01-01T00:00:00Z',
-            }),
-          ]),
-          preReleases: [],
-        }),
-        expect.objectContaining({
-          id: 'jaspBain',
-          name: 'jaspBain',
-          releaseSource: 'jasp-stats-modules/jaspBain',
-          channels: ['Official'],
-          description: 'Bain module',
-          organization: 'jasp-stats-modules',
-          translations: {},
-          releases: expect.arrayContaining([
-            expect.objectContaining({
-              version: '0.95.0-release.0',
-              publishedAt: '2025-01-02T00:00:00Z',
-            }),
-          ]),
-          preReleases: [],
-        }),
-      ]),
-    );
-    // With pageSize=1, should make at least 2 calls
-    expect(callCount).toBeGreaterThanOrEqual(2);
+    expect(result).toHaveLength(1);
+    expect(result[0].releases).toHaveLength(2);
   });
 });
 
@@ -1759,4 +1864,178 @@ test('logBareRepoStats', () => {
     'Average number of translations per submodule: 1',
   ].join('\n');
   expect(result).toEqual(expected);
+});
+
+describe('detectMissingArchitectures', () => {
+  test('detects missing architectures from a release with partial assets', () => {
+    const release: Release = {
+      version: '1.0.0',
+      publishedAt: '2025-01-01T00:00:00Z',
+      jaspVersionRange: '>=0.95.0',
+      assets: [
+        {
+          downloadUrl: 'https://example.com/module-Windows_x86-64.JASPModule',
+          downloadCount: 10,
+          architecture: 'Windows_x86-64',
+        },
+        {
+          downloadUrl: 'https://example.com/module-MacOS_arm64.JASPModule',
+          downloadCount: 5,
+          architecture: 'MacOS_arm64',
+        },
+      ],
+    };
+
+    const missing = detectMissingArchitectures(release);
+    expect(missing).toEqual(['MacOS_x86_64', 'Flatpak_x86_64']);
+  });
+
+  test('returns empty array when all architectures are present', () => {
+    const release: Release = {
+      version: '1.0.0',
+      publishedAt: '2025-01-01T00:00:00Z',
+      jaspVersionRange: '>=0.95.0',
+      assets: [
+        {
+          downloadUrl: 'https://example.com/module-Windows_x86-64.JASPModule',
+          downloadCount: 10,
+          architecture: 'Windows_x86-64',
+        },
+        {
+          downloadUrl: 'https://example.com/module-MacOS_x86_64.JASPModule',
+          downloadCount: 8,
+          architecture: 'MacOS_x86_64',
+        },
+        {
+          downloadUrl: 'https://example.com/module-MacOS_arm64.JASPModule',
+          downloadCount: 5,
+          architecture: 'MacOS_arm64',
+        },
+        {
+          downloadUrl: 'https://example.com/module-Flatpak_x86_64.JASPModule',
+          downloadCount: 3,
+          architecture: 'Flatpak_x86_64',
+        },
+      ],
+    };
+
+    const missing = detectMissingArchitectures(release);
+    expect(missing).toEqual([]);
+  });
+});
+
+describe('findOlderReleaseWithArchitecture', () => {
+  test('finds older release with specific architecture in same version range', () => {
+    const releases: Release[] = [
+      {
+        version: '1.2.0',
+        publishedAt: '2025-01-03T00:00:00Z',
+        jaspVersionRange: '>=0.95.0',
+        assets: [
+          {
+            downloadUrl: 'https://example.com/module-Windows_x86-64.JASPModule',
+            downloadCount: 10,
+            architecture: 'Windows_x86-64',
+          },
+        ],
+      },
+      {
+        version: '1.1.0',
+        publishedAt: '2025-01-02T00:00:00Z',
+        jaspVersionRange: '>=0.95.0',
+        assets: [
+          {
+            downloadUrl: 'https://example.com/module-Windows_x86-64.JASPModule',
+            downloadCount: 8,
+            architecture: 'Windows_x86-64',
+          },
+          {
+            downloadUrl: 'https://example.com/module-Flatpak_x86_64.JASPModule',
+            downloadCount: 5,
+            architecture: 'Flatpak_x86_64',
+          },
+        ],
+      },
+      {
+        version: '1.0.0',
+        publishedAt: '2025-01-01T00:00:00Z',
+        jaspVersionRange: '>=0.95.0',
+        assets: [
+          {
+            downloadUrl: 'https://example.com/module-Flatpak_x86_64.JASPModule',
+            downloadCount: 3,
+            architecture: 'Flatpak_x86_64',
+          },
+        ],
+      },
+    ];
+
+    const older = findOlderReleaseWithArchitecture(
+      '>=0.95.0',
+      'Flatpak_x86_64',
+      releases,
+    );
+    expect(older?.version).toBe('1.1.0');
+  });
+
+  test('returns undefined when no older release has the architecture', () => {
+    const releases: Release[] = [
+      {
+        version: '1.0.0',
+        publishedAt: '2025-01-01T00:00:00Z',
+        jaspVersionRange: '>=0.95.0',
+        assets: [
+          {
+            downloadUrl: 'https://example.com/module-Windows_x86-64.JASPModule',
+            downloadCount: 10,
+            architecture: 'Windows_x86-64',
+          },
+        ],
+      },
+    ];
+
+    const older = findOlderReleaseWithArchitecture(
+      '>=0.95.0',
+      'Flatpak_x86_64',
+      releases,
+    );
+    expect(older).toBeUndefined();
+  });
+
+  test('respects version range boundaries', () => {
+    const releases: Release[] = [
+      {
+        version: '2.0.0',
+        publishedAt: '2025-01-02T00:00:00Z',
+        jaspVersionRange: '>=0.95.0',
+        assets: [
+          {
+            downloadUrl: 'https://example.com/module-Flatpak_x86_64.JASPModule',
+            downloadCount: 10,
+            architecture: 'Flatpak_x86_64',
+          },
+        ],
+      },
+      {
+        version: '1.0.0',
+        publishedAt: '2025-01-01T00:00:00Z',
+        jaspVersionRange: '>=0.98.0',
+        assets: [
+          {
+            downloadUrl: 'https://example.com/module-Flatpak_x86_64.JASPModule',
+            downloadCount: 8,
+            architecture: 'Flatpak_x86_64',
+          },
+        ],
+      },
+    ];
+
+    // Should not find v1.0.0 because it's a different version range
+    const older = findOlderReleaseWithArchitecture(
+      '>=0.95.0',
+      'Flatpak_x86_64',
+      releases,
+    );
+    expect(older?.version).toBe('2.0.0');
+  });
 });
