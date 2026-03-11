@@ -935,6 +935,7 @@ function getTranslatedChannel(
 ): string {
   const key = channel as keyof AppTranslations;
   const translation = translations[key];
+  // This check is a bit brittle, but intlayer uses proxies which are hard to check
   if (translation) {
     return (translation as { value: string }).value;
   }
@@ -1111,9 +1112,9 @@ function InfoButton({
     },
   });
 
-  const markdownMentionsAllChannels = channels.every((ch) =>
-    infoMarkdown.value.includes(ch),
-  );
+  const markdownMentionsAllChannels = channels
+    .map((c) => getTranslatedChannel(c, translations))
+    .every((ch) => infoMarkdown.value.includes(ch));
   if (!markdownMentionsAllChannels) {
     console.warn(
       'Not all channels are mentioned in the information panel. Please update text.',
