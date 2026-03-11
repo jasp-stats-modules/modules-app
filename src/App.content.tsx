@@ -651,288 +651,175 @@ const appContent = {
         '最新 {{latestVersion}} 於 {{publishedAt}}，下載次數 {{downloads}}',
       ),
     }),
-    latest_beta_version_on_with_downloads: t({
-      en: insert(
-        'Latest beta {{latestVersion}} on {{publishedAt}} with {{downloads}} downloads',
-      ),
-      nl: insert(
-        'Laatste beta {{latestVersion}} op {{publishedAt}} met {{downloads}} downloads',
-      ),
-      fr: insert(
-        'Dernière bêta {{latestVersion}} le {{publishedAt}} avec {{downloads}} téléchargements',
-      ),
-      de: insert(
-        'Neueste Beta {{latestVersion}} am {{publishedAt}} mit {{downloads}} Downloads',
-      ),
-      es: insert(
-        'Última beta {{latestVersion}} el {{publishedAt}} con {{downloads}} descargas',
-      ),
-      it: insert(
-        'Ultima beta {{latestVersion}} il {{publishedAt}} con {{downloads}} download',
-      ),
-      ar: insert(
-        'أحدث إصدار تجريبي {{latestVersion}} في {{publishedAt}} مع {{downloads}} تنزيلات',
-      ),
-      cs: insert(
-        'Nejnovější beta {{latestVersion}} dne {{publishedAt}} s {{downloads}} staženími',
-      ),
-      et: insert(
-        'Viimane beetaversioon {{latestVersion}} kuupäeval {{publishedAt}} koos {{downloads}} allalaadimisega',
-      ),
-      eu: insert(
-        'Azken beta {{latestVersion}} {{publishedAt}}an {{downloads}} deskarga',
-      ),
-      gl: insert(
-        'Última beta {{latestVersion}} o {{publishedAt}} con {{downloads}} descargas',
-      ),
-      hu: insert(
-        'Legújabb béta: {{latestVersion}} ekkor: {{publishedAt}}, letöltések száma: {{downloads}}',
-      ),
-      id: insert(
-        'Beta terbaru {{latestVersion}} pada {{publishedAt}} dengan {{downloads}} unduhan',
-      ),
-      ja: insert(
-        '最新ベータ {{latestVersion}}（{{publishedAt}}、{{downloads}} ダウンロード）',
-      ),
-      lt: insert(
-        'Naujausia beta {{latestVersion}} {{publishedAt}} su {{downloads}} atsisiuntimų',
-      ),
-      pl: insert(
-        'Najnowsza beta {{latestVersion}} w dniu {{publishedAt}} z {{downloads}} pobrań',
-      ),
-      pt: insert(
-        'Última beta {{latestVersion}} em {{publishedAt}} com {{downloads}} downloads',
-      ),
-      ru: insert(
-        'Последняя бета {{latestVersion}} от {{publishedAt}}, {{downloads}} загрузок',
-      ),
-      sq: insert(
-        'Beta më e fundit {{latestVersion}} më {{publishedAt}} me {{downloads}} shkarkime',
-      ),
-      sr: insert(
-        'Najnovija beta {{latestVersion}} dana {{publishedAt}} sa {{downloads}} preuzimanja',
-      ),
-      tr: insert(
-        'En son beta {{latestVersion}} {{publishedAt}} tarihinde {{downloads}} indirme ile',
-      ),
-      'zh-Hans': insert(
-        '最新测试版 {{latestVersion}} 于 {{publishedAt}}，下载量 {{downloads}}',
-      ),
-      'zh-Hant': insert(
-        '最新測試版 {{latestVersion}} 於 {{publishedAt}}，下載次數 {{downloads}}',
-      ),
+    latest_stable_label: t({
+      en: 'Latest stable',
+      nl: 'Laatste stable',
+      fr: 'Dernière stable',
+      de: 'Neueste stabile',
+      es: 'Última estable',
+      it: 'Ultima stabile',
+      ar: 'أحدث إصدار مستقر',
+      cs: 'Nejnovější stabilní',
+      et: 'Viimane stabiilne',
+      eu: 'Azken egonkorra',
+      gl: 'Última estable',
+      hu: 'Legújabb stabil',
+      id: 'Stabil terbaru',
+      ja: '最新安定版',
+      lt: 'Naujausia stabili',
+      pl: 'Najnowsza stabilna',
+      pt: 'Última estável',
+      ru: 'Последняя стабильная',
+      sq: 'Stabile më e fundit',
+      sr: 'Najnovija stabilna',
+      tr: 'En son kararlı',
+      'zh-Hans': '最新稳定版',
+      'zh-Hant': '最新穩定版',
     }),
-    latest_stable_and_beta_with_downloads: t({
-      en: insert(
-        'Latest stable {{latestVersion}} on {{publishedAt}} with {{downloads}} downloads, latest beta {{latestBetaVersion}} on {{latestBetaPublishedAt}} with {{betaDownloads}} downloads',
-      ),
-      nl: insert(
-        'Laatste stable {{latestVersion}} op {{publishedAt}} met {{downloads}} downloads, laatste beta {{latestBetaVersion}} op {{latestBetaPublishedAt}} met {{betaDownloads}} downloads',
-      ),
-      fr: insert(
-        'Dernière stable {{latestVersion}} le {{publishedAt}} avec {{downloads}} téléchargements, dernière bêta {{latestBetaVersion}} le {{latestBetaPublishedAt}} avec {{betaDownloads}} téléchargements',
-      ),
-      de: insert(
-        'Neueste stabile {{latestVersion}} am {{publishedAt}} mit {{downloads}} Downloads, neueste Beta {{latestBetaVersion}} am {{latestBetaPublishedAt}} mit {{betaDownloads}} Downloads',
-      ),
-      es: insert(
-        'Última estable {{latestVersion}} el {{publishedAt}} con {{downloads}} descargas, última beta {{latestBetaVersion}} el {{latestBetaPublishedAt}} con {{betaDownloads}} descargas',
-      ),
-      it: insert(
-        'Ultima stabile {{latestVersion}} il {{publishedAt}} con {{downloads}} download, ultima beta {{latestBetaVersion}} il {{latestBetaPublishedAt}} con {{betaDownloads}} download',
-      ),
-      ar: insert(
-        'أحدث إصدار مستقر {{latestVersion}} في {{publishedAt}} مع {{downloads}} تنزيلات، أحدث إصدار تجريبي {{latestBetaVersion}} في {{latestBetaPublishedAt}} مع {{betaDownloads}} تنزيلات',
-      ),
-      cs: insert(
-        'Nejnovější stabilní {{latestVersion}} dne {{publishedAt}} s {{downloads}} staženími, nejnovější beta {{latestBetaVersion}} dne {{latestBetaPublishedAt}} s {{betaDownloads}} staženími',
-      ),
-      et: insert(
-        'Viimane stabiilne {{latestVersion}} kuupäeval {{publishedAt}} koos {{downloads}} allalaadimisega, viimane beetaversioon {{latestBetaVersion}} kuupäeval {{latestBetaPublishedAt}} koos {{betaDownloads}} allalaadimisega',
-      ),
-      eu: insert(
-        'Azken egonkorra {{latestVersion}} {{publishedAt}}an {{downloads}} deskargarekin, azken beta {{latestBetaVersion}} {{latestBetaPublishedAt}}an {{betaDownloads}} deskargarekin',
-      ),
-      gl: insert(
-        'Última estable {{latestVersion}} o {{publishedAt}} con {{downloads}} descargas, última beta {{latestBetaVersion}} o {{latestBetaPublishedAt}} con {{betaDownloads}} descargas',
-      ),
-      hu: insert(
-        'Legújabb stabil: {{latestVersion}} ekkor: {{publishedAt}}, letöltések: {{downloads}}; legújabb béta: {{latestBetaVersion}} ekkor: {{latestBetaPublishedAt}}, letöltések: {{betaDownloads}}',
-      ),
-      id: insert(
-        'Stabil terbaru {{latestVersion}} pada {{publishedAt}} dengan {{downloads}} unduhan, beta terbaru {{latestBetaVersion}} pada {{latestBetaPublishedAt}} dengan {{betaDownloads}} unduhan',
-      ),
-      ja: insert(
-        '最新安定版 {{latestVersion}}（{{publishedAt}}、{{downloads}} ダウンロード）、最新ベータ {{latestBetaVersion}}（{{latestBetaPublishedAt}}、{{betaDownloads}} ダウンロード）',
-      ),
-      lt: insert(
-        'Naujausia stabili {{latestVersion}} {{publishedAt}} su {{downloads}} atsisiuntimų, naujausia beta {{latestBetaVersion}} {{latestBetaPublishedAt}} su {{betaDownloads}} atsisiuntimų',
-      ),
-      pl: insert(
-        'Najnowsza stabilna {{latestVersion}} w dniu {{publishedAt}} z {{downloads}} pobrań, najnowsza beta {{latestBetaVersion}} w dniu {{latestBetaPublishedAt}} z {{betaDownloads}} pobrań',
-      ),
-      pt: insert(
-        'Última estável {{latestVersion}} em {{publishedAt}} com {{downloads}} downloads, última beta {{latestBetaVersion}} em {{latestBetaPublishedAt}} com {{betaDownloads}} downloads',
-      ),
-      ru: insert(
-        'Последняя стабильная {{latestVersion}} от {{publishedAt}}, {{downloads}} загрузок, последняя бета {{latestBetaVersion}} от {{latestBetaPublishedAt}}, {{betaDownloads}} загрузок',
-      ),
-      sq: insert(
-        'Stabile më e fundit {{latestVersion}} më {{publishedAt}} me {{downloads}} shkarkime, beta më e fundit {{latestBetaVersion}} më {{latestBetaPublishedAt}} me {{betaDownloads}} shkarkime',
-      ),
-      sr: insert(
-        'Najnovija stabilna {{latestVersion}} dana {{publishedAt}} sa {{downloads}} preuzimanja, najnovija beta {{latestBetaVersion}} dana {{latestBetaPublishedAt}} sa {{betaDownloads}} preuzimanja',
-      ),
-      tr: insert(
-        'En son kararlı {{latestVersion}} {{publishedAt}} tarihinde {{downloads}} indirme ile, en son beta {{latestBetaVersion}} {{latestBetaPublishedAt}} tarihinde {{betaDownloads}} indirme ile',
-      ),
-      'zh-Hans': insert(
-        '最新稳定版 {{latestVersion}} 于 {{publishedAt}}，下载量 {{downloads}}，最新测试版 {{latestBetaVersion}} 于 {{latestBetaPublishedAt}}，下载量 {{betaDownloads}}',
-      ),
-      'zh-Hant': insert(
-        '最新穩定版 {{latestVersion}} 於 {{publishedAt}}，下載次數 {{downloads}}，最新測試版 {{latestBetaVersion}} 於 {{latestBetaPublishedAt}}，下載次數 {{betaDownloads}}',
-      ),
+    latest_beta_label: t({
+      en: 'Latest beta',
+      nl: 'Laatste beta',
+      fr: 'Dernière bêta',
+      de: 'Neueste Beta',
+      es: 'Última beta',
+      it: 'Ultima beta',
+      ar: 'أحدث إصدار تجريبي',
+      cs: 'Nejnovější beta',
+      et: 'Viimane beetaversioon',
+      eu: 'Azken beta',
+      gl: 'Última beta',
+      hu: 'Legújabb béta',
+      id: 'Beta terbaru',
+      ja: '最新ベータ',
+      lt: 'Naujausia beta',
+      pl: 'Najnowsza beta',
+      pt: 'Última beta',
+      ru: 'Последняя бета',
+      sq: 'Beta më e fundit',
+      sr: 'Najnovija beta',
+      tr: 'En son beta',
+      'zh-Hans': '最新测试版',
+      'zh-Hant': '最新測試版',
     }),
-    downgradable_beta_with_downloads: t({
-      en: insert(
-        'Latest installed {{latestVersion}}, downgradable beta {{latestBetaVersion}} on {{latestBetaPublishedAt}} with {{betaDownloads}} downloads',
-      ),
-      nl: insert(
-        'Nieuwste geïnstalleerde {{latestVersion}}, degradeerbare beta {{latestBetaVersion}} op {{latestBetaPublishedAt}} met {{betaDownloads}} downloads',
-      ),
-      fr: insert(
-        'Dernière version installée {{latestVersion}}, version bêta rétrogradable {{latestBetaVersion}} le {{latestBetaPublishedAt}} avec {{betaDownloads}} téléchargements',
-      ),
-      de: insert(
-        'Neueste installierte {{latestVersion}}, abwärtbare Beta {{latestBetaVersion}} am {{latestBetaPublishedAt}} mit {{betaDownloads}} Downloads',
-      ),
-      es: insert(
-        'Última instalada {{latestVersion}}, beta degradable {{latestBetaVersion}} el {{latestBetaPublishedAt}} con {{betaDownloads}} descargas',
-      ),
-      it: insert(
-        'Ultima installata {{latestVersion}}, beta downgrade {{latestBetaVersion}} il {{latestBetaPublishedAt}} con {{betaDownloads}} download',
-      ),
-      ar: insert(
-        'أحدث إصدار مثبت {{latestVersion}}، إصدار تجريبي قابل للتنزيل {{latestBetaVersion}} في {{latestBetaPublishedAt}} مع {{betaDownloads}} تنزيلات',
-      ),
-      cs: insert(
-        'Nejnovější nainstalovaná {{latestVersion}}, degradovatelná beta {{latestBetaVersion}} dne {{latestBetaPublishedAt}} s {{betaDownloads}} staženími',
-      ),
-      et: insert(
-        'Viimane paigaldatud {{latestVersion}}, degradeeritav beetaversioon {{latestBetaVersion}} kuupäeval {{latestBetaPublishedAt}} koos {{betaDownloads}} allalaadimisega',
-      ),
-      eu: insert(
-        'Instalatuta azkena {{latestVersion}}, degradagarria beta {{latestBetaVersion}} {{latestBetaPublishedAt}}an {{betaDownloads}} deskarga',
-      ),
-      gl: insert(
-        'Última instalada {{latestVersion}}, beta degradable {{latestBetaVersion}} o {{latestBetaPublishedAt}} con {{betaDownloads}} descargas',
-      ),
-      hu: insert(
-        'Legutóbb telepített: {{latestVersion}}, degradálható béta: {{latestBetaVersion}} ekkor: {{latestBetaPublishedAt}}, letöltések: {{betaDownloads}}',
-      ),
-      id: insert(
-        'Terbaru terpasang {{latestVersion}}, beta yang dapat diturunkan {{latestBetaVersion}} pada {{latestBetaPublishedAt}} dengan {{betaDownloads}} unduhan',
-      ),
-      ja: insert(
-        '最新インストール済み {{latestVersion}}、ダウングレード可能なベータ {{latestBetaVersion}}（{{latestBetaPublishedAt}}、{{betaDownloads}} ダウンロード）',
-      ),
-      lt: insert(
-        'Naujausia įdiegta {{latestVersion}}, žemintina beta {{latestBetaVersion}} {{latestBetaPublishedAt}} su {{betaDownloads}} atsisiuntimų',
-      ),
-      pl: insert(
-        'Najnowsza zainstalowana {{latestVersion}}, beta do obniżenia {{latestBetaVersion}} w dniu {{latestBetaPublishedAt}} z {{betaDownloads}} pobrań',
-      ),
-      pt: insert(
-        'Mais recente instalada {{latestVersion}}, beta degradável {{latestBetaVersion}} em {{latestBetaPublishedAt}} com {{betaDownloads}} downloads',
-      ),
-      ru: insert(
-        'Последняя установленная {{latestVersion}}, деградируемая бета {{latestBetaVersion}} от {{latestBetaPublishedAt}}, {{betaDownloads}} загрузок',
-      ),
-      sq: insert(
-        'Versioni më i fundit i instaluar {{latestVersion}}, beta i degradueshëm {{latestBetaVersion}} më {{latestBetaPublishedAt}} me {{betaDownloads}} shkarkime',
-      ),
-      sr: insert(
-        'Najnovije instalirano {{latestVersion}}, degradabilna beta {{latestBetaVersion}} dana {{latestBetaPublishedAt}} sa {{betaDownloads}} preuzimanja',
-      ),
-      tr: insert(
-        'En son yüklenen {{latestVersion}}, indirilebilir beta {{latestBetaVersion}} {{latestBetaPublishedAt}} tarihinde {{betaDownloads}} indirme ile',
-      ),
-      'zh-Hans': insert(
-        '最新已安装 {{latestVersion}}，可降级测试版 {{latestBetaVersion}} 于 {{latestBetaPublishedAt}}，下载量 {{betaDownloads}}',
-      ),
-      'zh-Hant': insert(
-        '最新已安裝 {{latestVersion}}，可降級測試版 {{latestBetaVersion}} 於 {{latestBetaPublishedAt}}，下載次數 {{betaDownloads}}',
-      ),
+    downgradable_beta_label: t({
+      en: 'Downgradable beta',
+      nl: 'Degradeerbare beta',
+      fr: 'Version bêta rétrogradable',
+      de: 'Abwärtbare Beta',
+      es: 'Beta degradable',
+      it: 'Beta downgrade',
+      ar: 'إصدار تجريبي قابل للتنزيل',
+      cs: 'Degradovatelná beta',
+      et: 'Degradeeritav beetaversioon',
+      eu: 'Degradagarria beta',
+      gl: 'Beta degradable',
+      hu: 'Degradálható béta',
+      id: 'Beta yang dapat diturunkan',
+      ja: 'ダウングレード可能なベータ',
+      lt: 'Žemintina beta',
+      pl: 'Beta do obniżenia',
+      pt: 'Beta degradável',
+      ru: 'Деградируемая бета',
+      sq: 'Beta i degradueshëm',
+      sr: 'Degradabilna beta',
+      tr: 'İndirilebilir beta',
+      'zh-Hans': '可降级测试版',
+      'zh-Hant': '可降級測試版',
     }),
-    downgradable_stable_with_downloads: t({
+    downgradable_stable_label: t({
+      en: 'Downgradable stable',
+      nl: 'Degradeerbare stabiel',
+      fr: 'Version stable rétrogradable',
+      de: 'Abwärtbare stabil',
+      es: 'Estable degradable',
+      it: 'Stabile downgrade',
+      ar: 'إصدار مستقر قابل للتنزيل',
+      cs: 'Degradovatelná stabilní',
+      et: 'Degradeeritav stabiilne',
+      eu: 'Degradagarria stabila',
+      gl: 'Estable degradable',
+      hu: 'Degradálható stabil',
+      id: 'Stabil yang dapat diturunkan',
+      ja: 'ダウングレード可能な安定版',
+      lt: 'Žemintina stabili',
+      pl: 'Stabilna do obniżenia',
+      pt: 'Estável degradável',
+      ru: 'Деградируемая стабильная',
+      sq: 'Stabil i degradueshëm',
+      sr: 'Degradabilna stabilna',
+      tr: 'İndirilebilir stabil',
+      'zh-Hans': '可降级稳定版',
+      'zh-Hant': '可降級穩定版',
+    }),
+    version_on_with_downloads: t({
       en: insert(
-        'Latest installed {{latestVersion}}, downgradable stable {{latestStableVersion}} on {{latestStablePublishedAt}} with {{stableDownloads}} downloads',
+        '{{label}} {{version}} on {{publishedAt}} with {{downloads}} downloads',
       ),
       nl: insert(
-        'Nieuwste geïnstalleerde {{latestVersion}}, degradeerbare stabiel {{latestStableVersion}} op {{latestStablePublishedAt}} met {{stableDownloads}} downloads',
+        '{{label}} {{version}} op {{publishedAt}} met {{downloads}} downloads',
       ),
       fr: insert(
-        'Dernière version installée {{latestVersion}}, version stable rétrogradable {{latestStableVersion}} le {{latestStablePublishedAt}} avec {{stableDownloads}} téléchargements',
+        '{{label}} {{version}} le {{publishedAt}} avec {{downloads}} téléchargements',
       ),
       de: insert(
-        'Neueste installierte {{latestVersion}}, abwärtbare stabil {{latestStableVersion}} am {{latestStablePublishedAt}} mit {{stableDownloads}} Downloads',
+        '{{label}} {{version}} am {{publishedAt}} mit {{downloads}} Downloads',
       ),
       es: insert(
-        'Última instalada {{latestVersion}}, estable degradable {{latestStableVersion}} el {{latestStablePublishedAt}} con {{stableDownloads}} descargas',
+        '{{label}} {{version}} el {{publishedAt}} con {{downloads}} descargas',
       ),
       it: insert(
-        'Ultima installata {{latestVersion}}, stabile downgrade {{latestStableVersion}} il {{latestStablePublishedAt}} con {{stableDownloads}} download',
+        '{{label}} {{version}} il {{publishedAt}} con {{downloads}} download',
       ),
       ar: insert(
-        'أحدث إصدار مثبت {{latestVersion}}، إصدار مستقر قابل للتنزيل {{latestStableVersion}} في {{latestStablePublishedAt}} مع {{stableDownloads}} تنزيلات',
+        '{{label}} {{version}} في {{publishedAt}} مع {{downloads}} تنزيلات',
       ),
       cs: insert(
-        'Nejnovější nainstalovaná {{latestVersion}}, degradovatelná stabilní {{latestStableVersion}} dne {{latestStablePublishedAt}} s {{stableDownloads}} staženími',
+        '{{label}} {{version}} dne {{publishedAt}} s {{downloads}} staženími',
       ),
       et: insert(
-        'Viimane paigaldatud {{latestVersion}}, degradeeritav stabiilne {{latestStableVersion}} kuupäeval {{latestStablePublishedAt}} koos {{stableDownloads}} allalaadimisega',
+        '{{label}} {{version}} kuupäeval {{publishedAt}} koos {{downloads}} allalaadimisega',
       ),
       eu: insert(
-        'Instalatuta azkena {{latestVersion}}, degradagarria stabila {{latestStableVersion}} {{latestStablePublishedAt}}an {{stableDownloads}} deskarga',
+        '{{label}} {{version}} {{publishedAt}}an {{downloads}} deskarga',
       ),
       gl: insert(
-        'Última instalada {{latestVersion}}, estable degradable {{latestStableVersion}} o {{latestStablePublishedAt}} con {{stableDownloads}} descargas',
+        '{{label}} {{version}} o {{publishedAt}} con {{downloads}} descargas',
       ),
       hu: insert(
-        'Legutóbb telepített: {{latestVersion}}, degradálható stabil: {{latestStableVersion}} ekkor: {{latestStablePublishedAt}}, letöltések: {{stableDownloads}}',
+        '{{label}}: {{version}} ekkor: {{publishedAt}}, letöltések száma: {{downloads}}',
       ),
       id: insert(
-        'Terbaru terpasang {{latestVersion}}, stabil yang dapat diturunkan {{latestStableVersion}} pada {{latestStablePublishedAt}} dengan {{stableDownloads}} unduhan',
+        '{{label}} {{version}} pada {{publishedAt}} dengan {{downloads}} unduhan',
       ),
       ja: insert(
-        '最新インストール済み {{latestVersion}}、ダウングレード可能な安定版 {{latestStableVersion}}（{{latestStablePublishedAt}}、{{stableDownloads}} ダウンロード）',
+        '{{label}} {{version}}（{{publishedAt}}、{{downloads}} ダウンロード）',
       ),
       lt: insert(
-        'Naujausia įdiegta {{latestVersion}}, žemintina stabili {{latestStableVersion}} {{latestStablePublishedAt}} su {{stableDownloads}} atsisiuntimų',
+        '{{label}} {{version}} {{publishedAt}} su {{downloads}} atsisiuntimų',
       ),
       pl: insert(
-        'Najnowsza zainstalowana {{latestVersion}}, stabilna do obniżenia {{latestStableVersion}} w dniu {{latestStablePublishedAt}} z {{stableDownloads}} pobrań',
+        '{{label}} {{version}} w dniu {{publishedAt}} z {{downloads}} pobrań',
       ),
       pt: insert(
-        'Mais recente instalada {{latestVersion}}, estável degradável {{latestStableVersion}} em {{latestStablePublishedAt}} com {{stableDownloads}} downloads',
+        '{{label}} {{version}} em {{publishedAt}} com {{downloads}} downloads',
       ),
       ru: insert(
-        'Последняя установленная {{latestVersion}}, деградируемая стабильная {{latestStableVersion}} от {{latestStablePublishedAt}}, {{stableDownloads}} загрузок',
+        '{{label}} {{version}} от {{publishedAt}}, {{downloads}} загрузок',
       ),
       sq: insert(
-        'Versioni më i fundit i instaluar {{latestVersion}}, stabil i degradueshëm {{latestStableVersion}} më {{latestStablePublishedAt}} me {{stableDownloads}} shkarkime',
+        '{{label}} {{version}} më {{publishedAt}} me {{downloads}} shkarkime',
       ),
       sr: insert(
-        'Najnovije instalirano {{latestVersion}}, degradabilna stabilna {{latestStableVersion}} dana {{latestStablePublishedAt}} sa {{stableDownloads}} preuzimanja',
+        '{{label}} {{version}} dana {{publishedAt}} sa {{downloads}} preuzimanja',
       ),
       tr: insert(
-        'En son yüklenen {{latestVersion}}, indirilebilir stabil {{latestStableVersion}} {{latestStablePublishedAt}} tarihinde {{stableDownloads}} indirme ile',
+        '{{label}} {{version}} {{publishedAt}} tarihinde {{downloads}} indirme ile',
       ),
       'zh-Hans': insert(
-        '最新已安装 {{latestVersion}}，可降级稳定版 {{latestStableVersion}} 于 {{latestStablePublishedAt}}，下载量 {{stableDownloads}}',
+        '{{label}} {{version}} 于 {{publishedAt}}，下载量 {{downloads}}',
       ),
       'zh-Hant': insert(
-        '最新已安裝 {{latestVersion}}，可降級穩定版 {{latestStableVersion}} 於 {{latestStablePublishedAt}}，下載次數 {{stableDownloads}}',
+        '{{label}} {{version}} 於 {{publishedAt}}，下載次數 {{downloads}}',
       ),
     }),
     by_maintainer: t({

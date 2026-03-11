@@ -102,7 +102,7 @@ describe('statsLine', () => {
         latestPreRelease?: Release;
         latestVersionIs?: ReleaseStats['latestVersionIs'];
       },
-      string,
+      string[],
     ]
   >([
     [
@@ -113,7 +113,7 @@ describe('statsLine', () => {
         latestPreRelease: undefined,
         latestVersionIs: undefined,
       },
-      '',
+      [],
     ],
     [
       'installed version only',
@@ -123,7 +123,7 @@ describe('statsLine', () => {
         latestPreRelease: undefined,
         latestVersionIs: 'installed',
       },
-      'Latest installed 1.5.0-release.0 ',
+      ['Latest installed 1.5.0-release.0'],
     ],
     [
       'installed version only',
@@ -133,7 +133,7 @@ describe('statsLine', () => {
         latestPreRelease: undefined,
         latestVersionIs: 'installed',
       },
-      'Latest installed 1.5.0-beta.3 ',
+      ['Latest installed 1.5.0-beta.3'],
     ],
     [
       'installed version with newer stable available',
@@ -143,7 +143,10 @@ describe('statsLine', () => {
         latestPreRelease: undefined,
         latestVersionIs: 'stable',
       },
-      'Installed 1.5.0-release.0, Latest 2.0.0-release.0 on 1/15/2024 with 100 downloads',
+      [
+        'Installed 1.5.0-release.0',
+        'Latest 2.0.0-release.0 on 1/15/2024 with 100 downloads',
+      ],
     ],
     [
       'stable release only',
@@ -153,7 +156,7 @@ describe('statsLine', () => {
         latestPreRelease: undefined,
         latestVersionIs: 'stable',
       },
-      'Latest 2.0.0-release.0 on 1/15/2024 with 100 downloads',
+      ['Latest 2.0.0-release.0 on 1/15/2024 with 100 downloads'],
     ],
     [
       'pre-release only',
@@ -163,7 +166,7 @@ describe('statsLine', () => {
         latestPreRelease: createMockRelease('3.0.0-beta.1'),
         latestVersionIs: 'pre-release',
       },
-      'Latest beta 3.0.0-beta.1 on 1/15/2024 with 100 downloads',
+      ['Latest beta 3.0.0-beta.1 on 1/15/2024 with 100 downloads'],
     ],
     [
       'both stable and pre-release',
@@ -173,7 +176,10 @@ describe('statsLine', () => {
         latestPreRelease: createMockRelease('3.0.0-beta.1'),
         latestVersionIs: 'stable',
       },
-      'Latest stable 2.0.0-release.0 on 1/15/2024 with 100 downloads, latest beta 3.0.0-beta.1 on 1/15/2024 with 100 downloads',
+      [
+        'Latest stable 2.0.0-release.0 on 1/15/2024 with 100 downloads',
+        'Latest beta 3.0.0-beta.1 on 1/15/2024 with 100 downloads',
+      ],
     ],
     [
       'latest installed, downgradable beta',
@@ -183,7 +189,10 @@ describe('statsLine', () => {
         latestPreRelease: createMockRelease('0.95.5-beta.3'),
         latestVersionIs: 'installed',
       },
-      'Latest installed 0.95.5-release.12, downgradable beta 0.95.5-beta.3 on 1/15/2024 with 100 downloads',
+      [
+        'Latest installed 0.95.5-release.12',
+        'Downgradable beta 0.95.5-beta.3 on 1/15/2024 with 100 downloads',
+      ],
     ],
     [
       'latest beta installed (newer than stable)',
@@ -193,7 +202,10 @@ describe('statsLine', () => {
         latestPreRelease: createMockRelease('3.0.0-beta.1'),
         latestVersionIs: 'installed',
       },
-      'Latest installed 3.0.0-beta.1, downgradable stable 2.0.0-release.0 on 1/15/2024 with 100 downloads',
+      [
+        'Latest installed 3.0.0-beta.1',
+        'Downgradable stable 2.0.0-release.0 on 1/15/2024 with 100 downloads',
+      ],
     ],
   ])('statsLine: %s', ([, params, expected]) => {
     // The getIntlayer needs to be run in vitest browser mode, otherwise it returns empty object.
@@ -202,6 +214,6 @@ describe('statsLine', () => {
       ...params,
       translations,
     });
-    expect(result).toBe(expected);
+    expect(result).toEqual(expected);
   });
 });

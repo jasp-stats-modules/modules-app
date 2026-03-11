@@ -26,23 +26,40 @@ export function statsLine({
   latestPreRelease?: Release;
   latestVersionIs?: ReleaseStats['latestVersionIs'];
   translations: AppTranslations;
-}): string {
+}): [string?, string?, string?] {
   const {
     installed_version,
     latest_installed_version,
     latest_version_on_with_downloads,
-    latest_beta_version_on_with_downloads,
-    latest_stable_and_beta_with_downloads,
-    downgradable_beta_with_downloads,
-    downgradable_stable_with_downloads,
+    latest_beta_label,
+    latest_stable_label,
+    downgradable_beta_label,
+    downgradable_stable_label,
+    version_on_with_downloads,
   } = translations;
 
-  const parts: string[] = [];
+  const parts: [string?, string?, string?] = [];
+  const releaseLine = ({
+    label,
+    version,
+    publishedAt,
+    downloads,
+  }: {
+    label: string;
+    version: string;
+    publishedAt: string;
+    downloads: number;
+  }) =>
+    version_on_with_downloads({
+      label,
+      version,
+      publishedAt,
+      downloads,
+    }).value;
 
   // Case 1: installed version present, but there's a newer version available
   if (latestVersionIs && latestVersionIs !== 'installed' && installedVersion) {
     parts.push(installed_version({ version: installedVersion }).value);
-    parts.push(', ');
   }
 
   // Case 2: latest is the installed version, with both stable and pre-release available
@@ -56,15 +73,16 @@ export function statsLine({
     latestPreRelease &&
     isSamePatchVersion(installedVersion, latestPreRelease.version)
   ) {
+    parts.push(latest_installed_version({ version: installedVersion }).value);
     parts.push(
-      downgradable_beta_with_downloads({
-        latestVersion: latestStableRelease.version,
-        latestBetaVersion: latestPreRelease.version,
-        latestBetaPublishedAt: new Date(
+      releaseLine({
+        label: downgradable_beta_label.value,
+        version: latestPreRelease.version,
+        publishedAt: new Date(
           latestPreRelease.publishedAt,
         ).toLocaleDateString(),
-        betaDownloads: totalDownloads(latestPreRelease),
-      }).value,
+        downloads: totalDownloads(latestPreRelease),
+      }),
     );
   }
 
@@ -77,15 +95,16 @@ export function statsLine({
     latestStableRelease &&
     isNewerVersion(latestStableRelease.version, installedVersion)
   ) {
+    parts.push(latest_installed_version({ version: installedVersion }).value);
     parts.push(
-      downgradable_stable_with_downloads({
-        latestVersion: installedVersion,
-        latestStableVersion: latestStableRelease.version,
-        latestStablePublishedAt: new Date(
+      releaseLine({
+        label: downgradable_stable_label.value,
+        version: latestStableRelease.version,
+        publishedAt: new Date(
           latestStableRelease.publishedAt,
         ).toLocaleDateString(),
-        stableDownloads: totalDownloads(latestStableRelease),
-      }).value,
+        downloads: totalDownloads(latestStableRelease),
+      }),
     );
   }
 
@@ -105,7 +124,6 @@ export function statsLine({
     )
   ) {
     parts.push(latest_installed_version({ version: installedVersion }).value);
-    parts.push(' ');
   }
 
   // Case 4: latest stable release only (no pre-release)
@@ -132,13 +150,14 @@ export function statsLine({
     latestPreRelease
   ) {
     parts.push(
-      latest_beta_version_on_with_downloads({
-        latestVersion: latestPreRelease.version,
+      releaseLine({
+        label: latest_beta_label.value,
+        version: latestPreRelease.version,
         publishedAt: new Date(
           latestPreRelease.publishedAt,
         ).toLocaleDateString(),
         downloads: totalDownloads(latestPreRelease),
-      }).value,
+      }),
     );
   }
 
@@ -153,20 +172,26 @@ export function statsLine({
     )
   ) {
     parts.push(
-      latest_stable_and_beta_with_downloads({
-        latestVersion: latestStableRelease.version,
+      releaseLine({
+        label: latest_stable_label.value,
+        version: latestStableRelease.version,
         publishedAt: new Date(
           latestStableRelease.publishedAt,
         ).toLocaleDateString(),
-        latestBetaVersion: latestPreRelease.version,
-        latestBetaPublishedAt: new Date(
+        downloads: totalDownloads(latestStableRelease),
+      }),
+    );
+    parts.push(
+      releaseLine({
+        label: latest_beta_label.value,
+        version: latestPreRelease.version,
+        publishedAt: new Date(
           latestPreRelease.publishedAt,
         ).toLocaleDateString(),
-        downloads: totalDownloads(latestStableRelease),
-        betaDownloads: totalDownloads(latestPreRelease),
-      }).value,
+        downloads: totalDownloads(latestPreRelease),
+      }),
     );
   }
 
-  return parts.join('');
+  return parts;
 }
