@@ -8,6 +8,15 @@ import {
 } from 'semver';
 import type { Asset, Release, Repository } from '@/types';
 
+export function filterReleasesByArchitecture(
+  releases: Release[],
+  arch: string,
+): Release[] {
+  return releases.filter((release) =>
+    release.assets.some((asset) => asset.architecture === arch),
+  );
+}
+
 export function findReleaseThatSatisfiesInstalledJaspVersion(
   releases: Release[],
   installed_version: string,
@@ -157,11 +166,11 @@ export function resolveReleaseStats(
   options: ResolveReleaseStatsOptions,
 ): ReleaseStats {
   const latestStableRelease = findReleaseThatSatisfiesInstalledJaspVersion(
-    repo.releases,
+    filterReleasesByArchitecture(repo.releases, options.arch),
     options.installedJaspVersion,
   );
   const latestPreRelease = findReleaseThatSatisfiesInstalledJaspVersion(
-    repo.preReleases,
+    filterReleasesByArchitecture(repo.preReleases, options.arch),
     options.installedJaspVersion,
   );
   const latestStableReleaseVersion = latestStableRelease?.version;
