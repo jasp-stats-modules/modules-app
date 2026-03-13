@@ -26,14 +26,14 @@ import type {
 export const REGISTRY_DIR = resolve('registry');
 const MyOctokit = Octokit.plugin(paginateGraphQL);
 const MAX_PNG_ICON_DIMENSION = 96;
-const EXPECTED_ARCHITECTURES = [
+export const EXPECTED_ARCHITECTURES = [
   'Windows_x86-64',
   'MacOS_x86_64',
   'MacOS_arm64',
   'Flatpak_x86_64',
 ] as const;
-const DEFAULT_REQUIRED_NUMBER_OF_ASSETS_PER_RELEASE =
-  EXPECTED_ARCHITECTURES.length;
+type ExpectedArchitecture = (typeof EXPECTED_ARCHITECTURES)[number];
+export type ExpectedArchitectures = Readonly<Array<ExpectedArchitecture>>;
 
 // Helper: get a simple-git instance pointing at the registry directory
 function gitInstance() {
@@ -846,64 +846,71 @@ function logWithBar(
   }
 }
 
-function latestReleaseNeedsFallback(releases: GqlRelease[]): boolean {
+function latestReleaseNeedsFallback(
+  releases: GqlRelease[],
+  expectedArchitectures: ExpectedArchitectures,
+): boolean {
   if (releases.length === 0) {
     return false;
   }
 
-  const latest = releases.find((release) => {
-    if (release.isDraft) {
-      return false;
-    }
+  const latestWithSomeAssets = releases.find((release) => {
     const nrOfModuleAssets = release.releaseAssets.nodes.filter((asset) =>
       asset.downloadUrl.endsWith('.JASPModule'),
     ).length;
     return nrOfModuleAssets > 0;
   });
 
-  if (!latest) {
+  if (!latestWithSomeAssets) {
     return true;
   }
 
-  const [transformedLatest] = transformRelease(latest, 'unknown/unknown');
-  return detectMissingArchitectures(transformedLatest).length > 0;
+  return (
+    detectMissingArchitecturesInGqlRelease(
+      latestWithSomeAssets,
+      expectedArchitectures,
+    ).length > 0
+  );
 }
 
-function hasFallbackCoverage(releases: GqlRelease[]): boolean {
-  const latest = releases.find((release) => {
-    if (release.isDraft) {
-      return false;
-    }
+function hasFallbackCoverage(
+  releases: GqlRelease[],
+  expectedArchitectures: ExpectedArchitectures,
+): boolean {
+  const latestWithSomeAssets = releases.find((release) => {
     const nrOfModuleAssets = release.releaseAssets.nodes.filter((asset) =>
       asset.downloadUrl.endsWith('.JASPModule'),
     ).length;
     return nrOfModuleAssets > 0;
   });
 
-  if (!latest) {
+  if (!latestWithSomeAssets) {
     return false;
   }
 
-  const transformedReleases = releases
-    .filter((release) => !release.isDraft)
-    .map((release) => transformRelease(release, 'unknown/unknown')[0]);
-  const [transformedLatest] = transformRelease(latest, 'unknown/unknown');
-  const missingArchitectures = detectMissingArchitectures(transformedLatest);
+  const missingArchitectures = detectMissingArchitecturesInGqlRelease(
+    latestWithSomeAssets,
+    expectedArchitectures,
+  );
 
   if (missingArchitectures.length === 0) {
     return true;
   }
 
   return missingArchitectures.every((architecture) =>
-    transformedReleases.some((release) =>
-      release.assets.some((asset) => asset.architecture === architecture),
+    releases.some((release) =>
+      release.releaseAssets.nodes.some(
+        (asset) =>
+          extractArchitectureFromUrl(asset.downloadUrl) === architecture,
+      ),
     ),
   );
 }
 
-function shouldContinuePagination(
+export function shouldContinuePagination(
   allReleases: GqlRelease[],
   hasNextPage: boolean,
+  expectedArchitectures: ExpectedArchitectures,
 ): boolean {
   if (!hasNextPage) {
     return false;
@@ -916,77 +923,24 @@ function shouldContinuePagination(
     (release) => !release.isDraft && release.isPrerelease,
   );
 
-  const productionNeedsFallback =
-    latestReleaseNeedsFallback(productionReleases);
-  const preReleaseNeedsFallback = latestReleaseNeedsFallback(preReleases);
+  const productionNeedsFallback = latestReleaseNeedsFallback(
+    productionReleases,
+    expectedArchitectures,
+  );
+  const preReleaseNeedsFallback = latestReleaseNeedsFallback(
+    preReleases,
+    expectedArchitectures,
+  );
 
   const productionCovered =
-    !productionNeedsFallback || hasFallbackCoverage(productionReleases);
+    !productionNeedsFallback ||
+    hasFallbackCoverage(productionReleases, expectedArchitectures);
   const preReleaseCovered =
-    !preReleaseNeedsFallback || hasFallbackCoverage(preReleases);
+    !preReleaseNeedsFallback ||
+    hasFallbackCoverage(preReleases, expectedArchitectures);
 
   // Stop as soon as both tracks have enough architecture coverage for their latest release.
   return !(productionCovered && preReleaseCovered);
-}
-
-function warnIfLatestReleaseMissingArchitectures(
-  _nameWithOwner: string,
-  track: 'release' | 'pre-release',
-  releases: GqlRelease[],
-  bar?: InstanceType<typeof ProgressBar>,
-): void {
-  if (releases.length === 0) {
-    return;
-  }
-
-  const latest = releases[0];
-  if (!latest) {
-    return;
-  }
-
-  const [transformedLatest] = transformRelease(latest, 'unknown/unknown');
-  const missingArchitectures = detectMissingArchitectures(transformedLatest);
-
-  if (missingArchitectures.length > 0) {
-    const latestVersion = versionFromTagName(latest.tagName);
-    const fallbackVersions: string[] = [];
-    const seenFallbackVersions = new Set<string>();
-    const unresolved = new Set(missingArchitectures);
-
-    for (const olderRelease of releases.slice(1)) {
-      if (unresolved.size === 0) {
-        break;
-      }
-      const [transformedOlderRelease] = transformRelease(
-        olderRelease,
-        'unknown/unknown',
-      );
-      for (const architecture of Array.from(unresolved)) {
-        const hasArchitecture = transformedOlderRelease.assets.some(
-          (asset) => asset.architecture === architecture,
-        );
-        if (hasArchitecture) {
-          const olderVersion = versionFromTagName(olderRelease.tagName);
-          if (!seenFallbackVersions.has(olderVersion)) {
-            seenFallbackVersions.add(olderVersion);
-            fallbackVersions.push(olderVersion);
-          }
-          unresolved.delete(architecture);
-        }
-      }
-    }
-
-    const fallbackPart =
-      fallbackVersions.length > 0
-        ? ` fallback found in ${fallbackVersions.join(', ')}`
-        : '';
-    const unresolvedPart =
-      unresolved.size > 0
-        ? ` unresolved: ${Array.from(unresolved).join(', ')}`
-        : '';
-    const message = `Latest ${track} ${latestVersion} missing: ${missingArchitectures.join(', ')}${fallbackPart}${unresolvedPart}`;
-    logWithBar(message, bar, console.warn);
-  }
 }
 
 async function fetchAllReleasesForRepo(
@@ -994,6 +948,7 @@ async function fetchAllReleasesForRepo(
   firstReleases: number,
   firstAssets: number,
   octokit: InstanceType<typeof MyOctokit>,
+  expectedArchitectures: ExpectedArchitectures,
   bar?: InstanceType<typeof ProgressBar>,
 ): Promise<FetchedRepoReleases> {
   const [owner, repo] = nameWithOwner.split('/');
@@ -1057,7 +1012,13 @@ async function fetchAllReleasesForRepo(
       hasNextPage = pageInfo?.hasNextPage ?? false;
       endCursor = pageInfo?.endCursor ?? null;
 
-      if (!shouldContinuePagination(allReleases, hasNextPage)) {
+      if (
+        !shouldContinuePagination(
+          allReleases,
+          hasNextPage,
+          expectedArchitectures,
+        )
+      ) {
         break;
       }
     } catch (error) {
@@ -1074,14 +1035,31 @@ async function fetchAllReleasesForRepo(
   };
 }
 
+export function detectMissingArchitecturesInGqlRelease(
+  release: GqlRelease,
+  expectedArchitectures: ExpectedArchitectures,
+): string[] {
+  const presentArchitectures = new Set(
+    release.releaseAssets.nodes.map((asset) =>
+      extractArchitectureFromUrl(asset.downloadUrl),
+    ),
+  );
+  return expectedArchitectures.filter(
+    (arch) => !presentArchitectures.has(arch),
+  );
+}
+
 /**
  * Detects which expected architectures are missing from a release.
  */
-export function detectMissingArchitectures(release: Release): string[] {
+export function detectMissingArchitecturesinRelease(
+  release: Release,
+  expectedArchitectures: ExpectedArchitectures,
+): ExpectedArchitectures {
   const presentArchitectures = new Set(
     release.assets.map((asset) => asset.architecture),
   );
-  return EXPECTED_ARCHITECTURES.filter(
+  return expectedArchitectures.filter(
     (arch) => !presentArchitectures.has(arch),
   );
 }
@@ -1106,74 +1084,100 @@ export function findOlderReleaseWithArchitecture(
   );
 }
 
+export function selectReleasesForArchitectureCoverage(
+  releases: Release[],
+  expectedArchitectures: ExpectedArchitectures,
+  bar?: InstanceType<typeof ProgressBar>,
+  moduleName?: string,
+): Release[] {
+  const selectedPerRange: Release[] = [];
+  const missingArchitectures: Set<string> = new Set(expectedArchitectures);
+
+  if (releases.length === 0) {
+    logWithBar(
+      `No releases found for ${moduleName}. Skipping.`,
+      bar,
+      console.warn,
+    );
+    return [];
+  }
+
+  for (const release of releases) {
+    const contributes = release.assets.some((asset) =>
+      missingArchitectures.has(asset.architecture),
+    );
+
+    if (!contributes) {
+      continue;
+    }
+
+    selectedPerRange.push({
+      ...release,
+      assets: release.assets.filter((asset) =>
+        missingArchitectures.has(asset.architecture),
+      ),
+    });
+
+    for (const asset of release.assets) {
+      missingArchitectures.delete(asset.architecture);
+    }
+
+    if (missingArchitectures.size === 0) {
+      break;
+    }
+  }
+  if (missingArchitectures.size > 0 && selectedPerRange.length > 0) {
+    logWithBar(
+      `Could not find assets for all architectures in releases for module ${moduleName}, will not be able to install/update on ${[...missingArchitectures].join(', ')}`,
+      bar,
+      console.warn,
+    );
+  }
+  if (selectedPerRange.length === 0) {
+    logWithBar(
+      `Could not find any set of releases that can be installed everywhere for ${moduleName} module, skipping`,
+      bar,
+      console.warn,
+    );
+  }
+  if (missingArchitectures.size === 0 && selectedPerRange.length > 1) {
+    logWithBar(
+      `Latest ${selectedPerRange[0].version} release from ${moduleName} does not have all architectures, falling back to older releases.`,
+      bar,
+      console.warn,
+    );
+  }
+  return selectedPerRange;
+}
+
 export function latestReleasePerJaspVersionRange(
-  releases: GqlRelease[],
-  _requiredNrAssets: number,
-): GqlRelease[] {
-  const sortedReleases = [...releases].sort((a, b) =>
-    b.publishedAt.localeCompare(a.publishedAt),
-  );
-  const releasesByRange = new Map<string, GqlRelease[]>();
+  releases: Release[],
+  expectedArchitectures: ExpectedArchitectures,
+  bar?: InstanceType<typeof ProgressBar>,
+  moduleName?: string,
+): Release[] {
+  const releasesByRange = new Map<string, Release[]>();
 
-  for (const release of sortedReleases) {
-    if (!release.description) {
+  for (const release of releases) {
+    if (!release.jaspVersionRange) {
       continue;
     }
-
-    const jaspVersionRange = parseReleaseFrontMatter(release.description).jasp;
-    if (!jaspVersionRange) {
-      continue;
-    }
+    const jaspVersionRange = release.jaspVersionRange;
 
     const existing = releasesByRange.get(jaspVersionRange) ?? [];
     existing.push(release);
     releasesByRange.set(jaspVersionRange, existing);
   }
 
-  const selected: GqlRelease[] = [];
-
+  const selected: Release[] = [];
   for (const releasesForRange of releasesByRange.values()) {
-    const latestForRange = releasesForRange[0];
-    if (!latestForRange) {
-      continue;
-    }
-
-    selected.push(latestForRange);
-
-    const [transformedLatest] = transformRelease(
-      latestForRange,
-      'unknown/unknown',
+    const selectedPerRange = selectReleasesForArchitectureCoverage(
+      releasesForRange,
+      expectedArchitectures,
+      bar,
+      moduleName,
     );
-    const missingArchitectures = new Set(
-      detectMissingArchitectures(transformedLatest),
-    );
-
-    if (missingArchitectures.size === 0) {
-      continue;
-    }
-
-    for (const olderRelease of releasesForRange.slice(1)) {
-      const [transformedOlderRelease] = transformRelease(
-        olderRelease,
-        'unknown/unknown',
-      );
-      const contributes = transformedOlderRelease.assets.some((asset) =>
-        missingArchitectures.has(asset.architecture),
-      );
-
-      if (!contributes) {
-        continue;
-      }
-
-      selected.push(olderRelease);
-      for (const asset of transformedOlderRelease.assets) {
-        missingArchitectures.delete(asset.architecture);
-      }
-
-      if (missingArchitectures.size === 0) {
-        break;
-      }
-    }
+    selected.push(...selectedPerRange);
   }
 
   return selected;
@@ -1188,7 +1192,8 @@ export function versionFromTagName(tagName: string): string {
 export function transformRelease(
   release: GqlRelease,
   nameWithOwner: string,
-): [Release, ReleaseFrontMatter] {
+  bar?: InstanceType<typeof ProgressBar>,
+): Release {
   const {
     tagName,
     releaseAssets,
@@ -1201,8 +1206,10 @@ export function transformRelease(
   let jaspVersionRange = frontmatter.jasp;
   if (!jaspVersionRange) {
     jaspVersionRange = '>=0.95.0';
-    console.warn(
+    logWithBar(
       `Malformed description for ${nameWithOwner}. Falling back to default JASP version range: ${jaspVersionRange}`,
+      bar,
+      console.warn,
     );
   }
   const version = versionFromTagName(tagName);
@@ -1221,12 +1228,12 @@ export function transformRelease(
       })
       .sort((a, b) => a.architecture.localeCompare(b.architecture, 'en')),
   };
-  return [newRelease, frontmatter];
+  return newRelease;
 }
 
 async function releaseAssetsForRepo(
   bareRepo: BareRepository,
-  requiredNrAssets: number = DEFAULT_REQUIRED_NUMBER_OF_ASSETS_PER_RELEASE,
+  expectedArchitectures: ExpectedArchitectures,
   firstReleases = 20,
   firstAssets = 20,
   octokit: InstanceType<typeof MyOctokit>,
@@ -1240,6 +1247,7 @@ async function releaseAssetsForRepo(
       firstReleases,
       firstAssets,
       octokit,
+      expectedArchitectures,
       bar,
     );
 
@@ -1252,42 +1260,25 @@ async function releaseAssetsForRepo(
     }
 
     // Separate into production and pre-releases (maintains order: newest first)
-    const productionReleases = allGqlReleases.filter(
-      (r) => !r.isDraft && !r.isPrerelease,
-    );
-    const preReleases = allGqlReleases.filter(
-      (r) => !r.isDraft && r.isPrerelease,
-    );
-
-    warnIfLatestReleaseMissingArchitectures(
-      nameWithOwner,
-      'release',
-      productionReleases,
-      bar,
-    );
-    warnIfLatestReleaseMissingArchitectures(
-      nameWithOwner,
-      'pre-release',
-      preReleases,
-      bar,
-    );
+    const productionReleases = allGqlReleases
+      .filter((r) => !r.isDraft && !r.isPrerelease)
+      .map((r) => transformRelease(r, nameWithOwner, bar));
+    const preReleases = allGqlReleases
+      .filter((r) => !r.isDraft && r.isPrerelease)
+      .map((r) => transformRelease(r, nameWithOwner, bar));
 
     const selectedProductionReleases = latestReleasePerJaspVersionRange(
       productionReleases,
-      requiredNrAssets,
+      expectedArchitectures,
+      bar,
+      nameWithOwner,
     );
     const selectedPreReleases = latestReleasePerJaspVersionRange(
       preReleases,
-      requiredNrAssets,
+      expectedArchitectures,
+      bar,
+      nameWithOwner,
     );
-
-    // Transform production and pre-releases separately (maintains order)
-    const transformedProductionReleases = selectedProductionReleases
-      .map((r) => transformRelease(r, nameWithOwner)[0])
-      .filter((r): r is Release => r !== undefined);
-    const transformedPreReleases = selectedPreReleases
-      .map((r) => transformRelease(r, nameWithOwner)[0])
-      .filter((r): r is Release => r !== undefined);
 
     const homepageFallback = fetched.parentNameWithOwner
       ? githubRepoUrl(fetched.parentNameWithOwner)
@@ -1298,8 +1289,8 @@ async function releaseAssetsForRepo(
     const newRepo: Repository = {
       ...bareRepo,
       homepageUrl: bareRepo.homepageUrl ?? homepageFallback,
-      releases: transformedProductionReleases,
-      preReleases: transformedPreReleases,
+      releases: selectedProductionReleases,
+      preReleases: selectedPreReleases,
       organization,
     };
     if (newRepo.releases.length > 0 || newRepo.preReleases.length > 0) {
@@ -1315,7 +1306,7 @@ async function releaseAssetsForRepo(
 
 export async function releaseAssets(
   repos: BareRepository[],
-  requiredNrAssets: number = DEFAULT_REQUIRED_NUMBER_OF_ASSETS_PER_RELEASE,
+  expectedArchitectures: ExpectedArchitectures,
   firstReleases = 20,
   firstAssets = 20,
   octokit: InstanceType<typeof MyOctokit>,
@@ -1339,14 +1330,20 @@ export async function releaseAssets(
   for (const bareRepo of repos) {
     const result = await releaseAssetsForRepo(
       bareRepo,
-      requiredNrAssets,
+      expectedArchitectures,
       firstReleases,
       firstAssets,
       octokit,
       bar,
     );
-    if (result) {
+    if (
+      result &&
+      (result.releases.length > 0 || result.preReleases.length > 0)
+    ) {
       finalResults.push(result);
+    } else {
+      const message = `No valid releases found for ${bareRepo.releaseSource}. Skipping.`;
+      logWithBar(message, bar, console.warn);
     }
     bar?.tick();
   }
@@ -1433,7 +1430,7 @@ async function scrape(
   console.info('Fetching release assets');
   const repositories = await releaseAssets(
     bareRepos,
-    DEFAULT_REQUIRED_NUMBER_OF_ASSETS_PER_RELEASE,
+    EXPECTED_ARCHITECTURES,
     20,
     20,
     octokit,

@@ -14,11 +14,13 @@ import {
   describe,
   expect,
   test,
+  vi,
 } from 'vitest';
-import type { GqlRelease } from './scrape';
+import type { ExpectedArchitectures, GqlRelease } from './scrape';
 import {
   batchedArray,
-  detectMissingArchitectures,
+  detectMissingArchitecturesinRelease,
+  EXPECTED_ARCHITECTURES,
   extractArchitectureFromUrl,
   extractBareSubmodules,
   extractTranslationsFromPoFiles,
@@ -35,6 +37,8 @@ import {
   path2channel,
   releaseAssets,
   resolveHomepageUrl,
+  selectReleasesForArchitectureCoverage,
+  shouldContinuePagination,
   transformRelease,
   url2nameWithOwner,
   versionFromTagName,
@@ -129,141 +133,376 @@ describe('parseReleaseFrontMatter', () => {
 
 describe('latestReleasePerJaspVersionRange', () => {
   test('returns latest release for each version range', () => {
-    const input: GqlRelease[] = [
+    const input: Release[] = [
       {
-        isDraft: false,
-        isPrerelease: false,
         publishedAt: '2025-01-02T00:00:00Z',
-        releaseAssets: { nodes: [] },
-        tagName: 'v1.1.1',
-        description: '---\njasp: >=0.95.1\n---\n',
+        assets: [
+          {
+            architecture: 'Flatpak_x86_64',
+            downloadUrl:
+              'https://example.com/jaspAnova_1.1.1_Flatpak_x86_64_R-4-5-1.JASPModule',
+            downloadCount: 10,
+          },
+        ],
+        version: '1.1.1-release.0',
+        jaspVersionRange: '>=0.95.1',
       },
       {
-        isDraft: false,
-        isPrerelease: false,
         publishedAt: '2025-01-01T00:00:00Z',
-        releaseAssets: { nodes: [] },
-        tagName: 'v1.1.0',
-        description: '---\njasp: >=0.95.1\n---\n',
+        assets: [
+          {
+            architecture: 'Flatpak_x86_64',
+            downloadUrl:
+              'https://example.com/jaspAnova_1.1.0_Flatpak_x86_64_R-4-5-1.JASPModule',
+            downloadCount: 10,
+          },
+        ],
+        version: '1.1.0-release.0',
+        jaspVersionRange: '>=0.95.1',
       },
       {
-        isDraft: false,
-        isPrerelease: false,
         publishedAt: '2024-12-02T00:00:00Z',
-        releaseAssets: { nodes: [] },
-        tagName: 'v1.0.1',
-        description: '---\njasp: >=0.95.0\n---\n',
+        assets: [
+          {
+            architecture: 'Flatpak_x86_64',
+            downloadUrl:
+              'https://example.com/jaspAnova_1.0.1_Flatpak_x86_64_R-4-5-1.JASPModule',
+            downloadCount: 10,
+          },
+        ],
+        version: '1.0.1-release.0',
+        jaspVersionRange: '>=0.95.0',
       },
       {
-        isDraft: false,
-        isPrerelease: false,
         publishedAt: '2024-12-01T00:00:00Z',
-        releaseAssets: { nodes: [] },
-        tagName: '0.95.5-release.1_3307653d_R-4-5-2_Release',
-        description: '---\njasp: >=0.95.0\n---\n',
+        assets: [
+          {
+            architecture: 'Flatpak_x86_64',
+            downloadUrl:
+              'https://example.com/jaspAnova_1.0.0_Flatpak_x86_64_R-4-5-1.JASPModule',
+            downloadCount: 10,
+          },
+        ],
+        version: '1.0.0-release.0',
+        jaspVersionRange: '>=0.95.0',
       },
     ];
 
-    const result = latestReleasePerJaspVersionRange(input, 0);
+    const result = latestReleasePerJaspVersionRange(input, ['Flatpak_x86_64']);
     expect(result).toEqual([input[0], input[2]]);
   });
 
-  test('skips releases without description', () => {
-    const input: GqlRelease[] = [
+  test('given absent jaspVersionRange, returns nothing', () => {
+    const input: Release[] = [
       {
-        isDraft: false,
-        isPrerelease: false,
-        publishedAt: '2025-01-01T00:00:00Z',
-        releaseAssets: { nodes: [] },
-        tagName: '0.95.5-release.1_3307653d_R-4-5-2_Release',
-        description: undefined,
+        publishedAt: '2025-01-02T00:00:00Z',
+        assets: [
+          {
+            architecture: 'Flatpak_x86_64',
+            downloadUrl:
+              'https://example.com/jaspAnova_1.2.0_Flatpak_x86_64_R-4-5-1.JASPModule',
+            downloadCount: 10,
+          },
+        ],
+        version: '1.2.0-release.0',
       },
     ];
 
-    const result = latestReleasePerJaspVersionRange(input, 0);
+    const result = latestReleasePerJaspVersionRange(
+      input,
+      EXPECTED_ARCHITECTURES,
+    );
     expect(result).toEqual([]);
   });
+});
 
-  test('skips releases with invalid description', () => {
-    const input: GqlRelease[] = [
-      {
-        isDraft: false,
-        isPrerelease: false,
-        publishedAt: '2025-01-01T00:00:00Z',
-        releaseAssets: { nodes: [] },
-        tagName: '0.95.5-release.1_3307653d_R-4-5-2_Release',
-        description: 'No frontmatter here',
-      },
-    ];
-
-    const result = latestReleasePerJaspVersionRange(input, 0);
-    expect(result).toEqual([]);
+describe('selectReleasesForArchitectureCoverage', () => {
+  afterEach(() => {
+    vi.restoreAllMocks();
   });
 
-  test('keeps latest release even with not enough assets', () => {
-    const input: GqlRelease[] = [
+  test('zero releases in, zero out', () => {
+    vi.spyOn(console, 'warn');
+
+    const result = selectReleasesForArchitectureCoverage(
+      [],
+      ['Flatpak_x86_64'],
+      undefined,
+      'TestModule',
+    );
+
+    expect(result).toEqual([]);
+    expect(console.warn).toHaveBeenCalledWith(
+      'No releases found for TestModule. Skipping.',
+    );
+  });
+
+  test('returns latest release', () => {
+    const input: Release[] = [
       {
-        isDraft: false,
-        isPrerelease: false,
+        publishedAt: '2025-01-02T00:00:00Z',
+        assets: [
+          {
+            architecture: 'Flatpak_x86_64',
+            downloadUrl:
+              'https://example.com/jaspAnova_1.1.1_Flatpak_x86_64_R-4-5-1.JASPModule',
+            downloadCount: 10,
+          },
+        ],
+        version: '1.1.1-release.0',
+        jaspVersionRange: '>=0.95.1',
+      },
+      {
         publishedAt: '2025-01-01T00:00:00Z',
-        releaseAssets: { nodes: [] },
-        tagName: '0.95.5-release.1_3307653d_R-4-5-2_Release',
-        description: '---\njasp: >=0.95.0\n---\n',
+        assets: [
+          {
+            architecture: 'Flatpak_x86_64',
+            downloadUrl:
+              'https://example.com/jaspAnova_1.1.0_Flatpak_x86_64_R-4-5-1.JASPModule',
+            downloadCount: 10,
+          },
+        ],
+        version: '1.1.0-release.0',
+        jaspVersionRange: '>=0.95.1',
       },
     ];
 
-    const result = latestReleasePerJaspVersionRange(input, 1);
+    const result = selectReleasesForArchitectureCoverage(input, [
+      'Flatpak_x86_64',
+    ]);
     expect(result).toEqual([input[0]]);
   });
 
-  test('appends older release that fills missing architecture', () => {
-    const input: GqlRelease[] = [
+  test('given some assets gives warning', () => {
+    const input: Release[] = [
       {
-        isDraft: false,
-        isPrerelease: false,
-        publishedAt: '2025-01-02T00:00:00Z',
-        releaseAssets: {
-          nodes: [
-            {
-              downloadUrl:
-                'https://example.com/jaspAnova_1.2.0_MacOS_x86_64_R-4-5-1.JASPModule',
-              downloadCount: 10,
-            },
-            {
-              downloadUrl:
-                'https://example.com/jaspAnova_1.2.0_MacOS_arm64_R-4-5-1.JASPModule',
-              downloadCount: 10,
-            },
-            {
-              downloadUrl:
-                'https://example.com/jaspAnova_1.2.0_Flatpak_x86_64_R-4-5-1.JASPModule',
-              downloadCount: 10,
-            },
-          ],
-        },
-        tagName: '1.2.0_abcdef_R-4-5-1',
-        description: '---\njasp: >=0.95.0\n---\n',
-      },
-      {
-        isDraft: false,
-        isPrerelease: false,
         publishedAt: '2025-01-01T00:00:00Z',
-        releaseAssets: {
-          nodes: [
-            {
-              downloadUrl:
-                'https://example.com/jaspAnova_1.1.0_Windows_x86-64_R-4-5-1.JASPModule',
-              downloadCount: 20,
-            },
-          ],
-        },
-        tagName: '1.1.0_123456_R-4-5-1',
-        description: '---\njasp: >=0.95.0\n---\n',
+        assets: [
+          {
+            architecture: 'Flatpak_x86_64',
+            downloadUrl:
+              'https://example.com/jaspAnova_1.1.1_Flatpak_x86_64_R-4-5-1.JASPModule',
+            downloadCount: 10,
+          },
+        ],
+        version: '1.0.0-release.0',
       },
     ];
 
-    const result = latestReleasePerJaspVersionRange(input, 4);
+    vi.spyOn(console, 'warn');
+    const result = selectReleasesForArchitectureCoverage(
+      input,
+      ['Flatpak_x86_64', 'Windows_x86-64'],
+      undefined,
+      'TestModule',
+    );
+    expect(result).toEqual([input[0]]);
+
+    expect(console.warn).toHaveBeenCalledWith(
+      'Could not find assets for all architectures in releases for module TestModule, will not be able to install/update on Windows_x86-64',
+    );
+  });
+
+  test('given no assets then zero returned releases', () => {
+    const spy = vi.spyOn(console, 'warn');
+    const input: Release[] = [
+      {
+        publishedAt: '2025-01-01T00:00:00Z',
+        assets: [],
+        version: '1.0.0-release.0',
+      },
+    ];
+
+    const result = selectReleasesForArchitectureCoverage(
+      input,
+      ['Flatpak_x86_64'],
+      undefined,
+      'TestModule',
+    );
+    expect(result).toEqual([]);
+
+    expect(spy).toHaveBeenCalledWith(
+      `Could not find any set of releases that can be installed everywhere for TestModule module, skipping`,
+    );
+  });
+
+  test('appends older release that fills missing architecture', () => {
+    vi.spyOn(console, 'warn');
+    const input: Release[] = [
+      {
+        publishedAt: '2025-01-02T00:00:00Z',
+        assets: [
+          {
+            architecture: 'MacOS_x86_64',
+            downloadUrl:
+              'https://example.com/jaspAnova_1.2.0_MacOS_x86_64_R-4-5-1.JASPModule',
+            downloadCount: 10,
+          },
+          {
+            architecture: 'MacOS_arm64',
+            downloadUrl:
+              'https://example.com/jaspAnova_1.2.0_MacOS_arm64_R-4-5-1.JASPModule',
+            downloadCount: 10,
+          },
+          {
+            architecture: 'Flatpak_x86_64',
+            downloadUrl:
+              'https://example.com/jaspAnova_1.2.0_Flatpak_x86_64_R-4-5-1.JASPModule',
+            downloadCount: 10,
+          },
+        ],
+        version: '1.2.0-release.0',
+        jaspVersionRange: '>=0.95.0',
+      },
+      {
+        publishedAt: '2025-01-01T00:00:00Z',
+        assets: [
+          {
+            architecture: 'Windows_x86-64',
+            downloadUrl:
+              'https://example.com/jaspAnova_1.1.0_Windows_x86-64_R-4-5-1.JASPModule',
+            downloadCount: 20,
+          },
+        ],
+        version: '1.1.0-release.0',
+        jaspVersionRange: '>=0.95.0',
+      },
+    ];
+
+    const result = selectReleasesForArchitectureCoverage(
+      input,
+      EXPECTED_ARCHITECTURES,
+      undefined,
+      'TestModule',
+    );
     expect(result).toEqual([input[0], input[1]]);
+    expect(console.warn).toHaveBeenCalledWith(
+      'Latest 1.2.0-release.0 release from TestModule does not have all architectures, falling back to older releases.',
+    );
+  });
+
+  test('appends older pruned release that fills missing architecture', () => {
+    const input: Release[] = [
+      {
+        publishedAt: '2025-01-02T00:00:00Z',
+        assets: [
+          {
+            architecture: 'MacOS_x86_64',
+            downloadUrl:
+              'https://example.com/jaspAnova_1.2.0_MacOS_x86_64_R-4-5-1.JASPModule',
+            downloadCount: 10,
+          },
+          {
+            architecture: 'MacOS_arm64',
+            downloadUrl:
+              'https://example.com/jaspAnova_1.2.0_MacOS_arm64_R-4-5-1.JASPModule',
+            downloadCount: 10,
+          },
+          {
+            architecture: 'Flatpak_x86_64',
+            downloadUrl:
+              'https://example.com/jaspAnova_1.2.0_Flatpak_x86_64_R-4-5-1.JASPModule',
+            downloadCount: 10,
+          },
+        ],
+        version: '1.2.0-release.0',
+        jaspVersionRange: '>=0.95.0',
+      },
+      {
+        publishedAt: '2025-01-01T00:00:00Z',
+        assets: [
+          {
+            architecture: 'MacOS_x86_64',
+            downloadUrl:
+              'https://example.com/jaspAnova_1.1.0_MacOS_x86_64_R-4-5-1.JASPModule',
+            downloadCount: 10,
+          },
+          {
+            architecture: 'MacOS_arm64',
+            downloadUrl:
+              'https://example.com/jaspAnova_1.1.0_MacOS_arm64_R-4-5-1.JASPModule',
+            downloadCount: 10,
+          },
+          {
+            architecture: 'Flatpak_x86_64',
+            downloadUrl:
+              'https://example.com/jaspAnova_1.1.0_Flatpak_x86_64_R-4-5-1.JASPModule',
+            downloadCount: 10,
+          },
+          {
+            architecture: 'Windows_x86-64',
+            downloadUrl:
+              'https://example.com/jaspAnova_1.1.0_Windows_x86-64_R-4-5-1.JASPModule',
+            downloadCount: 20,
+          },
+        ],
+        version: '1.1.0-release.0',
+        jaspVersionRange: '>=0.95.0',
+      },
+    ];
+
+    const result = selectReleasesForArchitectureCoverage(
+      input,
+      EXPECTED_ARCHITECTURES,
+    );
+    expect(result).toEqual([
+      input[0],
+      {
+        ...input[1],
+        assets: [
+          // Only Windows was missing from first release
+          input[1].assets[3],
+        ],
+      },
+    ]);
+  });
+
+  test('latest without assets, returns older release that has all assets', () => {
+    const input: Release[] = [
+      {
+        publishedAt: '2025-01-02T00:00:00Z',
+        assets: [],
+        version: '1.2.0-release.0',
+        jaspVersionRange: '>=0.95.0',
+      },
+      {
+        publishedAt: '2025-01-01T00:00:00Z',
+        assets: [
+          {
+            architecture: 'MacOS_x86_64',
+            downloadUrl:
+              'https://example.com/jaspAnova_1.2.0_MacOS_x86_64_R-4-5-1.JASPModule',
+            downloadCount: 10,
+          },
+          {
+            architecture: 'MacOS_arm64',
+            downloadUrl:
+              'https://example.com/jaspAnova_1.2.0_MacOS_arm64_R-4-5-1.JASPModule',
+            downloadCount: 10,
+          },
+          {
+            architecture: 'Flatpak_x86_64',
+            downloadUrl:
+              'https://example.com/jaspAnova_1.2.0_Flatpak_x86_64_R-4-5-1.JASPModule',
+            downloadCount: 10,
+          },
+          {
+            architecture: 'Windows_x86-64',
+            downloadUrl:
+              'https://example.com/jaspAnova_1.1.0_Windows_x86-64_R-4-5-1.JASPModule',
+            downloadCount: 20,
+          },
+        ],
+        version: '1.1.0-release.0',
+        jaspVersionRange: '>=0.95.0',
+      },
+    ];
+
+    const result = selectReleasesForArchitectureCoverage(
+      input,
+      EXPECTED_ARCHITECTURES,
+    );
+    expect(result).toEqual([input[1]]);
   });
 });
 
@@ -304,8 +543,7 @@ describe('transformRelease', () => {
       isPrerelease: false,
       publishedAt: '2025-01-01T00:00:00Z',
       tagName: '0.95.0_2cbd8a6d_R-4-5-1',
-      description:
-        '---\njasp: >=0.95.0\nname: My module\ndescription: A description of my module\n---\n',
+      description: '---\njasp: >=0.95.0\n\n---\n',
       releaseAssets: {
         nodes: [
           {
@@ -326,7 +564,7 @@ describe('transformRelease', () => {
       },
     };
 
-    const [result, frontmatter] = transformRelease(input, 'owner/repo');
+    const result = transformRelease(input, 'owner/repo');
 
     expect(result.version).toBe('0.95.0');
     expect(result.jaspVersionRange).toBe('>=0.95.0');
@@ -334,14 +572,10 @@ describe('transformRelease', () => {
     expect(result.assets).toHaveLength(2);
     expect(result.assets[0].architecture).toBe('MacOS_x86_64');
     expect(result.assets[1].architecture).toBe('Windows_x86-64');
-    expect(frontmatter).toStrictEqual({
-      jasp: '>=0.95.0',
-      name: 'My module',
-      description: 'A description of my module',
-    });
   });
 
   test('falls back to default JASP version for malformed description', () => {
+    vi.spyOn(console, 'warn');
     const input: GqlRelease = {
       isDraft: false,
       isPrerelease: false,
@@ -351,8 +585,11 @@ describe('transformRelease', () => {
       releaseAssets: { nodes: [] },
     };
 
-    const [result] = transformRelease(input, 'owner/repo');
+    const result = transformRelease(input, 'owner/repo');
     expect(result.jaspVersionRange).toBe('>=0.95.0');
+    expect(console.warn).toHaveBeenCalledWith(
+      'Malformed description for owner/repo. Falling back to default JASP version range: >=0.95.0',
+    );
   });
 
   test('filters out non-JASPModule assets', () => {
@@ -376,7 +613,7 @@ describe('transformRelease', () => {
       },
     };
 
-    const [result, _frontmatter] = transformRelease(input, 'owner/repo');
+    const result = transformRelease(input, 'owner/repo');
     expect(result.assets).toHaveLength(1);
     expect(result.assets[0].downloadUrl).toContain('.JASPModule');
   });
@@ -402,14 +639,22 @@ describe('transformRelease', () => {
             downloadUrl: 'https://example.com/module_Flatpak_x86_64.JASPModule',
             downloadCount: 20,
           },
+          {
+            downloadUrl: 'https://example.com/module_MacOS_x86_64.JASPModule',
+            downloadCount: 15,
+          },
         ],
       },
     };
 
-    const [result, _frontmatter] = transformRelease(input, 'owner/repo');
-    expect(result.assets[0].architecture).toBe('Flatpak_x86_64');
-    expect(result.assets[1].architecture).toBe('MacOS_arm64');
-    expect(result.assets[2].architecture).toBe('Windows_x86-64');
+    const result = transformRelease(input, 'owner/repo');
+
+    expect(result.assets.map((r) => r.architecture)).toEqual([
+      'Flatpak_x86_64',
+      'MacOS_arm64',
+      'MacOS_x86_64',
+      'Windows_x86-64',
+    ]);
   });
 });
 
@@ -477,7 +722,13 @@ describe('releaseAssets', () => {
       },
     ];
 
-    const result = await releaseAssets(bareRepos, 1, 20, 20, octokit);
+    const result = await releaseAssets(
+      bareRepos,
+      ['MacOS_x86_64'],
+      20,
+      20,
+      octokit,
+    );
 
     expect(result).toEqual(
       expect.arrayContaining([
@@ -548,7 +799,13 @@ describe('releaseAssets', () => {
       },
     ];
 
-    const result = await releaseAssets(bareRepos, 1, 20, 20, octokit);
+    const result = await releaseAssets(
+      bareRepos,
+      ['MacOS_x86_64'],
+      20,
+      20,
+      octokit,
+    );
 
     expect(result).toHaveLength(0);
   });
@@ -624,7 +881,13 @@ describe('releaseAssets', () => {
       },
     ];
 
-    const result = await releaseAssets(bareRepos, 1, 20, 20, octokit);
+    const result = await releaseAssets(
+      bareRepos,
+      ['MacOS_x86_64'],
+      20,
+      20,
+      octokit,
+    );
 
     expect(result).toEqual(
       expect.arrayContaining([
@@ -727,7 +990,13 @@ describe('releaseAssets', () => {
       },
     ];
 
-    const result = await releaseAssets(bareRepos, 1, 20, 20, octokit);
+    const result = await releaseAssets(
+      bareRepos,
+      ['MacOS_x86_64'],
+      20,
+      20,
+      octokit,
+    );
 
     expect(result).toEqual(
       expect.arrayContaining([
@@ -809,7 +1078,13 @@ describe('releaseAssets', () => {
       },
     ];
 
-    const result = await releaseAssets(bareRepos, 1, 20, 20, octokit);
+    const result = await releaseAssets(
+      bareRepos,
+      ['MacOS_x86_64'],
+      20,
+      20,
+      octokit,
+    );
 
     expect(result).toEqual(
       expect.arrayContaining([
@@ -871,7 +1146,13 @@ describe('releaseAssets', () => {
       },
     ];
 
-    const result = await releaseAssets(bareRepos, 1, 20, 20, octokit);
+    const result = await releaseAssets(
+      bareRepos,
+      ['MacOS_x86_64'],
+      20,
+      20,
+      octokit,
+    );
 
     expect(result).toEqual(
       expect.arrayContaining([
@@ -905,15 +1186,11 @@ describe('releaseAssets', () => {
   });
 
   test('stops pagination early when latest release is already complete', async () => {
-    let callCount = 0;
-
     server.use(
       graphql.operation(({ query }) => {
         if (!query.includes('repository(')) {
           return HttpResponse.json({ data: {} });
         }
-
-        callCount++;
         return HttpResponse.json({
           data: {
             repository: {
@@ -980,13 +1257,18 @@ describe('releaseAssets', () => {
       },
     ];
 
-    const result = await releaseAssets(bareRepos, 4, 20, 20, octokit);
+    const result = await releaseAssets(
+      bareRepos,
+      EXPECTED_ARCHITECTURES,
+      20,
+      20,
+      octokit,
+    );
 
     expect(result).toHaveLength(1);
-    expect(callCount).toBe(1);
   });
 
-  test('stops right after missing architecture is found on later page', async () => {
+  test('stops right after missing architecture is found on second page', async () => {
     server.use(
       graphql.operation(({ query }) => {
         if (!query.includes('repository(')) {
@@ -1094,7 +1376,13 @@ describe('releaseAssets', () => {
       },
     ];
 
-    const result = await releaseAssets(bareRepos, 4, 1, 1, octokit);
+    const result = await releaseAssets(
+      bareRepos,
+      EXPECTED_ARCHITECTURES,
+      1,
+      1,
+      octokit,
+    );
 
     expect(result).toHaveLength(1);
     expect(result[0].releases).toHaveLength(2);
@@ -1886,7 +2174,10 @@ describe('detectMissingArchitectures', () => {
       ],
     };
 
-    const missing = detectMissingArchitectures(release);
+    const missing = detectMissingArchitecturesinRelease(
+      release,
+      EXPECTED_ARCHITECTURES,
+    );
     expect(missing).toEqual(['MacOS_x86_64', 'Flatpak_x86_64']);
   });
 
@@ -1919,7 +2210,10 @@ describe('detectMissingArchitectures', () => {
       ],
     };
 
-    const missing = detectMissingArchitectures(release);
+    const missing = detectMissingArchitecturesinRelease(
+      release,
+      EXPECTED_ARCHITECTURES,
+    );
     expect(missing).toEqual([]);
   });
 });
@@ -2037,5 +2331,171 @@ describe('findOlderReleaseWithArchitecture', () => {
       releases,
     );
     expect(older?.version).toBe('2.0.0');
+  });
+});
+
+describe('shouldContinuePagination', () => {
+  const createGqlRelease = (
+    tagName: string,
+    isPrerelease: boolean,
+    architectures: ExpectedArchitectures = ['Windows_x86-64'],
+  ): GqlRelease => {
+    const assetVersion = tagName.split('-')[0];
+    return {
+      tagName,
+      publishedAt: '2025-01-01T00:00:00Z',
+      description: '---\njasp: >=0.95.0\n---\n',
+      isDraft: false,
+      isPrerelease,
+      releaseAssets: {
+        nodes: architectures.map((architecture) => ({
+          downloadUrl: `https://example.com/jaspAnova_${assetVersion}_${architecture}_R-4-5-1.JASPModule`,
+          downloadCount: 1,
+        })),
+      },
+    };
+  };
+
+  const createDraftGqlRelease = (
+    tagName: string,
+    isPrerelease: boolean,
+    architectures: ExpectedArchitectures = ['Windows_x86-64'],
+  ): GqlRelease => ({
+    ...createGqlRelease(tagName, isPrerelease, architectures),
+    isDraft: true,
+  });
+
+  test('stops when no next page is available', () => {
+    expect(shouldContinuePagination([], false, ['Windows_x86-64'])).toBeFalsy();
+  });
+
+  test('locks current behavior: empty releases with next page still stops', () => {
+    expect(shouldContinuePagination([], true, ['Windows_x86-64'])).toBeFalsy();
+  });
+
+  test.for<{
+    name: string;
+    releases: GqlRelease[];
+    expectedArchitectures: ExpectedArchitectures;
+    expectedResult: boolean;
+  }>([
+    {
+      name: 'latest stable has all architectures, no betas',
+      releases: [createGqlRelease('1.1.0-release.0', false)],
+      expectedArchitectures: ['Windows_x86-64'],
+      expectedResult: false,
+    },
+    {
+      name: 'latest beta has all architectures, no stable',
+      releases: [createGqlRelease('1.2.0-beta.0', true)],
+      expectedArchitectures: ['Windows_x86-64'],
+      expectedResult: false,
+    },
+    {
+      name: 'latest stable and pre-release have all architectures',
+      releases: [
+        createGqlRelease('1.1.0-release.0', false),
+        createGqlRelease('1.2.0-beta.0', true),
+      ],
+      expectedArchitectures: ['Windows_x86-64'],
+      expectedResult: false,
+    },
+    {
+      name: 'latest stable and pre-release missing flatpak',
+      releases: [
+        createGqlRelease('1.1.0-release.0', false),
+        createGqlRelease('1.2.0-beta.0', true),
+      ],
+      expectedArchitectures: ['Windows_x86-64', 'Flatpak_x86_64'],
+      expectedResult: true,
+    },
+    {
+      name: 'stable track missing architecture, pre-release track complete',
+      releases: [
+        createGqlRelease('1.1.0-release.0', false, ['Windows_x86-64']),
+        createGqlRelease('1.2.0-beta.0', true, [
+          'Windows_x86-64',
+          'Flatpak_x86_64',
+        ]),
+      ],
+      expectedArchitectures: ['Windows_x86-64', 'Flatpak_x86_64'],
+      expectedResult: true,
+    },
+    {
+      name: 'pre-release track missing architecture, stable track complete',
+      releases: [
+        createGqlRelease('1.1.0-release.0', false, [
+          'Windows_x86-64',
+          'Flatpak_x86_64',
+        ]),
+        createGqlRelease('1.2.0-beta.0', true, ['Windows_x86-64']),
+      ],
+      expectedArchitectures: ['Windows_x86-64', 'Flatpak_x86_64'],
+      expectedResult: true,
+    },
+    {
+      name: 'only stable releases with missing architecture continues',
+      releases: [
+        createGqlRelease('1.1.0-release.0', false, ['Windows_x86-64']),
+      ],
+      expectedArchitectures: ['Windows_x86-64', 'Flatpak_x86_64'],
+      expectedResult: true,
+    },
+    {
+      name: 'only pre-releases with missing architecture continues',
+      releases: [createGqlRelease('1.2.0-beta.0', true, ['Windows_x86-64'])],
+      expectedArchitectures: ['Windows_x86-64', 'Flatpak_x86_64'],
+      expectedResult: true,
+    },
+    {
+      name: 'missing architectures are fully recovered across multiple older releases',
+      releases: [
+        createGqlRelease('1.3.0-release.0', false, ['Windows_x86-64']),
+        createGqlRelease('1.2.0-release.0', false, ['MacOS_x86_64']),
+        createGqlRelease('1.1.0-release.0', false, [
+          'MacOS_arm64',
+          'Flatpak_x86_64',
+        ]),
+      ],
+      expectedArchitectures: EXPECTED_ARCHITECTURES,
+      expectedResult: false,
+    },
+    {
+      name: 'missing architectures are only partially recovered in older releases',
+      releases: [
+        createGqlRelease('1.3.0-release.0', false, ['Windows_x86-64']),
+        createGqlRelease('1.2.0-release.0', false, ['MacOS_x86_64']),
+      ],
+      expectedArchitectures: EXPECTED_ARCHITECTURES,
+      expectedResult: true,
+    },
+    {
+      name: 'expected architectures can be empty and stop pagination',
+      releases: [createGqlRelease('1.1.0-release.0', false)],
+      expectedArchitectures: [],
+      expectedResult: false,
+    },
+    {
+      name: 'draft releases are ignored when deciding continuation',
+      releases: [
+        createDraftGqlRelease('1.2.0-release.0', false, ['Windows_x86-64']),
+        createGqlRelease('1.1.0-release.0', false, ['Windows_x86-64']),
+      ],
+      expectedArchitectures: ['Windows_x86-64'],
+      expectedResult: false,
+    },
+    {
+      name: 'order is based on first asset-bearing release in array',
+      releases: [
+        createGqlRelease('1.0.0-release.0', false, EXPECTED_ARCHITECTURES),
+        createGqlRelease('2.0.0-release.0', false, ['Windows_x86-64']),
+      ],
+      expectedArchitectures: EXPECTED_ARCHITECTURES,
+      expectedResult: false,
+    },
+  ])('$name', ({ releases, expectedArchitectures, expectedResult }) => {
+    expect(
+      shouldContinuePagination(releases, true, expectedArchitectures),
+    ).toBe(expectedResult);
   });
 });
