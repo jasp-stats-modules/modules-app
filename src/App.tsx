@@ -24,6 +24,7 @@ import {
   type AnyAction,
   type DowngradePreReleaseAction,
   type DowngradeStableAction,
+  filterReleasesByArchitecture,
   findReleaseThatSatisfiesInstalledJaspVersion,
   type InstallPreReleaseAction,
   type InstallStableAction,
@@ -828,12 +829,12 @@ function getInstallableReleaseStatsFromRepository(
   allowPreRelease: boolean,
 ): ReleaseStats[] {
   let latestRelease = findReleaseThatSatisfiesInstalledJaspVersion(
-    repo.releases,
+    filterReleasesByArchitecture(repo.releases, info.arch),
     info.version,
   );
   if (allowPreRelease) {
     const latestPreRelease = findReleaseThatSatisfiesInstalledJaspVersion(
-      repo.preReleases,
+      filterReleasesByArchitecture(repo.preReleases, info.arch),
       info.version,
     );
     if (
@@ -846,13 +847,7 @@ function getInstallableReleaseStatsFromRepository(
     }
   }
   if (!latestRelease) {
-    return [];
-  }
-  const hasArch = latestRelease.assets.some(
-    (a) => a.architecture === info.arch,
-  );
-  if (!hasArch) {
-    // No assets found with compatible architecture
+    // No assets found with compatible architecture or JASP version
     return [];
   }
   const hasAssets = latestRelease?.assets && latestRelease.assets.length > 0;
