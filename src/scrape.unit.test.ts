@@ -18,17 +18,14 @@ import {
 } from 'vitest';
 import type { ExpectedArchitectures, GqlRelease } from './scrape';
 import {
-  batchedArray,
-  detectMissingArchitecturesinRelease,
+  detectMissingArchitectures,
   EXPECTED_ARCHITECTURES,
   extractArchitectureFromUrl,
   extractBareSubmodules,
   extractTranslationsFromPoFiles,
-  findOlderReleaseWithArchitecture,
   groupByChannel,
   latestReleasePerJaspVersionRange,
   logBareRepoStats,
-  logChannelStats,
   logReleaseStatistics,
   nameAndDescriptionFromSubmodules,
   parseDescriptionFile,
@@ -67,26 +64,11 @@ describe('path2channel', () => {
   });
 });
 
-describe('batchedArray', () => {
-  test('splits array into batches of specified size', () => {
-    const input = [1, 2, 3, 4, 5, 6, 7];
-    const result = batchedArray(input, 3);
-    expect(result).toEqual([[1, 2, 3], [4, 5, 6], [7]]);
-  });
-
-  test('handles empty array', () => {
-    expect(batchedArray([], 5)).toEqual([]);
-  });
-
-  test('handles batch size larger than array', () => {
-    const input = [1, 2, 3];
-    expect(batchedArray(input, 10)).toEqual([[1, 2, 3]]);
-  });
-});
-
 describe('versionFromTagName', () => {
   test('extracts version from tag name', () => {
-    expect(versionFromTagName('0.95.0_2cbd8a6d_R-4-5-1')).toBe('0.95.0');
+    expect(versionFromTagName('0.95.0-release.3_2cbd8a6d_R-4-5-1')).toBe(
+      '0.95.0-release.3',
+    );
   });
 
   test('handles version with multiple dots', () => {
@@ -1538,23 +1520,6 @@ describe('logReleaseStatistics', () => {
   });
 });
 
-describe('logChannelStats', () => {
-  test('returns formatted channel statistics', () => {
-    const repo2channels: Record<string, string[]> = {
-      'owner/repoA': ['jasp-modules'],
-      'owner/repoB': ['community-modules', 'experimental-modules'],
-    };
-    const msg = logChannelStats(repo2channels);
-    const expected = [
-      'Found 3 channels',
-      ' - jasp-modules: 1',
-      ' - community-modules: 1',
-      ' - experimental-modules: 1',
-    ].join('\n');
-    expect(msg).toEqual(expected);
-  });
-});
-
 async function writePoFileForDutch(moduleDir: string) {
   const poDir = path.join(moduleDir, 'po');
   await fs.mkdir(poDir);
@@ -2156,181 +2121,58 @@ test('logBareRepoStats', () => {
 
 describe('detectMissingArchitectures', () => {
   test('detects missing architectures from a release with partial assets', () => {
-    const release: Release = {
-      version: '1.0.0',
+    const release: GqlRelease = {
+      tagName: '1.0.0--release.0',
+      isDraft: false,
+      isPrerelease: false,
       publishedAt: '2025-01-01T00:00:00Z',
-      jaspVersionRange: '>=0.95.0',
-      assets: [
-        {
-          downloadUrl: 'https://example.com/module-Windows_x86-64.JASPModule',
-          downloadCount: 10,
-          architecture: 'Windows_x86-64',
-        },
-        {
-          downloadUrl: 'https://example.com/module-MacOS_arm64.JASPModule',
-          downloadCount: 5,
-          architecture: 'MacOS_arm64',
-        },
-      ],
+      releaseAssets: {
+        nodes: [
+          {
+            downloadUrl: 'https://example.com/module-Windows_x86-64.JASPModule',
+            downloadCount: 10,
+          },
+          {
+            downloadUrl: 'https://example.com/module-MacOS_arm64.JASPModule',
+            downloadCount: 5,
+          },
+        ],
+      },
     };
-
-    const missing = detectMissingArchitecturesinRelease(
-      release,
-      EXPECTED_ARCHITECTURES,
-    );
+    const missing = detectMissingArchitectures(release, EXPECTED_ARCHITECTURES);
     expect(missing).toEqual(['MacOS_x86_64', 'Flatpak_x86_64']);
   });
 
   test('returns empty array when all architectures are present', () => {
-    const release: Release = {
-      version: '1.0.0',
+    const release: GqlRelease = {
+      tagName: '1.0.0--release.0',
+      isDraft: false,
+      isPrerelease: false,
       publishedAt: '2025-01-01T00:00:00Z',
-      jaspVersionRange: '>=0.95.0',
-      assets: [
-        {
-          downloadUrl: 'https://example.com/module-Windows_x86-64.JASPModule',
-          downloadCount: 10,
-          architecture: 'Windows_x86-64',
-        },
-        {
-          downloadUrl: 'https://example.com/module-MacOS_x86_64.JASPModule',
-          downloadCount: 8,
-          architecture: 'MacOS_x86_64',
-        },
-        {
-          downloadUrl: 'https://example.com/module-MacOS_arm64.JASPModule',
-          downloadCount: 5,
-          architecture: 'MacOS_arm64',
-        },
-        {
-          downloadUrl: 'https://example.com/module-Flatpak_x86_64.JASPModule',
-          downloadCount: 3,
-          architecture: 'Flatpak_x86_64',
-        },
-      ],
-    };
-
-    const missing = detectMissingArchitecturesinRelease(
-      release,
-      EXPECTED_ARCHITECTURES,
-    );
-    expect(missing).toEqual([]);
-  });
-});
-
-describe('findOlderReleaseWithArchitecture', () => {
-  test('finds older release with specific architecture in same version range', () => {
-    const releases: Release[] = [
-      {
-        version: '1.2.0',
-        publishedAt: '2025-01-03T00:00:00Z',
-        jaspVersionRange: '>=0.95.0',
-        assets: [
+      releaseAssets: {
+        nodes: [
           {
             downloadUrl: 'https://example.com/module-Windows_x86-64.JASPModule',
             downloadCount: 10,
-            architecture: 'Windows_x86-64',
           },
-        ],
-      },
-      {
-        version: '1.1.0',
-        publishedAt: '2025-01-02T00:00:00Z',
-        jaspVersionRange: '>=0.95.0',
-        assets: [
           {
-            downloadUrl: 'https://example.com/module-Windows_x86-64.JASPModule',
+            downloadUrl: 'https://example.com/module-MacOS_x86_64.JASPModule',
             downloadCount: 8,
-            architecture: 'Windows_x86-64',
           },
           {
-            downloadUrl: 'https://example.com/module-Flatpak_x86_64.JASPModule',
+            downloadUrl: 'https://example.com/module-MacOS_arm64.JASPModule',
             downloadCount: 5,
-            architecture: 'Flatpak_x86_64',
           },
-        ],
-      },
-      {
-        version: '1.0.0',
-        publishedAt: '2025-01-01T00:00:00Z',
-        jaspVersionRange: '>=0.95.0',
-        assets: [
           {
             downloadUrl: 'https://example.com/module-Flatpak_x86_64.JASPModule',
             downloadCount: 3,
-            architecture: 'Flatpak_x86_64',
           },
         ],
       },
-    ];
+    };
 
-    const older = findOlderReleaseWithArchitecture(
-      '>=0.95.0',
-      'Flatpak_x86_64',
-      releases,
-    );
-    expect(older?.version).toBe('1.1.0');
-  });
-
-  test('returns undefined when no older release has the architecture', () => {
-    const releases: Release[] = [
-      {
-        version: '1.0.0',
-        publishedAt: '2025-01-01T00:00:00Z',
-        jaspVersionRange: '>=0.95.0',
-        assets: [
-          {
-            downloadUrl: 'https://example.com/module-Windows_x86-64.JASPModule',
-            downloadCount: 10,
-            architecture: 'Windows_x86-64',
-          },
-        ],
-      },
-    ];
-
-    const older = findOlderReleaseWithArchitecture(
-      '>=0.95.0',
-      'Flatpak_x86_64',
-      releases,
-    );
-    expect(older).toBeUndefined();
-  });
-
-  test('respects version range boundaries', () => {
-    const releases: Release[] = [
-      {
-        version: '2.0.0',
-        publishedAt: '2025-01-02T00:00:00Z',
-        jaspVersionRange: '>=0.95.0',
-        assets: [
-          {
-            downloadUrl: 'https://example.com/module-Flatpak_x86_64.JASPModule',
-            downloadCount: 10,
-            architecture: 'Flatpak_x86_64',
-          },
-        ],
-      },
-      {
-        version: '1.0.0',
-        publishedAt: '2025-01-01T00:00:00Z',
-        jaspVersionRange: '>=0.98.0',
-        assets: [
-          {
-            downloadUrl: 'https://example.com/module-Flatpak_x86_64.JASPModule',
-            downloadCount: 8,
-            architecture: 'Flatpak_x86_64',
-          },
-        ],
-      },
-    ];
-
-    // Should not find v1.0.0 because it's a different version range
-    const older = findOlderReleaseWithArchitecture(
-      '>=0.95.0',
-      'Flatpak_x86_64',
-      releases,
-    );
-    expect(older?.version).toBe('2.0.0');
+    const missing = detectMissingArchitectures(release, EXPECTED_ARCHITECTURES);
+    expect(missing).toEqual([]);
   });
 });
 
