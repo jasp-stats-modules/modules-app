@@ -911,10 +911,9 @@ async function fetchAllReleasesForRepo(
   let parentOwnerLogin: string | undefined;
 
   while (hasNextPage) {
-    const afterClause: string = endCursor ? `, after: "${endCursor}"` : '';
     const query: string = dedent`
-      query {
-        repository(owner: "${owner}", name: "${repo}") {
+      query RepoReleases($owner: String!, $repo: String!, $firstReleases: Int!, $firstAssets: Int!, $after: String) {
+        repository(owner: $owner, name: $repo) {
           name
           parent {
             nameWithOwner
@@ -922,14 +921,14 @@ async function fetchAllReleasesForRepo(
               login
             }
           }
-          releases(first: ${firstReleases}, orderBy: { field: CREATED_AT, direction: DESC }${afterClause}) {
+          releases(first: $firstReleases, orderBy: { field: CREATED_AT, direction: DESC }, after: $after) {
             nodes {
               tagName
               publishedAt
               description
               isDraft
               isPrerelease
-              releaseAssets(first: ${firstAssets}) {
+              releaseAssets(first: $firstAssets) {
                 nodes {
                   downloadUrl
                   downloadCount
@@ -945,9 +944,17 @@ async function fetchAllReleasesForRepo(
       }
     `;
 
+    const variables = {
+      owner,
+      repo,
+      firstReleases,
+      firstAssets,
+      after: endCursor,
+    };
+
     try {
       const result: GqlRepoReleasesResult =
-        await octokit.graphql<GqlRepoReleasesResult>(query);
+        await octokit.graphql<GqlRepoReleasesResult>(query, variables);
       if (!result.repository) {
         const message = `Repository ${owner}/${repo} not found`;
         logWithBar(message, bar, console.log);

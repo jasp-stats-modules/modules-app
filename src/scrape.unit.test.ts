@@ -1250,11 +1250,12 @@ describe('releaseAssets', () => {
 
   test('stops right after missing architecture is found on second page', async () => {
     server.use(
-      graphql.operation(({ query }) => {
+      graphql.operation(({ query, variables }) => {
         if (!query.includes('repository(')) {
           return HttpResponse.json({ data: {} });
         }
-        if (!query.includes('after: ')) {
+        // First page
+        if (!variables.after) {
           return HttpResponse.json({
             data: {
               repository: {
@@ -1302,7 +1303,8 @@ describe('releaseAssets', () => {
             },
           });
         }
-        if (query.includes('after: "cursor-1"')) {
+        // Second page
+        if (variables.after === 'cursor-1') {
           return HttpResponse.json({
             data: {
               repository: {
