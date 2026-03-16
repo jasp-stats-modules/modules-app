@@ -24,11 +24,6 @@
             "architecture": "MacOS_arm64"
           },
           {
-            "downloadUrl": "https://github.com/test/test/releases/download/v0.95.5-release.0/test1_Windows_x86-64.JASPModule",
-            "downloadCount": 25,
-            "architecture": "Windows_x86-64"
-          },
-          {
             "downloadUrl": "https://github.com/test/test/releases/download/v0.95.5-release.0/0_Flatpak_x86_64_R_64.JASPModule",
             "downloadCount": 25,
             "architecture": "Flatpak_x86_64"
@@ -85,12 +80,34 @@
             "architecture": "MacOS_x86_64"
           },
           {
-            "downloadUrl": "https://github.com/test/test/releases/download/v0.96.0-beta.1/test1_Flatpak_x86_64.JASPModule",
+            "downloadUrl": "https://github.com/test/test/releases/download/v0.96.0-beta.1/test1_Windows_x86-64.JASPModule",
+            "downloadCount": 5,
+            "architecture": "Windows_x86-64"
+          }
+        ]
+      },
+      {
+        "publishedAt": "2025-01-15T00:00:00Z",
+        "jaspVersionRange": ">=0.95.1",
+        "version": "0.96.0-beta.0",
+        "assets": [
+          {
+            "downloadUrl": "https://github.com/test/test/releases/download/v0.96.0-beta.0/test1_MacOS_arm64.JASPModule",
+            "downloadCount": 5,
+            "architecture": "MacOS_arm64"
+          },
+          {
+            "downloadUrl": "https://github.com/test/test/releases/download/v0.96.0-beta.0/test1_MacOS_x86_64.JASPModule",
+            "downloadCount": 5,
+            "architecture": "MacOS_x86_64"
+          },
+          {
+            "downloadUrl": "https://github.com/test/test/releases/download/v0.96.0-beta.0/test1_Flatpak_x86_64.JASPModule",
             "downloadCount": 5,
             "architecture": "Flatpak_x86_64"
           },
           {
-            "downloadUrl": "https://github.com/test/test/releases/download/v0.96.0-beta.1/test1_Windows_x86-64.JASPModule",
+            "downloadUrl": "https://github.com/test/test/releases/download/v0.96.0-beta.0/test1_Windows_x86-64.JASPModule",
             "downloadCount": 5,
             "architecture": "Windows_x86-64"
           }
