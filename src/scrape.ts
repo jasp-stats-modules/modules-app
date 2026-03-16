@@ -23,7 +23,7 @@ import type {
 } from './types';
 
 // Directory where the modules-registry repo will be cloned/updated
-export const REGISTRY_DIR = resolve('registry');
+const REGISTRY_DIR = resolve('registry');
 const MyOctokit = Octokit.plugin(paginateGraphQL);
 const MAX_PNG_ICON_DIMENSION = 96;
 export const EXPECTED_ARCHITECTURES = [
@@ -41,6 +41,36 @@ function gitInstance() {
     console.log(`git.${method} ${stage} stage ${progress}% complete`);
   };
   return simpleGit({ baseDir: REGISTRY_DIR, progress });
+}
+
+/**
+ * The same JASP module/submodule can be in multiple channels/directory.
+ */
+export function groupByChannel(submodules: Submodule[]): BareRepository[] {
+  const repositories: BareRepository[] = [];
+  for (const submodule of submodules) {
+    const channel = path2channel(submodule.path);
+    const nameWithOwner = url2nameWithOwner(submodule.gitUrl);
+    const existingRepo = repositories.find(
+      (r) => r.releaseSource === nameWithOwner,
+    );
+    if (existingRepo) {
+      existingRepo.channels.push(channel);
+    } else {
+      repositories.push({
+        // this expects the clone in jasp-stats-modules was note renamed
+        id: nameWithOwner.split('/')[1],
+        name: submodule.name,
+        description: submodule.description,
+        translations: submodule.translations,
+        homepageUrl: submodule.homepageUrl,
+        iconUrl: submodule.iconUrl,
+        releaseSource: nameWithOwner,
+        channels: [channel],
+      });
+    }
+  }
+  return repositories;
 }
 
 /**
@@ -94,36 +124,6 @@ async function pullAndScrapeRegistry(
   return groupByChannel(ungroupdedSubmodules);
 }
 
-/**
- * The same JASP module/submodule can be in multiple channels/directory.
- */
-export function groupByChannel(submodules: Submodule[]): BareRepository[] {
-  const repositories: BareRepository[] = [];
-  for (const submodule of submodules) {
-    const channel = path2channel(submodule.path);
-    const nameWithOwner = url2nameWithOwner(submodule.gitUrl);
-    const existingRepo = repositories.find(
-      (r) => r.releaseSource === nameWithOwner,
-    );
-    if (existingRepo) {
-      existingRepo.channels.push(channel);
-    } else {
-      repositories.push({
-        // this expects the clone in jasp-stats-modules was note renamed
-        id: nameWithOwner.split('/')[1],
-        name: submodule.name,
-        description: submodule.description,
-        translations: submodule.translations,
-        homepageUrl: submodule.homepageUrl,
-        iconUrl: submodule.iconUrl,
-        releaseSource: nameWithOwner,
-        channels: [channel],
-      });
-    }
-  }
-  return repositories;
-}
-
 export function logBareRepoStats(submodules: BareRepository[]): string {
   const total = submodules.length;
   const translationCounts = submodules.map(
@@ -136,6 +136,58 @@ export function logBareRepoStats(submodules: BareRepository[]): string {
     `Average number of translations per submodule: ${avgTranslations}`,
   ];
   return lines.join('\n');
+}
+
+/**
+ * Parse the content of a .gitmodules file and return array of submodule entries
+ */
+function parseSubModulesFile(text: string): BareSubmodule[] {
+  const result: BareSubmodule[] = [];
+
+  let currentPath = '';
+  let currentUrl = '';
+
+  const lines = text.split(/\r?\n/);
+  for (const rawLine of lines) {
+    const line = rawLine.trim();
+    if (!line) continue;
+
+    // start of a new submodule block
+    if (line.startsWith('[submodule')) {
+      currentPath = '';
+      currentUrl = '';
+      continue;
+    }
+
+    const pathMatch = line.match(/^path\s*=\s*(.*)$/);
+    if (pathMatch) {
+      currentPath = pathMatch[1].trim();
+    }
+
+    const urlMatch = line.match(/^url\s*=\s*(.*)$/);
+    if (urlMatch) {
+      currentUrl = urlMatch[1].trim();
+    }
+
+    if (currentPath && currentUrl) {
+      // Only accept URLs in the form: https://github.com/<owner>/<repo>.git
+      const githubPattern = /^https:\/\/github\.com\/[^/]+\/[^^/]+\.git$/;
+      if (!githubPattern.test(currentUrl)) {
+        console.warn(
+          `Skipping submodule ${currentPath} with unsupported gitUrl: ${currentUrl}`,
+        );
+        currentPath = '';
+        currentUrl = '';
+        continue;
+      }
+
+      result.push({ path: currentPath, gitUrl: currentUrl });
+      currentPath = '';
+      currentUrl = '';
+    }
+  }
+
+  return result;
 }
 
 export async function extractBareSubmodules(registry_dir: string) {
@@ -152,19 +204,7 @@ export async function extractBareSubmodules(registry_dir: string) {
   });
 }
 
-export async function nameAndDescriptionFromSubmodules(
-  bare_submodules: BareSubmodule[],
-): Promise<Submodule[]> {
-  return Promise.all(
-    bare_submodules.map((bare_submodule) =>
-      nameAndDescriptionFromSubmodule(bare_submodule),
-    ),
-  );
-}
-
-export async function nameAndDescriptionFromSubmodule(
-  bare_submodule: BareSubmodule,
-) {
+async function nameAndDescriptionFromSubmodule(bare_submodule: BareSubmodule) {
   const { path, gitUrl } = bare_submodule;
   const qmlDescriptionPath = pathJoin(path, 'inst', 'Description.qml');
   const descriptionFilePath = pathJoin(path, 'DESCRIPTION');
@@ -193,6 +233,17 @@ export async function nameAndDescriptionFromSubmodule(
   };
   return submoduleDetails;
 }
+
+export async function nameAndDescriptionFromSubmodules(
+  bare_submodules: BareSubmodule[],
+): Promise<Submodule[]> {
+  return Promise.all(
+    bare_submodules.map((bare_submodule) =>
+      nameAndDescriptionFromSubmodule(bare_submodule),
+    ),
+  );
+}
+
 /**
  * Parse R DESCRIPTION file content and return an object with key‑value pairs.
  * It is in a Debian Control Format.
@@ -422,6 +473,38 @@ function pngToDataUrl(pngContent: Buffer): string {
   return `data:image/png;base64,${pngContent.toString('base64')}`;
 }
 
+async function resolveModuleIconFileName(
+  repoPath: string,
+  icon: string | undefined,
+): Promise<string | undefined> {
+  if (!icon) {
+    return undefined;
+  }
+  const iconsDir = pathJoin(repoPath, 'inst', 'icons');
+  const exactIconPath = pathJoin(iconsDir, icon);
+  const hasExactIcon = await fs
+    .access(exactIconPath)
+    .then(() => true)
+    .catch(() => false);
+  if (hasExactIcon) {
+    return icon;
+  }
+
+  // Handle icon === "bain-module" case -> bain-module.svg
+  let iconFiles: string[] = [];
+  try {
+    iconFiles = await fs.readdir(iconsDir);
+  } catch {
+    return undefined;
+  }
+
+  const matchingFiles = iconFiles
+    .filter((fileName) => fileName.startsWith(`${icon}.`))
+    .sort();
+
+  return matchingFiles[0];
+}
+
 async function resolveModuleIconDataUrl(
   repoPath: string,
   icon: string | undefined,
@@ -457,38 +540,6 @@ async function resolveModuleIconDataUrl(
     );
     return undefined;
   }
-}
-
-async function resolveModuleIconFileName(
-  repoPath: string,
-  icon: string | undefined,
-): Promise<string | undefined> {
-  if (!icon) {
-    return undefined;
-  }
-  const iconsDir = pathJoin(repoPath, 'inst', 'icons');
-  const exactIconPath = pathJoin(iconsDir, icon);
-  const hasExactIcon = await fs
-    .access(exactIconPath)
-    .then(() => true)
-    .catch(() => false);
-  if (hasExactIcon) {
-    return icon;
-  }
-
-  // Handle icon === "bain-module" case -> bain-module.svg
-  let iconFiles: string[] = [];
-  try {
-    iconFiles = await fs.readdir(iconsDir);
-  } catch {
-    return undefined;
-  }
-
-  const matchingFiles = iconFiles
-    .filter((fileName) => fileName.startsWith(`${icon}.`))
-    .sort();
-
-  return matchingFiles[0];
 }
 
 export function resolveHomepageUrl(
@@ -530,86 +581,6 @@ interface BareSubmodule {
   path: string;
 }
 
-/**
- * Parse the content of a .gitmodules file and return array of submodule entries
- */
-export function parseSubModulesFile(text: string): BareSubmodule[] {
-  const result: BareSubmodule[] = [];
-
-  let currentPath = '';
-  let currentUrl = '';
-
-  const lines = text.split(/\r?\n/);
-  for (const rawLine of lines) {
-    const line = rawLine.trim();
-    if (!line) continue;
-
-    // start of a new submodule block
-    if (line.startsWith('[submodule')) {
-      currentPath = '';
-      currentUrl = '';
-      continue;
-    }
-
-    const pathMatch = line.match(/^path\s*=\s*(.*)$/);
-    if (pathMatch) {
-      currentPath = pathMatch[1].trim();
-    }
-
-    const urlMatch = line.match(/^url\s*=\s*(.*)$/);
-    if (urlMatch) {
-      currentUrl = urlMatch[1].trim();
-    }
-
-    if (currentPath && currentUrl) {
-      // Only accept URLs in the form: https://github.com/<owner>/<repo>.git
-      const githubPattern = /^https:\/\/github\.com\/[^/]+\/[^^/]+\.git$/;
-      if (!githubPattern.test(currentUrl)) {
-        console.warn(
-          `Skipping submodule ${currentPath} with unsupported gitUrl: ${currentUrl}`,
-        );
-        currentPath = '';
-        currentUrl = '';
-        continue;
-      }
-
-      result.push({ path: currentPath, gitUrl: currentUrl });
-      currentPath = '';
-      currentUrl = '';
-    }
-  }
-
-  return result;
-}
-
-/**
- * Key is repository name with owner, value is array of channels
- */
-export type Repo2Channels = Record<string, string[]>;
-
-export function extractArchitectureFromUrl(
-  url: string,
-  expectedArchitectures: ExpectedArchitectures = EXPECTED_ARCHITECTURES,
-): string {
-  const filename = url.split('/').pop();
-  if (!filename) throw new Error(`URL ${url} does not contain a filename`);
-  for (const arch of expectedArchitectures) {
-    if (filename.includes(arch)) {
-      return arch;
-    }
-  }
-  if (filename.includes('MacOS_x86_64') || filename.includes('MacOS_x86-64')) {
-    return 'MacOS_x86_64';
-  }
-  if (filename.includes('Windows_arm64')) {
-    return 'Windows_arm64';
-  }
-  if (filename.includes('Linux_arm64')) {
-    return 'Linux_arm64';
-  }
-  throw new Error(`Unknown architecture in filename: ${filename}`);
-}
-
 const ReleaseFrontMatter = v.object({
   jasp: v.optional(v.string()),
   name: v.optional(v.string()),
@@ -617,76 +588,10 @@ const ReleaseFrontMatter = v.object({
 });
 type ReleaseFrontMatter = v.InferOutput<typeof ReleaseFrontMatter>;
 
-/**
- * Given description like:
- * ```
- * ---
- * jasp: >=0.95.0
- * name: My Module
- * description: This is my module.
- * ---
- * ```
- * extracts the frontmatter as an object
- * where jasp is the version range that is supported by this release.
- *
- * The version range string should be in format that semver package understands.
- * See https://semver.npmjs.com/ for more details.
- *
- * @param description
- * @returns
- */
-export function parseReleaseFrontMatter(
-  description: string,
-): ReleaseFrontMatter {
-  const raw = matter(addQuotesInDescription(description));
-  return v.parse(ReleaseFrontMatter, raw.data);
-}
-
 // TODO remove once all release descriptions fetched have valid yaml in frontmatter
-export function addQuotesInDescription(input: string): string {
+function addQuotesInDescription(input: string): string {
   const regex = /^(.*?): (>.*)$/m;
   return input.replace(regex, (_, p1, p2) => `${p1}: "${p2}"`);
-}
-
-/**
- * The name of a repo is the GitHub repo name by default,
- * a release frontmatter can override this.
- * The shortDescriptionHTML aka the text on GH page in about sidebar
- * can also be overridden by release frontmatter.
- *
- * @param repo
- * @param releasesFrontMatters
- * @param preReleasesFrontMatters
- * @returns
- */
-// New function: read name and description from Description.qml in the submodule
-// The QML file looks like:
-// Description { title: qsTr("ANOVA") description: qsTr("Evaluate the difference between multiple means") }
-// This function extracts the first qsTr strings for title and description.
-
-/**
- * Parse the raw content of Description.qml and return the extracted title and description.
- */
-export function parseDescriptionQml(content: string): {
-  title: string;
-  description: string;
-  icon?: string;
-} {
-  const titleMatch = /title\s*:\s*[^q]*?qsTr\("([^"]+)"\)/s.exec(content);
-  const descriptionMatch = /description\s*:\s*[^q]*?qsTr\("([^"]+)"\)/s.exec(
-    content,
-  );
-  const icon = parseTopLevelDescriptionIcon(content);
-  if (!titleMatch || !descriptionMatch) {
-    throw new Error(
-      'Failed to parse name and description from Description.qml content',
-    );
-  }
-  return {
-    title: titleMatch[1],
-    description: descriptionMatch[1],
-    icon,
-  };
 }
 
 function parseTopLevelDescriptionIcon(content: string): string | undefined {
@@ -724,6 +629,56 @@ function parseTopLevelDescriptionIcon(content: string): string | undefined {
   }
 
   return undefined;
+}
+
+/**
+ * Given description like:
+ * ```
+ * ---
+ * jasp: >=0.95.0
+ * name: My Module
+ * description: This is my module.
+ * ---
+ * ```
+ * extracts the frontmatter as an object
+ * where jasp is the version range that is supported by this release.
+ *
+ * The version range string should be in format that semver package understands.
+ * See https://semver.npmjs.com/ for more details.
+ *
+ * @param description
+ * @returns
+ */
+export function parseReleaseFrontMatter(
+  description: string,
+): ReleaseFrontMatter {
+  const raw = matter(addQuotesInDescription(description));
+  return v.parse(ReleaseFrontMatter, raw.data);
+}
+
+/**
+ * Parse the raw content of Description.qml and return the extracted title and description.
+ */
+export function parseDescriptionQml(content: string): {
+  title: string;
+  description: string;
+  icon?: string;
+} {
+  const titleMatch = /title\s*:\s*[^q]*?qsTr\("([^"]+)"\)/s.exec(content);
+  const descriptionMatch = /description\s*:\s*[^q]*?qsTr\("([^"]+)"\)/s.exec(
+    content,
+  );
+  const icon = parseTopLevelDescriptionIcon(content);
+  if (!titleMatch || !descriptionMatch) {
+    throw new Error(
+      'Failed to parse name and description from Description.qml content',
+    );
+  }
+  return {
+    title: titleMatch[1],
+    description: descriptionMatch[1],
+    icon,
+  };
 }
 
 async function extractNameAndDescriptionFromPoFile(
@@ -775,14 +730,6 @@ export async function extractTranslationsFromPoFiles(
   return Object.fromEntries(
     translationEntries.filter((entry) => entry !== undefined),
   );
-}
-
-export function batchedArray<T>(array: T[], size: number): T[][] {
-  const batches: T[][] = [];
-  for (let i = 0; i < array.length; i += size) {
-    batches.push(array.slice(i, i + size));
-  }
-  return batches;
 }
 
 export interface GqlRelease {
@@ -845,65 +792,63 @@ function logWithBar(
   }
 }
 
-function latestReleaseNeedsFallback(
-  releases: GqlRelease[],
-  expectedArchitectures: ExpectedArchitectures,
-): boolean {
-  if (releases.length === 0) {
-    return false;
+export function extractArchitectureFromUrl(
+  url: string,
+  expectedArchitectures: ExpectedArchitectures = EXPECTED_ARCHITECTURES,
+): ExpectedArchitecture {
+  const filename = url.split('/').pop();
+  if (!filename) throw new Error(`URL ${url} does not contain a filename`);
+  for (const arch of expectedArchitectures) {
+    if (filename.includes(arch)) {
+      return arch;
+    }
   }
-
-  const latestWithSomeAssets = releases.find((release) => {
-    const nrOfModuleAssets = release.releaseAssets.nodes.filter((asset) =>
-      asset.downloadUrl.endsWith('.JASPModule'),
-    ).length;
-    return nrOfModuleAssets > 0;
-  });
-
-  if (!latestWithSomeAssets) {
-    return true;
+  if (filename.includes('MacOS_x86_64') || filename.includes('MacOS_x86-64')) {
+    return 'MacOS_x86_64';
   }
+  throw new Error(`Unknown architecture in filename: ${filename}`);
+}
 
-  return (
-    detectMissingArchitecturesInGqlRelease(
-      latestWithSomeAssets,
-      expectedArchitectures,
-    ).length > 0
+function detectPresentArchitectures(
+  release: GqlRelease,
+): Set<ExpectedArchitecture> {
+  return new Set(
+    release.releaseAssets.nodes
+      .filter((asset) => asset.downloadUrl.endsWith('.JASPModule'))
+      .map((asset) => extractArchitectureFromUrl(asset.downloadUrl)),
   );
 }
 
-function hasFallbackCoverage(
+export function detectMissingArchitectures(
+  release: GqlRelease,
+  expectedArchitectures: ExpectedArchitectures,
+): Set<ExpectedArchitecture> {
+  const presentArchitectures = detectPresentArchitectures(release);
+  return new Set(
+    expectedArchitectures.filter((arch) => !presentArchitectures.has(arch)),
+  );
+}
+
+function checkAllArchitecturesCovered(
   releases: GqlRelease[],
   expectedArchitectures: ExpectedArchitectures,
 ): boolean {
-  const latestWithSomeAssets = releases.find((release) => {
-    const nrOfModuleAssets = release.releaseAssets.nodes.filter((asset) =>
-      asset.downloadUrl.endsWith('.JASPModule'),
-    ).length;
-    return nrOfModuleAssets > 0;
-  });
-
-  if (!latestWithSomeAssets) {
+  if (!releases) {
+    // Can not fallback if no releases at all
     return false;
   }
-
-  const missingArchitectures = detectMissingArchitecturesInGqlRelease(
-    latestWithSomeAssets,
-    expectedArchitectures,
-  );
-
-  if (missingArchitectures.length === 0) {
-    return true;
+  const architecturesFromAllReleases = new Set<string>();
+  for (const release of releases) {
+    const presentArchitectures = detectPresentArchitectures(release);
+    for (const arch of presentArchitectures) {
+      architecturesFromAllReleases.add(arch);
+    }
+    if (architecturesFromAllReleases.size === expectedArchitectures.length) {
+      // Stop as soon as we have coverage for all architectures, no need to keep checking older releases
+      return true;
+    }
   }
-
-  return missingArchitectures.every((architecture) =>
-    releases.some((release) =>
-      release.releaseAssets.nodes.some(
-        (asset) =>
-          extractArchitectureFromUrl(asset.downloadUrl) === architecture,
-      ),
-    ),
-  );
+  return architecturesFromAllReleases.size === expectedArchitectures.length;
 }
 
 export function shouldContinuePagination(
@@ -914,12 +859,18 @@ export function shouldContinuePagination(
   if (!hasNextPage || allReleases.length === 0) {
     return false;
   }
-
-  const stabeReleases = allReleases.filter(
-    (release) => !release.isDraft && !release.isPrerelease,
+  const releasesNonDraftAndWithSomeBinaryAssets = allReleases.filter(
+    (release) =>
+      !release.isDraft &&
+      release.releaseAssets.nodes.some(
+        (asset) => asset.downloadUrl.endsWith('.JASPModule'), // ignore source tarbal and zip
+      ),
   );
-  const preReleases = allReleases.filter(
-    (release) => !release.isDraft && release.isPrerelease,
+  const stabeReleases = releasesNonDraftAndWithSomeBinaryAssets.filter(
+    (release) => !release.isPrerelease,
+  );
+  const preReleases = releasesNonDraftAndWithSomeBinaryAssets.filter(
+    (release) => release.isPrerelease,
   );
 
   if (stabeReleases.length === 0) {
@@ -927,22 +878,18 @@ export function shouldContinuePagination(
     // Occurs when first page of releases only contains drafts or pre-releases.
     return true;
   }
-
-  const stableNeedsFallback = latestReleaseNeedsFallback(
+  const stableCovered = checkAllArchitecturesCovered(
     stabeReleases,
     expectedArchitectures,
   );
-  const preReleaseNeedsFallback = latestReleaseNeedsFallback(
+  if (stableCovered && preReleases.length === 0) {
+    // Never get next page if there are stable releases and no pre-releases
+    return false;
+  }
+  const preReleaseCovered = checkAllArchitecturesCovered(
     preReleases,
     expectedArchitectures,
   );
-
-  const stableCovered =
-    !stableNeedsFallback ||
-    hasFallbackCoverage(stabeReleases, expectedArchitectures);
-  const preReleaseCovered =
-    !preReleaseNeedsFallback ||
-    hasFallbackCoverage(preReleases, expectedArchitectures);
 
   // Stop as soon as both tracks have enough architecture coverage for their latest release.
   return !(stableCovered && preReleaseCovered);
@@ -1043,55 +990,6 @@ async function fetchAllReleasesForRepo(
     parentOwnerLogin,
     releases: allReleases,
   };
-}
-
-export function detectMissingArchitecturesInGqlRelease(
-  release: GqlRelease,
-  expectedArchitectures: ExpectedArchitectures,
-): string[] {
-  const presentArchitectures = new Set(
-    release.releaseAssets.nodes.map((asset) =>
-      extractArchitectureFromUrl(asset.downloadUrl),
-    ),
-  );
-  return expectedArchitectures.filter(
-    (arch) => !presentArchitectures.has(arch),
-  );
-}
-
-/**
- * Detects which expected architectures are missing from a release.
- */
-export function detectMissingArchitecturesinRelease(
-  release: Release,
-  expectedArchitectures: ExpectedArchitectures,
-): ExpectedArchitectures {
-  const presentArchitectures = new Set(
-    release.assets.map((asset) => asset.architecture),
-  );
-  return expectedArchitectures.filter(
-    (arch) => !presentArchitectures.has(arch),
-  );
-}
-
-/**
- * Finds the oldest release (earliest published) in the same JASP version range
- * that contains a specific architecture.
- */
-export function findOlderReleaseWithArchitecture(
-  jaspVersionRange: string | undefined,
-  architecture: string,
-  allReleases: Release[],
-): Release | undefined {
-  // Filter releases to same JASP version range
-  const sameVersionRangeReleases = allReleases.filter(
-    (r) => r.jaspVersionRange === jaspVersionRange,
-  );
-
-  // Find releases that have this architecture
-  return sameVersionRangeReleases.find((release) =>
-    release.assets.some((asset) => asset.architecture === architecture),
-  );
 }
 
 export function selectReleasesForArchitectureCoverage(
@@ -1392,36 +1290,6 @@ export function logReleaseStatistics(repositories: Repository[]): string {
         : chalk.red(avgAssetsPerRelease.toFixed(2))
     }`,
   ];
-  return lines.join('\n');
-}
-
-function invertRepoToChannels(
-  repo2channels: Repo2Channels,
-): Record<string, string[]> {
-  const channel2repos: Record<string, string[]> = {};
-  for (const [repo, channels] of Object.entries(repo2channels)) {
-    if (channels.length > 1) {
-      console.info(
-        `Repository ${repo} is in multiple channels: ${channels.join(', ')}`,
-      );
-    }
-    for (const channel of channels) {
-      if (!channel2repos[channel]) {
-        channel2repos[channel] = [];
-      }
-      channel2repos[channel].push(repo);
-    }
-  }
-  return channel2repos;
-}
-
-export function logChannelStats(repo2channels: Repo2Channels): string {
-  const channel2repos = invertRepoToChannels(repo2channels);
-  const lines: string[] = [];
-  lines.push(`Found ${Object.keys(channel2repos).length} channels`);
-  for (const [channel, repos] of Object.entries(channel2repos)) {
-    lines.push(` - ${channel}: ${repos.length}`);
-  }
   return lines.join('\n');
 }
 
