@@ -587,23 +587,22 @@ export function parseSubModulesFile(text: string): BareSubmodule[] {
  */
 export type Repo2Channels = Record<string, string[]>;
 
-export function extractArchitectureFromUrl(url: string): string {
+export function extractArchitectureFromUrl(
+  url: string,
+  expectedArchitectures: ExpectedArchitectures = EXPECTED_ARCHITECTURES,
+): string {
   const filename = url.split('/').pop();
   if (!filename) throw new Error(`URL ${url} does not contain a filename`);
-  if (filename.includes('Windows_x86-64')) {
-    return 'Windows_x86-64';
-  }
-  if (filename.includes('MacOS_arm64')) {
-    return 'MacOS_arm64';
+  for (const arch of expectedArchitectures) {
+    if (filename.includes(arch)) {
+      return arch;
+    }
   }
   if (filename.includes('MacOS_x86_64') || filename.includes('MacOS_x86-64')) {
     return 'MacOS_x86_64';
   }
   if (filename.includes('Windows_arm64')) {
     return 'Windows_arm64';
-  }
-  if (filename.includes('Flatpak_x86_64')) {
-    return 'Flatpak_x86_64';
   }
   if (filename.includes('Linux_arm64')) {
     return 'Linux_arm64';
