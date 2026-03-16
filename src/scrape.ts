@@ -911,19 +911,25 @@ export function shouldContinuePagination(
   hasNextPage: boolean,
   expectedArchitectures: ExpectedArchitectures,
 ): boolean {
-  if (!hasNextPage) {
+  if (!hasNextPage || allReleases.length === 0) {
     return false;
   }
 
-  const productionReleases = allReleases.filter(
+  const stabeReleases = allReleases.filter(
     (release) => !release.isDraft && !release.isPrerelease,
   );
   const preReleases = allReleases.filter(
     (release) => !release.isDraft && release.isPrerelease,
   );
 
-  const productionNeedsFallback = latestReleaseNeedsFallback(
-    productionReleases,
+  if (stabeReleases.length === 0) {
+    // Always get next page if no stable release in currently fetched pages.
+    // Occurs when first page of releases only contains drafts or pre-releases.
+    return true;
+  }
+
+  const stableNeedsFallback = latestReleaseNeedsFallback(
+    stabeReleases,
     expectedArchitectures,
   );
   const preReleaseNeedsFallback = latestReleaseNeedsFallback(
@@ -931,15 +937,15 @@ export function shouldContinuePagination(
     expectedArchitectures,
   );
 
-  const productionCovered =
-    !productionNeedsFallback ||
-    hasFallbackCoverage(productionReleases, expectedArchitectures);
+  const stableCovered =
+    !stableNeedsFallback ||
+    hasFallbackCoverage(stabeReleases, expectedArchitectures);
   const preReleaseCovered =
     !preReleaseNeedsFallback ||
     hasFallbackCoverage(preReleases, expectedArchitectures);
 
   // Stop as soon as both tracks have enough architecture coverage for their latest release.
-  return !(productionCovered && preReleaseCovered);
+  return !(stableCovered && preReleaseCovered);
 }
 
 async function fetchAllReleasesForRepo(

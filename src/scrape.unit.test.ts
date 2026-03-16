@@ -2386,8 +2386,14 @@ describe('shouldContinuePagination', () => {
       expectedResult: false,
     },
     {
-      name: 'latest beta has all architectures, no stable',
+      name: 'latest beta has all architectures, no stable, continue to find stable',
       releases: [createGqlRelease('1.2.0-beta.0', true)],
+      expectedArchitectures: ['Windows_x86-64'],
+      expectedResult: true,
+    },
+    {
+      name: 'latest beta has all architectures, no stable, unable to continue to find stable',
+      releases: [createGqlRelease('1.2.0-beta.0', false)],
       expectedArchitectures: ['Windows_x86-64'],
       expectedResult: false,
     },
@@ -2492,6 +2498,12 @@ describe('shouldContinuePagination', () => {
       ],
       expectedArchitectures: EXPECTED_ARCHITECTURES,
       expectedResult: false,
+    },
+    {
+      name: 'continue when no stable release is found',
+      releases: [createGqlRelease('1.2.0-beta.0', true, ['Windows_x86-64'])],
+      expectedArchitectures: ['Windows_x86-64'],
+      expectedResult: true,
     },
   ])('$name', ({ releases, expectedArchitectures, expectedResult }) => {
     expect(
