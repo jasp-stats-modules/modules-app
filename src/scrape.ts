@@ -1021,6 +1021,11 @@ async function fetchAllReleasesForRepo(
       ) {
         break;
       }
+      logWithBar(
+        `Fetching more releases from ${owner}/${repo}, cursor ${endCursor}`,
+        bar,
+        console.log,
+      );
     } catch (error) {
       const message = `Error fetching releases for ${owner}/${repo}: ${error}`;
       logWithBar(message, bar, console.error);
