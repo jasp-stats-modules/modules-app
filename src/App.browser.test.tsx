@@ -343,7 +343,8 @@ describe('App component', () => {
       const jaspAnovaCard = screen.getByRole('listitem', { name: 'jaspAnova' });
       await expect.element(jaspAnovaCard).toBeInTheDocument();
 
-      // Latest stable 0.95.0 has no Windows asset, so it should fall back to 0.94.0.
+      // Latest stable 0.95.5-release.0 has no Windows asset,
+      // so it should fall back to 0.94.0-release.0.
       const installButton = jaspAnovaCard.getByRole('link', {
         name: 'Install',
       });
