@@ -1789,6 +1789,38 @@ describe('resolveHomepageUrl', () => {
   });
 });
 
+describe('extractBareSubmodules with unsupported git URL', () => {
+  let tempDir: tmp.DirResult;
+
+  beforeEach(async () => {
+    tempDir = tmp.dirSync({ unsafeCleanup: true });
+
+    const gimodulesFile = path.join(tempDir.name, '.gitmodules');
+    const content = `[submodule "beta-modules/jaspAnova"]
+path = Official/jaspAnova
+url = https://gitlab.com/jasp-stats-modules/jaspAnova.git
+`;
+    await fs.writeFile(gimodulesFile, content);
+  });
+
+  afterEach(() => {
+    tempDir.removeCallback();
+  });
+
+  test('skips gitlab submodule and warns', async () => {
+    const warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
+
+    const result = await extractBareSubmodules(tempDir.name);
+
+    expect(result).toEqual([]);
+    expect(warnSpy).toHaveBeenCalledWith(
+      'Skipping submodule Official/jaspAnova with unsupported gitUrl: https://gitlab.com/jasp-stats-modules/jaspAnova.git',
+    );
+
+    warnSpy.mockRestore();
+  });
+});
+
 describe('given a mock registry with a single submodule with a single translation', () => {
   let tempDir: tmp.DirResult;
 
