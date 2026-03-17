@@ -796,9 +796,14 @@ export function extractArchitectureFromUrl(
   url: string,
   expectedArchitectures: ExpectedArchitectures = EXPECTED_ARCHITECTURES,
 ): ExpectedArchitecture {
+  // fallback to all archs when none are provided
+  const architectures =
+    expectedArchitectures.length === 0
+      ? EXPECTED_ARCHITECTURES
+      : expectedArchitectures;
   const filename = url.split('/').pop();
   if (!filename) throw new Error(`URL ${url} does not contain a filename`);
-  for (const arch of expectedArchitectures) {
+  for (const arch of architectures) {
     if (filename.includes(arch)) {
       return arch;
     }
@@ -811,21 +816,14 @@ export function extractArchitectureFromUrl(
 
 function detectPresentArchitectures(
   release: GqlRelease,
+  expectedArchitectures: ExpectedArchitectures,
 ): Set<ExpectedArchitecture> {
   return new Set(
     release.releaseAssets.nodes
       .filter((asset) => asset.downloadUrl.endsWith('.JASPModule'))
-      .map((asset) => extractArchitectureFromUrl(asset.downloadUrl)),
-  );
-}
-
-export function detectMissingArchitectures(
-  release: GqlRelease,
-  expectedArchitectures: ExpectedArchitectures,
-): Set<ExpectedArchitecture> {
-  const presentArchitectures = detectPresentArchitectures(release);
-  return new Set(
-    expectedArchitectures.filter((arch) => !presentArchitectures.has(arch)),
+      .map((asset) =>
+        extractArchitectureFromUrl(asset.downloadUrl, expectedArchitectures),
+      ),
   );
 }
 
@@ -839,7 +837,10 @@ function checkAllArchitecturesCovered(
   }
   const architecturesFromAllReleases = new Set<string>();
   for (const release of releases) {
-    const presentArchitectures = detectPresentArchitectures(release);
+    const presentArchitectures = detectPresentArchitectures(
+      release,
+      expectedArchitectures,
+    );
     for (const arch of presentArchitectures) {
       architecturesFromAllReleases.add(arch);
     }

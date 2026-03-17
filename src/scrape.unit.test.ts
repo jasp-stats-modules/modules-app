@@ -18,7 +18,6 @@ import {
 } from 'vitest';
 import type { ExpectedArchitectures, GqlRelease } from './scrape';
 import {
-  detectMissingArchitectures,
   EXPECTED_ARCHITECTURES,
   extractArchitectureFromUrl,
   extractBareSubmodules,
@@ -512,6 +511,15 @@ describe('extractArchitectureFromUrl', () => {
   test('throws error for unknown architecture', () => {
     expect(() =>
       extractArchitectureFromUrl('jaspAnova_0.95.0_UnknownArch.JASPModule'),
+    ).toThrow('Unknown architecture in filename');
+  });
+
+  test('when url does not match expected pattern, throws error', () => {
+    expect(() =>
+      extractArchitectureFromUrl(
+        'jaspAnova_0.95.0_Windows_x86-64_R-4-5-1.JASPModule',
+        ['Flatpak_x86_64'],
+      ),
     ).toThrow('Unknown architecture in filename');
   });
 });
@@ -2117,63 +2125,6 @@ test('logBareRepoStats', () => {
     'Average number of translations per submodule: 1',
   ].join('\n');
   expect(result).toEqual(expected);
-});
-
-describe('detectMissingArchitectures', () => {
-  test('detects missing architectures from a release with partial assets', () => {
-    const release: GqlRelease = {
-      tagName: '1.0.0--release.0',
-      isDraft: false,
-      isPrerelease: false,
-      publishedAt: '2025-01-01T00:00:00Z',
-      releaseAssets: {
-        nodes: [
-          {
-            downloadUrl: 'https://example.com/module-Windows_x86-64.JASPModule',
-            downloadCount: 10,
-          },
-          {
-            downloadUrl: 'https://example.com/module-MacOS_arm64.JASPModule',
-            downloadCount: 5,
-          },
-        ],
-      },
-    };
-    const missing = detectMissingArchitectures(release, EXPECTED_ARCHITECTURES);
-    expect(missing).toEqual(new Set(['MacOS_x86_64', 'Flatpak_x86_64']));
-  });
-
-  test('returns empty array when all architectures are present', () => {
-    const release: GqlRelease = {
-      tagName: '1.0.0--release.0',
-      isDraft: false,
-      isPrerelease: false,
-      publishedAt: '2025-01-01T00:00:00Z',
-      releaseAssets: {
-        nodes: [
-          {
-            downloadUrl: 'https://example.com/module-Windows_x86-64.JASPModule',
-            downloadCount: 10,
-          },
-          {
-            downloadUrl: 'https://example.com/module-MacOS_x86_64.JASPModule',
-            downloadCount: 8,
-          },
-          {
-            downloadUrl: 'https://example.com/module-MacOS_arm64.JASPModule',
-            downloadCount: 5,
-          },
-          {
-            downloadUrl: 'https://example.com/module-Flatpak_x86_64.JASPModule',
-            downloadCount: 3,
-          },
-        ],
-      },
-    };
-
-    const missing = detectMissingArchitectures(release, EXPECTED_ARCHITECTURES);
-    expect(missing).toEqual(new Set([]));
-  });
 });
 
 describe('shouldContinuePagination', () => {
