@@ -366,7 +366,30 @@ describe('App component', () => {
     });
   });
 
-  describe('Given Flatpak and show betas', () => {
+  describe('Given powerpc architecture with no compatible assets', () => {
+    beforeEach(async () => {
+      screen = await render(
+        <NuqslessWrapper>
+          <App />
+        </NuqslessWrapper>,
+        {
+          wrapper: withNuqsTestingAdapter({
+            searchParams: { c: 'test.json', a: 'powerpc' },
+          }),
+        },
+      );
+    });
+
+    test('renders no modules found', async () => {
+      await expect
+        .element(screen.getByText('No modules found'))
+        .toBeInTheDocument();
+      // This test also mimicks what happens when
+      // a module has no release assets for given architecture
+    });
+  });
+
+  describe('Given on Windows_x86-64 and show betas', () => {
     beforeEach(async () => {
       screen = await render(
         <NuqslessWrapper>

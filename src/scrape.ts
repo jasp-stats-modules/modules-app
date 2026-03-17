@@ -58,7 +58,7 @@ export function groupByChannel(submodules: Submodule[]): BareRepository[] {
       existingRepo.channels.push(channel);
     } else {
       repositories.push({
-        // this expects the clone in jasp-stats-modules was note renamed
+        // using split expects the clone in jasp-stats-modules was not renamed
         id: nameWithOwner.split('/')[1],
         name: submodule.name,
         description: submodule.description,
@@ -867,20 +867,20 @@ export function shouldContinuePagination(
         (asset) => asset.downloadUrl.endsWith('.JASPModule'), // ignore source tarbal and zip
       ),
   );
-  const stabeReleases = releasesNonDraftAndWithSomeBinaryAssets.filter(
+  const stableReleases = releasesNonDraftAndWithSomeBinaryAssets.filter(
     (release) => !release.isPrerelease,
   );
   const preReleases = releasesNonDraftAndWithSomeBinaryAssets.filter(
     (release) => release.isPrerelease,
   );
 
-  if (stabeReleases.length === 0) {
+  if (stableReleases.length === 0) {
     // Always get next page if no stable release in currently fetched pages.
     // Occurs when first page of releases only contains drafts or pre-releases.
     return true;
   }
   const stableCovered = checkAllArchitecturesCovered(
-    stabeReleases,
+    stableReleases,
     expectedArchitectures,
   );
   if (stableCovered && preReleases.length === 0) {
