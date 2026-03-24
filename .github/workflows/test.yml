@@ -48,10 +48,11 @@ jobs:
 
       - name: 💾 Upload unit coverage data
         if: always() 
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v7
         with:
           name: unit-coverage
           path: coverage/
+          archive: false
 
   browser-tests:
     runs-on: ubuntu-latest
@@ -86,10 +87,11 @@ jobs:
           name: 'Browser test coverage'
 
       - name: 💾 Upload browser coverage data
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v7
         with:
           name: browser-coverage
           path: coverage/
+          archive: false
 
   badges:
     name: 'Generate and commit coverage badges'
@@ -103,13 +105,13 @@ jobs:
           fetch-depth: 0
 
       - name: 📂 Download unit coverage data
-        uses: actions/download-artifact@v7
+        uses: actions/download-artifact@v8
         with:
           name: unit-coverage
           path: coverage/unit/
 
       - name: 📂 Download browser coverage data
-        uses: actions/download-artifact@v7
+        uses: actions/download-artifact@v8
         with:
           name: browser-coverage
           path: coverage/browser/
