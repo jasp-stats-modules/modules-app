@@ -66,8 +66,8 @@ To get a list of available JASP modules, it does the following with the help of 
       ---
       ```
    4. Split releases into latest release for each JASP version range and latest pre release.
-   5. If the latest release does not have all assets for all platforms it tries to find a older releas with the missing assets.
-   6. If no covering release in first 20 releases then if pages to next page of releases and repeat the process until a covering release is found or there are no more releases.
+   5. If the latest release does not have assets for all platforms it tries to find an older release with the missing assets.
+   6. If no releases are found in first 20 releases with all assets, then it pages to next page of releases and repeats the process until a covering release is found or there are no more releases.
 4. Saves data in `public/index.json` for the web application to use
 
 If you want to scrape modules from an additional branch (e.g., beta) you can trigger the deploy workflow manually and specify the branch and output catalog file path.
