@@ -776,6 +776,24 @@ interface FetchedRepoReleases {
   releases: GqlRelease[];
 }
 
+interface FetchAllReleasesForRepoOptions {
+  firstReleases: number;
+  firstAssets: number;
+  octokit: InstanceType<typeof MyOctokit>;
+  expectedArchitectures: ExpectedArchitectures;
+}
+
+interface ReleaseAssetsForRepoOptions {
+  expectedArchitectures: ExpectedArchitectures;
+  octokit: InstanceType<typeof MyOctokit>;
+  firstReleases?: number;
+  firstAssets?: number;
+}
+
+export interface ReleaseAssetsOptions extends ReleaseAssetsForRepoOptions {
+  concurrency?: number;
+}
+
 function isGraphqlRequest(options: { method?: string; url?: string }): boolean {
   const method = options.method?.toUpperCase();
   const url = options.url;
@@ -925,11 +943,10 @@ export function shouldContinuePagination(
 
 async function fetchAllReleasesForRepo(
   nameWithOwner: string,
-  firstReleases: number,
-  firstAssets: number,
-  octokit: InstanceType<typeof MyOctokit>,
-  expectedArchitectures: ExpectedArchitectures,
+  options: FetchAllReleasesForRepoOptions,
 ): Promise<FetchedRepoReleases> {
+  const { firstReleases, firstAssets, octokit, expectedArchitectures } =
+    options;
   const [owner, repo] = nameWithOwner.split('/');
   const allReleases: GqlRelease[] = [];
   let hasNextPage = true;
@@ -1157,21 +1174,23 @@ export function transformRelease(
 
 async function releaseAssetsForRepo(
   bareRepo: BareRepository,
-  expectedArchitectures: ExpectedArchitectures,
-  firstReleases = 20,
-  firstAssets = 20,
-  octokit: InstanceType<typeof MyOctokit>,
+  options: ReleaseAssetsForRepoOptions,
 ): Promise<Repository | undefined> {
+  const {
+    expectedArchitectures,
+    firstReleases = 20,
+    firstAssets = 20,
+    octokit,
+  } = options;
   const nameWithOwner = bareRepo.releaseSource;
 
   try {
-    const fetched = await fetchAllReleasesForRepo(
-      nameWithOwner,
+    const fetched = await fetchAllReleasesForRepo(nameWithOwner, {
       firstReleases,
       firstAssets,
       octokit,
       expectedArchitectures,
-    );
+    });
 
     const allGqlReleases = fetched.releases;
 
@@ -1226,12 +1245,15 @@ async function releaseAssetsForRepo(
 
 export async function releaseAssets(
   repos: BareRepository[],
-  expectedArchitectures: ExpectedArchitectures,
-  firstReleases = 20,
-  firstAssets = 20,
-  octokit: InstanceType<typeof MyOctokit>,
-  concurrency = 5,
+  options: ReleaseAssetsOptions,
 ): Promise<Repository[]> {
+  const {
+    expectedArchitectures,
+    firstReleases = 20,
+    firstAssets = 20,
+    octokit,
+    concurrency = 5,
+  } = options;
   const finalResults: Repository[] = [];
   const limit = pLimit(concurrency);
   let dispatched = 0;
@@ -1243,13 +1265,12 @@ export async function releaseAssets(
         console.log(
           `Fetching releases for ${bareRepo.releaseSource} (${index} of ${repos.length})`,
         );
-        const result = await releaseAssetsForRepo(
-          bareRepo,
+        const result = await releaseAssetsForRepo(bareRepo, {
           expectedArchitectures,
           firstReleases,
           firstAssets,
           octokit,
-        );
+        });
         if (
           result &&
           (result.releases.length > 0 || result.preReleases.length > 0)
@@ -1315,13 +1336,12 @@ async function scrape(
   const bareRepos = await pullAndScrapeRegistry(repoUrl, branch);
   console.log(logBareRepoStats(bareRepos));
   console.info('Fetching release assets');
-  const repositories = await releaseAssets(
-    bareRepos,
-    EXPECTED_ARCHITECTURES,
-    20,
-    20,
+  const repositories = await releaseAssets(bareRepos, {
+    expectedArchitectures: EXPECTED_ARCHITECTURES,
+    firstReleases: 20,
+    firstAssets: 20,
     octokit,
-  );
+  });
 
   console.info(logReleaseStatistics(repositories));
   const body = JSON.stringify(repositories, null, 2);

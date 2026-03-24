@@ -706,13 +706,12 @@ describe('releaseAssets', () => {
       },
     ];
 
-    const result = await releaseAssets(
-      bareRepos,
-      ['MacOS_x86_64'],
-      20,
-      20,
+    const result = await releaseAssets(bareRepos, {
+      expectedArchitectures: ['MacOS_x86_64'],
+      firstReleases: 20,
+      firstAssets: 20,
       octokit,
-    );
+    });
 
     expect(result).toEqual(
       expect.arrayContaining([
@@ -783,13 +782,12 @@ describe('releaseAssets', () => {
       },
     ];
 
-    const result = await releaseAssets(
-      bareRepos,
-      ['MacOS_x86_64'],
-      20,
-      20,
+    const result = await releaseAssets(bareRepos, {
+      expectedArchitectures: ['MacOS_x86_64'],
+      firstReleases: 20,
+      firstAssets: 20,
       octokit,
-    );
+    });
 
     expect(result).toHaveLength(0);
   });
@@ -865,13 +863,12 @@ describe('releaseAssets', () => {
       },
     ];
 
-    const result = await releaseAssets(
-      bareRepos,
-      ['MacOS_x86_64'],
-      20,
-      20,
+    const result = await releaseAssets(bareRepos, {
+      expectedArchitectures: ['MacOS_x86_64'],
+      firstReleases: 20,
+      firstAssets: 20,
       octokit,
-    );
+    });
 
     expect(result).toEqual(
       expect.arrayContaining([
@@ -974,13 +971,12 @@ describe('releaseAssets', () => {
       },
     ];
 
-    const result = await releaseAssets(
-      bareRepos,
-      ['MacOS_x86_64'],
-      20,
-      20,
+    const result = await releaseAssets(bareRepos, {
+      expectedArchitectures: ['MacOS_x86_64'],
+      firstReleases: 20,
+      firstAssets: 20,
       octokit,
-    );
+    });
 
     expect(result).toEqual(
       expect.arrayContaining([
@@ -1062,13 +1058,12 @@ describe('releaseAssets', () => {
       },
     ];
 
-    const result = await releaseAssets(
-      bareRepos,
-      ['MacOS_x86_64'],
-      20,
-      20,
+    const result = await releaseAssets(bareRepos, {
+      expectedArchitectures: ['MacOS_x86_64'],
+      firstReleases: 20,
+      firstAssets: 20,
       octokit,
-    );
+    });
 
     expect(result).toEqual(
       expect.arrayContaining([
@@ -1130,13 +1125,12 @@ describe('releaseAssets', () => {
       },
     ];
 
-    const result = await releaseAssets(
-      bareRepos,
-      ['MacOS_x86_64'],
-      20,
-      20,
+    const result = await releaseAssets(bareRepos, {
+      expectedArchitectures: ['MacOS_x86_64'],
+      firstReleases: 20,
+      firstAssets: 20,
       octokit,
-    );
+    });
 
     expect(result).toEqual(
       expect.arrayContaining([
@@ -1241,13 +1235,12 @@ describe('releaseAssets', () => {
       },
     ];
 
-    const result = await releaseAssets(
-      bareRepos,
-      EXPECTED_ARCHITECTURES,
-      20,
-      20,
+    const result = await releaseAssets(bareRepos, {
+      expectedArchitectures: EXPECTED_ARCHITECTURES,
+      firstReleases: 20,
+      firstAssets: 20,
       octokit,
-    );
+    });
 
     expect(result).toHaveLength(1);
   });
@@ -1362,13 +1355,12 @@ describe('releaseAssets', () => {
       },
     ];
 
-    const result = await releaseAssets(
-      bareRepos,
-      EXPECTED_ARCHITECTURES,
-      1,
-      1,
+    const result = await releaseAssets(bareRepos, {
+      expectedArchitectures: EXPECTED_ARCHITECTURES,
+      firstReleases: 1,
+      firstAssets: 1,
       octokit,
-    );
+    });
 
     expect(result).toHaveLength(1);
     expect(result[0].releases).toHaveLength(2);

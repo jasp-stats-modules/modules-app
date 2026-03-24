@@ -180,6 +180,5 @@ code {
 }
 
 @plugin "tailwind-scrollbar" {
-  /* biome-ignore lint/correctness/noUnknownProperty: tailwindism */
   preferredStrategy: "pseudoelements";
 }

@@ -665,8 +665,8 @@ export function ReleaseStatsLine({
   return (
     <div className="flex flex-row justify-between text-muted-foreground text-sm">
       <div className="flex flex-col">
-        {stats.map((line, index) => (
-          <div key={`${index}-${line}`}>{line}</div>
+        {stats.map((line) => (
+          <div key={line}>{line}</div>
         ))}
       </div>
       <div>{by_maintainer({ maintainer })}</div>
