@@ -2,8 +2,6 @@ import fs from 'node:fs/promises';
 import { join as pathJoin, resolve } from 'node:path';
 import { Octokit } from '@octokit/core';
 import { paginateGraphQL } from '@octokit/plugin-paginate-graphql';
-import chalk from 'chalk';
-import dedent from 'dedent';
 import * as gettextParser from 'gettext-parser';
 import matter from 'gray-matter';
 import pLimit from 'p-limit';
@@ -955,38 +953,46 @@ async function fetchAllReleasesForRepo(
   let parentOwnerLogin: string | undefined;
 
   while (hasNextPage) {
-    const query: string = dedent`
-      query RepoReleases($owner: String!, $repo: String!, $firstReleases: Int!, $firstAssets: Int!, $after: String) {
-        repository(owner: $owner, name: $repo) {
-          name
-          parent {
-            nameWithOwner
-            owner {
-              login
-            }
+    const query = `query RepoReleases(
+      $owner: String!
+      $repo: String!
+      $firstReleases: Int!
+      $firstAssets: Int!
+      $after: String
+    ) {
+      repository(owner: $owner, name: $repo) {
+        name
+        parent {
+          nameWithOwner
+          owner {
+            login
           }
-          releases(first: $firstReleases, orderBy: { field: CREATED_AT, direction: DESC }, after: $after) {
-            nodes {
-              tagName
-              publishedAt
-              description
-              isDraft
-              isPrerelease
-              releaseAssets(first: $firstAssets) {
-                nodes {
-                  downloadUrl
-                  downloadCount
-                }
+        }
+        releases(
+          first: $firstReleases
+          orderBy: { field: CREATED_AT, direction: DESC }
+          after: $after
+        ) {
+          nodes {
+            tagName
+            publishedAt
+            description
+            isDraft
+            isPrerelease
+            releaseAssets(first: $firstAssets) {
+              nodes {
+                downloadUrl
+                downloadCount
               }
             }
-            pageInfo {
-              hasNextPage
-              endCursor
-            }
+          }
+          pageInfo {
+            hasNextPage
+            endCursor
           }
         }
       }
-    `;
+    }`;
 
     const variables = {
       owner,
@@ -1315,7 +1321,7 @@ export function logReleaseStatistics(repositories: Repository[]): string {
     `Average number of assets per release: ${
       avgAssetsPerRelease % 1 === 0
         ? avgAssetsPerRelease
-        : chalk.red(avgAssetsPerRelease.toFixed(2))
+        : avgAssetsPerRelease.toFixed(2)
     }`,
   ];
   return lines.join('\n');

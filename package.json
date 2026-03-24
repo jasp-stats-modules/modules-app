@@ -53,8 +53,6 @@
     "@vitest/browser-playwright": "^4.0.18",
     "@vitest/coverage-v8": "^4.0.18",
     "babel-plugin-react-compiler": "^1.0.0",
-    "chalk": "^5.5.0",
-    "dedent": "^1.6.0",
     "gettext-parser": "^9.0.1",
     "gray-matter": "^4.0.3",
     "jsdom": "^26.0.0",
