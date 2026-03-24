@@ -36,10 +36,10 @@ import {
   type UpdatePreReleaseAction,
   type UpdateStableAction,
 } from './releaseStats';
+import { filterReleaseStatsBySearchTerm } from './search';
 import { statsLine } from './statsLine';
 import type { AppTranslations } from './translations';
 import { useInfo } from './useInfo';
-import { filterReleaseStatsBySearchTerm } from './search';
 
 const defaultChannel = 'Official';
 const defaultCatalog = 'index.json';
@@ -1048,15 +1048,8 @@ function getUpdateableAssets(releaseStats: ReleaseStats[]) {
   return { showUpdateAllButton, updateableAssets };
 }
 
-function InfoButton({
-  translations,
-  channels,
-}: {
-  translations: AppTranslations;
-  channels: string[];
-}) {
-  const infoMarkdown = translations.information_panel;
-  const renderMarkdown = useMarkdownRenderer({
+function useMyMarkdownRenderer() {
+  return useMarkdownRenderer({
     forceBlock: true,
     components: {
       h1: ({ children }) => (
@@ -1079,6 +1072,17 @@ function InfoButton({
       li: ({ children }) => <li className="ml-4 list-disc">{children}</li>,
     },
   });
+}
+
+function InfoButton({
+  translations,
+  channels,
+}: {
+  translations: AppTranslations;
+  channels: string[];
+}) {
+  const infoMarkdown = translations.information_panel;
+  const renderMarkdown = useMyMarkdownRenderer();
 
   const markdownMentionsAllChannels = channels
     .map((c) => getTranslatedChannel(c, translations))

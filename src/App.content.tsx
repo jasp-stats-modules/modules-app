@@ -885,6 +885,10 @@ The modules are divided into channels:
 A module can have a beta version of it. A beta version is used for testing new modules or new features in existing modules before they are released as a stable version.
 Use the "Show betas" checkbox to show or hide beta versions. A beta version may contain unresolved issues and bugs, so use it with caution.
 
+Example search queries:
+
+\`ANOVA\` or \`evaluate difference\` or \`id:jaspAnova | id:jaspBain\` or \`"multiple means"\`
+
 This panel was made as part of the [JASP-MOD project](https://research-software-directory.org/projects/jasp-mod).`),
       nl: md(`### Informatie over het modulebibliotheekpaneel
   
@@ -898,6 +902,10 @@ De modules zijn verdeeld in kanalen:
 Een module kan een bètaversie hebben. Een bètaversie wordt gebruikt om nieuwe modules of nieuwe functies in bestaande modules te testen voordat ze als stabiele versie worden uitgebracht.
 Gebruik het selectievakje "Toon Betas" om bètaversies te tonen of te verbergen.
 Een bètaversie kan onopgeloste problemen en bugs bevatten, dus gebruik deze met voorzichtigheid.
+
+Voorbeelden van zoekopdrachten:
+
+\`ANOVA\` of \`evalueer verschil\` of \`id:jaspAnova | id:jaspBain\` of \`"meerdere gemiddelden"\`
 
 Dit paneel is gemaakt als onderdeel van het [JASP-MOD project](https://research-software-directory.org/projects/jasp-mod).`),
       fr: md(`### Informations sur le panneau de bibliothèque de modules
@@ -913,6 +921,10 @@ Un module peut avoir une version bêta. Une version bêta est utilisée pour tes
 Utilisez la case « Afficher les pré-versions » pour afficher ou masquer les versions bêta.
 Une version bêta peut contenir des problèmes et des bugs non résolus, utilisez-la donc avec prudence.
 
+Exemples de requêtes de recherche :
+
+\`ANOVA\` ou \`évaluer la différence\` ou \`id:jaspAnova | id:jaspBain\` ou \`"plusieurs moyennes"\`
+
 Ce panneau a été réalisé dans le cadre du [projet JASP-MOD](https://research-software-directory.org/projects/jasp-mod).`),
       de: md(`### Informationen zum Modulbibliothek-Panel
 
@@ -926,6 +938,10 @@ Die Module sind in Kanäle unterteilt:
 Ein Modul kann eine Beta-Version haben. Eine Beta-Version wird verwendet, um neue Module oder neue Funktionen in bestehenden Modulen zu testen, bevor sie als stabile Version veröffentlicht werden.
 Verwenden Sie das Kontrollkästchen „Vorabversionen anzeigen“, um Beta-Versionen ein- oder auszublenden.
 Eine Beta-Version kann ungelöste Probleme und Fehler enthalten, verwenden Sie sie daher mit Vorsicht.
+
+Beispiel-Suchanfragen:
+
+\`ANOVA\` oder \`Unterschied zwischen\` oder \`id:jaspAnova | id:jaspBain\` oder \`"mehreren Mittelwerten"\`
 
 Dieses Panel wurde im Rahmen des [JASP-MOD-Projekts](https://research-software-directory.org/projects/jasp-mod) erstellt.`),
       es: md(`### Información sobre el panel de la biblioteca de módulos
@@ -941,6 +957,10 @@ Un módulo puede tener una versión beta. Una versión beta se usa para probar n
 Use la casilla "Mostrar pre-lanzamientos" para mostrar u ocultar las versiones beta.
 Una versión beta puede contener problemas y errores sin resolver, así que úsela con precaución.
 
+Ejemplos de búsquedas:
+
+\`ANOVA\` o \`evaluar diferencia\` o \`id:jaspAnova | id:jaspBain\` o \`"varias medias"\`
+
 Este panel se creó como parte del [proyecto JASP-MOD](https://research-software-directory.org/projects/jasp-mod).`),
       it: md(`### Informazioni sul pannello della libreria dei moduli
 
@@ -954,6 +974,10 @@ I moduli sono divisi in canali:
 Un modulo può avere una versione beta. Una versione beta viene usata per testare nuovi moduli o nuove funzionalità in moduli esistenti prima che vengano rilasciati come versione stabile.
 Usa la casella "Mostra pre-release" per mostrare o nascondere le versioni beta.
 Una versione beta può contenere problemi e bug irrisolti, quindi usala con cautela.
+
+Esempi di query di ricerca:
+
+\`ANOVA\` o \`evaluate difference\` o \`id:jaspAnova | id:jaspBain\` o \`"multiple means"\`
 
 Questo pannello è stato realizzato come parte del [progetto JASP-MOD](https://research-software-directory.org/projects/jasp-mod).`),
       ar: md(`### معلومات حول لوحة مكتبة الوحدات
@@ -969,6 +993,10 @@ Questo pannello è stato realizzato come parte del [progetto JASP-MOD](https://r
 استخدم مربع الاختيار "إظهار الإصدارات التجريبية" لإظهار أو إخفاء الإصدارات التجريبية.
 قد يحتوي الإصدار التجريبي على مشكلات وأخطاء غير محلولة، لذا استخدمه بحذر.
 
+أمثلة على استعلامات البحث:
+
+\`ANOVA\` أو \`evaluate difference\` أو \`id:jaspAnova | id:jaspBain\` أو \`"multiple means"\`
+
 تم إنشاء هذه اللوحة كجزء من [مشروع JASP-MOD](https://research-software-directory.org/projects/jasp-mod).`),
       cs: md(`### Informace o panelu knihovny modulů
 
@@ -982,6 +1010,10 @@ Moduly jsou rozděleny do kanálů:
 Modul může mít beta verzi. Beta verze slouží k testování nových modulů nebo nových funkcí ve stávajících modulech před jejich vydáním jako stabilní verze.
 Použijte zaškrtávací políčko „Zobrazit předběžná vydání“ k zobrazení nebo skrytí beta verzí.
 Beta verze může obsahovat nevyřešené problémy a chyby, proto ji používejte opatrně.
+
+Příklady vyhledávacích dotazů:
+
+\`ANOVA\` nebo \`evaluate difference\` nebo \`id:jaspAnova | id:jaspBain\` nebo \`"multiple means"\`
 
 Tento panel byl vytvořen jako součást [projektu JASP-MOD](https://research-software-directory.org/projects/jasp-mod).`),
       et: md(`### Teave mooduliteekogu paneeli kohta
@@ -997,6 +1029,10 @@ Moodulil võib olla beetaversioon. Beetaversiooni kasutatakse uute moodulite võ
 Kasutage märkeruutu "Kuva eeltõmmised", et kuvada või peita beetaversioonid.
 Beetaversioon võib sisaldada lahendamata probleeme ja vigu, seega kasutage seda ettevaatlikult.
 
+Otsingupäringute näited:
+
+\`ANOVA\` või \`evaluate difference\` või \`id:jaspAnova | id:jaspBain\` või \`"multiple means"\`
+
 See paneel loodi [JASP-MOD projekti](https://research-software-directory.org/projects/jasp-mod) osana.`),
       eu: md(`### Moduluen liburutegi panelari buruzko informazioa
 
@@ -1010,6 +1046,10 @@ Moduluak kanaletan banatuta daude:
 Modulu batek beta bertsioa izan dezake. Beta bertsioa modulu berriak edo lehendik dauden moduluetako funtzio berriak probatzeko erabiltzen da, bertsio egonkor gisa argitaratu aurretik.
 Erabili "Erakutsi aurre-bertsioak" kontrol-laukia beta bertsioak erakusteko edo ezkutatzeko.
 Beta bertsioak konpondu gabeko arazoak eta akatsak izan ditzake; erabili kontuz.
+
+Bilaketa-kontsulten adibideak:
+
+\`ANOVA\` edo \`aldea ebaluatu\` edo \`id:jaspAnova | id:jaspBain\` edo \`"batez besteko anitzen"\`
 
 Panel hau [JASP-MOD proiektuaren](https://research-software-directory.org/projects/jasp-mod) barruan egin da.`),
       gl: md(`### Información sobre o panel da biblioteca de módulos
@@ -1025,6 +1065,10 @@ Un módulo pode ter unha versión beta. Unha versión beta úsase para probar no
 Usa a caixa "Mostrar pre-lanzamentos" para mostrar ou ocultar as versións beta.
 Unha versión beta pode conter problemas e erros sen resolver, así que úsaa con precaución.
 
+Exemplos de consultas de busca:
+
+\`ANOVA\` ou \`avaliar diferenza\` ou \`id:jaspAnova | id:jaspBain\` ou \`"varias medias"\`
+
 Este panel fíxose como parte do [proxecto JASP-MOD](https://research-software-directory.org/projects/jasp-mod).`),
       hu: md(`### Információ a modulkönyvtár panelről
 
@@ -1038,6 +1082,10 @@ A modulok csatornákra vannak osztva:
 Egy modulnak lehet béta verziója. A béta verziót új modulok vagy meglévő modulok új funkcióinak tesztelésére használják, mielőtt stabil verzióként megjelennének.
 Az "Előzetes kiadások megjelenítése" jelölőnégyzettel jelenítheti meg vagy rejtheti el a béta verziókat.
 Egy béta verzió tartalmazhat megoldatlan problémákat és hibákat, ezért óvatosan használd.
+
+Keresési lekérdezések példái:
+
+\`ANOVA\` vagy \`evaluate difference\` vagy \`id:jaspAnova | id:jaspBain\` vagy \`"multiple means"\`
 
 Ez a panel a [JASP-MOD projekt](https://research-software-directory.org/projects/jasp-mod) részeként készült.`),
       id: md(`### Informasi tentang panel pustaka modul
@@ -1053,6 +1101,10 @@ Sebuah modul dapat memiliki versi beta. Versi beta digunakan untuk menguji modul
 Gunakan kotak centang "Tampilkan pra-rilis" untuk menampilkan atau menyembunyikan versi beta.
 Versi beta dapat berisi masalah dan bug yang belum terselesaikan, jadi gunakan dengan hati-hati.
 
+Contoh kueri pencarian:
+
+\`ANOVA\` atau \`evaluasi perbedaan\` atau \`id:jaspAnova | id:jaspBain\` atau \`"rerata majemuk"\`
+
 Panel ini dibuat sebagai bagian dari [proyek JASP-MOD](https://research-software-directory.org/projects/jasp-mod).`),
       ja: md(`### モジュールライブラリパネルについて
 
@@ -1066,6 +1118,10 @@ Panel ini dibuat sebagai bagian dari [proyek JASP-MOD](https://research-software
 モジュールにはベータ版がある場合があります。ベータ版は、新しいモジュールや既存モジュールの新機能を、安定版としてリリースする前にテストするために使われます。
 「プレリリースを表示」のチェックボックスでベータ版の表示/非表示を切り替えます。
 ベータ版には未解決の問題やバグが含まれる場合があるため、注意して使用してください。
+
+検索クエリの例:
+
+\`分散分析\` または \`平均値差\` または \`id:jaspAnova | id:jaspBain\` または \`"複数の平均値差"\`
 
 このパネルは[JASP-MODプロジェクト](https://research-software-directory.org/projects/jasp-mod)の一環として作成されました。`),
       lt: md(`### Informacija apie modulių bibliotekos skydelį
@@ -1081,6 +1137,10 @@ Modulis gali turėti beta versiją. Beta versija naudojama naujiems moduliams ar
 Naudokite žymimąjį langelį „Rodyti priešleidimus“, kad rodytumėte arba paslėptumėte beta versijas.
 Beta versija gali turėti neišspręstų problemų ir klaidų, todėl naudokite ją atsargiai.
 
+Paieškos užklausų pavyzdžiai:
+
+\`ANOVA\` arba \`evaluate difference\` arba \`id:jaspAnova | id:jaspBain\` arba \`"multiple means"\`
+
 Šis skydelis buvo sukurtas kaip [JASP-MOD projekto](https://research-software-directory.org/projects/jasp-mod) dalis.`),
       pl: md(`### Informacje o panelu biblioteki modułów
 
@@ -1094,6 +1154,10 @@ Moduły są podzielone na kanały:
 Moduł może mieć wersję beta. Wersja beta służy do testowania nowych modułów lub nowych funkcji w istniejących modułach przed wydaniem jako wersja stabilna.
 Użyj pola wyboru „Pokaż wersje przedpremierowe”, aby pokazać lub ukryć wersje beta.
 Wersja beta może zawierać nierozwiązane problemy i błędy, dlatego używaj jej ostrożnie.
+
+Przykładowe zapytania wyszukiwania:
+
+\`ANOVA\` lub \`oceń różnicę\` lub \`id:jaspAnova | id:jaspBain\` lub \`"wieloma średnimi"\`
 
 Ten panel został utworzony jako część [projektu JASP-MOD](https://research-software-directory.org/projects/jasp-mod).`),
       pt: md(`### Informações sobre o painel da biblioteca de módulos
@@ -1109,6 +1173,10 @@ Um módulo pode ter uma versão beta. Uma versão beta é usada para testar novo
 Use a caixa de seleção "Mostrar pré-lançamentos" para mostrar ou ocultar versões beta.
 Uma versão beta pode conter problemas e bugs não resolvidos, portanto use-a com cautela.
 
+Exemplos de consultas de pesquisa:
+
+\`ANOVA\` ou \`avalie diferença\` ou \`id:jaspAnova | id:jaspBain\` ou \`"várias médias"\`
+
 Este painel foi feito como parte do [projeto JASP-MOD](https://research-software-directory.org/projects/jasp-mod).`),
       ru: md(`### Информация о панели библиотеки модулей
 
@@ -1122,6 +1190,10 @@ Este painel foi feito como parte do [projeto JASP-MOD](https://research-software
 Модуль может иметь бета-версию. Бета-версия используется для тестирования новых модулей или новых функций в существующих модулях перед выпуском в стабильной версии.
 Используйте флажок «Показать предрелизы», чтобы показывать или скрывать бета-версии.
 Бета-версия может содержать нерешённые проблемы и ошибки, поэтому используйте её с осторожностью.
+
+Примеры поисковых запросов:
+
+\`Дисперсионный анализ\` или \`Рассчитать разницу\` или \`id:jaspAnova | id:jaspBain\` или \`"множественными средними"\`
 
 Эта панель создана в рамках [проекта JASP-MOD](https://research-software-directory.org/projects/jasp-mod).`),
       sq: md(`### Informacion mbi panelin e bibliotekës së moduleve
@@ -1137,6 +1209,10 @@ Një modul mund të ketë një version beta. Versioni beta përdoret për të te
 Përdorni kutinë e zgjedhjes "Shfaq parapublikimet" për të shfaqur ose fshehur versionet beta.
 Një version beta mund të përmbajë probleme dhe gabime të pazgjidhura, prandaj përdoreni me kujdes.
 
+Shembuj pyetjesh kërkimi:
+
+\`ANOVA\` ose \`evaluate difference\` ose \`id:jaspAnova | id:jaspBain\` ose \`"multiple means"\`
+
 Ky panel u krijua si pjesë e [projektit JASP-MOD](https://research-software-directory.org/projects/jasp-mod).`),
       sr: md(`### Информације о панелу библиотеке модула
 
@@ -1150,6 +1226,10 @@ Ky panel u krijua si pjesë e [projektit JASP-MOD](https://research-software-dir
 Модул може имати бета верзију. Бета верзија се користи за тестирање нових модула или нових функција у постојећим модулима пре него што буду објављени као стабилна верзија.
 Користите поље за потврду „Прикажи претходна издања“ да бисте приказали или сакрили бета верзије.
 Бета верзија може да садржи нерешене проблеме и грешке, па је користите опрезно.
+
+Примери упита за претрагу:
+
+\`ANOVA\` ili \`Процени разлику\` ili \`id:jaspAnova | id:jaspBain\` ili \`"вишеструких средњих вредности"\`
 
 Овај панел је направљен као део [пројекта JASP-MOD](https://research-software-directory.org/projects/jasp-mod).`),
       tr: md(`### Modül kitaplığı paneli hakkında bilgi
@@ -1165,6 +1245,10 @@ Bir modülün beta sürümü olabilir. Beta sürümü, yeni modülleri veya mevc
 Beta sürümlerini göstermek veya gizlemek için "Ön sürümleri göster" onay kutusunu kullanın.
 Beta sürümü çözümlenmemiş sorunlar ve hatalar içerebilir; bu yüzden dikkatli kullanın.
 
+Örnek arama sorguları:
+
+\`ANOVA\` veya \`evaluate difference\` veya \`id:jaspAnova | id:jaspBain\` veya \`"multiple means"\`
+
 Bu panel [JASP-MOD projesinin](https://research-software-directory.org/projects/jasp-mod) bir parçası olarak yapılmıştır.`),
       'zh-Hans': md(`### 关于模块库面板的信息
 
@@ -1179,6 +1263,10 @@ Bu panel [JASP-MOD projesinin](https://research-software-directory.org/projects/
 使用“显示预发布版本”复选框来显示或隐藏测试版信息。
 测试版可能包含未解决的问题和缺陷，请谨慎使用。
 
+搜索查询示例：
+
+\`ANOVA\` 或 \`evaluate difference\` 或 \`id:jaspAnova | id:jaspBain\` 或 \`"multiple means"\`
+
 此面板是 [JASP-MOD 项目](https://research-software-directory.org/projects/jasp-mod) 的一部分。`),
       'zh-Hant': md(`### 關於模組庫面板的資訊
 
@@ -1192,6 +1280,10 @@ Bu panel [JASP-MOD projesinin](https://research-software-directory.org/projects/
 模組可能有測試版。測試版用於在作為穩定版發佈前測試新模組或現有模組的新功能。
 使用「顯示預發布版本」核取方塊來顯示或隱藏測試版。
 測試版可能包含未解決的問題和缺陷，請謹慎使用。
+
+搜尋查詢範例：
+
+\`ANOVA\` 或 \`evaluate difference\` 或 \`id:jaspAnova | id:jaspBain\` 或 \`"multiple means"\`
 
 此面板是 [JASP-MOD 專案](https://research-software-directory.org/projects/jasp-mod) 的一部分。`),
     }),

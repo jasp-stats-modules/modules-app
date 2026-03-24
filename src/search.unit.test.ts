@@ -168,6 +168,109 @@ describe('filterReleaseStatsBySearchTerm', () => {
         expectedIds: [],
       },
     ],
+    [
+      'matches field-specific query for id field',
+      {
+        stats: [
+          releaseStat({ id: 'jaspAnova' }),
+          releaseStat({ id: 'jaspRegression' }),
+        ],
+        searchTerm: 'id:jaspAnova',
+        language: 'en',
+        expectedIds: ['jaspAnova'],
+      },
+    ],
+    [
+      'matches multi-word plain text with AND semantics',
+      {
+        stats: [
+          releaseStat({
+            name: 'ANOVA',
+            description: 'Analysis of variance for factorial designs.',
+          }),
+          releaseStat({
+            name: 'Regression',
+            description: 'Linear and logistic models.',
+          }),
+        ],
+        searchTerm: 'designs factorial',
+        language: 'en',
+        expectedIds: ['jaspAnova'],
+      },
+    ],
+    [
+      'matches OR queries with | operator for field-specific terms',
+      {
+        stats: [
+          releaseStat({ id: 'jaspAnova' }),
+          releaseStat({ id: 'jaspRegression' }),
+          releaseStat({ id: 'jaspBain' }),
+        ],
+        searchTerm: 'id:jaspAnova | id:jaspRegression',
+        language: 'en',
+        expectedIds: ['jaspAnova', 'jaspRegression'],
+      },
+    ],
+    [
+      'matches exact phrase with double quotes',
+      {
+        stats: [
+          releaseStat({
+            description:
+              'Bayesian analysis and a robust method for computing approximated inference.',
+          }),
+          releaseStat({
+            description: 'Approximated inference using classical methods.',
+          }),
+        ],
+        searchTerm: '"computing approximated"',
+        language: 'en',
+        expectedIds: ['jaspAnova'],
+      },
+    ],
+    [
+      'supports AND operator (&) for field-specific queries',
+      {
+        stats: [
+          releaseStat({
+            id: 'jaspAnova',
+            description: 'Analysis of variance for factorial designs.',
+          }),
+          releaseStat({
+            id: 'jaspRegression',
+            description: 'Linear regression models.',
+          }),
+        ],
+        searchTerm: 'id:jaspAnova & factorial',
+        language: 'en',
+        expectedIds: ['jaspAnova'],
+      },
+    ],
+    [
+      'respects operator precedence with & before |',
+      {
+        stats: [
+          releaseStat({
+            id: 'jaspAnova',
+            name: 'ANOVA',
+            description: 'Analysis of variance for factorial designs.',
+          }),
+          releaseStat({
+            id: 'jaspRegression',
+            name: 'Regression',
+            description: 'Linear regression models.',
+          }),
+          releaseStat({
+            id: 'jaspBain',
+            name: 'Bain',
+            description: 'Bayesian analysis.',
+          }),
+        ],
+        searchTerm: 'id:jaspAnova & factorial | id:jaspBain',
+        language: 'en',
+        expectedIds: ['jaspAnova', 'jaspBain'],
+      },
+    ],
   ])('%s', ([, { stats, searchTerm, language, expectedIds }]) => {
     const result = filterReleaseStatsBySearchTerm(stats, searchTerm, language);
 
