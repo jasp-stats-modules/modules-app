@@ -208,7 +208,6 @@ describe('selectReleasesForArchitectureCoverage', () => {
     const result = selectReleasesForArchitectureCoverage(
       [],
       ['Flatpak_x86_64'],
-      undefined,
       'TestModule',
     );
 
@@ -274,7 +273,6 @@ describe('selectReleasesForArchitectureCoverage', () => {
     const result = selectReleasesForArchitectureCoverage(
       input,
       ['Flatpak_x86_64', 'Windows_x86-64'],
-      undefined,
       'TestModule',
     );
     expect(result).toEqual([input[0]]);
@@ -297,7 +295,6 @@ describe('selectReleasesForArchitectureCoverage', () => {
     const result = selectReleasesForArchitectureCoverage(
       input,
       ['Flatpak_x86_64'],
-      undefined,
       'TestModule',
     );
     expect(result).toEqual([]);
@@ -353,7 +350,6 @@ describe('selectReleasesForArchitectureCoverage', () => {
     const result = selectReleasesForArchitectureCoverage(
       input,
       EXPECTED_ARCHITECTURES,
-      undefined,
       'TestModule',
     );
     expect(result).toEqual([input[0], input[1]]);

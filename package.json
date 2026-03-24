@@ -45,7 +45,6 @@
     "@testing-library/react": "^16.2.0",
     "@types/gettext-parser": "^9.0.0",
     "@types/node": "^24.2.0",
-    "@types/progress": "^2.0.7",
     "@types/react": "^19.0.8",
     "@types/react-dom": "^19.0.3",
     "@types/semver": "^7.7.0",

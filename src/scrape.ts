@@ -6,7 +6,6 @@ import chalk from 'chalk';
 import dedent from 'dedent';
 import * as gettextParser from 'gettext-parser';
 import matter from 'gray-matter';
-import ProgressBar from 'progress';
 import sharp from 'sharp';
 import { type SimpleGitProgressEvent, simpleGit } from 'simple-git';
 import { optimize } from 'svgo';
@@ -776,29 +775,12 @@ interface FetchedRepoReleases {
   releases: GqlRelease[];
 }
 
-/**
- * Log a message either via progress bar interrupt (if available) or fallback console method.
- * This ensures messages don't disrupt the progress bar rendering.
- */
-function logWithBar(
-  message: string,
-  bar: InstanceType<typeof ProgressBar> | undefined,
-  logFn: (msg: string) => void,
-): void {
-  if (bar) {
-    bar.interrupt(message);
-  } else {
-    logFn(message);
-  }
-}
-
-function isGraphqlRequest(options: {
-  method?: string;
-  url?: string;
-}): boolean {
+function isGraphqlRequest(options: { method?: string; url?: string }): boolean {
   const method = options.method?.toUpperCase();
   const url = options.url;
-  return method === 'POST' && typeof url === 'string' && url.includes('/graphql');
+  return (
+    method === 'POST' && typeof url === 'string' && url.includes('/graphql')
+  );
 }
 
 function formatRateLimitHeaderLog(
@@ -817,7 +799,7 @@ function formatRateLimitHeaderLog(
     .join(', ');
 }
 
-function registerGraphqlRateLimitHeaderLogging(
+function _registerGraphqlRateLimitHeaderLogging(
   octokit: InstanceType<typeof MyOctokit>,
 ): void {
   octokit.hook.after('request', (response, options) => {
@@ -946,7 +928,6 @@ async function fetchAllReleasesForRepo(
   firstAssets: number,
   octokit: InstanceType<typeof MyOctokit>,
   expectedArchitectures: ExpectedArchitectures,
-  bar?: InstanceType<typeof ProgressBar>,
 ): Promise<FetchedRepoReleases> {
   const [owner, repo] = nameWithOwner.split('/');
   const allReleases: GqlRelease[] = [];
@@ -1002,7 +983,7 @@ async function fetchAllReleasesForRepo(
         await octokit.graphql<GqlRepoReleasesResult>(query, variables);
       if (!result.repository) {
         const message = `Repository ${owner}/${repo} not found`;
-        logWithBar(message, bar, console.log);
+        console.log(message);
         break;
       }
 
@@ -1025,14 +1006,12 @@ async function fetchAllReleasesForRepo(
       ) {
         break;
       }
-      logWithBar(
+      console.log(
         `Fetching more releases from ${owner}/${repo}, cursor ${endCursor}`,
-        bar,
-        console.log,
       );
     } catch (error) {
       const message = `Error fetching releases for ${owner}/${repo}: ${error}`;
-      logWithBar(message, bar, console.error);
+      console.error(message);
       break;
     }
   }
@@ -1047,18 +1026,13 @@ async function fetchAllReleasesForRepo(
 export function selectReleasesForArchitectureCoverage(
   releases: Release[],
   expectedArchitectures: ExpectedArchitectures,
-  bar?: InstanceType<typeof ProgressBar>,
   moduleName?: string,
 ): Release[] {
   const selectedPerRange: Release[] = [];
   const missingArchitectures: Set<string> = new Set(expectedArchitectures);
 
   if (releases.length === 0) {
-    logWithBar(
-      `No releases found for ${moduleName}. Skipping.`,
-      bar,
-      console.warn,
-    );
+    console.warn(`No releases found for ${moduleName}. Skipping.`);
     return [];
   }
 
@@ -1087,24 +1061,18 @@ export function selectReleasesForArchitectureCoverage(
     }
   }
   if (missingArchitectures.size > 0 && selectedPerRange.length > 0) {
-    logWithBar(
+    console.warn(
       `Could not find assets for all architectures in releases for module ${moduleName}, will not be able to install/update on ${[...missingArchitectures].join(', ')}`,
-      bar,
-      console.warn,
     );
   }
   if (selectedPerRange.length === 0) {
-    logWithBar(
+    console.warn(
       `Could not find any set of releases that can be installed everywhere for ${moduleName} module, skipping`,
-      bar,
-      console.warn,
     );
   }
   if (missingArchitectures.size === 0 && selectedPerRange.length > 1) {
-    logWithBar(
+    console.warn(
       `Latest ${selectedPerRange[0].version} release from ${moduleName} does not have all architectures, falling back to older releases.`,
-      bar,
-      console.warn,
     );
   }
   return selectedPerRange;
@@ -1113,7 +1081,6 @@ export function selectReleasesForArchitectureCoverage(
 export function latestReleasePerJaspVersionRange(
   releases: Release[],
   expectedArchitectures: ExpectedArchitectures,
-  bar?: InstanceType<typeof ProgressBar>,
   moduleName?: string,
 ): Release[] {
   const releasesByRange = new Map<string, Release[]>();
@@ -1134,7 +1101,6 @@ export function latestReleasePerJaspVersionRange(
     const selectedPerRange = selectReleasesForArchitectureCoverage(
       releasesForRange,
       expectedArchitectures,
-      bar,
       moduleName,
     );
     selected.push(...selectedPerRange);
@@ -1152,7 +1118,6 @@ export function versionFromTagName(tagName: string): string {
 export function transformRelease(
   release: GqlRelease,
   nameWithOwner: string,
-  bar?: InstanceType<typeof ProgressBar>,
 ): Release {
   const {
     tagName,
@@ -1166,10 +1131,8 @@ export function transformRelease(
   let jaspVersionRange = frontmatter.jasp;
   if (!jaspVersionRange) {
     jaspVersionRange = '>=0.95.0';
-    logWithBar(
+    console.warn(
       `Malformed description for ${nameWithOwner}. Falling back to default JASP version range: ${jaspVersionRange}`,
-      bar,
-      console.warn,
     );
   }
   const version = versionFromTagName(tagName);
@@ -1197,7 +1160,6 @@ async function releaseAssetsForRepo(
   firstReleases = 20,
   firstAssets = 20,
   octokit: InstanceType<typeof MyOctokit>,
-  bar?: InstanceType<typeof ProgressBar>,
 ): Promise<Repository | undefined> {
   const nameWithOwner = bareRepo.releaseSource;
 
@@ -1208,35 +1170,32 @@ async function releaseAssetsForRepo(
       firstAssets,
       octokit,
       expectedArchitectures,
-      bar,
     );
 
     const allGqlReleases = fetched.releases;
 
     if (allGqlReleases.length === 0) {
       const message = `No releases found for ${nameWithOwner}. Skipping.`;
-      logWithBar(message, bar, console.log);
+      console.log(message);
       return undefined;
     }
 
     // Separate into production and pre-releases (maintains order: newest first)
     const productionReleases = allGqlReleases
       .filter((r) => !r.isDraft && !r.isPrerelease)
-      .map((r) => transformRelease(r, nameWithOwner, bar));
+      .map((r) => transformRelease(r, nameWithOwner));
     const preReleases = allGqlReleases
       .filter((r) => !r.isDraft && r.isPrerelease)
-      .map((r) => transformRelease(r, nameWithOwner, bar));
+      .map((r) => transformRelease(r, nameWithOwner));
 
     const selectedProductionReleases = latestReleasePerJaspVersionRange(
       productionReleases,
       expectedArchitectures,
-      bar,
       nameWithOwner,
     );
     const selectedPreReleases = latestReleasePerJaspVersionRange(
       preReleases,
       expectedArchitectures,
-      bar,
       nameWithOwner,
     );
 
@@ -1259,7 +1218,7 @@ async function releaseAssetsForRepo(
     return undefined;
   } catch (error) {
     const message = `Error processing releases for ${nameWithOwner}: ${error}`;
-    logWithBar(message, bar, console.error);
+    console.error(message);
     return undefined;
   }
 }
@@ -1273,28 +1232,16 @@ export async function releaseAssets(
 ): Promise<Repository[]> {
   const finalResults: Repository[] = [];
 
-  const totalRepos = repos.length;
-  // Only create progress bar if stdout is a TTY (not in tests or CI)
-  const bar = process.stdout.isTTY
-    ? new ProgressBar(
-        `${chalk.cyan('Progress:')} [:bar] :current/:total repositories :etas`,
-        {
-          total: totalRepos,
-          width: 20,
-          complete: chalk.green('█'),
-          incomplete: chalk.gray('░'),
-        },
-      )
-    : undefined;
-
   for (const bareRepo of repos) {
+    console.log(
+      `Fetching releases for ${bareRepo.releaseSource} (${finalResults.length + 1} of ${repos.length})`,
+    );
     const result = await releaseAssetsForRepo(
       bareRepo,
       expectedArchitectures,
       firstReleases,
       firstAssets,
       octokit,
-      bar,
     );
     if (
       result &&
@@ -1303,9 +1250,8 @@ export async function releaseAssets(
       finalResults.push(result);
     } else {
       const message = `No valid releases found for ${bareRepo.releaseSource}. Skipping.`;
-      logWithBar(message, bar, console.warn);
+      console.warn(message);
     }
-    bar?.tick();
   }
 
   return finalResults;
@@ -1352,7 +1298,8 @@ async function scrape(
   output: string = 'public/index.json',
 ) {
   const octokit = new MyOctokit({ auth: process.env.GITHUB_TOKEN });
-  registerGraphqlRateLimitHeaderLogging(octokit);
+  // Uncomment line below to debug rate limits
+  // registerGraphqlRateLimitHeaderLogging(octokit);
 
   const repoUrl = `https://github.com/${owner}/${repo}.git`;
   console.info('Fetching submodules from', `${repoUrl} (branch ${branch})`);
