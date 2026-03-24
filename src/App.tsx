@@ -1144,12 +1144,12 @@ function InfoButton({
 
 function sortRepositoriesByTranslatedName(
   repositories: Repository[] | undefined,
-  info: Info,
+  language: string,
 ): Repository[] | undefined {
   return repositories?.toSorted((a, b) => {
-    const nameA = a.translations[info.language]?.name || a.name;
-    const nameB = b.translations[info.language]?.name || b.name;
-    return nameA.localeCompare(nameB, info.language);
+    const nameA = a.translations[language]?.name || a.name;
+    const nameB = b.translations[language]?.name || b.name;
+    return nameA.localeCompare(nameB, language);
   });
 }
 
@@ -1186,7 +1186,7 @@ export function App() {
   }, [info.developerMode]);
   const repositoriesSortedByTranslatedName = sortRepositoriesByTranslatedName(
     repositories,
-    info,
+    info.language,
   );
   const availableChannels = uniqueChannels(
     repositoriesSortedByTranslatedName || [],
