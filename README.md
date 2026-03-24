@@ -57,7 +57,7 @@ To get a list of available JASP modules, it does the following with the help of 
    3. homepage URL from the `Website` field in `DESCRIPTION` file; if missing/invalid or pointing to `jasp-stats.org`, it falls back to the GitHub parent repository URL (or submodule repository URL if parent is unavailable)
    4. icon from the `icon` field in `inst/Description.qml`, resolved from `inst/icons`; icons are optimized and then embedded as data URLs
 3. For each submodule fetches its releases
-   1. Fetches data for the latest 20 releases, paged per 3 repositories using GitHub GraphQL API
+   1. Fetches data for the latest 20 releases, for each repository using GitHub GraphQL API
    2. Filter the first 20 release assets per release ending with `.JASPModule` extension
    3. Looks in release description for the JASP version range the module is compatible with. The [version range](https://semver.npmjs.com/) is specified in [front matter header](https://www.markdownlang.com/advanced/frontmatter.html) as for example:
       ```markdown
@@ -66,6 +66,8 @@ To get a list of available JASP modules, it does the following with the help of 
       ---
       ```
    4. Split releases into latest release for each JASP version range and latest pre release.
+   5. If the latest release does not have all assets for all platforms it tries to find a older releas with the missing assets.
+   6. If no covering release in first 20 releases then if pages to next page of releases and repeat the process until a covering release is found or there are no more releases.
 4. Saves data in `public/index.json` for the web application to use
 
 If you want to scrape modules from an additional branch (e.g., beta) you can trigger the deploy workflow manually and specify the branch and output catalog file path.
