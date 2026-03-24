@@ -39,6 +39,7 @@ import {
 import { statsLine } from './statsLine';
 import type { AppTranslations } from './translations';
 import { useInfo } from './useInfo';
+import { filterReleaseStatsBySearchTerm } from './search';
 
 const defaultChannel = 'Official';
 const defaultCatalog = 'index.json';
@@ -866,26 +867,6 @@ function getInstallableReleaseStatsFromRepository(
   ];
 }
 
-function filterReleaseStatsBySearchTerm(
-  releaseStats: ReleaseStats[],
-  searchTerm: string,
-): ReleaseStats[] {
-  return releaseStats.filter(({ repo }) => {
-    if (!searchTerm.trim()) return true;
-
-    const searchLower = searchTerm.toLowerCase();
-    const nameMatches = repo.name.toLowerCase().includes(searchLower);
-
-    // Strip HTML tags from description for search
-    const plainDescription = repo.description?.replace(/<[^>]*>/g, '') || '';
-    const descriptionMatches = plainDescription
-      .toLowerCase()
-      .includes(searchLower);
-
-    return nameMatches || descriptionMatches;
-  });
-}
-
 /**
  * Hook that determines if dark theme should be used.
  *
@@ -1203,6 +1184,7 @@ export function App() {
   const filteredReleaseStats = filterReleaseStatsBySearchTerm(
     installableReleaseStats,
     debouncedSearchTerm,
+    info.language,
   );
   const { showUpdateAllButton, updateableAssets } = getUpdateableAssets(
     // update all button ignores search term,
