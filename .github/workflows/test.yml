@@ -31,7 +31,7 @@ jobs:
       - name: 🟢 Use Node.js
         uses: actions/setup-node@v6
         with:
-          node-version: '22.18.0'
+          node-version: '24.18.0'
           cache: "pnpm"
 
       - name: ⬇️ Install dependencies
@@ -47,10 +47,11 @@ jobs:
           name: 'Unit test coverage'
 
       - name: 💾 Upload unit coverage data
+        if: always() 
         uses: actions/upload-artifact@v6
         with:
           name: unit-coverage
-          path: coverage/coverage-summary.json
+          path: coverage/
 
   browser-tests:
     runs-on: ubuntu-latest
@@ -88,7 +89,7 @@ jobs:
         uses: actions/upload-artifact@v6
         with:
           name: browser-coverage
-          path: coverage/coverage-summary.json
+          path: coverage/
 
   badges:
     name: 'Generate and commit coverage badges'

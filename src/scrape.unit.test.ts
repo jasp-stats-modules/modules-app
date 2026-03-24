@@ -2,7 +2,6 @@ import fs from 'node:fs/promises';
 import path, { join } from 'node:path';
 import { Octokit } from '@octokit/core';
 import { paginateGraphQL } from '@octokit/plugin-paginate-graphql';
-import chalk from 'chalk';
 import { graphql, HttpResponse } from 'msw';
 import { setupServer } from 'msw/node';
 import tmp from 'tmp';
@@ -1510,7 +1509,7 @@ describe('logReleaseStatistics', () => {
       'Repositories: 2',
       'Total releases: 2',
       'Total pre-releases: 0',
-      `Average number of assets per release: ${chalk.red('1.50')}`,
+      `Average number of assets per release: 1.50`,
     ].join('\n');
     expect(msg).toEqual(expected);
   });
