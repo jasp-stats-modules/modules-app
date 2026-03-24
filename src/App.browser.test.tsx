@@ -427,6 +427,19 @@ describe('App component', () => {
       );
     });
 
+    test('sorts modules by translated Dutch name', async () => {
+      const allListItems = screen.getByRole('listitem');
+      const listItemElements = await allListItems.all();
+
+      expect(listItemElements.length).toBe(4);
+      await expect
+        .element(listItemElements[0].getByText('Mijn Anova Module'))
+        .not.toBeInTheDocument();
+      await expect
+        .element(listItemElements[3].getByText('Mijn Anova Module'))
+        .toBeInTheDocument();
+    });
+
     test('renders search label in Dutch', async () => {
       await expect
         .element(screen.getByText('Zoek een module'))

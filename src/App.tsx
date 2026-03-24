@@ -1173,9 +1173,16 @@ export function App() {
   useEffect(() => {
     setAllowPreRelease(info.developerMode);
   }, [info.developerMode]);
-  const availableChannels = uniqueChannels(repositories || []);
+  const repositoriesSortedByTranslatedName = repositories?.toSorted((a, b) => {
+    const nameA = a.translations[info.language]?.name || a.name;
+    const nameB = b.translations[info.language]?.name || b.name;
+    return nameA.localeCompare(nameB, info.language);
+  });
+  const availableChannels = uniqueChannels(
+    repositoriesSortedByTranslatedName || [],
+  );
   const reposOfSelectedChannels = filterOnChannels(
-    repositories || [],
+    repositoriesSortedByTranslatedName || [],
     selectedChannels,
   );
   const installableReleaseStats = getInstallableReleaseStats(
