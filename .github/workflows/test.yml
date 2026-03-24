@@ -31,7 +31,7 @@ jobs:
       - name: 🟢 Use Node.js
         uses: actions/setup-node@v6
         with:
-          node-version: '22.18.0'
+          node-version: '24'
           cache: "pnpm"
 
       - name: ⬇️ Install dependencies
@@ -47,10 +47,10 @@ jobs:
           name: 'Unit test coverage'
 
       - name: 💾 Upload unit coverage data
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v7
         with:
           name: unit-coverage
-          path: coverage/coverage-summary.json
+          path: coverage/coverage-summary.json          
 
   browser-tests:
     runs-on: ubuntu-latest
@@ -69,7 +69,7 @@ jobs:
       - name: 🟢 Use Node.js
         uses: actions/setup-node@v6
         with:
-          node-version: '22.18.0'
+          node-version: '24'
           cache: "pnpm"
 
       - name: ⬇️ Install dependencies
@@ -85,7 +85,7 @@ jobs:
           name: 'Browser test coverage'
 
       - name: 💾 Upload browser coverage data
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v7
         with:
           name: browser-coverage
           path: coverage/coverage-summary.json
@@ -102,13 +102,13 @@ jobs:
           fetch-depth: 0
 
       - name: 📂 Download unit coverage data
-        uses: actions/download-artifact@v7
+        uses: actions/download-artifact@v8
         with:
           name: unit-coverage
           path: coverage/unit/
 
       - name: 📂 Download browser coverage data
-        uses: actions/download-artifact@v7
+        uses: actions/download-artifact@v8
         with:
           name: browser-coverage
           path: coverage/browser/
@@ -121,7 +121,7 @@ jobs:
       - name: 🟢 Use Node.js
         uses: actions/setup-node@v6
         with:
-          node-version: '22.18.0'
+          node-version: '24'
           cache: "pnpm"
 
       - name: 🎖️ Generating unit test coverage badges

@@ -37,13 +37,14 @@ describe('isNewerVersion', () => {
     ['1.2.3-beta.11', '1.2.3-beta.2', false],
     ['1.2.3-release.11', '1.2.3-release.2', false],
     ['1.2.3-release.2', '1.2.3-release.11', true],
-  ])(
-    'isNewerVersion(%s, %s) should be %s',
-    ([currentVersion, candidateVersion, expected]) => {
-      const result = isNewerVersion(currentVersion, candidateVersion);
-      expect(result).toBe(expected);
-    },
-  );
+  ])('isNewerVersion(%s, %s) should be %s', ([
+    currentVersion,
+    candidateVersion,
+    expected,
+  ]) => {
+    const result = isNewerVersion(currentVersion, candidateVersion);
+    expect(result).toBe(expected);
+  });
 });
 
 describe('isPreRelease', () => {

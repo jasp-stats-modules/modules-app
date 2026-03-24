@@ -24,6 +24,7 @@ import {
   type AnyAction,
   type DowngradePreReleaseAction,
   type DowngradeStableAction,
+  filterReleasesByArchitecture,
   findReleaseThatSatisfiesInstalledJaspVersion,
   type InstallPreReleaseAction,
   type InstallStableAction,
@@ -664,8 +665,8 @@ export function ReleaseStatsLine({
   return (
     <div className="flex flex-row justify-between text-muted-foreground text-sm">
       <div className="flex flex-col">
-        {stats.map((line, index) => (
-          <div key={`${index}-${line}`}>{line}</div>
+        {stats.map((line) => (
+          <div key={line}>{line}</div>
         ))}
       </div>
       <div>{by_maintainer({ maintainer })}</div>
@@ -828,12 +829,12 @@ function getInstallableReleaseStatsFromRepository(
   allowPreRelease: boolean,
 ): ReleaseStats[] {
   let latestRelease = findReleaseThatSatisfiesInstalledJaspVersion(
-    repo.releases,
+    filterReleasesByArchitecture(repo.releases, info.arch),
     info.version,
   );
   if (allowPreRelease) {
     const latestPreRelease = findReleaseThatSatisfiesInstalledJaspVersion(
-      repo.preReleases,
+      filterReleasesByArchitecture(repo.preReleases, info.arch),
       info.version,
     );
     if (
@@ -846,13 +847,7 @@ function getInstallableReleaseStatsFromRepository(
     }
   }
   if (!latestRelease) {
-    return [];
-  }
-  const hasArch = latestRelease.assets.some(
-    (a) => a.architecture === info.arch,
-  );
-  if (!hasArch) {
-    // No assets found with compatible architecture
+    // No assets found with compatible architecture or JASP version
     return [];
   }
   const hasAssets = latestRelease?.assets && latestRelease.assets.length > 0;
@@ -1147,6 +1142,17 @@ function InfoButton({
   );
 }
 
+function sortRepositoriesByTranslatedName(
+  repositories: Repository[] | undefined,
+  language: string,
+): Repository[] | undefined {
+  return repositories?.toSorted((a, b) => {
+    const nameA = a.translations[language]?.name || a.name;
+    const nameB = b.translations[language]?.name || b.name;
+    return nameA.localeCompare(nameB, language);
+  });
+}
+
 export function App() {
   const translations = useIntlayer<'app'>('app');
   const {
@@ -1178,9 +1184,15 @@ export function App() {
   useEffect(() => {
     setAllowPreRelease(info.developerMode);
   }, [info.developerMode]);
-  const availableChannels = uniqueChannels(repositories || []);
+  const repositoriesSortedByTranslatedName = sortRepositoriesByTranslatedName(
+    repositories,
+    info.language,
+  );
+  const availableChannels = uniqueChannels(
+    repositoriesSortedByTranslatedName || [],
+  );
   const reposOfSelectedChannels = filterOnChannels(
-    repositories || [],
+    repositoriesSortedByTranslatedName || [],
     selectedChannels,
   );
   const installableReleaseStats = getInstallableReleaseStats(

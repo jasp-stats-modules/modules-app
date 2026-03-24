@@ -343,7 +343,8 @@ describe('App component', () => {
       const jaspAnovaCard = screen.getByRole('listitem', { name: 'jaspAnova' });
       await expect.element(jaspAnovaCard).toBeInTheDocument();
 
-      // Should have an Install button since Windows_x86-64 asset is available
+      // Latest stable 0.95.5-release.0 has no Windows asset,
+      // so it should fall back to 0.94.0-release.0.
       const installButton = jaspAnovaCard.getByRole('link', {
         name: 'Install',
       });
@@ -352,12 +353,63 @@ describe('App component', () => {
         .element(installButton)
         .toHaveAttribute(
           'href',
-          'https://github.com/test/test/releases/download/v0.95.5-release.0/test1_Windows_x86-64.JASPModule',
+          'https://github.com/jasp-stats-modules/jaspAnova/releases/download/2cbd8a3e_R-4-4-1/jaspAnova_0.95.0_Windows_x86-64_R-4-5-1.JASPModule',
         );
+
+      await expect
+        .element(jaspAnovaCard.getByText(/Latest 0\.94\.0-release\.0/i))
+        .toBeInTheDocument();
 
       const allListItems = screen.getByRole('listitem');
       const listItemElements = await allListItems.all();
       expect(listItemElements.length).toBe(4);
+    });
+  });
+
+  describe('Given powerpc architecture with no compatible assets', () => {
+    beforeEach(async () => {
+      screen = await render(
+        <NuqslessWrapper>
+          <App />
+        </NuqslessWrapper>,
+        {
+          wrapper: withNuqsTestingAdapter({
+            searchParams: { c: 'test.json', a: 'powerpc' },
+          }),
+        },
+      );
+    });
+
+    test('renders no modules found', async () => {
+      await expect
+        .element(screen.getByText('No modules found'))
+        .toBeInTheDocument();
+      // This test also mimicks what happens when
+      // a module has no release assets for given architecture
+    });
+  });
+
+  describe('Given on Windows_x86-64 and show betas', () => {
+    beforeEach(async () => {
+      screen = await render(
+        <NuqslessWrapper>
+          <App />
+        </NuqslessWrapper>,
+        {
+          wrapper: withNuqsTestingAdapter({
+            searchParams: { c: 'test.json', a: 'Windows_x86-64', p: 'true' },
+          }),
+        },
+      );
+    });
+
+    test('renders second beta release', async () => {
+      const jaspAnovaCard = screen.getByRole('listitem', { name: 'jaspAnova' });
+      await expect.element(jaspAnovaCard).toBeInTheDocument();
+
+      await expect
+        .element(jaspAnovaCard.getByText(/Latest beta 0\.96\.0-beta\.1/i))
+        .toBeInTheDocument();
     });
   });
 
@@ -373,6 +425,19 @@ describe('App component', () => {
           }),
         },
       );
+    });
+
+    test('sorts modules by translated Dutch name', async () => {
+      const allListItems = screen.getByRole('listitem');
+      const listItemElements = await allListItems.all();
+
+      expect(listItemElements.length).toBe(4);
+      await expect
+        .element(listItemElements[0].getByText('Mijn Anova Module'))
+        .not.toBeInTheDocument();
+      await expect
+        .element(listItemElements[3].getByText('Mijn Anova Module'))
+        .toBeInTheDocument();
     });
 
     test('renders search label in Dutch', async () => {
