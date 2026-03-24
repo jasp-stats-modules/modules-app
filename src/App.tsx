@@ -1157,7 +1157,10 @@ export function App() {
   const [selectedChannels, setSelectedChannels] = useState<string[]>([
     defaultChannel,
   ]);
-  const [searchTerm, setSearchTerm] = useState<string>('');
+  const [searchTerm, setSearchTerm] = useQueryState('s', {
+    defaultValue: '',
+    clearOnDefault: true,
+  });
   const [debouncedSearchTerm] = useDebounceValue(searchTerm, 100);
   const [allowPreRelease, setAllowPreRelease] = useState<boolean>(
     info.developerMode,
