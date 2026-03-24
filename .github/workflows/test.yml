@@ -31,7 +31,7 @@ jobs:
       - name: 🟢 Use Node.js
         uses: actions/setup-node@v6
         with:
-          node-version: '24.18.0'
+          node-version: '24'
           cache: "pnpm"
 
       - name: ⬇️ Install dependencies
@@ -71,7 +71,7 @@ jobs:
       - name: 🟢 Use Node.js
         uses: actions/setup-node@v6
         with:
-          node-version: '22.18.0'
+          node-version: '24'
           cache: "pnpm"
 
       - name: ⬇️ Install dependencies
@@ -124,7 +124,7 @@ jobs:
       - name: 🟢 Use Node.js
         uses: actions/setup-node@v6
         with:
-          node-version: '22.18.0'
+          node-version: '24'
           cache: "pnpm"
 
       - name: 🎖️ Generating unit test coverage badges
