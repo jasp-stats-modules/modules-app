@@ -1142,6 +1142,17 @@ function InfoButton({
   );
 }
 
+function sortRepositoriesByTranslatedName(
+  repositories: Repository[] | undefined,
+  info: Info,
+): Repository[] | undefined {
+  return repositories?.toSorted((a, b) => {
+    const nameA = a.translations[info.language]?.name || a.name;
+    const nameB = b.translations[info.language]?.name || b.name;
+    return nameA.localeCompare(nameB, info.language);
+  });
+}
+
 export function App() {
   const translations = useIntlayer<'app'>('app');
   const {
@@ -1173,11 +1184,10 @@ export function App() {
   useEffect(() => {
     setAllowPreRelease(info.developerMode);
   }, [info.developerMode]);
-  const repositoriesSortedByTranslatedName = repositories?.toSorted((a, b) => {
-    const nameA = a.translations[info.language]?.name || a.name;
-    const nameB = b.translations[info.language]?.name || b.name;
-    return nameA.localeCompare(nameB, info.language);
-  });
+  const repositoriesSortedByTranslatedName = sortRepositoriesByTranslatedName(
+    repositories,
+    info,
+  );
   const availableChannels = uniqueChannels(
     repositoriesSortedByTranslatedName || [],
   );
