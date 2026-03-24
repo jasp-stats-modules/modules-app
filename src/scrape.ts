@@ -792,6 +792,50 @@ function logWithBar(
   }
 }
 
+function isGraphqlRequest(options: {
+  method?: string;
+  url?: string;
+}): boolean {
+  const method = options.method?.toUpperCase();
+  const url = options.url;
+  return method === 'POST' && typeof url === 'string' && url.includes('/graphql');
+}
+
+function formatRateLimitHeaderLog(
+  headers: Record<string, string | number | undefined>,
+): string | undefined {
+  const rateLimitHeaders = Object.entries(headers)
+    .filter(([key]) => key.toLowerCase().startsWith('x-ratelimit-'))
+    .sort(([a], [b]) => a.localeCompare(b));
+
+  if (rateLimitHeaders.length === 0) {
+    return undefined;
+  }
+
+  return rateLimitHeaders
+    .map(([key, value]) => `${key}: ${String(value)}`)
+    .join(', ');
+}
+
+function registerGraphqlRateLimitHeaderLogging(
+  octokit: InstanceType<typeof MyOctokit>,
+): void {
+  octokit.hook.after('request', (response, options) => {
+    if (!isGraphqlRequest(options)) {
+      return;
+    }
+
+    const logLine = formatRateLimitHeaderLog(
+      response.headers as Record<string, string | number | undefined>,
+    );
+    if (!logLine) {
+      return;
+    }
+
+    console.info(`GraphQL rate limit headers: ${logLine}`);
+  });
+}
+
 export function extractArchitectureFromUrl(
   url: string,
   expectedArchitectures: ExpectedArchitectures = EXPECTED_ARCHITECTURES,
@@ -1308,6 +1352,7 @@ async function scrape(
   output: string = 'public/index.json',
 ) {
   const octokit = new MyOctokit({ auth: process.env.GITHUB_TOKEN });
+  registerGraphqlRateLimitHeaderLogging(octokit);
 
   const repoUrl = `https://github.com/${owner}/${repo}.git`;
   console.info('Fetching submodules from', `${repoUrl} (branch ${branch})`);
