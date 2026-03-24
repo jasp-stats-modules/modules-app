@@ -6,6 +6,7 @@ import chalk from 'chalk';
 import dedent from 'dedent';
 import * as gettextParser from 'gettext-parser';
 import matter from 'gray-matter';
+import pLimit from 'p-limit';
 import sharp from 'sharp';
 import { type SimpleGitProgressEvent, simpleGit } from 'simple-git';
 import { optimize } from 'svgo';
@@ -1229,32 +1230,40 @@ export async function releaseAssets(
   firstReleases = 20,
   firstAssets = 20,
   octokit: InstanceType<typeof MyOctokit>,
+  concurrency = 5,
 ): Promise<Repository[]> {
   const finalResults: Repository[] = [];
+  const limit = pLimit(concurrency);
+  let dispatched = 0;
 
-  for (const bareRepo of repos) {
-    console.log(
-      `Fetching releases for ${bareRepo.releaseSource} (${finalResults.length + 1} of ${repos.length})`,
-    );
-    const result = await releaseAssetsForRepo(
-      bareRepo,
-      expectedArchitectures,
-      firstReleases,
-      firstAssets,
-      octokit,
-    );
-    if (
-      result &&
-      (result.releases.length > 0 || result.preReleases.length > 0)
-    ) {
-      finalResults.push(result);
-    } else {
-      const message = `No valid releases found for ${bareRepo.releaseSource}. Skipping.`;
-      console.warn(message);
-    }
-  }
+  await Promise.all(
+    repos.map((bareRepo) =>
+      limit(async () => {
+        const index = ++dispatched;
+        console.log(
+          `Fetching releases for ${bareRepo.releaseSource} (${index} of ${repos.length})`,
+        );
+        const result = await releaseAssetsForRepo(
+          bareRepo,
+          expectedArchitectures,
+          firstReleases,
+          firstAssets,
+          octokit,
+        );
+        if (
+          result &&
+          (result.releases.length > 0 || result.preReleases.length > 0)
+        ) {
+          finalResults.push(result);
+        } else {
+          const message = `No valid releases found for ${bareRepo.releaseSource}. Skipping.`;
+          console.warn(message);
+        }
+      }),
+    ),
+  );
 
-  return finalResults;
+  return finalResults.toSorted((a, b) => a.id.localeCompare(b.id, 'en'));
 }
 
 export function logReleaseStatistics(repositories: Repository[]): string {
