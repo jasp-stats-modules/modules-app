@@ -3,7 +3,8 @@ import type { ReleaseStats } from './releaseStats';
 import {
   type Doc,
   filterOnDocs,
-  filterReleaseStatsBySearchTerm,
+  filterReleaseStats,
+  releaseStatsToDocs,
 } from './search';
 import type { Release } from './types';
 
@@ -37,10 +38,10 @@ describe('filterOnDocs', () => {
       expected: ['jaspAudit', 'jaspBfpack'],
     },
     {
-      testname: 'Invalid search term matches nothing',
-      searchTerm: 'fo*"',
+      testname: 'whitespace search term returns all docs',
+      searchTerm: '   ',
       docs: sampleDocs,
-      expected: [],
+      expected: ['jaspAudit', 'jaspBfpack'],
     },
     {
       testname: 'matches name',
@@ -235,11 +236,33 @@ describe('filterOnDocs', () => {
     },
   ])('$testname', ({ searchTerm, docs, expected }) => {
     const result = filterOnDocs(searchTerm, docs);
-    expect(result.map((doc) => doc.id)).toEqual(expected);
+    expect(result.hits.map((doc) => doc.id)).toEqual(expected);
+  });
+
+  test('returns parse metadata for invalid query', () => {
+    const result = filterOnDocs('fo*"', sampleDocs);
+
+    expect(result.hits.map((doc) => doc.id)).toEqual([
+      'jaspAudit',
+      'jaspBfpack',
+    ]);
+    expect(result.parseError).toMatchObject({
+      column: 4,
+    });
+  });
+
+  test('treats quote-only query as invalid', () => {
+    const result = filterOnDocs('"', sampleDocs);
+
+    expect(result.hits.map((doc) => doc.id)).toEqual([
+      'jaspAudit',
+      'jaspBfpack',
+    ]);
+    expect(result.parseError).toEqual({ column: 1 });
   });
 });
 
-function makeRS(doc: Partial<Doc>, publishedAt?: string): ReleaseStats {
+function makeRS(doc: Omit<Doc, 'date'>, publishedAt?: string): ReleaseStats {
   const releases: Release[] = [];
   if (publishedAt && doc.downloads) {
     releases.push({
@@ -272,7 +295,7 @@ function makeRS(doc: Partial<Doc>, publishedAt?: string): ReleaseStats {
   };
 }
 
-describe('filterReleaseStatsBySearchTerm', () => {
+describe('filterReleaseStats', () => {
   test.for<[string, string[]]>([
     ['', ['jaspAudit', 'jaspBfpack']],
     ['jaspAudit', ['jaspAudit']], // id
@@ -302,7 +325,12 @@ describe('filterReleaseStatsBySearchTerm', () => {
       }),
     ];
 
-    const hits = filterReleaseStatsBySearchTerm(releaseStats, searchTerm);
+    const result = filterReleaseStats(
+      releaseStatsToDocs(releaseStats),
+      releaseStats,
+      searchTerm,
+    );
+    const hits = result.releaseStats;
 
     const hitIds = hits.map((rs) => rs.repo.id);
     expect(hitIds).toEqual(expected);

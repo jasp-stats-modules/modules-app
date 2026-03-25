@@ -505,6 +505,31 @@ const appContent = {
       'zh-Hans': '搜索模块',
       'zh-Hant': '搜尋模組',
     }),
+    invalid_query_at_column: t({
+      en: insert('Invalid query at column {{column}}'),
+      nl: insert('Ongeldige zoekopdracht bij kolom {{column}}'),
+      fr: insert('Requête invalide à la colonne {{column}}'),
+      de: insert('Ungültige Suchanfrage in Spalte {{column}}'),
+      es: insert('Consulta no válida en la columna {{column}}'),
+      it: insert('Query non valida alla colonna {{column}}'),
+      ar: insert('استعلام غير صالح عند العمود {{column}}'),
+      cs: insert('Neplatný dotaz ve sloupci {{column}}'),
+      et: insert('Vigane päring veerus {{column}}'),
+      eu: insert('Kontsulta baliogabea {{column}} zutabean'),
+      gl: insert('Consulta non válida na columna {{column}}'),
+      hu: insert('Érvénytelen lekérdezés a(z) {{column}}. oszlopnál'),
+      id: insert('Kueri tidak valid di kolom {{column}}'),
+      ja: insert('{{column}} 列目に無効なクエリがあります'),
+      lt: insert('Neteisinga užklausa stulpelyje {{column}}'),
+      pl: insert('Nieprawidłowe zapytanie w kolumnie {{column}}'),
+      pt: insert('Consulta inválida na coluna {{column}}'),
+      ru: insert('Недопустимый запрос в столбце {{column}}'),
+      sq: insert('Kërkesë e pavlefshme në kolonën {{column}}'),
+      sr: insert('Neispravan upit u koloni {{column}}'),
+      tr: insert('{{column}}. sütunda geçersiz sorgu'),
+      'zh-Hans': insert('第 {{column}} 列的查询无效'),
+      'zh-Hant': insert('第 {{column}} 欄的查詢無效'),
+    }),
     no_modules_found: t({
       en: 'No modules found',
       nl: 'Geen modules gevonden',
@@ -885,7 +910,7 @@ The modules are divided into channels:
 A module can have a beta version of it. A beta version is used for testing new modules or new features in existing modules before they are released as a stable version.
 Use the "Show betas" checkbox to show or hide beta versions. A beta version may contain unresolved issues and bugs, so use it with caution.
 
-Examples search queries:
+Example search queries:
 [regression](?s=regression), [name:test](?s=name:test), [constrained equality](?s=constrained%20equality), 
 ["equality constrained"](?s="equality%20constrained"), [maintainer:jasp-stats](?s=maintainer:jasp-stats), 
 [id:jaspBain](?s=id:jaspBain), [(test OR clustering) AND NOT robust](?s=(test%20OR%20clustering)%20AND%20NOT%20robust)

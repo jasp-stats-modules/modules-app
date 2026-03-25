@@ -13,6 +13,37 @@ export interface Doc {
   downloads?: number;
 }
 
+export interface SearchParseError {
+  column: number;
+}
+
+export interface FilterOnDocsResult {
+  hits: readonly Doc[];
+  parseError?: SearchParseError;
+}
+
+export interface FilterReleaseStatsResult {
+  releaseStats: ReleaseStats[];
+  parseError?: SearchParseError;
+}
+
+function normalizeSearchParseError(
+  error: unknown,
+  searchTerm: string,
+): SearchParseError | undefined {
+  if (error instanceof LiqeSyntaxError) {
+    return {
+      column: error.column,
+    };
+  }
+  if (error instanceof Error && error.message === 'Found no parsings.') {
+    return {
+      column: Math.max(searchTerm.length, 1),
+    };
+  }
+  return undefined;
+}
+
 function releaseStatsToDoc(releaseStats: ReleaseStats): Doc {
   const latestStableRelase = releaseStats.repo.releases[0];
   let date: number | undefined;
@@ -36,7 +67,6 @@ function releaseStatsToDoc(releaseStats: ReleaseStats): Doc {
 }
 
 export function releaseStatsToDocs(releaseStats: ReleaseStats[]): Doc[] {
-  console.log('Converting release stats to docs', releaseStats);
   return releaseStats.map(releaseStatsToDoc);
 }
 
@@ -51,38 +81,33 @@ function hits2filteredReleaseStats(
 export function filterOnDocs(
   searchTerm: string,
   docs: readonly Doc[],
-): readonly Doc[] {
-  if (!searchTerm) {
-    return docs;
+): FilterOnDocsResult {
+  if (!searchTerm.trim()) {
+    return { hits: docs };
   }
   try {
     const q = parse(searchTerm);
-    return filter(q, docs);
+    return { hits: filter(q, docs) };
   } catch (error) {
-    if (error instanceof LiqeSyntaxError) {
-      console.error(`Invalid search term: ${searchTerm}. ${error.message}`);
-    } else {
-      throw error;
+    const parseError = normalizeSearchParseError(error, searchTerm);
+    if (parseError) {
+      return {
+        hits: docs,
+        parseError,
+      };
     }
-    return [];
+    throw error;
   }
 }
 
-export function filterReleaseStatsBySearchTerm(
-  releaseStats: ReleaseStats[],
-  searchTerm: string,
-): ReleaseStats[] {
-  const docs = releaseStatsToDocs(releaseStats);
-  const hits = filterOnDocs(searchTerm, docs);
-  return hits2filteredReleaseStats(hits, releaseStats);
-}
-
-// Version of filterReleaseStatsBySearchTerm where docs are memoized before
-export function filterReleaseStatsByDocsAndSearchTerm(
+export function filterReleaseStats(
   docs: Doc[],
   releaseStats: ReleaseStats[],
   searchTerm: string,
-): ReleaseStats[] {
-  const hits = filterOnDocs(searchTerm, docs);
-  return hits2filteredReleaseStats(hits, releaseStats);
+): FilterReleaseStatsResult {
+  const { hits, parseError } = filterOnDocs(searchTerm, docs);
+  return {
+    releaseStats: hits2filteredReleaseStats(hits, releaseStats),
+    parseError,
+  };
 }
