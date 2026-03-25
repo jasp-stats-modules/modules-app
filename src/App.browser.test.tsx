@@ -15,7 +15,7 @@ describe('App component', () => {
         </NuqslessWrapper>,
         {
           wrapper: withNuqsTestingAdapter({
-            searchParams: { c: 'test.json', a: 'MacOS_arm64' },
+            searchParams: { c: 'test.json', a: 'MacOS_arm64', l: 'en' },
           }),
         },
       );
@@ -127,6 +127,7 @@ describe('App component', () => {
               c: 'test.json',
               a: 'MacOS_arm64',
               i: '{"jaspAnova":"0.95.4-release.0"}',
+              l: 'en',
             },
           }),
         },
@@ -168,6 +169,7 @@ describe('App component', () => {
               c: 'test.json',
               a: 'MacOS_arm64',
               i: '{"jaspAnova":"0.95.5-release.0"}',
+              l: 'en',
             },
           }),
         },
@@ -218,6 +220,7 @@ describe('App component', () => {
               i: '{"jaspAnova":"0.96.0-beta.1"}',
               p: 'false',
               u: '["jaspAnova"]',
+              l: 'en',
             },
           }),
         },
@@ -264,7 +267,12 @@ describe('App component', () => {
         </NuqslessWrapper>,
         {
           wrapper: withNuqsTestingAdapter({
-            searchParams: { c: 'test.json', a: 'MacOS_arm64', t: 'dark' },
+            searchParams: {
+              c: 'test.json',
+              a: 'MacOS_arm64',
+              t: 'dark',
+              l: 'en',
+            },
           }),
         },
       );
@@ -287,7 +295,12 @@ describe('App component', () => {
         </NuqslessWrapper>,
         {
           wrapper: withNuqsTestingAdapter({
-            searchParams: { c: 'test.json', a: 'MacOS_arm64', t: 'light' },
+            searchParams: {
+              c: 'test.json',
+              a: 'MacOS_arm64',
+              t: 'light',
+              l: 'en',
+            },
           }),
         },
       );
@@ -333,7 +346,7 @@ describe('App component', () => {
         </NuqslessWrapper>,
         {
           wrapper: withNuqsTestingAdapter({
-            searchParams: { c: 'test.json', a: 'Windows_x86-64' },
+            searchParams: { c: 'test.json', a: 'Windows_x86-64', l: 'en' },
           }),
         },
       );
@@ -374,7 +387,7 @@ describe('App component', () => {
         </NuqslessWrapper>,
         {
           wrapper: withNuqsTestingAdapter({
-            searchParams: { c: 'test.json', a: 'powerpc' },
+            searchParams: { c: 'test.json', a: 'powerpc', l: 'en' },
           }),
         },
       );
@@ -397,7 +410,12 @@ describe('App component', () => {
         </NuqslessWrapper>,
         {
           wrapper: withNuqsTestingAdapter({
-            searchParams: { c: 'test.json', a: 'Windows_x86-64', p: 'true' },
+            searchParams: {
+              c: 'test.json',
+              a: 'Windows_x86-64',
+              p: 'true',
+              l: 'en',
+            },
           }),
         },
       );
