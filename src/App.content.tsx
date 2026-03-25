@@ -505,6 +505,31 @@ const appContent = {
       'zh-Hans': '搜索模块',
       'zh-Hant': '搜尋模組',
     }),
+    invalid_query_at_column: t({
+      en: insert('Invalid query at column {{column}}'),
+      nl: insert('Ongeldige zoekopdracht bij kolom {{column}}'),
+      fr: insert('Requête invalide à la colonne {{column}}'),
+      de: insert('Ungültige Suchanfrage in Spalte {{column}}'),
+      es: insert('Consulta no válida en la columna {{column}}'),
+      it: insert('Query non valida alla colonna {{column}}'),
+      ar: insert('استعلام غير صالح عند العمود {{column}}'),
+      cs: insert('Neplatný dotaz ve sloupci {{column}}'),
+      et: insert('Vigane päring veerus {{column}}'),
+      eu: insert('Kontsulta baliogabea {{column}} zutabean'),
+      gl: insert('Consulta non válida na columna {{column}}'),
+      hu: insert('Érvénytelen lekérdezés a(z) {{column}}. oszlopnál'),
+      id: insert('Kueri tidak valid di kolom {{column}}'),
+      ja: insert('{{column}} 列目に無効なクエリがあります'),
+      lt: insert('Neteisinga užklausa stulpelyje {{column}}'),
+      pl: insert('Nieprawidłowe zapytanie w kolumnie {{column}}'),
+      pt: insert('Consulta inválida na coluna {{column}}'),
+      ru: insert('Недопустимый запрос в столбце {{column}}'),
+      sq: insert('Kërkesë e pavlefshme në kolonën {{column}}'),
+      sr: insert('Neispravan upit u koloni {{column}}'),
+      tr: insert('{{column}}. sütunda geçersiz sorgu'),
+      'zh-Hans': insert('第 {{column}} 列的查询无效'),
+      'zh-Hant': insert('第 {{column}} 欄的查詢無效'),
+    }),
     no_modules_found: t({
       en: 'No modules found',
       nl: 'Geen modules gevonden',
@@ -885,6 +910,11 @@ The modules are divided into channels:
 A module can have a beta version of it. A beta version is used for testing new modules or new features in existing modules before they are released as a stable version.
 Use the "Show betas" checkbox to show or hide beta versions. A beta version may contain unresolved issues and bugs, so use it with caution.
 
+Example search queries:
+[regression](?s=regression), [name:test](?s=name:test), [constrained equality](?s=constrained%20equality), 
+["equality constrained"](?s="equality%20constrained"), [maintainer:jasp-stats](?s=maintainer:jasp-stats), 
+[id:jaspBain](?s=id:jaspBain), [(test OR clustering) AND NOT robust](?s=(test%20OR%20clustering)%20AND%20NOT%20robust)
+
 This panel was made as part of the [JASP-MOD project](https://research-software-directory.org/projects/jasp-mod).`),
       nl: md(`### Informatie over het modulebibliotheekpaneel
   
@@ -898,6 +928,11 @@ De modules zijn verdeeld in kanalen:
 Een module kan een bètaversie hebben. Een bètaversie wordt gebruikt om nieuwe modules of nieuwe functies in bestaande modules te testen voordat ze als stabiele versie worden uitgebracht.
 Gebruik het selectievakje "Toon Betas" om bètaversies te tonen of te verbergen.
 Een bètaversie kan onopgeloste problemen en bugs bevatten, dus gebruik deze met voorzichtigheid.
+
+Voorbeelden van zoekopdrachten:
+[regressie](?s=regressie), [name:test](?s=name:test), [beperkte gelijkheids](?s=beperkte%20gelijkheids),
+["gelijkheids beperkte"](?s="gelijkheids%20beperkte"), [maintainer:jasp-stats](?s=maintainer:jasp-stats),
+[id:jaspBain](?s=id:jaspBain), [(test OR clustering) AND NOT robust](?s=(test%20OR%20clustering)%20AND%20NOT%20robust)
 
 Dit paneel is gemaakt als onderdeel van het [JASP-MOD project](https://research-software-directory.org/projects/jasp-mod).`),
       fr: md(`### Informations sur le panneau de bibliothèque de modules
@@ -913,6 +948,11 @@ Un module peut avoir une version bêta. Une version bêta est utilisée pour tes
 Utilisez la case « Afficher les pré-versions » pour afficher ou masquer les versions bêta.
 Une version bêta peut contenir des problèmes et des bugs non résolus, utilisez-la donc avec prudence.
 
+Exemples de requêtes de recherche :
+[regression](?s=regression), [name:test](?s=name:test), [égalité hypothèses](?s=égalité%20hypothèses),
+["hypothèses d'égalité"](?s="hypothèses%20d'égalité"), [maintainer:jasp-stats](?s=maintainer:jasp-stats),
+[id:jaspBain](?s=id:jaspBain), [(test OR clustering) AND NOT robust](?s=(test%20OR%20clustering)%20AND%20NOT%20robust)
+
 Ce panneau a été réalisé dans le cadre du [projet JASP-MOD](https://research-software-directory.org/projects/jasp-mod).`),
       de: md(`### Informationen zum Modulbibliothek-Panel
 
@@ -926,6 +966,11 @@ Die Module sind in Kanäle unterteilt:
 Ein Modul kann eine Beta-Version haben. Eine Beta-Version wird verwendet, um neue Module oder neue Funktionen in bestehenden Modulen zu testen, bevor sie als stabile Version veröffentlicht werden.
 Verwenden Sie das Kontrollkästchen „Vorabversionen anzeigen“, um Beta-Versionen ein- oder auszublenden.
 Eine Beta-Version kann ungelöste Probleme und Fehler enthalten, verwenden Sie sie daher mit Vorsicht.
+
+Beispiele für Suchanfragen:
+[Regression](?s=Regression), [name:test](?s=name:test), [definierte Gleichheit](?s=definierte%20Gleichheit),
+["Gleichheit definierte"](?s="Gleichheit%20definierte"), [maintainer:jasp-stats](?s=maintainer:jasp-stats),
+[id:jaspBain](?s=id:jaspBain), [(test OR Clustering) AND NOT robust](?s=(test%20OR%20Clustering)%20AND%20NOT%20robust)
 
 Dieses Panel wurde im Rahmen des [JASP-MOD-Projekts](https://research-software-directory.org/projects/jasp-mod) erstellt.`),
       es: md(`### Información sobre el panel de la biblioteca de módulos
@@ -941,6 +986,11 @@ Un módulo puede tener una versión beta. Una versión beta se usa para probar n
 Use la casilla "Mostrar pre-lanzamientos" para mostrar u ocultar las versiones beta.
 Una versión beta puede contener problemas y errores sin resolver, así que úsela con precaución.
 
+Ejemplos de consultas de búsqueda:
+[regresión](?s=regresión), [name:contrastes](?s=name:contrastes), [igualdad restricciones](?s=igualdad%20restricciones),
+["restricciones de igualdad"](?s="restricciones%20de%20igualdad"), [maintainer:jasp-stats](?s=maintainer:jasp-stats),
+[id:jaspBain](?s=id:jaspBain), [(test OR conglomeración) AND NOT robust](?s=(test%20OR%20conglomeración)%20AND%20NOT%20robust)
+
 Este panel se creó como parte del [proyecto JASP-MOD](https://research-software-directory.org/projects/jasp-mod).`),
       it: md(`### Informazioni sul pannello della libreria dei moduli
 
@@ -954,6 +1004,11 @@ I moduli sono divisi in canali:
 Un modulo può avere una versione beta. Una versione beta viene usata per testare nuovi moduli o nuove funzionalità in moduli esistenti prima che vengano rilasciati come versione stabile.
 Usa la casella "Mostra pre-release" per mostrare o nascondere le versioni beta.
 Una versione beta può contenere problemi e bug irrisolti, quindi usala con cautela.
+
+Esempi di query di ricerca:
+[Regression](?s=Regression), [name:Regression](?s=name:Regression), [constrained equality](?s=constrained%20equality),
+["equality constrained"](?s="equality%20constrained"), [maintainer:jasp-stats](?s=maintainer:jasp-stats),
+[id:jaspBain](?s=id:jaspBain), [(test OR clustering) AND NOT robust](?s=(test%20OR%20clustering)%20AND%20NOT%20robust)
 
 Questo pannello è stato realizzato come parte del [progetto JASP-MOD](https://research-software-directory.org/projects/jasp-mod).`),
       ar: md(`### معلومات حول لوحة مكتبة الوحدات
@@ -969,6 +1024,11 @@ Questo pannello è stato realizzato come parte del [progetto JASP-MOD](https://r
 استخدم مربع الاختيار "إظهار الإصدارات التجريبية" لإظهار أو إخفاء الإصدارات التجريبية.
 قد يحتوي الإصدار التجريبي على مشكلات وأخطاء غير محلولة، لذا استخدمه بحذر.
 
+أمثلة على استعلامات البحث:
+[أخذ](?s=أخذ), [name:أخذ](?s=name:أخذ), [عينات أخذ](?s=عينات%20أخذ),
+["أخذ عينات"](?s="أخذ%20عينات"), [maintainer:jasp-stats](?s=maintainer:jasp-stats),
+[id:jaspBain](?s=id:jaspBain), [(test OR clustering) AND NOT robust](?s=(test%20OR%20clustering)%20AND%20NOT%20robust)
+
 تم إنشاء هذه اللوحة كجزء من [مشروع JASP-MOD](https://research-software-directory.org/projects/jasp-mod).`),
       cs: md(`### Informace o panelu knihovny modulů
 
@@ -982,6 +1042,11 @@ Moduly jsou rozděleny do kanálů:
 Modul může mít beta verzi. Beta verze slouží k testování nových modulů nebo nových funkcí ve stávajících modulech před jejich vydáním jako stabilní verze.
 Použijte zaškrtávací políčko „Zobrazit předběžná vydání“ k zobrazení nebo skrytí beta verzí.
 Beta verze může obsahovat nevyřešené problémy a chyby, proto ji používejte opatrně.
+
+Příklady vyhledávacích dotazů:
+[Popisné](?s=Popisné), [name:Popisné](?s=name:Popisné), [grafů tabulek](?s=grafů%20tabulek),
+["tabulek a grafů"](?s="tabulek%20a%20grafů"), [maintainer:jasp-stats](?s=maintainer:jasp-stats),
+[id:jaspBain](?s=id:jaspBain), [(Bayes OR grafů) AND NOT robust](?s=(Bayes%20OR%20grafů)%20AND%20NOT%20robust)
 
 Tento panel byl vytvořen jako součást [projektu JASP-MOD](https://research-software-directory.org/projects/jasp-mod).`),
       et: md(`### Teave mooduliteekogu paneeli kohta
@@ -997,6 +1062,11 @@ Moodulil võib olla beetaversioon. Beetaversiooni kasutatakse uute moodulite võ
 Kasutage märkeruutu "Kuva eeltõmmised", et kuvada või peita beetaversioonid.
 Beetaversioon võib sisaldada lahendamata probleeme ja vigu, seega kasutage seda ettevaatlikult.
 
+Otsingupäringute näited:
+[Regression](?s=Regression), [name:Regression](?s=name:Regression), [constrained equality](?s=constrained%20equality),
+["equality constrained"](?s="equality%20constrained"), [maintainer:jasp-stats](?s=maintainer:jasp-stats),
+[id:jaspBain](?s=id:jaspBain), [(Bayes OR clustering) AND NOT robust](?s=(Bayes%20OR%20clustering)%20AND%20NOT%20robust)
+
 See paneel loodi [JASP-MOD projekti](https://research-software-directory.org/projects/jasp-mod) osana.`),
       eu: md(`### Moduluen liburutegi panelari buruzko informazioa
 
@@ -1010,6 +1080,11 @@ Moduluak kanaletan banatuta daude:
 Modulu batek beta bertsioa izan dezake. Beta bertsioa modulu berriak edo lehendik dauden moduluetako funtzio berriak probatzeko erabiltzen da, bertsio egonkor gisa argitaratu aurretik.
 Erabili "Erakutsi aurre-bertsioak" kontrol-laukia beta bertsioak erakusteko edo ezkutatzeko.
 Beta bertsioak konpondu gabeko arazoak eta akatsak izan ditzake; erabili kontuz.
+
+Bilaketa-kontsulten adibideak:
+[Deskribatzaileak](?s=Deskribatzaileak), [name:Deskribatzaileak](?s=name:Deskribatzaileak), [grafikoekin taulekin](?s=grafikoekin%20taulekin),
+["taulekin eta grafikoekin"](?s="taulekin%20eta%20grafikoekin"), [maintainer:jasp-stats](?s=maintainer:jasp-stats),
+[id:jaspBain](?s=id:jaspBain), [(Bayes OR grafikoekin) AND NOT robust](?s=(Bayes%20OR%20grafikoekin)%20AND%20NOT%20robust)
 
 Panel hau [JASP-MOD proiektuaren](https://research-software-directory.org/projects/jasp-mod) barruan egin da.`),
       gl: md(`### Información sobre o panel da biblioteca de módulos
@@ -1025,6 +1100,11 @@ Un módulo pode ter unha versión beta. Unha versión beta úsase para probar no
 Usa a caixa "Mostrar pre-lanzamentos" para mostrar ou ocultar as versións beta.
 Unha versión beta pode conter problemas e erros sen resolver, así que úsaa con precaución.
 
+Exemplos de consultas de busca:
+[Descritivos](?s=Descritivos), [name:Descritivos](?s=name:Descritivos), [gráficas táboas](?s=gráficas%20táboas),
+["táboas e gráficas"](?s="táboas%20e%20gráficas"), [maintainer:jasp-stats](?s=maintainer:jasp-stats),
+[id:jaspBain](?s=id:jaspBain), [(Bayes OR gráficas) AND NOT robust](?s=(Bayes%20OR%20gráficas)%20AND%20NOT%20robust)
+
 Este panel fíxose como parte do [proxecto JASP-MOD](https://research-software-directory.org/projects/jasp-mod).`),
       hu: md(`### Információ a modulkönyvtár panelről
 
@@ -1038,6 +1118,11 @@ A modulok csatornákra vannak osztva:
 Egy modulnak lehet béta verziója. A béta verziót új modulok vagy meglévő modulok új funkcióinak tesztelésére használják, mielőtt stabil verzióként megjelennének.
 Az "Előzetes kiadások megjelenítése" jelölőnégyzettel jelenítheti meg vagy rejtheti el a béta verziókat.
 Egy béta verzió tartalmazhat megoldatlan problémákat és hibákat, ezért óvatosan használd.
+
+Keresési lekérdezések példái:
+[Leíró](?s=Leíró), [name:Leíró](?s=name:Leíró), [ábrákkal táblázatokkal](?s=ábrákkal%20táblázatokkal),
+["táblázatokkal és ábrákkal"](?s="táblázatokkal%20és%20ábrákkal"), [maintainer:jasp-stats](?s=maintainer:jasp-stats),
+[id:jaspBain](?s=id:jaspBain), [(Bayes OR ábrákkal) AND NOT robust](?s=(Bayes%20OR%20ábrákkal)%20AND%20NOT%20robust)
 
 Ez a panel a [JASP-MOD projekt](https://research-software-directory.org/projects/jasp-mod) részeként készült.`),
       id: md(`### Informasi tentang panel pustaka modul
@@ -1053,6 +1138,11 @@ Sebuah modul dapat memiliki versi beta. Versi beta digunakan untuk menguji modul
 Gunakan kotak centang "Tampilkan pra-rilis" untuk menampilkan atau menyembunyikan versi beta.
 Versi beta dapat berisi masalah dan bug yang belum terselesaikan, jadi gunakan dengan hati-hati.
 
+Contoh kueri pencarian:
+[Deskriptif](?s=Deskriptif), [name:Deskriptif](?s=name:Deskriptif), [plot tabel](?s=plot%20tabel),
+["tabel dan plot"](?s="tabel%20dan%20plot"), [maintainer:jasp-stats](?s=maintainer:jasp-stats),
+[id:jaspBain](?s=id:jaspBain), [(Bayes OR plot) AND NOT robust](?s=(Bayes%20OR%20plot)%20AND%20NOT%20robust)
+
 Panel ini dibuat sebagai bagian dari [proyek JASP-MOD](https://research-software-directory.org/projects/jasp-mod).`),
       ja: md(`### モジュールライブラリパネルについて
 
@@ -1066,6 +1156,11 @@ Panel ini dibuat sebagai bagian dari [proyek JASP-MOD](https://research-software
 モジュールにはベータ版がある場合があります。ベータ版は、新しいモジュールや既存モジュールの新機能を、安定版としてリリースする前にテストするために使われます。
 「プレリリースを表示」のチェックボックスでベータ版の表示/非表示を切り替えます。
 ベータ版には未解決の問題やバグが含まれる場合があるため、注意して使用してください。
+
+検索クエリの例:
+[記述統計量](?s=記述統計量), [name:記述統計量](?s=name:記述統計量), [プロット 表](?s=プロット%20表),
+["表とプロット"](?s="表とプロット"), [maintainer:jasp-stats](?s=maintainer:jasp-stats),
+[id:jaspBain](?s=id:jaspBain), [(ベイズ OR プロット) AND NOT robust](?s=(ベイズ%20OR%20プロット)%20AND%20NOT%20robust)
 
 このパネルは[JASP-MODプロジェクト](https://research-software-directory.org/projects/jasp-mod)の一環として作成されました。`),
       lt: md(`### Informacija apie modulių bibliotekos skydelį
@@ -1081,6 +1176,11 @@ Modulis gali turėti beta versiją. Beta versija naudojama naujiems moduliams ar
 Naudokite žymimąjį langelį „Rodyti priešleidimus“, kad rodytumėte arba paslėptumėte beta versijas.
 Beta versija gali turėti neišspręstų problemų ir klaidų, todėl naudokite ją atsargiai.
 
+Paieškos užklausų pavyzdžiai:
+[Regression](?s=Regression), [name:Regression](?s=name:Regression), [constrained equality](?s=constrained%20equality),
+["equality constrained"](?s="equality%20constrained"), [maintainer:jasp-stats](?s=maintainer:jasp-stats),
+[id:jaspBain](?s=id:jaspBain), [(Bayes OR clustering) AND NOT robust](?s=(Bayes%20OR%20clustering)%20AND%20NOT%20robust)
+
 Šis skydelis buvo sukurtas kaip [JASP-MOD projekto](https://research-software-directory.org/projects/jasp-mod) dalis.`),
       pl: md(`### Informacje o panelu biblioteki modułów
 
@@ -1094,6 +1194,11 @@ Moduły są podzielone na kanały:
 Moduł może mieć wersję beta. Wersja beta służy do testowania nowych modułów lub nowych funkcji w istniejących modułach przed wydaniem jako wersja stabilna.
 Użyj pola wyboru „Pokaż wersje przedpremierowe”, aby pokazać lub ukryć wersje beta.
 Wersja beta może zawierać nierozwiązane problemy i błędy, dlatego używaj jej ostrożnie.
+
+Przykłady zapytań wyszukiwania:
+[Statystyki](?s=Statystyki), [name:Statystyki](?s=name:Statystyki), [wykresów tabel](?s=wykresów%20tabel),
+["tabel i wykresów"](?s="tabel%20i%20wykresów"), [maintainer:jasp-stats](?s=maintainer:jasp-stats),
+[id:jaspBain](?s=id:jaspBain), [(Bayes OR wykresów) AND NOT robust](?s=(Bayes%20OR%20wykresów)%20AND%20NOT%20robust)
 
 Ten panel został utworzony jako część [projektu JASP-MOD](https://research-software-directory.org/projects/jasp-mod).`),
       pt: md(`### Informações sobre o painel da biblioteca de módulos
@@ -1109,6 +1214,11 @@ Um módulo pode ter uma versão beta. Uma versão beta é usada para testar novo
 Use a caixa de seleção "Mostrar pré-lançamentos" para mostrar ou ocultar versões beta.
 Uma versão beta pode conter problemas e bugs não resolvidos, portanto use-a com cautela.
 
+Exemplos de consultas de pesquisa:
+[Descritivos](?s=Descritivos), [name:Descritivos](?s=name:Descritivos), [gráficos tabelas](?s=gráficos%20tabelas),
+["tabelas e gráficos"](?s="tabelas%20e%20gráficos"), [maintainer:jasp-stats](?s=maintainer:jasp-stats),
+[id:jaspBain](?s=id:jaspBain), [(Bayes OR gráficos) AND NOT robust](?s=(Bayes%20OR%20gráficos)%20AND%20NOT%20robust)
+
 Este painel foi feito como parte do [projeto JASP-MOD](https://research-software-directory.org/projects/jasp-mod).`),
       ru: md(`### Информация о панели библиотеки модулей
 
@@ -1122,6 +1232,11 @@ Este painel foi feito como parte do [projeto JASP-MOD](https://research-software
 Модуль может иметь бета-версию. Бета-версия используется для тестирования новых модулей или новых функций в существующих модулях перед выпуском в стабильной версии.
 Используйте флажок «Показать предрелизы», чтобы показывать или скрывать бета-версии.
 Бета-версия может содержать нерешённые проблемы и ошибки, поэтому используйте её с осторожностью.
+
+Примеры поисковых запросов:
+[Описательные](?s=Описательные), [name:Описательные](?s=name:Описательные), [графиков таблиц](?s=графиков%20таблиц),
+["таблиц и графиков"](?s="таблиц%20и%20графиков"), [maintainer:jasp-stats](?s=maintainer:jasp-stats),
+[id:jaspBain](?s=id:jaspBain), [(Bayes OR графиков) AND NOT robust](?s=(Bayes%20OR%20графиков)%20AND%20NOT%20robust)
 
 Эта панель создана в рамках [проекта JASP-MOD](https://research-software-directory.org/projects/jasp-mod).`),
       sq: md(`### Informacion mbi panelin e bibliotekës së moduleve
@@ -1137,6 +1252,11 @@ Një modul mund të ketë një version beta. Versioni beta përdoret për të te
 Përdorni kutinë e zgjedhjes "Shfaq parapublikimet" për të shfaqur ose fshehur versionet beta.
 Një version beta mund të përmbajë probleme dhe gabime të pazgjidhura, prandaj përdoreni me kujdes.
 
+Shembuj kërkesash kërkimi:
+[Regression](?s=Regression), [name:Regression](?s=name:Regression), [constrained equality](?s=constrained%20equality),
+["equality constrained"](?s="equality%20constrained"), [maintainer:jasp-stats](?s=maintainer:jasp-stats),
+[id:jaspBain](?s=id:jaspBain), [(Bayes OR clustering) AND NOT robust](?s=(Bayes%20OR%20clustering)%20AND%20NOT%20robust)
+
 Ky panel u krijua si pjesë e [projektit JASP-MOD](https://research-software-directory.org/projects/jasp-mod).`),
       sr: md(`### Информације о панелу библиотеке модула
 
@@ -1150,6 +1270,11 @@ Ky panel u krijua si pjesë e [projektit JASP-MOD](https://research-software-dir
 Модул може имати бета верзију. Бета верзија се користи за тестирање нових модула или нових функција у постојећим модулима пре него што буду објављени као стабилна верзија.
 Користите поље за потврду „Прикажи претходна издања“ да бисте приказали или сакрили бета верзије.
 Бета верзија може да садржи нерешене проблеме и грешке, па је користите опрезно.
+
+Примери упита за претрагу:
+[Дескриптивна](?s=Дескриптивна), [name:Дескриптивна](?s=name:Дескриптивна), [графикона табела](?s=графикона%20табела),
+["табела и графикона"](?s="табела%20и%20графикона"), [maintainer:jasp-stats](?s=maintainer:jasp-stats),
+[id:jaspBain](?s=id:jaspBain), [(Bayes OR графикона) AND NOT robust](?s=(Bayes%20OR%20графикона)%20AND%20NOT%20robust)
 
 Овај панел је направљен као део [пројекта JASP-MOD](https://research-software-directory.org/projects/jasp-mod).`),
       tr: md(`### Modül kitaplığı paneli hakkında bilgi
@@ -1165,6 +1290,11 @@ Bir modülün beta sürümü olabilir. Beta sürümü, yeni modülleri veya mevc
 Beta sürümlerini göstermek veya gizlemek için "Ön sürümleri göster" onay kutusunu kullanın.
 Beta sürümü çözümlenmemiş sorunlar ve hatalar içerebilir; bu yüzden dikkatli kullanın.
 
+Arama sorgusu örnekleri:
+[Betimsel](?s=Betimsel), [name:Betimsel](?s=name:Betimsel), [grafiklerle tablolar](?s=grafiklerle%20tablolar),
+["Tablolar ve grafiklerle"](?s="Tablolar%20ve%20grafiklerle"), [maintainer:jasp-stats](?s=maintainer:jasp-stats),
+[id:jaspBain](?s=id:jaspBain), [(Bayes OR grafiklerle) AND NOT robust](?s=(Bayes%20OR%20grafiklerle)%20AND%20NOT%20robust)
+
 Bu panel [JASP-MOD projesinin](https://research-software-directory.org/projects/jasp-mod) bir parçası olarak yapılmıştır.`),
       'zh-Hans': md(`### 关于模块库面板的信息
 
@@ -1179,6 +1309,11 @@ Bu panel [JASP-MOD projesinin](https://research-software-directory.org/projects/
 使用“显示预发布版本”复选框来显示或隐藏测试版信息。
 测试版可能包含未解决的问题和缺陷，请谨慎使用。
 
+搜索查询示例：
+[Regression](?s=Regression), [name:Regression](?s=name:Regression), [constrained equality](?s=constrained%20equality),
+["equality constrained"](?s="equality%20constrained"), [maintainer:jasp-stats](?s=maintainer:jasp-stats),
+[id:jaspBain](?s=id:jaspBain), [(Bayes OR clustering) AND NOT robust](?s=(Bayes%20OR%20clustering)%20AND%20NOT%20robust)
+
 此面板是 [JASP-MOD 项目](https://research-software-directory.org/projects/jasp-mod) 的一部分。`),
       'zh-Hant': md(`### 關於模組庫面板的資訊
 
@@ -1192,6 +1327,11 @@ Bu panel [JASP-MOD projesinin](https://research-software-directory.org/projects/
 模組可能有測試版。測試版用於在作為穩定版發佈前測試新模組或現有模組的新功能。
 使用「顯示預發布版本」核取方塊來顯示或隱藏測試版。
 測試版可能包含未解決的問題和缺陷，請謹慎使用。
+
+搜尋查詢範例：
+[Regression](?s=Regression), [name:Regression](?s=name:Regression), [constrained equality](?s=constrained%20equality),
+["equality constrained"](?s="equality%20constrained"), [maintainer:jasp-stats](?s=maintainer:jasp-stats),
+[id:jaspBain](?s=id:jaspBain), [(Bayes OR clustering) AND NOT robust](?s=(Bayes%20OR%20clustering)%20AND%20NOT%20robust)
 
 此面板是 [JASP-MOD 專案](https://research-software-directory.org/projects/jasp-mod) 的一部分。`),
     }),

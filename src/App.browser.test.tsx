@@ -15,7 +15,7 @@ describe('App component', () => {
         </NuqslessWrapper>,
         {
           wrapper: withNuqsTestingAdapter({
-            searchParams: { c: 'test.json', a: 'MacOS_arm64' },
+            searchParams: { c: 'test.json', a: 'MacOS_arm64', l: 'en' },
           }),
         },
       );
@@ -61,6 +61,29 @@ describe('App component', () => {
         await expect
           .element(screen.getByText('No modules found'))
           .toBeInTheDocument();
+      });
+    });
+
+    describe('Search with invalid query syntax', () => {
+      let input: Locator;
+
+      beforeEach(async () => {
+        input = screen.getByLabelText('Search for a module');
+        await input.fill('fo*"');
+      });
+
+      test('marks search input as invalid and shows validation message', async () => {
+        await expect.element(input).toHaveAttribute('aria-invalid', 'true');
+        await expect
+          .element(screen.getByText(/Invalid query at column/i))
+          .toBeInTheDocument();
+      });
+
+      test('shows all modules when query is invalid', async () => {
+        const allListItems = screen.getByRole('listitem');
+        const listItemElements = await allListItems.all();
+
+        expect(listItemElements.length).toBe(4);
       });
     });
 
@@ -127,6 +150,7 @@ describe('App component', () => {
               c: 'test.json',
               a: 'MacOS_arm64',
               i: '{"jaspAnova":"0.95.4-release.0"}',
+              l: 'en',
             },
           }),
         },
@@ -168,6 +192,7 @@ describe('App component', () => {
               c: 'test.json',
               a: 'MacOS_arm64',
               i: '{"jaspAnova":"0.95.5-release.0"}',
+              l: 'en',
             },
           }),
         },
@@ -218,6 +243,7 @@ describe('App component', () => {
               i: '{"jaspAnova":"0.96.0-beta.1"}',
               p: 'false',
               u: '["jaspAnova"]',
+              l: 'en',
             },
           }),
         },
@@ -264,7 +290,12 @@ describe('App component', () => {
         </NuqslessWrapper>,
         {
           wrapper: withNuqsTestingAdapter({
-            searchParams: { c: 'test.json', a: 'MacOS_arm64', t: 'dark' },
+            searchParams: {
+              c: 'test.json',
+              a: 'MacOS_arm64',
+              t: 'dark',
+              l: 'en',
+            },
           }),
         },
       );
@@ -287,7 +318,12 @@ describe('App component', () => {
         </NuqslessWrapper>,
         {
           wrapper: withNuqsTestingAdapter({
-            searchParams: { c: 'test.json', a: 'MacOS_arm64', t: 'light' },
+            searchParams: {
+              c: 'test.json',
+              a: 'MacOS_arm64',
+              t: 'light',
+              l: 'en',
+            },
           }),
         },
       );
@@ -333,7 +369,7 @@ describe('App component', () => {
         </NuqslessWrapper>,
         {
           wrapper: withNuqsTestingAdapter({
-            searchParams: { c: 'test.json', a: 'Windows_x86-64' },
+            searchParams: { c: 'test.json', a: 'Windows_x86-64', l: 'en' },
           }),
         },
       );
@@ -374,7 +410,7 @@ describe('App component', () => {
         </NuqslessWrapper>,
         {
           wrapper: withNuqsTestingAdapter({
-            searchParams: { c: 'test.json', a: 'powerpc' },
+            searchParams: { c: 'test.json', a: 'powerpc', l: 'en' },
           }),
         },
       );
@@ -397,7 +433,12 @@ describe('App component', () => {
         </NuqslessWrapper>,
         {
           wrapper: withNuqsTestingAdapter({
-            searchParams: { c: 'test.json', a: 'Windows_x86-64', p: 'true' },
+            searchParams: {
+              c: 'test.json',
+              a: 'Windows_x86-64',
+              p: 'true',
+              l: 'en',
+            },
           }),
         },
       );
@@ -443,6 +484,16 @@ describe('App component', () => {
     test('renders search label in Dutch', async () => {
       await expect
         .element(screen.getByText('Zoek een module'))
+        .toBeInTheDocument();
+    });
+
+    test('shows invalid query message in Dutch', async () => {
+      const input = screen.getByLabelText('Zoek een module');
+      await input.fill('fo*"');
+
+      await expect.element(input).toHaveAttribute('aria-invalid', 'true');
+      await expect
+        .element(screen.getByText('Ongeldige zoekopdracht bij kolom 4'))
         .toBeInTheDocument();
     });
 

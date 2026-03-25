@@ -3,7 +3,7 @@ import type { VariantProps } from 'class-variance-authority';
 import { ChevronDownIcon, House } from 'lucide-react';
 import { useQueryState } from 'nuqs';
 import type { Dispatch, ReactNode, SetStateAction } from 'react';
-import { useEffect, useState } from 'react';
+import { useEffect, useId, useMemo, useState } from 'react';
 import { useIntlayer, useMarkdownRenderer } from 'react-intlayer';
 import { useDebounceValue } from 'usehooks-ts';
 import { cn } from '@/lib/utils';
@@ -36,6 +36,11 @@ import {
   type UpdatePreReleaseAction,
   type UpdateStableAction,
 } from './releaseStats';
+import {
+  filterReleaseStats,
+  releaseStatsToDocs,
+  type SearchParseError,
+} from './search';
 import { statsLine } from './statsLine';
 import type { AppTranslations } from './translations';
 import { useInfo } from './useInfo';
@@ -121,6 +126,7 @@ function ChannelSelector({
             }
             label={getTranslatedChannel(c, translations)}
             name={`channel-${c}`}
+            translations={translations}
           />
         ))}
       </div>
@@ -136,6 +142,7 @@ function Checkbox({
   description,
   className = '',
   inputClassName = '',
+  translations,
 }: {
   checked: boolean;
   onChange: (checked: boolean) => void;
@@ -144,8 +151,8 @@ function Checkbox({
   description?: string;
   className?: string;
   inputClassName?: string;
+  translations: AppTranslations;
 }) {
-  const { checkmark } = useIntlayer('app');
   return (
     <label
       className={cn(
@@ -170,7 +177,7 @@ function Checkbox({
           fill="currentColor"
           viewBox="0 0 20 20"
         >
-          <title>{checkmark}</title>
+          <title>{translations.checkmark}</title>
           <path
             fillRule="evenodd"
             d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
@@ -180,6 +187,54 @@ function Checkbox({
       </div>
       <span className="ml-2">{label}</span>
     </label>
+  );
+}
+
+function SearchField({
+  translations,
+  value,
+  onChange,
+  parseError,
+}: {
+  translations: AppTranslations;
+  value: string;
+  onChange: (value: string) => void;
+  parseError?: SearchParseError;
+}) {
+  const { search_for_a_module, invalid_query_at_column } = translations;
+  const invalidMessageId = useId();
+  const invalidMessage = parseError
+    ? invalid_query_at_column({
+        column: parseError.column,
+      }).value
+    : undefined;
+  const invalid = Boolean(parseError);
+
+  return (
+    <div>
+      <label className="mb-1 block font-medium text-sm">
+        {search_for_a_module}:
+        <input
+          type="search"
+          value={value}
+          onChange={(e) => onChange(e.target.value)}
+          aria-invalid={invalid || undefined}
+          aria-describedby={
+            invalid && invalidMessage ? invalidMessageId : undefined
+          }
+          className={cn(
+            'h-9 w-full min-w-0 rounded-md border border-input bg-popover px-3 py-1 text-base shadow-xs outline-none transition-[color,box-shadow] selection:bg-primary selection:text-primary-foreground file:inline-flex file:h-7 file:border-0 file:bg-transparent file:font-medium file:text-foreground file:text-sm placeholder:text-muted-foreground disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50 md:text-sm dark:bg-input/30',
+            'focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50',
+            'aria-invalid:border-destructive aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40',
+          )}
+        />
+      </label>
+      {invalid && invalidMessage && (
+        <p id={invalidMessageId} className="text-destructive text-sm">
+          {invalidMessage}
+        </p>
+      )}
+    </div>
   );
 }
 
@@ -746,11 +801,9 @@ function RepositoryIcon({ iconUrl, alt }: { iconUrl?: string; alt: string }) {
 function RepositoryCard({
   releaseStats,
   translations,
-  language,
 }: {
   releaseStats: ReleaseStats;
   translations: AppTranslations;
-  language: string;
 }) {
   const {
     repo,
@@ -760,11 +813,10 @@ function RepositoryCard({
     latestVersionIs,
     actions,
   } = releaseStats;
-  const name = repo.translations[language]?.name || repo.name;
-  const description =
-    repo.translations[language]?.description || repo.description;
+  const cardId = useId();
+  const name = repo.name;
+  const description = repo.description;
   const iconAlt = translations.module_icon_alt({ name }).value;
-  const cardId = `repo-card-${repo.name}`;
 
   return (
     <li
@@ -864,26 +916,6 @@ function getInstallableReleaseStatsFromRepository(
       insideQt,
     }),
   ];
-}
-
-function filterReleaseStatsBySearchTerm(
-  releaseStats: ReleaseStats[],
-  searchTerm: string,
-): ReleaseStats[] {
-  return releaseStats.filter(({ repo }) => {
-    if (!searchTerm.trim()) return true;
-
-    const searchLower = searchTerm.toLowerCase();
-    const nameMatches = repo.name.toLowerCase().includes(searchLower);
-
-    // Strip HTML tags from description for search
-    const plainDescription = repo.description?.replace(/<[^>]*>/g, '') || '';
-    const descriptionMatches = plainDescription
-      .toLowerCase()
-      .includes(searchLower);
-
-    return nameMatches || descriptionMatches;
-  });
 }
 
 /**
@@ -1070,9 +1102,11 @@ function getUpdateableAssets(releaseStats: ReleaseStats[]) {
 function InfoButton({
   translations,
   channels,
+  setSearchTerm,
 }: {
   translations: AppTranslations;
   channels: string[];
+  setSearchTerm: (term: string) => void;
 }) {
   const infoMarkdown = translations.information_panel;
   const renderMarkdown = useMarkdownRenderer({
@@ -1084,16 +1118,33 @@ function InfoButton({
       h3: ({ children }) => (
         <h3 className="font-semibold text-lg">{children}</h3>
       ),
-      a: ({ href, children }) => (
-        <a
-          href={href}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="text-jasp-blue hover:underline"
-        >
-          {children}
-        </a>
-      ),
+      a: ({ href, children }) => {
+        // intercept example search links
+        if (href?.startsWith('?s=')) {
+          return (
+            <a
+              href={href}
+              className="text-jasp-blue hover:underline"
+              onClick={(e) => {
+                e.preventDefault();
+                setSearchTerm(decodeURIComponent(href.substring(3)));
+              }}
+            >
+              {children}
+            </a>
+          );
+        }
+        return (
+          <a
+            href={href}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-jasp-blue hover:underline"
+          >
+            {children}
+          </a>
+        );
+      },
       p: ({ children }) => <p className="mt-2">{children}</p>,
       li: ({ children }) => <li className="ml-4 list-disc">{children}</li>,
     },
@@ -1107,7 +1158,6 @@ function InfoButton({
       'Not all channels are mentioned in the information panel. Please update text.',
     );
   }
-
   return (
     <>
       <button
@@ -1146,11 +1196,18 @@ function sortRepositoriesByTranslatedName(
   repositories: Repository[] | undefined,
   language: string,
 ): Repository[] | undefined {
-  return repositories?.toSorted((a, b) => {
-    const nameA = a.translations[language]?.name || a.name;
-    const nameB = b.translations[language]?.name || b.name;
-    return nameA.localeCompare(nameB, language);
-  });
+  return repositories
+    ?.map((r) => {
+      return {
+        ...r,
+        // Replace English name/description with translated ones if available
+        name: r.translations[language]?.name || r.name,
+        description: r.translations[language]?.description || r.description,
+      };
+    })
+    .toSorted((a, b) => {
+      return a.name.localeCompare(b.name, language);
+    });
 }
 
 export function App() {
@@ -1158,7 +1215,6 @@ export function App() {
   const {
     show_prereleases,
     allow_prereleases_checkbox_description,
-    search_for_a_module,
     no_modules_found,
     update_all,
   } = translations;
@@ -1176,7 +1232,9 @@ export function App() {
   const [selectedChannels, setSelectedChannels] = useState<string[]>([
     defaultChannel,
   ]);
-  const [searchTerm, setSearchTerm] = useState<string>('');
+  const [searchTerm, setSearchTerm] = useQueryState('s', {
+    defaultValue: '',
+  });
   const [debouncedSearchTerm] = useDebounceValue(searchTerm, 100);
   const [allowPreRelease, setAllowPreRelease] = useState<boolean>(
     info.developerMode,
@@ -1188,26 +1246,56 @@ export function App() {
     repositories,
     info.language,
   );
-  const availableChannels = uniqueChannels(
-    repositoriesSortedByTranslatedName || [],
+  const availableChannels = useMemo(
+    () => uniqueChannels(repositoriesSortedByTranslatedName || []),
+    [repositoriesSortedByTranslatedName],
   );
-  const reposOfSelectedChannels = filterOnChannels(
-    repositoriesSortedByTranslatedName || [],
-    selectedChannels,
+  const reposOfSelectedChannels = useMemo(
+    () =>
+      filterOnChannels(
+        repositoriesSortedByTranslatedName || [],
+        selectedChannels,
+      ),
+    [repositoriesSortedByTranslatedName, selectedChannels],
   );
-  const installableReleaseStats = getInstallableReleaseStats(
-    reposOfSelectedChannels,
-    info,
-    allowPreRelease,
+  const installableReleaseStats = useMemo(
+    () =>
+      getInstallableReleaseStats(
+        reposOfSelectedChannels,
+        {
+          version: info.version,
+          arch: info.arch,
+          installedModules: info.installedModules,
+          uninstallableModules: info.uninstallableModules,
+        },
+        allowPreRelease,
+      ),
+    [
+      reposOfSelectedChannels,
+      info.version,
+      info.arch,
+      info.installedModules,
+      info.uninstallableModules,
+      allowPreRelease,
+    ],
   );
-  const filteredReleaseStats = filterReleaseStatsBySearchTerm(
-    installableReleaseStats,
-    debouncedSearchTerm,
+  const docs = useMemo(
+    () => releaseStatsToDocs(installableReleaseStats),
+    [installableReleaseStats],
   );
-  const { showUpdateAllButton, updateableAssets } = getUpdateableAssets(
-    // update all button ignores search term,
-    // but takes into account selected channels and pre-release toggle
-    installableReleaseStats,
+  const filterResults = useMemo(
+    () =>
+      filterReleaseStats(docs, installableReleaseStats, debouncedSearchTerm),
+    [docs, installableReleaseStats, debouncedSearchTerm],
+  );
+  const { showUpdateAllButton, updateableAssets } = useMemo(
+    () =>
+      getUpdateableAssets(
+        // update all button ignores search term,
+        // but takes into account selected channels and pre-release toggle
+        installableReleaseStats,
+      ),
+    [installableReleaseStats],
   );
 
   if (error) {
@@ -1239,40 +1327,36 @@ export function App() {
                   label={show_prereleases.value}
                   name="allowPreReleases"
                   description={allow_prereleases_checkbox_description.value}
+                  translations={translations}
                 />
               </div>
               <InfoButton
                 translations={translations}
                 channels={availableChannels}
+                setSearchTerm={setSearchTerm}
               />
             </div>
             <div>
-              <label className="mb-1 block font-medium text-sm">
-                {search_for_a_module}:
-                <input
-                  type="search"
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                  className={cn(
-                    'h-9 w-full min-w-0 rounded-md border border-input bg-popover px-3 py-1 text-base shadow-xs outline-none transition-[color,box-shadow] selection:bg-primary selection:text-primary-foreground file:inline-flex file:h-7 file:border-0 file:bg-transparent file:font-medium file:text-foreground file:text-sm placeholder:text-muted-foreground disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50 md:text-sm dark:bg-input/30',
-                    'focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50',
-                    'aria-invalid:border-destructive aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40',
-                  )}
-                />
-              </label>
+              <SearchField
+                translations={translations}
+                value={searchTerm}
+                onChange={setSearchTerm}
+                parseError={filterResults.parseError}
+              />
             </div>
           </div>
         </header>
         <ul className="space-y-3">
-          {filteredReleaseStats.map((releaseStats) => (
+          {filterResults.releaseStats.map((releaseStats) => (
             <RepositoryCard
               key={`${releaseStats.repo.organization}/${releaseStats.repo.name}`}
               releaseStats={releaseStats}
               translations={translations}
-              language={info.language}
             />
           ))}
-          {filteredReleaseStats.length === 0 && <div>{no_modules_found}</div>}
+          {filterResults.releaseStats.length === 0 && (
+            <div>{no_modules_found}</div>
+          )}
         </ul>
         {showUpdateAllButton && (
           <UpdateAllButton label={update_all.value} assets={updateableAssets} />
