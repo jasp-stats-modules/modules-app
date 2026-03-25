@@ -3,7 +3,7 @@ import type { VariantProps } from 'class-variance-authority';
 import { ChevronDownIcon, House } from 'lucide-react';
 import { useQueryState } from 'nuqs';
 import type { Dispatch, ReactNode, SetStateAction } from 'react';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useIntlayer, useMarkdownRenderer } from 'react-intlayer';
 import { useDebounceValue } from 'usehooks-ts';
 import { cn } from '@/lib/utils';
@@ -36,7 +36,10 @@ import {
   type UpdatePreReleaseAction,
   type UpdateStableAction,
 } from './releaseStats';
-import { filterReleaseStatsBySearchTerm } from './search';
+import {
+  filterReleaseStatsByDocsAndSearchTerm,
+  releaseStatsToDocs,
+} from './search';
 import { statsLine } from './statsLine';
 import type { AppTranslations } from './translations';
 import { useInfo } from './useInfo';
@@ -122,6 +125,7 @@ function ChannelSelector({
             }
             label={getTranslatedChannel(c, translations)}
             name={`channel-${c}`}
+            translations={translations}
           />
         ))}
       </div>
@@ -137,6 +141,7 @@ function Checkbox({
   description,
   className = '',
   inputClassName = '',
+  translations,
 }: {
   checked: boolean;
   onChange: (checked: boolean) => void;
@@ -145,8 +150,8 @@ function Checkbox({
   description?: string;
   className?: string;
   inputClassName?: string;
+  translations: AppTranslations;
 }) {
-  const { checkmark } = useIntlayer('app');
   return (
     <label
       className={cn(
@@ -171,7 +176,7 @@ function Checkbox({
           fill="currentColor"
           viewBox="0 0 20 20"
         >
-          <title>{checkmark}</title>
+          <title>{translations.checkmark}</title>
           <path
             fillRule="evenodd"
             d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
@@ -1075,20 +1080,15 @@ function getUpdateableAssets(releaseStats: ReleaseStats[]) {
   return { showUpdateAllButton, updateableAssets };
 }
 
-function useSearchTerm() {
-  return useQueryState('s', {
-    defaultValue: '',
-  });
-}
-
 function InfoButton({
   translations,
   channels,
+  setSearchTerm,
 }: {
   translations: AppTranslations;
   channels: string[];
+  setSearchTerm: (term: string) => void;
 }) {
-  const [_, setSearchTerm] = useSearchTerm();
   const infoMarkdown = translations.information_panel;
   const renderMarkdown = useMarkdownRenderer({
     forceBlock: true,
@@ -1213,7 +1213,9 @@ export function App() {
   const [selectedChannels, setSelectedChannels] = useState<string[]>([
     defaultChannel,
   ]);
-  const [searchTerm, setSearchTerm] = useSearchTerm();
+  const [searchTerm, setSearchTerm] = useQueryState('s', {
+    defaultValue: '',
+  });
   const [debouncedSearchTerm] = useDebounceValue(searchTerm, 100);
   const [allowPreRelease, setAllowPreRelease] = useState<boolean>(
     info.developerMode,
@@ -1225,26 +1227,60 @@ export function App() {
     repositories,
     info.language,
   );
-  const availableChannels = uniqueChannels(
-    repositoriesSortedByTranslatedName || [],
+  const availableChannels = useMemo(
+    () => uniqueChannels(repositoriesSortedByTranslatedName || []),
+    [repositoriesSortedByTranslatedName],
   );
-  const reposOfSelectedChannels = filterOnChannels(
-    repositoriesSortedByTranslatedName || [],
-    selectedChannels,
+  const reposOfSelectedChannels = useMemo(
+    () =>
+      filterOnChannels(
+        repositoriesSortedByTranslatedName || [],
+        selectedChannels,
+      ),
+    [repositoriesSortedByTranslatedName, selectedChannels],
   );
-  const installableReleaseStats = getInstallableReleaseStats(
-    reposOfSelectedChannels,
-    info,
-    allowPreRelease,
+  const installableReleaseStats = useMemo(
+    () =>
+      getInstallableReleaseStats(
+        reposOfSelectedChannels,
+        {
+          version: info.version,
+          arch: info.arch,
+          installedModules: info.installedModules,
+          uninstallableModules: info.uninstallableModules,
+        },
+        allowPreRelease,
+      ),
+    [
+      reposOfSelectedChannels,
+      info.version,
+      info.arch,
+      info.installedModules,
+      info.uninstallableModules,
+      allowPreRelease,
+    ],
   );
-  const filteredReleaseStats = filterReleaseStatsBySearchTerm(
-    installableReleaseStats,
-    debouncedSearchTerm,
+  const docs = useMemo(
+    () => releaseStatsToDocs(installableReleaseStats),
+    [installableReleaseStats],
   );
-  const { showUpdateAllButton, updateableAssets } = getUpdateableAssets(
-    // update all button ignores search term,
-    // but takes into account selected channels and pre-release toggle
-    installableReleaseStats,
+  const filteredReleaseStats = useMemo(
+    () =>
+      filterReleaseStatsByDocsAndSearchTerm(
+        docs,
+        installableReleaseStats,
+        debouncedSearchTerm,
+      ),
+    [docs, installableReleaseStats, debouncedSearchTerm],
+  );
+  const { showUpdateAllButton, updateableAssets } = useMemo(
+    () =>
+      getUpdateableAssets(
+        // update all button ignores search term,
+        // but takes into account selected channels and pre-release toggle
+        installableReleaseStats,
+      ),
+    [installableReleaseStats],
   );
 
   if (error) {
@@ -1276,11 +1312,13 @@ export function App() {
                   label={show_prereleases.value}
                   name="allowPreReleases"
                   description={allow_prereleases_checkbox_description.value}
+                  translations={translations}
                 />
               </div>
               <InfoButton
                 translations={translations}
                 channels={availableChannels}
+                setSearchTerm={setSearchTerm}
               />
             </div>
             <div>

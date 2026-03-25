@@ -35,7 +35,8 @@ function releaseStatsToDoc(releaseStats: ReleaseStats): Doc {
   };
 }
 
-function releaseStatsToDocs(releaseStats: ReleaseStats[]): Doc[] {
+export function releaseStatsToDocs(releaseStats: ReleaseStats[]): Doc[] {
+  console.log('Converting release stats to docs', releaseStats);
   return releaseStats.map(releaseStatsToDoc);
 }
 
@@ -72,6 +73,16 @@ export function filterReleaseStatsBySearchTerm(
   searchTerm: string,
 ): ReleaseStats[] {
   const docs = releaseStatsToDocs(releaseStats);
+  const hits = filterOnDocs(searchTerm, docs);
+  return hits2filteredReleaseStats(hits, releaseStats);
+}
+
+// Version of filterReleaseStatsBySearchTerm where docs are memoized before
+export function filterReleaseStatsByDocsAndSearchTerm(
+  docs: Doc[],
+  releaseStats: ReleaseStats[],
+  searchTerm: string,
+): ReleaseStats[] {
   const hits = filterOnDocs(searchTerm, docs);
   return hits2filteredReleaseStats(hits, releaseStats);
 }
