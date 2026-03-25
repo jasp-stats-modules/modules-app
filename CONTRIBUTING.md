@@ -50,6 +50,7 @@ with [React](https://reactjs.org/) and [TypeScript](https://www.typescriptlang.o
 - [intlayer](https://intlayer.org/) for multi language support. Unique texts of modules themselves are not translated.
 - [Vitest](https://vitest.dev/) for testing both unit and browser tests
 - [Base UI](https://base-ui.com/) for accessible unstyled UI components
+- [liqe](https://github.com/gajus/liqe) for rich text search
 
 The [scrape script](./src/scrape.ts) is a Node.js script that:
 
