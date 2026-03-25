@@ -184,6 +184,36 @@ function Checkbox({
   );
 }
 
+function SearchField({
+  translations,
+  value,
+  onChange,
+}: {
+  translations: AppTranslations;
+  value: string;
+  onChange: (value: string) => void;
+}) {
+  const { search_for_a_module } = translations;
+
+  return (
+    <div>
+      <label className="mb-1 block font-medium text-sm">
+        {search_for_a_module}:
+        <input
+          type="search"
+          value={value}
+          onChange={(e) => onChange(e.target.value)}
+          className={cn(
+            'h-9 w-full min-w-0 rounded-md border border-input bg-popover px-3 py-1 text-base shadow-xs outline-none transition-[color,box-shadow] selection:bg-primary selection:text-primary-foreground file:inline-flex file:h-7 file:border-0 file:bg-transparent file:font-medium file:text-foreground file:text-sm placeholder:text-muted-foreground disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50 md:text-sm dark:bg-input/30',
+            'focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50',
+            'aria-invalid:border-destructive aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40',
+          )}
+        />
+      </label>
+    </div>
+  );
+}
+
 function InstallButton({
   action,
   translations,
@@ -1045,6 +1075,12 @@ function getUpdateableAssets(releaseStats: ReleaseStats[]) {
   return { showUpdateAllButton, updateableAssets };
 }
 
+function useSearchTerm() {
+  return useQueryState('s', {
+    defaultValue: '',
+  });
+}
+
 function InfoButton({
   translations,
   channels,
@@ -1052,6 +1088,7 @@ function InfoButton({
   translations: AppTranslations;
   channels: string[];
 }) {
+  const [_, setSearchTerm] = useSearchTerm();
   const infoMarkdown = translations.information_panel;
   const renderMarkdown = useMarkdownRenderer({
     forceBlock: true,
@@ -1062,16 +1099,33 @@ function InfoButton({
       h3: ({ children }) => (
         <h3 className="font-semibold text-lg">{children}</h3>
       ),
-      a: ({ href, children }) => (
-        <a
-          href={href}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="text-jasp-blue hover:underline"
-        >
-          {children}
-        </a>
-      ),
+      a: ({ href, children }) => {
+        // intercept example search links
+        if (href?.startsWith('?s=')) {
+          return (
+            <a
+              href={href}
+              className="text-jasp-blue hover:underline"
+              onClick={(e) => {
+                e.preventDefault();
+                setSearchTerm(decodeURIComponent(href.substring(3)));
+              }}
+            >
+              {children}
+            </a>
+          );
+        }
+        return (
+          <a
+            href={href}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-jasp-blue hover:underline"
+          >
+            {children}
+          </a>
+        );
+      },
       p: ({ children }) => <p className="mt-2">{children}</p>,
       li: ({ children }) => <li className="ml-4 list-disc">{children}</li>,
     },
@@ -1085,7 +1139,6 @@ function InfoButton({
       'Not all channels are mentioned in the information panel. Please update text.',
     );
   }
-
   return (
     <>
       <button
@@ -1143,7 +1196,6 @@ export function App() {
   const {
     show_prereleases,
     allow_prereleases_checkbox_description,
-    search_for_a_module,
     no_modules_found,
     update_all,
   } = translations;
@@ -1161,7 +1213,7 @@ export function App() {
   const [selectedChannels, setSelectedChannels] = useState<string[]>([
     defaultChannel,
   ]);
-  const [searchTerm, setSearchTerm] = useState<string>('');
+  const [searchTerm, setSearchTerm] = useSearchTerm();
   const [debouncedSearchTerm] = useDebounceValue(searchTerm, 100);
   const [allowPreRelease, setAllowPreRelease] = useState<boolean>(
     info.developerMode,
@@ -1232,19 +1284,11 @@ export function App() {
               />
             </div>
             <div>
-              <label className="mb-1 block font-medium text-sm">
-                {search_for_a_module}:
-                <input
-                  type="search"
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                  className={cn(
-                    'h-9 w-full min-w-0 rounded-md border border-input bg-popover px-3 py-1 text-base shadow-xs outline-none transition-[color,box-shadow] selection:bg-primary selection:text-primary-foreground file:inline-flex file:h-7 file:border-0 file:bg-transparent file:font-medium file:text-foreground file:text-sm placeholder:text-muted-foreground disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50 md:text-sm dark:bg-input/30',
-                    'focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50',
-                    'aria-invalid:border-destructive aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40',
-                  )}
-                />
-              </label>
+              <SearchField
+                translations={translations}
+                value={searchTerm}
+                onChange={setSearchTerm}
+              />
             </div>
           </div>
         </header>
