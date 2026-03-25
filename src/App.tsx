@@ -3,7 +3,7 @@ import type { VariantProps } from 'class-variance-authority';
 import { ChevronDownIcon, House } from 'lucide-react';
 import { useQueryState } from 'nuqs';
 import type { Dispatch, ReactNode, SetStateAction } from 'react';
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useId, useMemo, useState } from 'react';
 import { useIntlayer, useMarkdownRenderer } from 'react-intlayer';
 import { useDebounceValue } from 'usehooks-ts';
 import { cn } from '@/lib/utils';
@@ -794,10 +794,10 @@ function RepositoryCard({
     latestVersionIs,
     actions,
   } = releaseStats;
+  const cardId = useId();
   const name = repo.name;
   const description = repo.description;
   const iconAlt = translations.module_icon_alt({ name }).value;
-  const cardId = `repo-card-${repo.name}`;
 
   return (
     <li
