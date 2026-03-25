@@ -36,6 +36,7 @@ import {
   type UpdatePreReleaseAction,
   type UpdateStableAction,
 } from './releaseStats';
+import { filterReleaseStatsBySearchTerm } from './search';
 import { statsLine } from './statsLine';
 import type { AppTranslations } from './translations';
 import { useInfo } from './useInfo';
@@ -746,11 +747,9 @@ function RepositoryIcon({ iconUrl, alt }: { iconUrl?: string; alt: string }) {
 function RepositoryCard({
   releaseStats,
   translations,
-  language,
 }: {
   releaseStats: ReleaseStats;
   translations: AppTranslations;
-  language: string;
 }) {
   const {
     repo,
@@ -760,9 +759,8 @@ function RepositoryCard({
     latestVersionIs,
     actions,
   } = releaseStats;
-  const name = repo.translations[language]?.name || repo.name;
-  const description =
-    repo.translations[language]?.description || repo.description;
+  const name = repo.name;
+  const description = repo.description;
   const iconAlt = translations.module_icon_alt({ name }).value;
   const cardId = `repo-card-${repo.name}`;
 
@@ -864,26 +862,6 @@ function getInstallableReleaseStatsFromRepository(
       insideQt,
     }),
   ];
-}
-
-function filterReleaseStatsBySearchTerm(
-  releaseStats: ReleaseStats[],
-  searchTerm: string,
-): ReleaseStats[] {
-  return releaseStats.filter(({ repo }) => {
-    if (!searchTerm.trim()) return true;
-
-    const searchLower = searchTerm.toLowerCase();
-    const nameMatches = repo.name.toLowerCase().includes(searchLower);
-
-    // Strip HTML tags from description for search
-    const plainDescription = repo.description?.replace(/<[^>]*>/g, '') || '';
-    const descriptionMatches = plainDescription
-      .toLowerCase()
-      .includes(searchLower);
-
-    return nameMatches || descriptionMatches;
-  });
 }
 
 /**
@@ -1146,11 +1124,18 @@ function sortRepositoriesByTranslatedName(
   repositories: Repository[] | undefined,
   language: string,
 ): Repository[] | undefined {
-  return repositories?.toSorted((a, b) => {
-    const nameA = a.translations[language]?.name || a.name;
-    const nameB = b.translations[language]?.name || b.name;
-    return nameA.localeCompare(nameB, language);
-  });
+  return repositories
+    ?.map((r) => {
+      return {
+        ...r,
+        // Replace English name/description with translated ones if available
+        name: r.translations[language]?.name || r.name,
+        description: r.translations[language]?.description || r.description,
+      };
+    })
+    .toSorted((a, b) => {
+      return a.name.localeCompare(b.name, language);
+    });
 }
 
 export function App() {
@@ -1269,7 +1254,6 @@ export function App() {
               key={`${releaseStats.repo.organization}/${releaseStats.repo.name}`}
               releaseStats={releaseStats}
               translations={translations}
-              language={info.language}
             />
           ))}
           {filteredReleaseStats.length === 0 && <div>{no_modules_found}</div>}
