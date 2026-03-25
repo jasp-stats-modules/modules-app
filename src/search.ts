@@ -59,9 +59,7 @@ export function filterOnDocs(
     return filter(q, docs);
   } catch (error) {
     if (error instanceof LiqeSyntaxError) {
-      console.error(
-        `Invalid search term: ${searchTerm}. ${error.message}`,
-      );
+      console.error(`Invalid search term: ${searchTerm}. ${error.message}`);
     } else {
       throw error;
     }
