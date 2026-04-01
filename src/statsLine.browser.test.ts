@@ -241,7 +241,7 @@ describe('statsLine', () => {
         'Latest beta 3.0.0-beta.2 on 1/15/2024 with 100 downloads',
       ],
     ],
-         [
+    [
       'beta installed and newer beta+stable available',
       {
         installedVersion: '2.0.0-beta.1',
@@ -255,7 +255,7 @@ describe('statsLine', () => {
         'Latest beta 2.0.0-beta.2 on 1/15/2024 with 100 downloads',
       ],
     ],
-     [
+    [
       'beta installed and newer beta available, no stable available',
       {
         installedVersion: '2.0.0-beta.1',
@@ -268,7 +268,7 @@ describe('statsLine', () => {
         'Latest beta 2.0.0-beta.2 on 1/15/2024 with 100 downloads',
       ],
     ],
-         [
+    [
       'beta installed and newer beta available, no stable available',
       {
         installedVersion: '2.0.0-beta.1',
@@ -281,7 +281,7 @@ describe('statsLine', () => {
         'Latest beta 2.0.0-beta.2 on 1/15/2024 with 100 downloads',
       ],
     ],
-[
+    [
       'latest beta installed',
       {
         installedVersion: '2.0.0-beta.1',
@@ -289,9 +289,7 @@ describe('statsLine', () => {
         latestPreRelease: createMockRelease('2.0.0-beta.1'),
         latestVersionIs: 'installed',
       },
-      [
-        'Installed 2.0.0-beta.1',
-      ],
+      ['Installed 2.0.0-beta.1'],
     ],
   ])('statsLine: %s', ([, params, expected]) => {
     // The getIntlayer needs to be run in vitest browser mode, otherwise it returns empty object.
