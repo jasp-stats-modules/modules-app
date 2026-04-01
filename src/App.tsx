@@ -22,7 +22,6 @@ import {
 import infoButton from './info-button.png';
 import {
   type AnyAction,
-  type DowngradePreReleaseAction,
   type DowngradeStableAction,
   filterReleasesByArchitecture,
   findReleaseThatSatisfiesInstalledJaspVersion,
@@ -357,40 +356,6 @@ function UpdatePreReleaseButton({
   );
 }
 
-function DowngradePreReleaseButton({
-  action,
-  translations,
-}: {
-  action: DowngradePreReleaseAction;
-  translations: AppTranslations;
-}) {
-  const {
-    downgrade,
-    pre_release,
-    action_version_from_to_title,
-    action_with_pre_release,
-  } = translations;
-  return (
-    <a
-      href={action.asset.downloadUrl}
-      data-slot="button"
-      title={
-        action_version_from_to_title({
-          action: downgrade.value,
-          from: action.from,
-          to: action.to,
-        }).value
-      }
-      className={buttonVariants({ variant: 'secondary' })}
-    >
-      {action_with_pre_release({
-        action: downgrade.value,
-        preRelease: pre_release.value,
-      })}
-    </a>
-  );
-}
-
 function DowngradeStableButton({
   action,
   translations,
@@ -506,11 +471,6 @@ function ActionButton({
       <UpdatePreReleaseButton action={action} translations={translations} />
     );
   }
-  if (action.type === 'downgrade-pre-release') {
-    return (
-      <DowngradePreReleaseButton action={action} translations={translations} />
-    );
-  }
   if (action.type === 'downgrade-stable') {
     return (
       <DowngradeStableButton action={action} translations={translations} />
@@ -596,25 +556,6 @@ function ActionMenuItem({
       >
         {action_with_pre_release({
           action: translations.update.value,
-          preRelease: translations.pre_release.value,
-        })}
-      </DropdownMenuLinkItem>
-    );
-  }
-  if (action.type === 'downgrade-pre-release') {
-    return (
-      <DropdownMenuLinkItem
-        href={action.asset.downloadUrl}
-        title={
-          action_version_from_to_title({
-            action: translations.downgrade.value,
-            from: action.from,
-            to: action.to,
-          }).value
-        }
-      >
-        {action_with_pre_release({
-          action: translations.downgrade.value,
           preRelease: translations.pre_release.value,
         })}
       </DropdownMenuLinkItem>
