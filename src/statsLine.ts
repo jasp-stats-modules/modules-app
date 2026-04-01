@@ -112,9 +112,7 @@ export function statsLine({
     );
 
   if (shouldShowInstalledVersion) {
-    parts.push(
-      installed_version({ version: installedVersion }).value,
-    );
+    parts.push(installed_version({ version: installedVersion }).value);
   }
 
   if (shouldShowDowngradableStable) {
@@ -125,18 +123,11 @@ export function statsLine({
         release: latestStableRelease,
       }),
     );
-  }
-  else if (shouldShowLatestInstalledOnly) {
-    parts.push(
-      latest_installed_version({ version: installedVersion }).value,
-    );
-  }
-  else if (shouldShowLatestInstalledPreRelease) {
-    parts.push(
-      installed_version({ version: installedVersion }).value,
-    );
-  }
-  else if (shouldShowStableOnly) {
+  } else if (shouldShowLatestInstalledOnly) {
+    parts.push(latest_installed_version({ version: installedVersion }).value);
+  } else if (shouldShowLatestInstalledPreRelease) {
+    parts.push(installed_version({ version: installedVersion }).value);
+  } else if (shouldShowStableOnly) {
     parts.push(
       latest_version_on_with_downloads({
         latestVersion: latestStableRelease.version,
