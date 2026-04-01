@@ -33,105 +33,101 @@ export function statsLine({
     latest_version_on_with_downloads,
     latest_beta_label,
     latest_stable_label,
-    downgradable_beta_label,
     downgradable_stable_label,
     version_on_with_downloads,
   } = translations;
 
   const parts: [string?, string?, string?] = [];
-  const releaseLine = ({
+
+  const formatReleaseLine = ({
     label,
-    version,
-    publishedAt,
-    downloads,
+    release,
   }: {
     label: string;
-    version: string;
-    publishedAt: string;
-    downloads: number;
+    release: Release;
   }) =>
     version_on_with_downloads({
       label,
-      version,
-      publishedAt,
-      downloads,
+      version: release.version,
+      publishedAt: new Date(release.publishedAt).toLocaleDateString(),
+      downloads: totalDownloads(release),
     }).value;
 
-  // Case 1: installed version present, but there's a newer version available
-  if (latestVersionIs && latestVersionIs !== 'installed' && installedVersion) {
-    parts.push(installed_version({ version: installedVersion }).value);
-  }
+  const installedHasSamePatchPreRelease =
+    !!installedVersion &&
+    !!latestPreRelease &&
+    isSamePatchVersion(installedVersion, latestPreRelease.version);
 
-  // Case 2: latest is the installed version, with both stable and pre-release available
-  // Check if beta has same patch version as installed (downgradable scenario)
-  // Only applies when installed is a stable release (not pre-release)
-  if (
+  const installedPreReleaseIsDowngradableToStable =
+    latestVersionIs === 'installed' &&
+    !!installedVersion &&
+    isPreRelease(installedVersion) &&
+    !!latestStableRelease &&
+    isNewerVersion(latestStableRelease.version, installedVersion);
+
+  const shouldShowInstalledVersion =
+    latestVersionIs && latestVersionIs !== 'installed' && installedVersion;
+
+  const shouldShowDowngradableStable =
+    installedPreReleaseIsDowngradableToStable;
+
+  const shouldShowLatestInstalledOnly =
     latestVersionIs === 'installed' &&
     installedVersion &&
-    !isPreRelease(installedVersion) &&
-    latestStableRelease &&
-    latestPreRelease &&
-    isSamePatchVersion(installedVersion, latestPreRelease.version)
-  ) {
-    parts.push(latest_installed_version({ version: installedVersion }).value);
-    parts.push(
-      releaseLine({
-        label: downgradable_beta_label.value,
-        version: latestPreRelease.version,
-        publishedAt: new Date(
-          latestPreRelease.publishedAt,
-        ).toLocaleDateString(),
-        downloads: totalDownloads(latestPreRelease),
-      }),
-    );
-  }
+    !(isPreRelease(installedVersion) && installedHasSamePatchPreRelease) &&
+    !installedPreReleaseIsDowngradableToStable;
 
-  // Case 2.5: latest is the installed version (pre-release), downgradable to stable
-  // Check if installed is a pre-release that is newer than available stable
-  if (
+  const shouldShowLatestInstalledPreRelease =
     latestVersionIs === 'installed' &&
     installedVersion &&
     isPreRelease(installedVersion) &&
-    latestStableRelease &&
-    isNewerVersion(latestStableRelease.version, installedVersion)
-  ) {
-    parts.push(latest_installed_version({ version: installedVersion }).value);
-    parts.push(
-      releaseLine({
-        label: downgradable_stable_label.value,
-        version: latestStableRelease.version,
-        publishedAt: new Date(
-          latestStableRelease.publishedAt,
-        ).toLocaleDateString(),
-        downloads: totalDownloads(latestStableRelease),
-      }),
-    );
-  }
+    installedHasSamePatchPreRelease &&
+    !installedPreReleaseIsDowngradableToStable;
 
-  // Case 3: latest is the installed version (no downgradable scenario)
-  if (
-    latestVersionIs === 'installed' &&
-    installedVersion &&
-    !(
-      latestStableRelease &&
-      latestPreRelease &&
-      isSamePatchVersion(installedVersion, latestPreRelease.version)
-    ) &&
-    !(
-      isPreRelease(installedVersion) &&
-      latestStableRelease &&
-      isNewerVersion(latestStableRelease.version, installedVersion)
-    )
-  ) {
-    parts.push(latest_installed_version({ version: installedVersion }).value);
-  }
+  const shouldShowStableOnly =
+    latestVersionIs === 'stable' && latestStableRelease && !latestPreRelease;
 
-  // Case 4: latest stable release only (no pre-release)
-  if (
+  const shouldShowStableWithSamePatchBeta =
     latestVersionIs === 'stable' &&
     latestStableRelease &&
-    !latestPreRelease
-  ) {
+    latestPreRelease &&
+    isSamePatchVersion(latestStableRelease.version, latestPreRelease.version);
+
+  const shouldShowPreReleaseOnly =
+    latestVersionIs === 'pre-release' &&
+    !latestStableRelease &&
+    latestPreRelease;
+
+  const shouldShowBothStableAndBeta =
+    latestStableRelease &&
+    latestPreRelease &&
+    !(
+      latestVersionIs === 'installed' &&
+      installedVersion &&
+      installedHasSamePatchPreRelease
+    ) &&
+    !(
+      latestVersionIs === 'stable' &&
+      isSamePatchVersion(latestStableRelease.version, latestPreRelease.version)
+    );
+
+  if (shouldShowInstalledVersion) {
+    parts.push(installed_version({ version: installedVersion }).value);
+  }
+
+  if (shouldShowDowngradableStable) {
+    parts.push(latest_installed_version({ version: installedVersion }).value);
+    parts.push(
+      formatReleaseLine({
+        label: downgradable_stable_label.value,
+        release: latestStableRelease,
+      }),
+    );
+  } else if (shouldShowLatestInstalledOnly) {
+    parts.push(latest_installed_version({ version: installedVersion }).value);
+  } else if (shouldShowLatestInstalledPreRelease) {
+    parts.push(installed_version({ version: installedVersion }).value);
+  } else if (shouldShowStableOnly) {
     parts.push(
       latest_version_on_with_downloads({
         latestVersion: latestStableRelease.version,
@@ -141,54 +137,31 @@ export function statsLine({
         downloads: totalDownloads(latestStableRelease),
       }).value,
     );
-  }
-
-  // Case 5: latest pre-release only (no stable)
-  if (
-    latestVersionIs === 'pre-release' &&
-    !latestStableRelease &&
-    latestPreRelease
-  ) {
+  } else if (shouldShowStableWithSamePatchBeta) {
     parts.push(
-      releaseLine({
-        label: latest_beta_label.value,
-        version: latestPreRelease.version,
-        publishedAt: new Date(
-          latestPreRelease.publishedAt,
-        ).toLocaleDateString(),
-        downloads: totalDownloads(latestPreRelease),
-      }),
-    );
-  }
-
-  // Case 6: both stable and pre-release available (but not downgradable scenario)
-  if (
-    latestStableRelease &&
-    latestPreRelease &&
-    !(
-      latestVersionIs === 'installed' &&
-      installedVersion &&
-      isSamePatchVersion(installedVersion, latestPreRelease.version)
-    )
-  ) {
-    parts.push(
-      releaseLine({
+      formatReleaseLine({
         label: latest_stable_label.value,
-        version: latestStableRelease.version,
-        publishedAt: new Date(
-          latestStableRelease.publishedAt,
-        ).toLocaleDateString(),
-        downloads: totalDownloads(latestStableRelease),
+        release: latestStableRelease,
+      }),
+    );
+  } else if (shouldShowPreReleaseOnly) {
+    parts.push(
+      formatReleaseLine({
+        label: latest_beta_label.value,
+        release: latestPreRelease,
+      }),
+    );
+  } else if (shouldShowBothStableAndBeta) {
+    parts.push(
+      formatReleaseLine({
+        label: latest_stable_label.value,
+        release: latestStableRelease,
       }),
     );
     parts.push(
-      releaseLine({
+      formatReleaseLine({
         label: latest_beta_label.value,
-        version: latestPreRelease.version,
-        publishedAt: new Date(
-          latestPreRelease.publishedAt,
-        ).toLocaleDateString(),
-        downloads: totalDownloads(latestPreRelease),
+        release: latestPreRelease,
       }),
     );
   }

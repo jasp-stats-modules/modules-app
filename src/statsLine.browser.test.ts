@@ -182,16 +182,36 @@ describe('statsLine', () => {
       ],
     ],
     [
-      'latest installed, downgradable beta',
+      'latest stable installed and no beta',
+      {
+        installedVersion: '0.95.5-release.12',
+        latestStableRelease: createMockRelease('0.95.5-release.12'),
+        latestPreRelease: undefined,
+        latestVersionIs: 'installed',
+      },
+      ['Latest installed 0.95.5-release.12'],
+    ],
+    [
+      'latest stable installed and beta of same release available',
       {
         installedVersion: '0.95.5-release.12',
         latestStableRelease: createMockRelease('0.95.5-release.12'),
         latestPreRelease: createMockRelease('0.95.5-beta.3'),
         latestVersionIs: 'installed',
       },
+      ['Latest installed 0.95.5-release.12'],
+    ],
+    [
+      'new stable build and beta of same release available',
+      {
+        installedVersion: '0.95.5-release.11',
+        latestStableRelease: createMockRelease('0.95.5-release.12'),
+        latestPreRelease: createMockRelease('0.95.5-beta.3'),
+        latestVersionIs: 'stable',
+      },
       [
-        'Latest installed 0.95.5-release.12',
-        'Downgradable beta 0.95.5-beta.3 on 1/15/2024 with 100 downloads',
+        'Installed 0.95.5-release.11',
+        'Latest stable 0.95.5-release.12 on 1/15/2024 with 100 downloads',
       ],
     ],
     [
@@ -206,6 +226,70 @@ describe('statsLine', () => {
         'Latest installed 3.0.0-beta.1',
         'Downgradable stable 2.0.0-release.0 on 1/15/2024 with 100 downloads',
       ],
+    ],
+    [
+      ' beta installed and newer beta available',
+      {
+        installedVersion: '3.0.0-beta.1',
+        latestStableRelease: createMockRelease('2.0.0-release.0'),
+        latestPreRelease: createMockRelease('3.0.0-beta.2'),
+        latestVersionIs: 'pre-release',
+      },
+      [
+        'Installed 3.0.0-beta.1',
+        'Latest stable 2.0.0-release.0 on 1/15/2024 with 100 downloads',
+        'Latest beta 3.0.0-beta.2 on 1/15/2024 with 100 downloads',
+      ],
+    ],
+    [
+      'beta installed and newer beta+stable available',
+      {
+        installedVersion: '2.0.0-beta.1',
+        latestStableRelease: createMockRelease('2.0.0-release.0'),
+        latestPreRelease: createMockRelease('2.0.0-beta.2'),
+        latestVersionIs: 'pre-release',
+      },
+      [
+        'Installed 2.0.0-beta.1',
+        'Latest stable 2.0.0-release.0 on 1/15/2024 with 100 downloads',
+        'Latest beta 2.0.0-beta.2 on 1/15/2024 with 100 downloads',
+      ],
+    ],
+    [
+      'beta installed and newer beta available, no stable available',
+      {
+        installedVersion: '2.0.0-beta.1',
+        latestStableRelease: undefined,
+        latestPreRelease: createMockRelease('2.0.0-beta.2'),
+        latestVersionIs: 'pre-release',
+      },
+      [
+        'Installed 2.0.0-beta.1',
+        'Latest beta 2.0.0-beta.2 on 1/15/2024 with 100 downloads',
+      ],
+    ],
+    [
+      'beta installed and newer beta available, no stable available',
+      {
+        installedVersion: '2.0.0-beta.1',
+        latestStableRelease: undefined,
+        latestPreRelease: createMockRelease('2.0.0-beta.2'),
+        latestVersionIs: 'pre-release',
+      },
+      [
+        'Installed 2.0.0-beta.1',
+        'Latest beta 2.0.0-beta.2 on 1/15/2024 with 100 downloads',
+      ],
+    ],
+    [
+      'latest beta installed',
+      {
+        installedVersion: '2.0.0-beta.1',
+        latestStableRelease: undefined,
+        latestPreRelease: createMockRelease('2.0.0-beta.1'),
+        latestVersionIs: 'installed',
+      },
+      ['Installed 2.0.0-beta.1'],
     ],
   ])('statsLine: %s', ([, params, expected]) => {
     // The getIntlayer needs to be run in vitest browser mode, otherwise it returns empty object.

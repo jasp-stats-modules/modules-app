@@ -692,14 +692,7 @@ describe('resolveReleaseStats', () => {
         removeable: false,
       },
       {
-        actions: [
-          {
-            type: 'downgrade-pre-release',
-            asset: preAsset,
-            from: '1.2.0-release.0',
-            to: '1.2.0-beta.1',
-          },
-        ],
+        actions: [],
         latestVersionIs: 'installed',
         installedVersion: '1.2.0-release.0',
         latestPreRelease: release('1.2.0-beta.1', 'pre-release'),
@@ -721,12 +714,6 @@ describe('resolveReleaseStats', () => {
             type: 'uninstall',
             from: '1.2.0-release.0',
             moduleId: 'jaspAcceptanceSampling',
-          },
-          {
-            type: 'downgrade-pre-release',
-            asset: preAsset,
-            from: '1.2.0-release.0',
-            to: '1.2.0-beta.1',
           },
         ],
         latestVersionIs: 'installed',

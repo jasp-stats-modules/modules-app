@@ -60,10 +60,6 @@ export interface UpdatePreReleaseAction extends BaseFromAction {
   type: 'update-pre-release';
 }
 
-export interface DowngradePreReleaseAction extends BaseFromAction {
-  type: 'downgrade-pre-release';
-}
-
 export interface DowngradeStableAction extends BaseFromAction {
   type: 'downgrade-stable';
 }
@@ -78,7 +74,6 @@ export type AnyAction =
   | UninstallPreReleaseAction
   | InstallPreReleaseAction
   | UpdatePreReleaseAction
-  | DowngradePreReleaseAction
   | DowngradeStableAction
   | UninstallAction;
 
@@ -247,12 +242,6 @@ export function resolveReleaseStats(
       });
     }
   }
-  // Downgrade from stable release to pre-release of same release version
-  // for example 0.95.5-release.4 -> 0.95.5-beta.2
-  const samePatchVersion = isSamePatchVersion(
-    installedVersion,
-    latestPreReleaseVersion,
-  );
 
   if (
     installedVersion &&
@@ -273,21 +262,6 @@ export function resolveReleaseStats(
     actions.push({
       type: 'uninstall-pre-release',
       moduleId: repo.id,
-      from: installedVersion,
-    });
-  }
-  if (
-    options.allowPreRelease &&
-    installedVersion !== undefined &&
-    !isPreRelease(installedVersion) &&
-    latestPreReleaseVersion !== undefined &&
-    preReleaseAsset &&
-    samePatchVersion
-  ) {
-    actions.push({
-      type: 'downgrade-pre-release',
-      asset: preReleaseAsset,
-      to: latestPreReleaseVersion,
       from: installedVersion,
     });
   }
