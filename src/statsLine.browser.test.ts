@@ -182,16 +182,36 @@ describe('statsLine', () => {
       ],
     ],
     [
-      'latest installed, downgradable beta',
+      'latest stable installed and no beta',
+      {
+        installedVersion: '0.95.5-release.12',
+        latestStableRelease: createMockRelease('0.95.5-release.12'),
+        latestPreRelease: undefined,
+        latestVersionIs: 'installed',
+      },
+      ['Latest installed 0.95.5-release.12'],
+    ],
+    [
+      'latest stable installed and beta of same release available',
       {
         installedVersion: '0.95.5-release.12',
         latestStableRelease: createMockRelease('0.95.5-release.12'),
         latestPreRelease: createMockRelease('0.95.5-beta.3'),
         latestVersionIs: 'installed',
       },
+      ['Latest installed 0.95.5-release.12'],
+    ],
+    [
+      'new stable build and beta of same release available',
+      {
+        installedVersion: '0.95.5-release.11',
+        latestStableRelease: createMockRelease('0.95.5-release.12'),
+        latestPreRelease: createMockRelease('0.95.5-beta.3'),
+        latestVersionIs: 'stable',
+      },
       [
-        'Latest installed 0.95.5-release.12',
-        'Downgradable beta 0.95.5-beta.3 on 1/15/2024 with 100 downloads',
+        'Installed 0.95.5-release.11',
+        'Latest stable 0.95.5-release.12 on 1/15/2024 with 100 downloads',
       ],
     ],
     [

@@ -33,7 +33,6 @@ export function statsLine({
     latest_version_on_with_downloads,
     latest_beta_label,
     latest_stable_label,
-    downgradable_beta_label,
     downgradable_stable_label,
     version_on_with_downloads,
   } = translations;
@@ -57,43 +56,28 @@ export function statsLine({
       downloads,
     }).value;
 
+  const installedHasSamePatchPreRelease =
+    !!installedVersion &&
+    !!latestPreRelease &&
+    isSamePatchVersion(installedVersion, latestPreRelease.version);
+  const installedPreReleaseIsDowngradableToStable =
+    latestVersionIs === 'installed' &&
+    !!installedVersion &&
+    isPreRelease(installedVersion) &&
+    !!latestStableRelease &&
+    isNewerVersion(latestStableRelease.version, installedVersion);
+
   // Case 1: installed version present, but there's a newer version available
   if (latestVersionIs && latestVersionIs !== 'installed' && installedVersion) {
     parts.push(installed_version({ version: installedVersion }).value);
   }
 
-  // Case 2: latest is the installed version, with both stable and pre-release available
-  // Check if beta has same patch version as installed (downgradable scenario)
-  // Only applies when installed is a stable release (not pre-release)
-  if (
-    latestVersionIs === 'installed' &&
-    installedVersion &&
-    !isPreRelease(installedVersion) &&
-    latestStableRelease &&
-    latestPreRelease &&
-    isSamePatchVersion(installedVersion, latestPreRelease.version)
-  ) {
-    parts.push(latest_installed_version({ version: installedVersion }).value);
-    parts.push(
-      releaseLine({
-        label: downgradable_beta_label.value,
-        version: latestPreRelease.version,
-        publishedAt: new Date(
-          latestPreRelease.publishedAt,
-        ).toLocaleDateString(),
-        downloads: totalDownloads(latestPreRelease),
-      }),
-    );
-  }
-
-  // Case 2.5: latest is the installed version (pre-release), downgradable to stable
+  // Case 2: latest is the installed version (pre-release), downgradable to stable
   // Check if installed is a pre-release that is newer than available stable
   if (
     latestVersionIs === 'installed' &&
     installedVersion &&
-    isPreRelease(installedVersion) &&
-    latestStableRelease &&
-    isNewerVersion(latestStableRelease.version, installedVersion)
+    installedPreReleaseIsDowngradableToStable
   ) {
     parts.push(latest_installed_version({ version: installedVersion }).value);
     parts.push(
@@ -108,20 +92,12 @@ export function statsLine({
     );
   }
 
-  // Case 3: latest is the installed version (no downgradable scenario)
+  // Case 3: latest is the installed version (no downgradable to stable scenario)
   if (
     latestVersionIs === 'installed' &&
     installedVersion &&
-    !(
-      latestStableRelease &&
-      latestPreRelease &&
-      isSamePatchVersion(installedVersion, latestPreRelease.version)
-    ) &&
-    !(
-      isPreRelease(installedVersion) &&
-      latestStableRelease &&
-      isNewerVersion(latestStableRelease.version, installedVersion)
-    )
+    !(isPreRelease(installedVersion) && installedHasSamePatchPreRelease) &&
+    !installedPreReleaseIsDowngradableToStable
   ) {
     parts.push(latest_installed_version({ version: installedVersion }).value);
   }
@@ -140,6 +116,25 @@ export function statsLine({
         ).toLocaleDateString(),
         downloads: totalDownloads(latestStableRelease),
       }).value,
+    );
+  }
+
+  // Case 4b: latest stable release with pre-release of same patch (don't show pre-release)
+  if (
+    latestVersionIs === 'stable' &&
+    latestStableRelease &&
+    latestPreRelease &&
+    isSamePatchVersion(latestStableRelease.version, latestPreRelease.version)
+  ) {
+    parts.push(
+      releaseLine({
+        label: latest_stable_label.value,
+        version: latestStableRelease.version,
+        publishedAt: new Date(
+          latestStableRelease.publishedAt,
+        ).toLocaleDateString(),
+        downloads: totalDownloads(latestStableRelease),
+      }),
     );
   }
 
@@ -168,7 +163,11 @@ export function statsLine({
     !(
       latestVersionIs === 'installed' &&
       installedVersion &&
-      isSamePatchVersion(installedVersion, latestPreRelease.version)
+      installedHasSamePatchPreRelease
+    ) &&
+    !(
+      latestVersionIs === 'stable' &&
+      isSamePatchVersion(latestStableRelease.version, latestPreRelease.version)
     )
   ) {
     parts.push(
