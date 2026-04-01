@@ -227,6 +227,72 @@ describe('statsLine', () => {
         'Downgradable stable 2.0.0-release.0 on 1/15/2024 with 100 downloads',
       ],
     ],
+    [
+      ' beta installed and newer beta available',
+      {
+        installedVersion: '3.0.0-beta.1',
+        latestStableRelease: createMockRelease('2.0.0-release.0'),
+        latestPreRelease: createMockRelease('3.0.0-beta.2'),
+        latestVersionIs: 'pre-release',
+      },
+      [
+        'Installed 3.0.0-beta.1',
+        'Latest stable 2.0.0-release.0 on 1/15/2024 with 100 downloads',
+        'Latest beta 3.0.0-beta.2 on 1/15/2024 with 100 downloads',
+      ],
+    ],
+         [
+      'beta installed and newer beta+stable available',
+      {
+        installedVersion: '2.0.0-beta.1',
+        latestStableRelease: createMockRelease('2.0.0-release.0'),
+        latestPreRelease: createMockRelease('2.0.0-beta.2'),
+        latestVersionIs: 'pre-release',
+      },
+      [
+        'Installed 2.0.0-beta.1',
+        'Latest stable 2.0.0-release.0 on 1/15/2024 with 100 downloads',
+        'Latest beta 2.0.0-beta.2 on 1/15/2024 with 100 downloads',
+      ],
+    ],
+     [
+      'beta installed and newer beta available, no stable available',
+      {
+        installedVersion: '2.0.0-beta.1',
+        latestStableRelease: undefined,
+        latestPreRelease: createMockRelease('2.0.0-beta.2'),
+        latestVersionIs: 'pre-release',
+      },
+      [
+        'Installed 2.0.0-beta.1',
+        'Latest beta 2.0.0-beta.2 on 1/15/2024 with 100 downloads',
+      ],
+    ],
+         [
+      'beta installed and newer beta available, no stable available',
+      {
+        installedVersion: '2.0.0-beta.1',
+        latestStableRelease: undefined,
+        latestPreRelease: createMockRelease('2.0.0-beta.2'),
+        latestVersionIs: 'pre-release',
+      },
+      [
+        'Installed 2.0.0-beta.1',
+        'Latest beta 2.0.0-beta.2 on 1/15/2024 with 100 downloads',
+      ],
+    ],
+[
+      'latest beta installed',
+      {
+        installedVersion: '2.0.0-beta.1',
+        latestStableRelease: undefined,
+        latestPreRelease: createMockRelease('2.0.0-beta.1'),
+        latestVersionIs: 'installed',
+      },
+      [
+        'Installed 2.0.0-beta.1',
+      ],
+    ],
   ])('statsLine: %s', ([, params, expected]) => {
     // The getIntlayer needs to be run in vitest browser mode, otherwise it returns empty object.
     const translations = getIntlayer<'app'>('app', 'en');

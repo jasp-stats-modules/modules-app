@@ -102,6 +102,17 @@ export function statsLine({
     parts.push(latest_installed_version({ version: installedVersion }).value);
   }
 
+  // Case 3b: installed is the latest pre-release (same patch as latestPreRelease), no downgrade to stable
+  if (
+    latestVersionIs === 'installed' &&
+    installedVersion &&
+    isPreRelease(installedVersion) &&
+    installedHasSamePatchPreRelease &&
+    !installedPreReleaseIsDowngradableToStable
+  ) {
+    parts.push(installed_version({ version: installedVersion }).value);
+  }
+
   // Case 4: latest stable release only (no pre-release)
   if (
     latestVersionIs === 'stable' &&
