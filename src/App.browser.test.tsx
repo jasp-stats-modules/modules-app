@@ -1,5 +1,5 @@
 import { withNuqsTestingAdapter } from 'nuqs/adapters/testing';
-import { beforeEach, describe, expect, test } from 'vitest';
+import { afterEach, beforeEach, describe, expect, test } from 'vitest';
 import type { Locator } from 'vitest/browser';
 import { type RenderResult, render } from 'vitest-browser-react';
 import { App } from './App';
@@ -528,6 +528,35 @@ describe('App component', () => {
     test('Official channel checkbox label is in Dutch', async () => {
       await expect
         .element(screen.getByLabelText('Officieel'))
+        .toBeInTheDocument();
+    });
+  });
+
+  describe('Given Information button pressed', () => {
+    beforeEach(async () => {
+      screen = await render(
+        <NuqslessWrapper>
+          <App />
+        </NuqslessWrapper>,
+        {
+          wrapper: withNuqsTestingAdapter({
+            searchParams: { c: 'test.json', a: 'MacOS_arm64', l: 'en' },
+          }),
+        },
+      );
+
+      const infoButton = screen.getByRole('button', { name: 'Information' });
+      await infoButton.click();
+    });
+
+    afterEach(async () => {
+      const closeButton = screen.getByRole('button', { name: 'Close' });
+      await closeButton.click();
+    });
+
+    test('shows information about module library', async () => {
+      await expect
+        .element(screen.getByText('Information on the module library panel'))
         .toBeInTheDocument();
     });
   });
