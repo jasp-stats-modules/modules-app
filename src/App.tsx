@@ -1121,7 +1121,7 @@ function InfoButton({
           <Popover.Popup className="relative mx-auto my-auto max-h-[calc(100vh-2rem)] w-full max-w-sm overflow-y-auto rounded-lg border border-border bg-card p-4 text-foreground shadow-lg sm:max-h-[calc(100vh-4rem)]">
             <Popover.Close
               className="absolute top-2 right-2 flex h-6 w-6 items-center justify-center rounded hover:bg-background"
-              aria-label="Close"
+              aria-label={translations.close.value}
             >
               ×
             </Popover.Close>
