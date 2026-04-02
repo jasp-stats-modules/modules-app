@@ -1,3 +1,4 @@
+import { Popover } from '@base-ui/react/popover';
 import { queryOptions, useQuery } from '@tanstack/react-query';
 import type { VariantProps } from 'class-variance-authority';
 import { ChevronDownIcon, House } from 'lucide-react';
@@ -1100,36 +1101,37 @@ function InfoButton({
     );
   }
   return (
-    <>
-      <button
-        popoverTarget="infoPopover"
-        popoverTargetAction="toggle"
-        type="button"
+    <Popover.Root>
+      <Popover.Trigger
         className="ml-auto h-6 w-6 rounded-full border border-border hover:bg-background"
         title={translations.information.value}
+        aria-label={translations.information.value}
       >
         <img
           className="h-6 w-6 hover:opacity-75"
           src={infoButton}
           alt={translations.information.value}
         />
-      </button>
-      <div
-        popover="auto"
-        id="infoPopover"
-        className="relative m-8 mx-auto max-w-sm gap-2 self-center rounded-lg border border-border bg-card p-4 text-foreground"
-      >
-        <button
-          popoverTarget="infoPopover"
-          popoverTargetAction="hide"
-          type="button"
-          className="float-right ml-2 h-6 w-6 rounded hover:bg-background"
+      </Popover.Trigger>
+      <Popover.Portal>
+        <Popover.Positioner
+          positionMethod="fixed"
+          className="fixed inset-0 z-[60] overflow-y-auto p-4 sm:flex sm:items-center sm:justify-center sm:p-8"
         >
-          ×
-        </button>
-        {renderMarkdown(infoMarkdown.value)}
-      </div>
-    </>
+          <Popover.Popup className="relative mx-auto my-auto max-h-[calc(100vh-2rem)] w-full max-w-sm overflow-y-auto rounded-lg border border-border bg-card p-4 text-foreground shadow-lg sm:max-h-[calc(100vh-4rem)]">
+            <Popover.Close
+              className="absolute top-2 right-2 flex h-6 w-6 items-center justify-center rounded hover:bg-background"
+              aria-label={translations.close.value}
+            >
+              ×
+            </Popover.Close>
+            <Popover.Description>
+              {renderMarkdown(infoMarkdown.value)}
+            </Popover.Description>
+          </Popover.Popup>
+        </Popover.Positioner>
+      </Popover.Portal>
+    </Popover.Root>
   );
 }
 
