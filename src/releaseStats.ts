@@ -195,6 +195,9 @@ export function resolveReleaseStats(
   const installedIsPreRelease =
     installedVersion && isPreRelease(installedVersion);
   let latestVersionIs: ReleaseStats['latestVersionIs'];
+  const lasestPreReleaseSamePatchAsLatestStable =
+    !!latestStableReleaseVersion &&
+    isSamePatchVersion(latestStableReleaseVersion, latestPreReleaseVersion);
   if (installedVersion) {
     latestVersionIs = 'installed';
     if (canUpdateToStable && !latestPreReleaseIsNewerThanStable) {
@@ -228,18 +231,26 @@ export function resolveReleaseStats(
   }
   if (options.allowPreRelease && preReleaseAsset && latestPreReleaseVersion) {
     if (!installedVersion) {
-      actions.push({
-        type: 'install-pre-release',
-        asset: preReleaseAsset,
-        to: latestPreReleaseVersion,
-      });
+      if (lasestPreReleaseSamePatchAsLatestStable) {
+        // do not offer pre-release with same patch version as stable
+      } else {
+        actions.push({
+          type: 'install-pre-release',
+          asset: preReleaseAsset,
+          to: latestPreReleaseVersion,
+        });
+      }
     } else if (canUpdateToPreRelease) {
-      actions.push({
-        type: 'update-pre-release',
-        asset: preReleaseAsset,
-        to: latestPreReleaseVersion,
-        from: installedVersion,
-      });
+      if (lasestPreReleaseSamePatchAsLatestStable) {
+        // do not offer pre-release with same patch version as stable
+      } else {
+        actions.push({
+          type: 'update-pre-release',
+          asset: preReleaseAsset,
+          to: latestPreReleaseVersion,
+          from: installedVersion,
+        });
+      }
     }
   }
 
