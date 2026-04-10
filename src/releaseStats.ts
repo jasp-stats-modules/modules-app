@@ -195,7 +195,7 @@ export function resolveReleaseStats(
   const installedIsPreRelease =
     installedVersion && isPreRelease(installedVersion);
   let latestVersionIs: ReleaseStats['latestVersionIs'];
-  const lasestPreReleaseSamePatchAsLatestStable =
+  const latestPreReleaseSamePatchAsLatestStable =
     !!latestStableReleaseVersion &&
     isSamePatchVersion(latestStableReleaseVersion, latestPreReleaseVersion);
   if (installedVersion) {
@@ -231,7 +231,7 @@ export function resolveReleaseStats(
   }
   if (options.allowPreRelease && preReleaseAsset && latestPreReleaseVersion) {
     if (!installedVersion) {
-      if (lasestPreReleaseSamePatchAsLatestStable) {
+      if (latestPreReleaseSamePatchAsLatestStable) {
         // do not offer pre-release with same patch version as stable
       } else {
         actions.push({
@@ -241,7 +241,7 @@ export function resolveReleaseStats(
         });
       }
     } else if (canUpdateToPreRelease) {
-      if (lasestPreReleaseSamePatchAsLatestStable) {
+      if (latestPreReleaseSamePatchAsLatestStable) {
         // do not offer pre-release with same patch version as stable
       } else {
         actions.push({
