@@ -430,7 +430,7 @@ describe('resolveReleaseStats', () => {
       },
     ],
     [
-      'Pre→stable (newer pre available)',
+      'Pre→stable (newer pre available + stable same patch version)',
       {
         installed: '1.0.0-beta.1',
         stableRelease: '1.0.0-release.0',
@@ -445,12 +445,6 @@ describe('resolveReleaseStats', () => {
             asset: stableAsset,
             from: '1.0.0-beta.1',
             to: '1.0.0-release.0',
-          },
-          {
-            type: 'update-pre-release',
-            asset: preAsset,
-            from: '1.0.0-beta.1',
-            to: '1.0.0-beta.2',
           },
           {
             type: 'uninstall-pre-release',
@@ -749,6 +743,87 @@ describe('resolveReleaseStats', () => {
         installedVersion: '1.2.0-beta.1',
         latestPreRelease: undefined,
         latestStableRelease: release('1.2.0-release.0', 'stable'),
+      },
+    ],
+    [
+      'Latest pre same version as stable, nothing installed',
+      {
+        installed: undefined,
+        stableRelease: '0.96.1-release.12',
+        preRelease: '0.96.1-beta.1',
+        allowPreRelease: true,
+        removeable: true,
+      },
+      {
+        actions: [
+          {
+            type: 'install-stable',
+            asset: stableAsset,
+            to: '0.96.1-release.12',
+          },
+        ],
+        latestVersionIs: 'stable',
+        installedVersion: undefined,
+        latestPreRelease: release('0.96.1-beta.1', 'pre-release'),
+        latestStableRelease: release('0.96.1-release.12', 'stable'),
+      },
+    ],
+    [
+      'Latest pre same version as stable, older stable installed',
+      {
+        installed: '0.96.0-release.0',
+        stableRelease: '0.96.1-release.12',
+        preRelease: '0.96.1-beta.1',
+        allowPreRelease: true,
+        removeable: true,
+      },
+      {
+        actions: [
+          {
+            type: 'update-stable',
+            asset: stableAsset,
+            from: '0.96.0-release.0',
+            to: '0.96.1-release.12',
+          },
+          {
+            type: 'uninstall',
+            from: '0.96.0-release.0',
+            moduleId: 'jaspAcceptanceSampling',
+          },
+        ],
+        latestVersionIs: 'stable',
+        installedVersion: '0.96.0-release.0',
+        latestPreRelease: release('0.96.1-beta.1', 'pre-release'),
+        latestStableRelease: release('0.96.1-release.12', 'stable'),
+      },
+    ],
+    [
+      'Latest pre same version as stable, older beta installed',
+      {
+        installed: '0.96.0-beta.0',
+        stableRelease: '0.96.1-release.12',
+        preRelease: '0.96.1-beta.1',
+        allowPreRelease: true,
+        removeable: true,
+      },
+      {
+        actions: [
+          {
+            type: 'update-stable',
+            asset: stableAsset,
+            from: '0.96.0-beta.0',
+            to: '0.96.1-release.12',
+          },
+          {
+            type: 'uninstall-pre-release',
+            from: '0.96.0-beta.0',
+            moduleId: 'jaspAcceptanceSampling',
+          },
+        ],
+        latestVersionIs: 'stable',
+        installedVersion: '0.96.0-beta.0',
+        latestPreRelease: release('0.96.1-beta.1', 'pre-release'),
+        latestStableRelease: release('0.96.1-release.12', 'stable'),
       },
     ],
   ])('$0', ([_summary, given, expected]) => {
