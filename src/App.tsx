@@ -8,7 +8,7 @@ import { useEffect, useId, useMemo, useState } from 'react';
 import { useIntlayer, useMarkdownRenderer } from 'react-intlayer';
 import { useDebounceValue } from 'usehooks-ts';
 import { cn } from '@/lib/utils';
-import type { Release, Repository } from '@/types';
+import type { Asset, Release, Repository } from '@/types';
 import type { Info } from '@/useJaspQtObject';
 import { insideQt, useJaspQtObject } from '@/useJaspQtObject';
 import { Button, buttonVariants } from './Button';
@@ -801,6 +801,41 @@ function RepositoryCard({
   );
 }
 
+function enrichDownloadUrlInAsset(name: string, asset: Asset): Asset {
+  const hashParams = new URLSearchParams({ t: name }).toString();
+  return {
+    ...asset,
+    downloadUrl: `${asset.downloadUrl}#${hashParams}`,
+  };
+}
+
+function enrichDownloadUrlInActions(
+  name: string,
+  actions: AnyAction[],
+): AnyAction[] {
+  return actions.map((action) => {
+    if ('asset' in action) {
+      return {
+        ...action,
+        asset: enrichDownloadUrlInAsset(name, action.asset),
+      };
+    }
+    return action;
+  });
+}
+
+function enrichDownloadUrlInReleaseStats(
+  releaseStats: ReleaseStats,
+): ReleaseStats {
+  return {
+    ...releaseStats,
+    actions: enrichDownloadUrlInActions(
+      releaseStats.repo.name,
+      releaseStats.actions,
+    ),
+  };
+}
+
 function getInstallableReleaseStats(
   reposOfChannel: Repository[],
   info: Pick<
@@ -809,9 +844,11 @@ function getInstallableReleaseStats(
   >,
   allowPreRelease: boolean,
 ): ReleaseStats[] {
-  return reposOfChannel.flatMap((repo) =>
-    getInstallableReleaseStatsFromRepository(repo, info, allowPreRelease),
-  );
+  return reposOfChannel
+    .flatMap((repo) =>
+      getInstallableReleaseStatsFromRepository(repo, info, allowPreRelease),
+    )
+    .map(enrichDownloadUrlInReleaseStats);
 }
 
 function getInstallableReleaseStatsFromRepository(

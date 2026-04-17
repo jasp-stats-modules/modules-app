@@ -169,8 +169,8 @@ describe('App component (Qt mocked browser)', () => {
     expect(qtMockState.installMany).toHaveBeenCalledTimes(1);
     expect(qtMockState.installMany).toHaveBeenCalledWith(
       expect.arrayContaining([
-        'https://github.com/test/test/releases/download/v0.95.5-release.0/test1_MacOS_arm64.JASPModule',
-        'https://github.com/test/test/releases/download/v0.95.5-release.0/test2_MacOS_arm64.JASPModule',
+        'https://github.com/test/test/releases/download/v0.95.5-release.0/test1_MacOS_arm64.JASPModule#t=jaspAnova',
+        'https://github.com/test/test/releases/download/v0.95.5-release.0/test2_MacOS_arm64.JASPModule#t=jaspBayesian',
       ]),
     );
   });
