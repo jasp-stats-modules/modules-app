@@ -389,7 +389,7 @@ describe('App component', () => {
         .element(installButton)
         .toHaveAttribute(
           'href',
-          'https://github.com/jasp-stats-modules/jaspAnova/releases/download/2cbd8a3e_R-4-4-1/jaspAnova_0.95.0_Windows_x86-64_R-4-5-1.JASPModule',
+          'https://github.com/jasp-stats-modules/jaspAnova/releases/download/2cbd8a3e_R-4-4-1/jaspAnova_0.95.0_Windows_x86-64_R-4-5-1.JASPModule#t=jaspAnova',
         );
 
       await expect
