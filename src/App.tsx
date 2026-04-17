@@ -802,9 +802,10 @@ function RepositoryCard({
 }
 
 function enrichDownloadUrlInAsset(name: string, asset: Asset): Asset {
+  const hashParams = new URLSearchParams({ t: name }).toString();
   return {
     ...asset,
-    downloadUrl: `${asset.downloadUrl}#t=${name}`,
+    downloadUrl: `${asset.downloadUrl}#${hashParams}`,
   };
 }
 
