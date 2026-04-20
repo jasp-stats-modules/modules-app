@@ -93,7 +93,7 @@ async function pullAndScrapeRegistry(
     await simpleGit().clone(repoUrl, REGISTRY_DIR, [
       '--depth',
       '1',
-      '--recurse-submodules',
+      '--no-recurse-submodules',
       '--branch',
       branch,
     ]);
@@ -104,15 +104,25 @@ async function pullAndScrapeRegistry(
   // 2. caching on GH workflow
   // 3. Writing submodules var somewhere and download it when creating public/index.json
 
-  console.log('Pulling latest changes of registry and its submodules');
+  console.log('Pulling latest changes of registry');
   const git = gitInstance();
   await git.pull('origin', branch, {
     '--depth': '1',
     '--rebase': null,
-    '--recurse-submodules': null,
+    '--no-recurse-submodules': null,
     '--progress': null,
     '--jobs': '10',
   });
+
+  console.log('Updating top-level registry submodules');
+  await git.subModule([
+    'update',
+    '--init',
+    '--depth',
+    '1',
+    '--jobs',
+    '10',
+  ]);
 
   console.log('Listing submodules in registry');
   const bareSubmodules = await extractBareSubmodules(REGISTRY_DIR);
