@@ -115,14 +115,7 @@ async function pullAndScrapeRegistry(
   });
 
   console.log('Updating top-level registry submodules');
-  await git.subModule([
-    'update',
-    '--init',
-    '--depth',
-    '1',
-    '--jobs',
-    '10',
-  ]);
+  await git.subModule(['update', '--init', '--depth', '1', '--jobs', '10']);
 
   console.log('Listing submodules in registry');
   const bareSubmodules = await extractBareSubmodules(REGISTRY_DIR);
