@@ -503,19 +503,19 @@ describe('extractArchitectureFromUrl', () => {
     );
   });
 
-  test('throws error for unknown architecture', () => {
-    expect(() =>
+  test('returns undefined for unknown architecture', () => {
+    expect(
       extractArchitectureFromUrl('jaspAnova_0.95.0_UnknownArch.JASPModule'),
-    ).toThrow('Unknown architecture in filename');
+    ).toBeUndefined();
   });
 
-  test('when url does not match expected pattern, throws error', () => {
-    expect(() =>
+  test('returns undefined when url does not match expected pattern', () => {
+    expect(
       extractArchitectureFromUrl(
         'jaspAnova_0.95.0_Windows_x86-64_R-4-5-1.JASPModule',
         ['Flatpak_x86_64'],
       ),
-    ).toThrow('Unknown architecture in filename');
+    ).toBeUndefined();
   });
 });
 
