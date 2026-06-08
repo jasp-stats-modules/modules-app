@@ -841,7 +841,7 @@ function _registerGraphqlRateLimitHeaderLogging(
 export function extractArchitectureFromUrl(
   url: string,
   expectedArchitectures: ExpectedArchitectures = EXPECTED_ARCHITECTURES,
-): ExpectedArchitecture {
+): ExpectedArchitecture | undefined {
   // fallback to all archs when none are provided
   const architectures =
     expectedArchitectures.length === 0
@@ -857,7 +857,7 @@ export function extractArchitectureFromUrl(
   if (filename.includes('MacOS_x86_64') || filename.includes('MacOS_x86-64')) {
     return 'MacOS_x86_64';
   }
-  throw new Error(`Unknown architecture in filename: ${filename}`);
+  return undefined;
 }
 
 function detectPresentArchitectures(
@@ -869,7 +869,8 @@ function detectPresentArchitectures(
       .filter((asset) => asset.downloadUrl.endsWith('.JASPModule'))
       .map((asset) =>
         extractArchitectureFromUrl(asset.downloadUrl, expectedArchitectures),
-      ),
+      )
+      .filter((arch): arch is ExpectedArchitecture => arch !== undefined),
   );
 }
 
@@ -1170,12 +1171,15 @@ export function transformRelease(
     assets: releaseAssets.nodes
       .filter((asset) => asset.downloadUrl.endsWith('.JASPModule'))
       .map((a) => {
+        const architecture = extractArchitectureFromUrl(a.downloadUrl);
+        if (!architecture) return undefined;
         const asset: Asset = {
           ...a,
-          architecture: extractArchitectureFromUrl(a.downloadUrl),
+          architecture,
         };
         return asset;
       })
+      .filter((a): a is Asset => a !== undefined)
       .sort((a, b) => a.architecture.localeCompare(b.architecture, 'en')),
   };
   return newRelease;
