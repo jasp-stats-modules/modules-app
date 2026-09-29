@@ -447,6 +447,12 @@ describe('resolveReleaseStats', () => {
             to: '1.0.0-release.0',
           },
           {
+            type: 'update-pre-release',
+            asset: preAsset,
+            from: '1.0.0-beta.1',
+            to: '1.0.0-beta.2',
+          },
+          {
             type: 'uninstall-pre-release',
             from: '1.0.0-beta.1',
             moduleId: 'jaspAcceptanceSampling',
@@ -686,7 +692,14 @@ describe('resolveReleaseStats', () => {
         removeable: false,
       },
       {
-        actions: [],
+        actions: [
+          {
+            type: 'update-pre-release',
+            asset: preAsset,
+            from: '1.2.0-release.0',
+            to: '1.2.0-beta.1',
+          },
+        ],
         latestVersionIs: 'installed',
         installedVersion: '1.2.0-release.0',
         latestPreRelease: release('1.2.0-beta.1', 'pre-release'),
@@ -704,6 +717,12 @@ describe('resolveReleaseStats', () => {
       },
       {
         actions: [
+          {
+            type: 'update-pre-release',
+            asset: preAsset,
+            from: '1.2.0-release.0',
+            to: '1.2.0-beta.1',
+          },
           {
             type: 'uninstall',
             from: '1.2.0-release.0',
@@ -786,6 +805,12 @@ describe('resolveReleaseStats', () => {
             to: '0.96.1-release.12',
           },
           {
+            type: 'update-pre-release',
+            asset: preAsset,
+            from: '0.96.0-release.0',
+            to: '0.96.1-beta.1',
+          },
+          {
             type: 'uninstall',
             from: '0.96.0-release.0',
             moduleId: 'jaspAcceptanceSampling',
@@ -815,6 +840,12 @@ describe('resolveReleaseStats', () => {
             to: '0.96.1-release.12',
           },
           {
+            type: 'update-pre-release',
+            asset: preAsset,
+            from: '0.96.0-beta.0',
+            to: '0.96.1-beta.1',
+          },
+          {
             type: 'uninstall-pre-release',
             from: '0.96.0-beta.0',
             moduleId: 'jaspAcceptanceSampling',
@@ -822,6 +853,35 @@ describe('resolveReleaseStats', () => {
         ],
         latestVersionIs: 'stable',
         installedVersion: '0.96.0-beta.0',
+        latestPreRelease: release('0.96.1-beta.1', 'pre-release'),
+        latestStableRelease: release('0.96.1-release.12', 'stable'),
+      },
+    ],
+    [
+      'Latest pre same version as installed stable, latest stable installed',
+      {
+        installed: '0.96.1-release.12',
+        stableRelease: '0.96.1-release.12',
+        preRelease: '0.96.1-beta.1',
+        allowPreRelease: true,
+        removeable: true,
+      },
+      {
+        actions: [
+          {
+            type: 'update-pre-release',
+            asset: preAsset,
+            from: '0.96.1-release.12',
+            to: '0.96.1-beta.1',
+          },
+          {
+            type: 'uninstall',
+            from: '0.96.1-release.12',
+            moduleId: 'jaspAcceptanceSampling',
+          },
+        ],
+        latestVersionIs: 'installed',
+        installedVersion: '0.96.1-release.12',
         latestPreRelease: release('0.96.1-beta.1', 'pre-release'),
         latestStableRelease: release('0.96.1-release.12', 'stable'),
       },

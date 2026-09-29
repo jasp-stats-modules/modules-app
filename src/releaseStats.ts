@@ -187,11 +187,22 @@ export function resolveReleaseStats(
     installedVersion !== undefined &&
     latestStableReleaseVersion !== undefined &&
     isNewerVersion(installedVersion, latestStableReleaseVersion);
+  // A pre-release of the installed version line (e.g. installed
+  // 0.96.1-release.12 and latest pre-release 0.96.1-beta.1) is not newer
+  // than the installed stable, but it should still be offered so users
+  // can switch to the beta channel.
+  const canSwitchToPreReleaseOfInstalledLine =
+    installedVersion !== undefined &&
+    latestPreReleaseVersion !== undefined &&
+    installedVersion !== latestPreReleaseVersion &&
+    isSamePatchVersion(installedVersion, latestPreReleaseVersion) &&
+    !isNewerVersion(installedVersion, latestPreReleaseVersion);
   const canUpdateToPreRelease =
     options.allowPreRelease &&
     installedVersion !== undefined &&
     latestPreReleaseVersion !== undefined &&
-    isNewerVersion(installedVersion, latestPreReleaseVersion);
+    (isNewerVersion(installedVersion, latestPreReleaseVersion) ||
+      canSwitchToPreReleaseOfInstalledLine);
   const installedIsPreRelease =
     installedVersion && isPreRelease(installedVersion);
   let latestVersionIs: ReleaseStats['latestVersionIs'];
@@ -202,7 +213,7 @@ export function resolveReleaseStats(
     latestVersionIs = 'installed';
     if (canUpdateToStable && !latestPreReleaseIsNewerThanStable) {
       latestVersionIs = 'stable';
-    } else if (canUpdateToPreRelease) {
+    } else if (canUpdateToPreRelease && !canSwitchToPreReleaseOfInstalledLine) {
       latestVersionIs = 'pre-release';
     }
   } else {
@@ -241,16 +252,12 @@ export function resolveReleaseStats(
         });
       }
     } else if (canUpdateToPreRelease) {
-      if (latestPreReleaseSamePatchAsLatestStable) {
-        // do not offer pre-release with same patch version as stable
-      } else {
-        actions.push({
-          type: 'update-pre-release',
-          asset: preReleaseAsset,
-          to: latestPreReleaseVersion,
-          from: installedVersion,
-        });
-      }
+      actions.push({
+        type: 'update-pre-release',
+        asset: preReleaseAsset,
+        to: latestPreReleaseVersion,
+        from: installedVersion,
+      });
     }
   }
 
