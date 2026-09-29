@@ -336,3 +336,80 @@ describe('filterReleaseStats', () => {
     expect(hitIds).toEqual(expected);
   });
 });
+
+describe('filterReleaseStats ranking', () => {
+  function makeCatalog(): ReleaseStats[] {
+    // Alphabetical catalog order: Machine Learning, Regression, Time Series
+    return [
+      makeRS({
+        id: 'jaspMachineLearning',
+        name: 'Machine Learning',
+        description: 'Includes regression techniques',
+        maintainer: 'jasp-stats',
+      }),
+      makeRS({
+        id: 'jaspRegression',
+        name: 'Regression',
+        description: 'Linear regression',
+        maintainer: 'jasp-stats',
+      }),
+      makeRS({
+        id: 'jaspTimeSeries',
+        name: 'Time Series',
+        description: 'No match here',
+        maintainer: 'jasp-stats',
+      }),
+    ];
+  }
+
+  test.for<[string, string, string[]]>([
+    [
+      'exact name match ranks above description match',
+      'regression',
+      ['jaspRegression', 'jaspMachineLearning'],
+    ],
+    [
+      'case insensitive exact name match',
+      'Regression',
+      ['jaspRegression', 'jaspMachineLearning'],
+    ],
+    [
+      'name prefix match ranks above description match',
+      'reg',
+      ['jaspRegression', 'jaspMachineLearning'],
+    ],
+    [
+      'id match ranks above description match',
+      'jaspRegression',
+      ['jaspRegression'],
+    ],
+    [
+      'id prefix match ranks above description match',
+      'jaspReg',
+      ['jaspRegression'],
+    ],
+    [
+      'description-only matches keep catalog order',
+      'techniques',
+      ['jaspMachineLearning'],
+    ],
+    [
+      'no search term keeps catalog order',
+      '',
+      ['jaspMachineLearning', 'jaspRegression', 'jaspTimeSeries'],
+    ],
+    [
+      'field query keeps catalog order',
+      'name:Regression OR name:Time',
+      ['jaspRegression', 'jaspTimeSeries'],
+    ],
+  ])('%s (%s)', ([_testname, searchTerm, expected]) => {
+    const releaseStats = makeCatalog();
+    const result = filterReleaseStats(
+      releaseStatsToDocs(releaseStats),
+      releaseStats,
+      searchTerm,
+    );
+    expect(result.releaseStats.map((rs) => rs.repo.id)).toEqual(expected);
+  });
+});
