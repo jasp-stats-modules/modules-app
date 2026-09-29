@@ -73,9 +73,53 @@ export function releaseStatsToDocs(releaseStats: ReleaseStats[]): Doc[] {
 function hits2filteredReleaseStats(
   hits: readonly Doc[],
   releaseStats: ReleaseStats[],
+  searchTerm: string,
 ): ReleaseStats[] {
-  const hitIds = new Set(hits.map((hit) => hit.id));
-  return releaseStats.filter(({ repo }) => hitIds.has(repo.id));
+  const releaseStatsById = new Map(
+    releaseStats.map((rs) => [rs.repo.id, rs] as const),
+  );
+  // Rank name and id matches above matches on other fields such as
+  // description, so searching for example "regression" shows the module
+  // named Regression before modules that only mention regression in their
+  // description. Stable sort keeps the (alphabetical) catalog order as
+  // tie-breaker.
+  const rankedHits = hits
+    .map((doc, index) => ({
+      doc,
+      index,
+      rank: searchRelevance(doc, searchTerm),
+    }))
+    .sort((a, b) => a.rank - b.rank || a.index - b.index)
+    .map(({ doc }) => doc);
+  return rankedHits
+    .map((doc) => releaseStatsById.get(doc.id))
+    .filter((rs): rs is ReleaseStats => rs !== undefined);
+}
+
+/**
+ * Lower rank is more relevant. Field queries (e.g. `date:>20260101`) do not
+ * match the raw search term and get the lowest relevance.
+ */
+function searchRelevance(doc: Doc, searchTerm: string): number {
+  const term = searchTerm.trim().toLowerCase();
+  if (!term) {
+    return 0;
+  }
+  const name = doc.name.toLowerCase();
+  const id = doc.id.toLowerCase();
+  if (name === term || id === term) {
+    return 0;
+  }
+  if (name.startsWith(term) || id.startsWith(term)) {
+    return 1;
+  }
+  if (name.includes(term)) {
+    return 2;
+  }
+  if (id.includes(term)) {
+    return 3;
+  }
+  return 4;
 }
 
 export function filterOnDocs(
@@ -107,7 +151,7 @@ export function filterReleaseStats(
 ): FilterReleaseStatsResult {
   const { hits, parseError } = filterOnDocs(searchTerm, docs);
   return {
-    releaseStats: hits2filteredReleaseStats(hits, releaseStats),
+    releaseStats: hits2filteredReleaseStats(hits, releaseStats, searchTerm),
     parseError,
   };
 }
