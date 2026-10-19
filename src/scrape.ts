@@ -899,6 +899,16 @@ function checkAllArchitecturesCovered(
   return architecturesFromAllReleases.size === expectedArchitectures.length;
 }
 
+export function isDraftOrUntagged(
+  release: Pick<GqlRelease, 'isDraft' | 'tagName'>,
+): boolean {
+  // The GitHub GraphQL API does not reliably set `isDraft` for releases that
+  // have no tag yet: they are reported with a placeholder tagName such as
+  // `untagged-7b31883f74369b72ac7`, at times with `isDraft: false`. Their
+  // version cannot be derived from the tag, so always skip them.
+  return release.isDraft || release.tagName.startsWith('untagged-');
+}
+
 export function shouldContinuePagination(
   allReleases: GqlRelease[],
   hasNextPage: boolean,
@@ -909,7 +919,7 @@ export function shouldContinuePagination(
   }
   const releasesNonDraftAndWithSomeBinaryAssets = allReleases.filter(
     (release) =>
-      !release.isDraft &&
+      !isDraftOrUntagged(release) &&
       release.releaseAssets.nodes.some(
         (asset) => asset.downloadUrl.endsWith('.JASPModule'), // ignore source tarbal and zip
       ),
@@ -1214,11 +1224,18 @@ async function releaseAssetsForRepo(
     }
 
     // Separate into production and pre-releases (maintains order: newest first)
+    // Draft and untagged releases are skipped: they are not installable yet.
+    const skipped = allGqlReleases.filter((r) => isDraftOrUntagged(r));
+    if (skipped.length > 0) {
+      console.warn(
+        `Skipping ${skipped.length} draft/untagged release(s) for ${nameWithOwner}`,
+      );
+    }
     const productionReleases = allGqlReleases
-      .filter((r) => !r.isDraft && !r.isPrerelease)
+      .filter((r) => !isDraftOrUntagged(r) && !r.isPrerelease)
       .map((r) => transformRelease(r, nameWithOwner));
     const preReleases = allGqlReleases
-      .filter((r) => !r.isDraft && r.isPrerelease)
+      .filter((r) => !isDraftOrUntagged(r) && r.isPrerelease)
       .map((r) => transformRelease(r, nameWithOwner));
 
     const selectedProductionReleases = latestReleasePerJaspVersionRange(
