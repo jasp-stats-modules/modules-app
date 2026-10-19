@@ -22,6 +22,7 @@ import {
   extractBareSubmodules,
   extractTranslationsFromPoFiles,
   groupByChannel,
+  isDraftOrUntagged,
   latestReleasePerJaspVersionRange,
   logBareRepoStats,
   logReleaseStatistics,
@@ -71,6 +72,29 @@ describe('versionFromTagName', () => {
 
   test('handles version with multiple dots', () => {
     expect(versionFromTagName('1.2.3.4_abc123_R-4-5-1')).toBe('1.2.3.4');
+  });
+});
+
+describe('isDraftOrUntagged', () => {
+  test('flags drafts', () => {
+    expect(
+      isDraftOrUntagged({ isDraft: true, tagName: '0.95.0_abc_R-4-5-1' }),
+    ).toBe(true);
+  });
+
+  test('flags untagged releases even when GitHub reports them as non-drafts', () => {
+    expect(
+      isDraftOrUntagged({
+        isDraft: false,
+        tagName: 'untagged-7b31883f74369b72ac7',
+      }),
+    ).toBe(true);
+  });
+
+  test('keeps tagged non-draft releases', () => {
+    expect(
+      isDraftOrUntagged({ isDraft: false, tagName: '0.95.0_abc_R-4-5-1' }),
+    ).toBe(false);
   });
 });
 
@@ -912,6 +936,107 @@ describe('releaseAssets', () => {
         }),
       ]),
     );
+  });
+
+  test('skips untagged releases even when isDraft is false', async () => {
+    server.use(
+      graphql.operation(({ query }) => {
+        if (query.includes('repository(')) {
+          return HttpResponse.json({
+            data: {
+              repository: {
+                name: 'jaspAnova',
+                nameWithOwner: 'jasp-stats-modules/jaspAnova',
+                parent: {
+                  nameWithOwner: 'jasp-stats-modules/jaspAnova',
+                  owner: {
+                    login: 'jasp-stats-modules',
+                  },
+                },
+                releases: {
+                  nodes: [
+                    {
+                      tagName: 'untagged-7b31883f74369b72ac7',
+                      publishedAt: '2025-02-01T00:00:00Z',
+                      description: '---\njasp: >=0.95.0\n---\n',
+                      isDraft: false,
+                      isPrerelease: false,
+                      releaseAssets: {
+                        nodes: [
+                          {
+                            downloadUrl:
+                              'https://example.com/jaspAnova_0.96.6_MacOS_x86_64_R-4-5-1.JASPModule',
+                            downloadCount: 1,
+                          },
+                        ],
+                      },
+                    },
+                    {
+                      tagName: 'untagged-5accb398568ca76f8e3',
+                      publishedAt: '2025-02-02T00:00:00Z',
+                      description: '---\njasp: >=0.95.0\n---\n',
+                      isDraft: false,
+                      isPrerelease: true,
+                      releaseAssets: {
+                        nodes: [
+                          {
+                            downloadUrl:
+                              'https://example.com/jaspAnova_0.96.7_MacOS_x86_64_R-4-5-1.JASPModule',
+                            downloadCount: 1,
+                          },
+                        ],
+                      },
+                    },
+                    {
+                      tagName: '0.95.0_2cbd8a6d_R-4-5-1',
+                      publishedAt: '2025-01-01T00:00:00Z',
+                      description: '---\njasp: >=0.95.0\n---\n',
+                      isDraft: false,
+                      isPrerelease: false,
+                      releaseAssets: {
+                        nodes: [
+                          {
+                            downloadUrl:
+                              'https://example.com/jaspAnova_0.95.0_MacOS_x86_64_R-4-5-1.JASPModule',
+                            downloadCount: 100,
+                          },
+                        ],
+                      },
+                    },
+                  ],
+                },
+              },
+            },
+          });
+        }
+        return HttpResponse.json({ data: {} });
+      }),
+    );
+
+    const octokit = new MyOctokit({ auth: 'fake-token' });
+    const bareRepos: BareRepository[] = [
+      {
+        id: 'jaspAnova',
+        channels: ['Official'],
+        releaseSource: 'jasp-stats-modules/jaspAnova',
+        name: 'jaspAnova',
+        description: 'Anova module',
+        translations: {},
+      },
+    ];
+
+    const result = await releaseAssets(bareRepos, {
+      expectedArchitectures: ['MacOS_x86_64'],
+      firstReleases: 20,
+      firstAssets: 20,
+      octokit,
+    });
+
+    expect(result).toHaveLength(1);
+    expect(result[0].releases.map((release) => release.version)).toEqual([
+      '0.95.0',
+    ]);
+    expect(result[0].preReleases).toEqual([]);
   });
 
   test('keeps homepageUrl from bare repository metadata', async () => {
@@ -2183,6 +2308,29 @@ describe('shouldContinuePagination', () => {
 
   test('locks current behavior: empty releases with next page still stops', () => {
     expect(shouldContinuePagination([], true, ['Windows_x86-64'])).toBeFalsy();
+  });
+
+  test('continues when page only contains untagged releases reported as non-drafts', () => {
+    const untagged = createGqlRelease('untagged-7b31883f74369b72ac7', false);
+    expect(shouldContinuePagination([untagged], true, ['Windows_x86-64'])).toBe(
+      true,
+    );
+  });
+
+  test('untagged releases do not count towards architecture coverage', () => {
+    const releases = [
+      createGqlRelease('untagged-7b31883f74369b72ac7', false, [
+        'Windows_x86-64',
+        'Flatpak_x86_64',
+      ]),
+      createGqlRelease('1.1.0-release.0', false, ['Windows_x86-64']),
+    ];
+    expect(
+      shouldContinuePagination(releases, true, [
+        'Windows_x86-64',
+        'Flatpak_x86_64',
+      ]),
+    ).toBe(true);
   });
 
   test.for<{
